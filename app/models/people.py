@@ -21,7 +21,13 @@ class Person(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _check_minimal_information(cls, data: dict, _: ValidationInfo) -> dict:
-        assert any(data.get(id.value) for id in IdentifierTypeEnum) or all(
+        # there is at least one identifier
+        assert any(
+            # pylint: disable=cell-var-from-loop
+            list(filter(lambda h: h["type"] == t.value, data.get("identifiers") or []))
+            for t in IdentifierTypeEnum
+        ) or all(
+            # or there are both first name and last name
             [data.get("last_name"), data.get("first_name")]
         ), "At least one identifier or the entire name must be provided"
         return data
