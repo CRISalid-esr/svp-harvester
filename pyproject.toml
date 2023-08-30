@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "svp-harvester"
+version = "0.1.0"
+description = ""
+authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
+license = "Cecill"
+readme = "README.md"
+packages = [{include = "svp_harvester"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.100.0"}
+
+
+[tool.poetry.group.development.dependencies]
+black = "^23.7.0"
+uvicorn = {extras = ["standard"], version = "^0.23.1"}
+pytest = "^7.4.0"
+coverage = "^7.2.7"
+
+
+
+[tool.poetry.group.production.dependencies]
+aio-pika = "^9.1.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
