@@ -1,12 +1,32 @@
 """
-Fixtures for the tests
+Fixtures for all tests
 """
 import json
 import pathlib
+from os import environ
 
 import pytest
+from fastapi import FastAPI
+from starlette.testclient import TestClient
 
 from app.models.people import Person
+
+environ["APP_ENV"] = "TEST"
+
+
+@pytest.fixture(name="test_app")
+def app() -> FastAPI:
+    """Provide app as fixture"""
+    # pylint: disable=import-outside-toplevel
+    from app.main import get_application  # local import for testing purpose
+
+    return get_application()
+
+
+@pytest.fixture
+def test_client(test_app: FastAPI) -> TestClient:
+    """Provide test client as fixture"""
+    return TestClient(test_app)
 
 
 @pytest.fixture
