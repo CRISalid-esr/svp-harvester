@@ -20,7 +20,7 @@ async def fetch_references_for_person_sync(
     :param person: person built from fields
     :return: json response
     """
-    return str(RetrievalService(person).retrieve())
+    return str(await RetrievalService(person).retrieve())
 
 
 @router.post(
@@ -35,4 +35,4 @@ async def fetch_references_for_person_async(
     :param person: person built from fields
     :return: json response
     """
-    return str(RetrievalService(person).retrieve())
+    return str(await RetrievalService(person).retrieve())

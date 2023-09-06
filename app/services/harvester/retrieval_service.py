@@ -8,5 +8,5 @@ class RetrievalService:
         """Init RetrievalService class"""
         self.entity = entity
 
-    def retrieve(self):
+    async def retrieve(self):
         return True

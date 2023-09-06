@@ -33,7 +33,7 @@ app = get_application()
 
 
 @app.on_event("startup")
-async def startup() -> None:
+async def startup() -> None:  # pragma: no cover
     """Init AMQP connexion at boot time"""
     amqp_connexion = AMQPConnexion(get_app_settings())
     asyncio.create_task(amqp_connexion.listen(), name="amqp_listener")

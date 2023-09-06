@@ -31,14 +31,18 @@ class AMQPConnexion:
 
     async def _process_message(
         self,
-        message: aio_pika.abc.AbstractIncomingMessage,
+        message: aio_pika.IncomingMessage,
     ) -> None:
         """Process message"""
         async with message.process():
-            payload = json.loads(message.body)
-            if payload["type"] == "person":
-                person = Person(**payload["fields"])
-                RetrievalService(person).retrieve()
+            payload = message.body
+            await self._process_message_payload(payload)
+
+    async def _process_message_payload(self, payload):
+        json_payload = json.loads(payload)
+        if json_payload["type"] == "person":
+            person = Person(**json_payload["fields"])
+            await RetrievalService(person).retrieve()
 
     async def _bind_queue(self):
         exchange = await self.channel.declare_exchange(
@@ -53,9 +57,13 @@ class AMQPConnexion:
             await self.queue.bind(exchange, routing_key=key)
 
     async def _connect(self) -> aio_pika.abc.AbstractChannel:
-        connexion = await aio_pika.connect_robust(
+        connexion = await self._connexion()
+        self.channel = await connexion.channel()
+
+    async def _connexion(self) -> aio_pika.abc.AbstractConnection:
+        connexion: aio_pika.Connection = await aio_pika.connect_robust(
             f"amqp://{self.settings.amqp_user}:"
             f"{self.settings.amqp_password}"
             f"@{self.settings.amqp_host}/",
         )
-        self.channel = await connexion.channel()
+        return connexion
