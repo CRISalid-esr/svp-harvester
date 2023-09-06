@@ -4,6 +4,7 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 from pydantic import ValidationError
+from starlette.staticfiles import StaticFiles
 
 from app.api.amqp.amqp_connect import AMQPConnexion
 from app.api.errors.validation_error import http422_error_handler
@@ -23,6 +24,10 @@ def get_application() -> FastAPI:
 
     application.include_router(
         api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
+    )
+
+    application.mount(
+        "/static", StaticFiles(directory="./app/static", html=True), name="static"
     )
 
     application.include_router(gui_router)
