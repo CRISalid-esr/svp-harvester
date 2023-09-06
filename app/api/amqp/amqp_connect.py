@@ -22,6 +22,7 @@ class AMQPConnexion:
         self.channel: aio_pika.abc.AbstractChannel = None
 
     async def listen(self):
+        await self._connect()
         await self._bind_queue()
         async with self.queue.iterator() as queue_iter:
             async for message in queue_iter:
