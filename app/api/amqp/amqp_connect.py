@@ -1,43 +1,60 @@
 """Basic AMQP connectop,"""
-import asyncio
+import json
 
 import aio_pika
+from aio_pika import ExchangeType
+
+from app.models.people import Person
+from app.services.harvester.retrieval_service import RetrievalService
+from app.settings.app_settings import AppSettings
 
 
-async def process_message(
-    message: aio_pika.abc.AbstractIncomingMessage,
-) -> None:
-    """Process message"""
-    async with message.process():
-        print(message.body)
-        await asyncio.sleep(1)
+class AMQPConnexion:
+    """Rabbitmq Connexion abstraction"""
 
+    EXCHANGE = "publications"
+    KEYS = ["task.person.references.retrieval"]
 
-async def main() -> None:
-    """Main function"""
-    connection = await aio_pika.connect_robust(
-        "amqp://guest:guest@127.0.0.1/",
-    )
+    def __init__(self, settings: AppSettings):
+        """Init AMQP Connexion class"""
+        self.settings = settings
+        self.queue: aio_pika.abc.AbstractQueue = None
+        self.channel: aio_pika.abc.AbstractChannel = None
 
-    queue_name = "spv-harvester-idref"
+    async def listen(self):
+        await self._bind_queue()
+        async with self.queue.iterator() as queue_iter:
+            async for message in queue_iter:
+                async with message.process(ignore_processed=True):
+                    await self._process_message(message)
 
-    # Creating channel
-    channel = await connection.channel()
+    async def _process_message(
+        self,
+        message: aio_pika.abc.AbstractIncomingMessage,
+    ) -> None:
+        """Process message"""
+        async with message.process():
+            payload = json.loads(message.body)
+            if payload["type"] == "person":
+                person = Person(**payload["fields"])
+                RetrievalService(person).retrieve()
 
-    # Maximum message count which will be processing at the same time.
-    await channel.set_qos(prefetch_count=100)
+    async def _bind_queue(self):
+        exchange = await self.channel.declare_exchange(
+            self.EXCHANGE,
+            ExchangeType.TOPIC,
+        )
+        await self.channel.set_qos(prefetch_count=100)
+        self.queue = await self.channel.declare_queue(
+            self.settings.amqp_queue_name, durable=True
+        )
+        for key in self.KEYS:
+            await self.queue.bind(exchange, routing_key=key)
 
-    # Declaring queue
-    queue = await channel.declare_queue(queue_name, auto_delete=True)
-
-    await queue.consume(process_message)
-
-    try:
-        # Wait until terminate
-        await asyncio.Future()
-    finally:
-        await connection.close()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    async def _connect(self) -> aio_pika.abc.AbstractChannel:
+        connexion = await aio_pika.connect_robust(
+            f"amqp://{self.settings.amqp_user}:"
+            f"{self.settings.amqp_password}"
+            f"@{self.settings.amqp_host}/",
+        )
+        self.channel = await connexion.channel()
