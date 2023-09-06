@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 
 from app.api.dependencies.references import build_person_from_fields
 from app.models.people import Person
+from app.services.harvester.retrieval_service import RetrievalService
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ async def fetch_references_for_person_sync(
     :param person: person built from fields
     :return: json response
     """
-    return f"hello {person.first_name} {person.last_name}"
+    return str(await RetrievalService(person).retrieve())
 
 
 @router.post(
@@ -34,4 +35,4 @@ async def fetch_references_for_person_async(
     :param person: person built from fields
     :return: json response
     """
-    return f"hello {person.first_name} {person.last_name}"
+    return str(await RetrievalService(person).retrieve())

@@ -5,16 +5,19 @@ description = ""
 authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
 license = "Cecill"
 readme = "README.md"
-packages = [{include = "svp_harvester"}]
+packages = [{ include = "svp_harvester" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = {extras = ["all"], version = "^0.100.0"}
+fastapi = { extras = ["all"], version = "^0.100.0" }
+pytest-asyncio = "^0.21.1"
+amqp-mock = "^0.5.1"
+aiofiles = "^23.2.1"
 
 
 [tool.poetry.group.development.dependencies]
 black = "^23.7.0"
-uvicorn = {extras = ["standard"], version = "^0.23.1"}
+uvicorn = { extras = ["standard"], version = "^0.23.1" }
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 
@@ -26,3 +29,6 @@ aio-pika = "^9.1.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = "tests"

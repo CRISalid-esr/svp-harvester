@@ -1,14 +1,14 @@
 """Test the references API."""
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-app = FastAPI()
 
-client = TestClient(app)
-
-
-def test_fetch_references_sync_for_person_with_idref():
+def test_fetch_references_sync_for_person_with_idref(test_client: TestClient):
     """Test the fetch_references_for_person_sync endpoint."""
-    response = client.get("references?idref=123456789")
+    response = test_client.get("/api/v1/references?idref=123456789")
     assert response.status_code == 200
-    assert response.json() == {"msg": "Hello World"}
+
+
+def test_fetch_references_sync_for_person_with_idref2(test_client: TestClient):
+    """Test the fetch_references_for_person_sync endpoint."""
+    response = test_client.get("/api/v1/references?idref=toto")
+    assert response.status_code == 200
