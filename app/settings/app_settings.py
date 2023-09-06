@@ -16,3 +16,8 @@ class AppSettings(BaseSettings):
 
     api_prefix: str = "/api"
     api_version: str = "v0"
+
+    amqp_user: str = "guest"
+    amqp_password: str = "guest"
+    amqp_host: str = "127.0.0.1"
+    amqp_queue_name: str = "svp-harvester"
