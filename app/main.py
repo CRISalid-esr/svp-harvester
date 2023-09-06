@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from app.api.amqp.amqp_connect import AMQPConnexion
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
+from app.gui.routes.api import router as gui_router
 from app.config import get_app_settings
 
 
@@ -23,6 +24,8 @@ def get_application() -> FastAPI:
     application.include_router(
         api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
     )
+
+    application.include_router(gui_router)
 
     application.add_exception_handler(ValidationError, http422_error_handler)
 
