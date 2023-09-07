@@ -12,3 +12,7 @@ class AbstractHarvester(ABC):
     @abstractmethod
     def relevant(self, entity: BaseModel) -> bool:
         pass
+
+    @abstractmethod
+    async def run(self, entity: BaseModel) -> None:
+        pass
