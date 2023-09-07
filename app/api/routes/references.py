@@ -1,9 +1,11 @@
 """ References routes"""
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies.references import build_person_from_fields
 from app.models.people import Person
-from app.services.harvester.retrieval_service import RetrievalService
+from app.services.retrieval.retrieval_service import RetrievalService
 
 router = APIRouter()
 
@@ -13,6 +15,7 @@ router = APIRouter()
     name="references:fetch-references-for-person-sync",
 )
 async def fetch_references_for_person_sync(
+    retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person = Depends(build_person_from_fields),
 ) -> str:
     """
@@ -20,7 +23,7 @@ async def fetch_references_for_person_sync(
     :param person: person built from fields
     :return: json response
     """
-    return str(await RetrievalService(person).retrieve())
+    return str(await retrieval_service.retrieve_for(person))
 
 
 @router.post(
@@ -28,6 +31,7 @@ async def fetch_references_for_person_sync(
     name="references:fetch-references-for-person-async",
 )
 async def fetch_references_for_person_async(
+    retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person,
 ) -> str:
     """
@@ -35,4 +39,4 @@ async def fetch_references_for_person_async(
     :param person: person built from fields
     :return: json response
     """
-    return str(await RetrievalService(person).retrieve())
+    return str(await retrieval_service.retrieve_for(person))

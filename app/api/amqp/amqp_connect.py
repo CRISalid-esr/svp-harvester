@@ -5,7 +5,7 @@ import aio_pika
 from aio_pika import ExchangeType
 
 from app.models.people import Person
-from app.services.harvester.retrieval_service import RetrievalService
+from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
 
 
@@ -42,7 +42,7 @@ class AMQPConnexion:
         json_payload = json.loads(payload)
         if json_payload["type"] == "person":
             person = Person(**json_payload["fields"])
-            await RetrievalService(person).retrieve()
+            await RetrievalService(self.settings).retrieve_for(person)
 
     async def _bind_queue(self):
         exchange = await self.channel.declare_exchange(

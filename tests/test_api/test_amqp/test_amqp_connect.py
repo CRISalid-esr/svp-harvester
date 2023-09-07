@@ -8,13 +8,13 @@ from amqp_mock import create_amqp_mock, Message
 
 from app.api.amqp.amqp_connect import AMQPConnexion
 from app.config import get_app_settings
-from app.services.harvester.retrieval_service import RetrievalService
+from app.services.retrieval.retrieval_service import RetrievalService
 
 
 @pytest.fixture
 def mock_retrieval_service():
     with mock.patch.object(
-        RetrievalService, "retrieve", autospec=True
+        RetrievalService, "retrieve_for", autospec=True
     ) as mock_retrieval_service:
         yield mock_retrieval_service
 

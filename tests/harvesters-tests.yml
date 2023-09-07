@@ -1,6 +1,6 @@
-- idref:
-    module: svp.harvesters.idref
-    class: IdrefHarvester
-- scanr:
-    module: svp.harvesters.scanr
-    class: ScanrHarvester
+- name: idref
+  module: app.harvesters.idref.idref_harvester_factory
+  class: IdrefHarvesterFactory
+- name: scanr
+  module: app.harvesters.scanr.scanr_harvester_factory
+  class: ScanrHarvesterFactory
