@@ -1,9 +1,20 @@
 """
 App settings base class
 """
+import os
+
+import yaml
 from pydantic_settings import BaseSettings
 
 from app.settings.app_env_types import AppEnvTypes
+
+
+def lst_from_yml(yml_file: str) -> list[dict]:
+    """
+    Load settings from yml file
+    """
+    with open(yml_file) as f:
+        return yaml.load(f, Loader=yaml.FullLoader)
 
 
 class AppSettings(BaseSettings):
@@ -21,3 +32,8 @@ class AppSettings(BaseSettings):
     amqp_password: str = "guest"
     amqp_host: str = "127.0.0.1"
     amqp_queue_name: str = "svp-harvester"
+
+    harvesters_settings_file: str = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "..", "..", "harvesters.yml"
+    )
+    harvesters: list = lst_from_yml(harvesters_settings_file)

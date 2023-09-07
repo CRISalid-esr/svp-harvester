@@ -1,0 +1,6 @@
+- idref:
+    module: svp.harvesters.idref
+    class: IdrefHarvester
+- scanr:
+    module: svp.harvesters.scanr
+    class: ScanrHarvester
