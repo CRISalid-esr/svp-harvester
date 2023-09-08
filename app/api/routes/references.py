@@ -1,7 +1,7 @@
 """ References routes"""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from starlette.background import BackgroundTasks
 
@@ -29,22 +29,24 @@ async def fetch_references_sync(
     :param person: person built from fields
     :return: json response
     """
-    await retrieval_service.retrieve_for(person, asynchronous=False)
-    return "True"
+    retrieval = await retrieval_service.retrieve_for(person, asynchronous=False)
+    return str(retrieval.id)
 
 
 @router.post(
-    "/harvesting",
+    "/retrieval",
     name="references:fetch-references-for-person-async",
 )
 async def fetch_references_async(
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person,
+    request: Request,
 ) -> str:
     """
     Fetch references for a person in an asynchronous way
     :param person: person built from fields
     :return: json response
     """
-    await retrieval_service.retrieve_for(person, asynchronous=True)
-    return "True"
+    retrieval = await retrieval_service.retrieve_for(person, asynchronous=True)
+    # TODO build returned URL properly
+    return f"{request.url}/{retrieval.id}"

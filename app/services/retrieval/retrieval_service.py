@@ -8,6 +8,7 @@ from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
 from app.db.daos.retrieval_dao import RetrievalDAO
+from app.db.models import Retrieval
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
@@ -28,19 +29,20 @@ class RetrievalService:
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.entity = None
 
-    async def retrieve_for(self, entity: BaseModel, asynchronous: bool = False):
+    async def retrieve_for(
+        self, entity: BaseModel, asynchronous: bool = False
+    ) -> Retrieval:
         self.entity = entity
         self._build_harvesters()
         async with async_session() as session:
             async with session.begin():
-                dao = RetrievalDAO(session)
-                new_retrieval = await dao.create_retrieval()
+                retrieval = await RetrievalDAO(session).create_retrieval()
 
         if asynchronous:
-            self.background_tasks.add_task(self._launch_harvesters)
+            self.background_tasks.add_task(self._launch_harvesters, retrieval.id)
         else:
-            await self._launch_harvesters()
-        return True
+            await self._launch_harvesters(retrieval.id)
+        return retrieval
 
     def _build_harvesters(self):
         for harvester_config in self.settings.harvesters:
@@ -57,7 +59,7 @@ class RetrievalService:
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
-    async def _launch_harvesters(self):
+    async def _launch_harvesters(self, retrieval_id):
         pending_harvesters = [
             asyncio.create_task(harvester.run(self.entity))
             for harvester in self.harvesters.values()
