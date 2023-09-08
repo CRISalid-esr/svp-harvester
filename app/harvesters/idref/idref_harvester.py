@@ -7,7 +7,7 @@ from app.harvesters.abstract_harvester import AbstractHarvester
 
 
 class IdrefHarvester(AbstractHarvester):
-    async def run(self, entity: BaseModel) -> None:
+    async def run(self, entity: BaseModel, harvesting_id: int) -> None:
         await asyncio.sleep(random.randint(1, 10))
 
     def relevant(self, entity: BaseModel) -> bool:

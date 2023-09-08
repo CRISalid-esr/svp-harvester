@@ -14,5 +14,5 @@ class AbstractHarvester(ABC):
         pass
 
     @abstractmethod
-    async def run(self, entity: BaseModel) -> None:
+    async def run(self, entity: BaseModel, harvesting_id: int) -> None:
         pass

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
-from app.db.daos.retrieval_dao import RetrievalDAO
+from app.db.daos import RetrievalDAO, HarvestingDAO
 from app.db.models import Retrieval
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
@@ -39,9 +39,9 @@ class RetrievalService:
                 retrieval = await RetrievalDAO(session).create_retrieval()
 
         if asynchronous:
-            self.background_tasks.add_task(self._launch_harvesters, retrieval.id)
+            self.background_tasks.add_task(self._launch_harvesters, retrieval)
         else:
-            await self._launch_harvesters(retrieval.id)
+            await self._launch_harvesters(retrieval)
         return retrieval
 
     def _build_harvesters(self):
@@ -59,11 +59,20 @@ class RetrievalService:
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
-    async def _launch_harvesters(self, retrieval_id):
-        pending_harvesters = [
-            asyncio.create_task(harvester.run(self.entity))
-            for harvester in self.harvesters.values()
-        ]
+    async def _launch_harvesters(self, retrieval: Retrieval):
+        pending_harvesters = []
+        async with async_session() as session:
+            async with session.begin():
+                for harvester_name, harvester_class in self.harvesters.items():
+                    harvesting = await HarvestingDAO(session).create_harvesting(
+                        retrieval=retrieval, harvester=harvester_name
+                    )
+                    asyncio.create_task(
+                        harvester_class.run(
+                            entity=self.entity, harvesting_id=harvesting.id
+                        )
+                    )
+
         while pending_harvesters:
             done_harvesters, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
