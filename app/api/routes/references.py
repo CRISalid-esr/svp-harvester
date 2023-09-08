@@ -3,7 +3,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
-from starlette.background import BackgroundTasks
 
 from app.api.dependencies.references import build_person_from_fields
 from app.models.people import Person
