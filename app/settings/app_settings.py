@@ -37,3 +37,9 @@ class AppSettings(BaseSettings):
         os.path.abspath(os.path.dirname(__file__)), "..", "..", "harvesters.yml"
     )
     harvesters: list = lst_from_yml(harvesters_settings_file)
+
+    db_name: str = "svp_harvester"
+    db_user: str = "svp_harvester"
+    db_password: str = "secret"
+    db_host: str = "localhost"
+    db_port: int = 5432

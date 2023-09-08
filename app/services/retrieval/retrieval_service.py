@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
+from app.db.daos.retrieval_dao import RetrievalDAO
+from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.settings.app_settings import AppSettings
@@ -29,6 +31,11 @@ class RetrievalService:
     async def retrieve_for(self, entity: BaseModel, asynchronous: bool = False):
         self.entity = entity
         self._build_harvesters()
+        async with async_session() as session:
+            async with session.begin():
+                dao = RetrievalDAO(session)
+                new_retrieval = await dao.create_retrieval()
+
         if asynchronous:
             self.background_tasks.add_task(self._launch_harvesters)
         else:
