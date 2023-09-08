@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
+from app.db.conversions import EntityConverter
 from app.db.daos import RetrievalDAO, HarvestingDAO
 from app.db.models import Retrieval
 from app.db.session import async_session
@@ -36,7 +37,9 @@ class RetrievalService:
         self._build_harvesters()
         async with async_session() as session:
             async with session.begin():
-                retrieval = await RetrievalDAO(session).create_retrieval()
+                retrieval = await RetrievalDAO(session).create_retrieval(
+                    EntityConverter(entity).to_db_model()
+                )
 
         if asynchronous:
             self.background_tasks.add_task(self._launch_harvesters, retrieval)

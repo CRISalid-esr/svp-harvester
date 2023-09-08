@@ -1,14 +1,15 @@
 from sqlalchemy.orm import Session
 
-from app.db.models import Retrieval, Harvesting
+from app.db.models import Retrieval, Harvesting, Entity
 
 
 class RetrievalDAO:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_retrieval(self) -> Retrieval:
+    async def create_retrieval(self, entity: Entity) -> Retrieval:
         retrieval = Retrieval()
+        retrieval.entity = entity
         self.db_session.add(retrieval)
         await self.db_session.flush()
         return retrieval
