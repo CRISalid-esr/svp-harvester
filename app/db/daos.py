@@ -13,6 +13,9 @@ class RetrievalDAO:
         await self.db_session.flush()
         return retrieval
 
+    async def get_retrieval_by_id(self, retrieval_id: int) -> Retrieval:
+        return await self.db_session.get(Retrieval, retrieval_id)
+
 
 class HarvestingDAO:
     def __init__(self, db_session: Session):
