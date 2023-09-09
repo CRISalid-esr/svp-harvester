@@ -38,6 +38,7 @@ class AppSettings(BaseSettings):
     )
     harvesters: list = lst_from_yml(harvesters_settings_file)
 
+    db_engine: str = "postgresql+asyncpg"
     db_name: str = "svp_harvester"
     db_user: str = "svp_harvester"
     db_password: str = "secret"

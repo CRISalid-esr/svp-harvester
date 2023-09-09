@@ -33,7 +33,7 @@ async def create_retrieval_sync(
     """
     retrieval = await retrieval_service.retrieve_for(person, asynchronous=False)
     # TODO query database to get all harvesting results
-    return retrieval
+    return JSONResponse({"retrieval_id": retrieval.id})
 
 
 @router.post(

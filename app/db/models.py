@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -70,8 +70,8 @@ class Identifier(Base):
 class Person(Entity):
     __tablename__ = "people"
     id: Mapped[int] = mapped_column(ForeignKey("entities.id"), primary_key=True)
-    last_name: Mapped[str]
-    first_name: Mapped[str]
+    last_name: Mapped[str] = mapped_column(nullable=True)
+    first_name: Mapped[str] = mapped_column(nullable=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "person",
