@@ -14,10 +14,6 @@ from app.services.retrieval.retrieval_service import RetrievalService
 router = APIRouter()
 
 
-async def retrieve(retrieval_service: RetrievalService, entity: BaseModel):
-    return await retrieval_service.retrieve_for(entity)
-
-
 @router.get(
     "",
     name="references:create-retrieval-for-entity-sync",
@@ -31,7 +27,8 @@ async def create_retrieval_sync(
     :param person: person built from fields
     :return: json response
     """
-    retrieval = await retrieval_service.retrieve_for(person, asynchronous=False)
+    retrieval = await retrieval_service.register(person)
+    await retrieval_service.run(in_background=False)
     # TODO query database to get all harvesting results
     return JSONResponse({"retrieval_id": retrieval.id})
 
@@ -46,11 +43,12 @@ async def create_retrieval_async(
     request: Request,
 ) -> str:
     """
-    Fetch references for a person in an asynchronous way
+    Fetch references for a person in an in_background way
     :param person: person built from fields
     :return: json response
     """
-    retrieval = await retrieval_service.retrieve_for(person, asynchronous=True)
+    retrieval = await retrieval_service.register(person)
+    await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
     return f"{request.url}/{retrieval.id}"
 

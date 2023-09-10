@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from asyncio import Event, Queue
 
 from pydantic import BaseModel
 
@@ -14,5 +15,7 @@ class AbstractHarvester(ABC):
         pass
 
     @abstractmethod
-    async def run(self, entity: BaseModel, harvesting_id: int) -> None:
+    async def run(
+        self, entity: BaseModel, harvesting_id: int, result_queue: Queue
+    ) -> None:
         pass

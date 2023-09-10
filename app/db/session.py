@@ -7,12 +7,18 @@ from app.settings.app_env_types import AppEnvTypes
 
 settings = get_app_settings()
 SQLALCHEMY_DATABASE_URL = f"{settings.db_engine}://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
-
-engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL,
-    future=True,
-    echo=False,
-    poolclass=NullPool if settings.app_env == AppEnvTypes.TEST else QueuePool,
-)
+if settings.app_env == AppEnvTypes.TEST:
+    engine = create_async_engine(
+        SQLALCHEMY_DATABASE_URL,
+        future=True,
+        echo=False,
+        poolclass=NullPool,  # use NullPool for testing
+    )
+else:
+    engine = create_async_engine(
+        SQLALCHEMY_DATABASE_URL,
+        future=True,
+        echo=False,
+    )
 async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()

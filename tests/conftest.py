@@ -23,9 +23,9 @@ environ["APP_ENV"] = "TEST"
 def app(event_loop) -> FastAPI:
     """Provide app as fixture"""
     # pylint: disable=import-outside-toplevel
-    from app.main import get_application  # local import for testing purpose
+    from app.main import SvpHarvester  # local import for testing purpose
 
-    return get_application()
+    return SvpHarvester()
 
 
 @pytest.fixture

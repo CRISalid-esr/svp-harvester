@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-@pytest.mark.asyncio
 def test_fetch_references_sync_with_idref(
     test_client: TestClient, async_session: AsyncSession
 ):
@@ -13,7 +12,6 @@ def test_fetch_references_sync_with_idref(
     assert response.status_code == 200
 
 
-@pytest.mark.asyncio
 def test_fetch_references_async_with_name_and_idref(
     test_client: TestClient,
     async_session: AsyncSession,
