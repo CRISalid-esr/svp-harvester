@@ -161,3 +161,6 @@ cython_debug/
 .run/
 
 app/templates/node_modules
+
+# loguru logs folder
+logs/
