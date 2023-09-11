@@ -2,9 +2,12 @@
 import asyncio
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.staticfiles import StaticFiles
+from loguru import logger
+from uuid import uuid4
 
 from app.api.amqp.amqp_connect import AMQPConnexion
 from app.api.errors.validation_error import http422_error_handler
@@ -34,6 +37,9 @@ def get_application() -> FastAPI:
 
     application.add_exception_handler(ValidationError, http422_error_handler)
 
+    logger.add("log/info.log", format="Log: [{extra[log_id]}:{time} - {level} - {message}",
+               level="INFO", enqueue=True)
+
     return application
 
 
@@ -45,6 +51,23 @@ async def startup() -> None:  # pragma: no cover
     """Init AMQP connexion at boot time"""
     amqp_connexion = AMQPConnexion(get_app_settings())
     asyncio.create_task(amqp_connexion.listen(), name="amqp_listener")
+
+
+@app.middleware("http")
+async def log_middleware(request: Request, call_next):
+    log_id = str(uuid4())
+    with logger.contextualize(log_id=log_id):
+        logger.info('Request to access ' +
+                    request.url.path)
+        try:
+            response = await call_next(request)
+        except Exception as ex:
+            logger.error("Request to " + request.url.path + " failed: {ex}")
+            response = JSONResponse(content=
+                                    {"success": False}, status_code=500)
+        finally:
+            logger.info('Successfully accessed ' + request.url.path)
+        return response
 
 
 if __name__ == "__main__":  # pragma: no cover
