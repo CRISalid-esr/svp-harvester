@@ -37,8 +37,8 @@ def get_application() -> FastAPI:
 
     application.add_exception_handler(ValidationError, http422_error_handler)
 
-    logger.add("log/info.log", format="Log: [{extra[log_id]}:{time} - {level} - {message}",
-               level="INFO", enqueue=True)
+    logger.add("logs/info_{time}.log", format="Log: [{extra[log_id]}:{time} - {level} - {message}",
+               level=settings.loguru_level, enqueue=True, rotation='1 week', compression="zip")
 
     return application
 
@@ -62,9 +62,8 @@ async def log_middleware(request: Request, call_next):
         try:
             response = await call_next(request)
         except Exception as ex:
-            logger.error("Request to " + request.url.path + " failed: {ex}")
-            response = JSONResponse(content=
-                                    {"success": False}, status_code=500)
+            logger.error(f"Request to {request.url.path} failed: {ex}")
+            response = JSONResponse(content={"success": False}, status_code=500)
         finally:
             logger.info('Successfully accessed ' + request.url.path)
         return response

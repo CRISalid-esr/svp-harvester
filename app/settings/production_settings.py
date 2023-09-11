@@ -14,3 +14,4 @@ class ProdAppSettings(AppSettings):
     debug: bool = False
 
     logging_level: int = logging.INFO
+    loguru_level: str = "INFO"

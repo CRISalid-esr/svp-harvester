@@ -15,5 +15,6 @@ class TestAppSettings(AppSettings):
     debug: bool = True
 
     logging_level: int = logging.DEBUG
+    loguru_level: str = "DEBUG"
 
     model_config = SettingsConfigDict(env_file='.test.env', extra='ignore')
