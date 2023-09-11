@@ -36,7 +36,7 @@ def get_application() -> FastAPI:
 
     application.add_exception_handler(ValidationError, http422_error_handler)
 
-    logger.add("logs/info_{time}.log", format="Log: [{extra[log_id]}:{time} - {level} - {message}",
+    logger.add("app/logging/logs/info_{time}.log", format="Log: [{extra[log_id]}:{time} - {level} - {message}",
                level=settings.loguru_level, enqueue=True, rotation='1 week', compression="zip")
 
     return application
