@@ -13,8 +13,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
+from app.db.daos import RetrievalDAO
+from app.db.models import (
+    Person as DbPerson,
+    Identifier as DbIdentifier,
+)
 from app.db.session import Base, engine
-from app.models.people import Person
+from app.models.identifiers import IdentifierTypeEnum
+from app.models.people import Person as PydanticPerson
 
 environ["APP_ENV"] = "TEST"
 
@@ -83,6 +89,26 @@ def person_without_identifiers_json(_base_path):
 
 
 @pytest.fixture
+def person_with_name_and_idref_db_model():
+    """
+    Generate a person with first name, last name and IDREF in DB model format
+    :return: person with first name, last name and IDREF  in DB model format
+    """
+    return DbPerson(
+        first_name="John",
+        last_name="Doe",
+        identifiers=[DbIdentifier(type=IdentifierTypeEnum.IDREF, value="123456789")],
+    )
+
+
+@pytest_asyncio.fixture
+async def retrieval_db_model(async_session, person_with_name_and_idref_db_model):
+    return await RetrievalDAO(async_session).create_retrieval(
+        person_with_name_and_idref_db_model
+    )
+
+
+@pytest.fixture
 def person_with_name_and_idref(person_with_name_and_idref_json):
     """
     Generate a person with first name, last name and IDREF in Pydantic format
@@ -120,7 +146,7 @@ def person_with_last_name_only_json(_base_path):
 
 
 def _person_from_json_data(input_data):
-    return Person(**input_data)
+    return PydanticPerson(**input_data)
 
 
 def _json_from_file(base_path, person):

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from asyncio import Event, Queue
+from asyncio import Queue
 
 from pydantic import BaseModel
 
@@ -11,7 +11,7 @@ class AbstractHarvester(ABC):
         self.settings = settings
 
     @abstractmethod
-    def relevant(self, entity: BaseModel) -> bool:
+    def is_relevant(self, entity: BaseModel) -> bool:
         pass
 
     @abstractmethod

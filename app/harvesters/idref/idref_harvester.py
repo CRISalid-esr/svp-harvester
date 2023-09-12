@@ -1,6 +1,6 @@
 import asyncio
 import random
-from asyncio import Event, Queue
+from asyncio import Queue
 
 from pydantic import BaseModel
 
@@ -16,5 +16,5 @@ class IdrefHarvester(AbstractHarvester):
         await asyncio.sleep(random.randint(1, 2) / 10)
         await result_queue.put(22) if result_queue else ...
 
-    def relevant(self, entity: BaseModel) -> bool:
-        pass
+    def is_relevant(self, entity: BaseModel) -> bool:
+        return True
