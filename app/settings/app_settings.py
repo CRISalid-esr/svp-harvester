@@ -13,8 +13,8 @@ def lst_from_yml(yml_file: str) -> list[dict]:
     """
     Load settings from yml file
     """
-    with open(yml_file) as f:
-        return yaml.load(f, Loader=yaml.FullLoader)
+    with open(yml_file, encoding="utf8") as file:
+        return yaml.load(file, Loader=yaml.FullLoader)
 
 
 class AppSettings(BaseSettings):

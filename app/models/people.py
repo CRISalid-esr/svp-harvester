@@ -1,13 +1,13 @@
 """
 Person model
 """
-from typing import Optional, List
+from typing import Optional
 
 from pydantic import model_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from app.models.identifiers import Identifier, IdentifierTypeEnum
 from app.models.entities import Entity
+from app.models.identifiers import IdentifierTypeEnum
 
 
 class Person(Entity):

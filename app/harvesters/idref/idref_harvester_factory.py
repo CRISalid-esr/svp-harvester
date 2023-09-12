@@ -1,4 +1,3 @@
-from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.settings.app_settings import AppSettings

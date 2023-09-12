@@ -2,7 +2,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
-from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 from app.api.dependencies.references import build_person_from_fields
@@ -60,6 +59,12 @@ async def create_retrieval_async(
 async def get_retrieval_result(
     retrieval_id: int,
 ) -> JSONResponse:
+    """
+    Get result of a retrieval in an asynchronous way
+
+    :param retrieval_id: id of the retrieval
+    :return: json representation of the references
+    """
     async with async_session() as session:
         async with session.begin():
             retrieval = await RetrievalDAO(session).get_retrieval_by_id(retrieval_id)

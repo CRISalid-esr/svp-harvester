@@ -8,6 +8,10 @@ from app.db.session import Base
 
 
 class Retrieval(Base):
+    """
+    Model for persistence of retrieval
+    """
+
     __tablename__ = "retrievals"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -20,6 +24,8 @@ class Retrieval(Base):
 
 
 class Harvesting(Base):
+    """Model for persistence of harvestings"""
+
     __tablename__ = "harvestings"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -35,6 +41,10 @@ class Harvesting(Base):
 
 
 class Entity(Base):
+    """
+    Base Model for entities for which we want to fetch references
+    """
+
     __tablename__ = "entities"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -55,6 +65,10 @@ class Entity(Base):
 
 
 class Identifier(Base):
+    """
+    Model for persistence of identifiers
+    """
+
     __tablename__ = "identifiers"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -65,6 +79,11 @@ class Identifier(Base):
 
 
 class Person(Entity):
+    """
+    Model
+    for persisted person
+    """
+
     __tablename__ = "people"
     id: Mapped[int] = mapped_column(ForeignKey("entities.id"), primary_key=True)
     last_name: Mapped[str] = mapped_column(nullable=True)
@@ -76,6 +95,10 @@ class Person(Entity):
 
 
 class Reference(Base):
+    """
+    Model for persistence of references
+    """
+
     __tablename__ = "references"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -90,6 +113,10 @@ class Reference(Base):
 
 
 class ReferenceEvent(Base):
+    """
+    Model for persistence of events related to references
+    """
+
     __tablename__ = "reference_events"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

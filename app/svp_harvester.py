@@ -12,6 +12,8 @@ from app.gui.routes.gui import router as gui_router
 
 
 class SvpHarvester(FastAPI):
+    """Main application, routing logic, middlewares and startup/shutdown events"""
+
     def __init__(self):
         super().__init__()
 
