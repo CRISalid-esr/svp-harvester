@@ -1,6 +1,6 @@
-from sqlalchemy import NullPool, QueuePool
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import NullPool
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import declarative_base
 
 from app.config import get_app_settings
 from app.settings.app_env_types import AppEnvTypes
@@ -14,11 +14,11 @@ if settings.app_env == AppEnvTypes.TEST:
         echo=False,
         poolclass=NullPool,  # use NullPool for testing
     )
-else:
+else:  # pragma: no cover
     engine = create_async_engine(
         SQLALCHEMY_DATABASE_URL,
         future=True,
         echo=False,
     )
-async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+async_session = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()

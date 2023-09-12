@@ -11,11 +11,11 @@ class AbstractHarvester(ABC):
         self.settings = settings
 
     @abstractmethod
-    def is_relevant(self, entity: BaseModel) -> bool:
+    def is_relevant(self, entity: BaseModel) -> bool:  # pragma: no cover
         pass
 
     @abstractmethod
     async def run(
         self, entity: BaseModel, harvesting_id: int, result_queue: Queue
-    ) -> None:
+    ) -> None:  # pragma: no cover
         pass

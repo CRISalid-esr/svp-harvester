@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from starlette.staticfiles import StaticFiles
 
-from app.api.amqp.amqp_connect import AMQPConnexion
+from app.api.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.config import get_app_settings
@@ -15,7 +15,7 @@ class SvpHarvester(FastAPI):
     def __init__(self):
         super().__init__()
 
-        self.amqp_connexion: AMQPConnexion = None
+        self.amqp_interface: AMQPInterface | None = None
 
         settings = get_app_settings()
 
@@ -37,11 +37,11 @@ class SvpHarvester(FastAPI):
     async def open_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Init AMQP connexion at boot time"""
         print("Enabling RabbitMQ connexion")
-        self.amqp_connexion = AMQPConnexion(get_app_settings())
-        asyncio.create_task(self.amqp_connexion.listen(), name="amqp_listener")
+        self.amqp_interface = AMQPInterface(get_app_settings())
+        asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
 
     async def close_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Handle last tasks before shutdown"""
         print("Shutting down RabbitMQ connexion")
-        await self.amqp_connexion.stop_listening()
+        await self.amqp_interface.stop_listening()
         print("RabbitMQ connexion has been closed")

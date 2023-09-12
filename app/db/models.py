@@ -53,9 +53,6 @@ class Entity(Base):
         back_populates="entity", cascade="all, delete"
     )
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.name!r})"
-
 
 class Identifier(Base):
     __tablename__ = "identifiers"

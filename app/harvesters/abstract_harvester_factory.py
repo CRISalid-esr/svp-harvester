@@ -7,5 +7,5 @@ from app.harvesters.abstract_harvester import AbstractHarvester
 class AbstractHarvesterFactory(ABC):
     @classmethod
     @abstractmethod
-    def harvester(cls, settings: AppSettings) -> AbstractHarvester:
+    def harvester(cls, settings: AppSettings) -> AbstractHarvester:  # pragma: no cover
         pass
