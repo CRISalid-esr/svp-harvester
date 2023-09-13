@@ -120,8 +120,9 @@ def person_with_name_and_idref(person_with_name_and_idref_json):
 @pytest.fixture
 def person_with_name_and_idref_json(_base_path):
     """
-    Generate a person with first name, last name and IDREF in JSON format
+    Generate a person with only first name and last name in Json format
     :param _base_path: test data directory base
+    :return: person with only first name and last name in Json format
     """
     return _json_from_file(_base_path, "person_with_name_and_idref")
 
@@ -129,8 +130,9 @@ def person_with_name_and_idref_json(_base_path):
 @pytest.fixture
 def person_with_last_name_only(person_with_last_name_only_json):
     """
-    Generate a person with only last name in Pydantic format
-    :return: person with only first name and last name in Pydantic format
+    Generate a person with first name, last name and IDREF in Pydantic format
+    :param _base_path: test data directory base
+    :return: person with first name, last name and IDREF in Pydantic format
     """
     return _person_from_json_data(person_with_last_name_only_json)
 
