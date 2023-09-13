@@ -2,13 +2,40 @@
 from fastapi.testclient import TestClient
 
 
-def test_fetch_references_sync_for_person_with_idref(test_client: TestClient):
-    """Test the fetch_references_for_person_sync endpoint."""
+def test_create_retrieval_sync_with_idref(test_client: TestClient):
+    """Test the create_retrieval_sync endpoint."""
     response = test_client.get("/api/v1/references?idref=123456789")
     assert response.status_code == 200
 
 
-def test_fetch_references_sync_for_person_with_idref2(test_client: TestClient):
-    """Test the fetch_references_for_person_sync endpoint."""
-    response = test_client.get("/api/v1/references?idref=toto")
+def test_create_retrieval_sync_error_with_name_only(test_client: TestClient):
+    """
+    Test validation error when calling create_retrieval_sync endpoint with name only.
+    :param test_client:
+    :return:
+    """
+    response = test_client.get("/api/v1/references?name=Bourdieu")
+    assert response.status_code == 422
+
+
+def test_fetch_references_async_with_name_and_idref(
+    test_client: TestClient,
+    person_with_name_and_idref_json,
+):
+    """Test the create_retrieval_sync endpoint."""
+    response = test_client.post(
+        "/api/v1/references/retrieval",
+        json=person_with_name_and_idref_json,
+    )
+    assert response.status_code == 200
+
+
+async def test_get_retrieval_result(
+    test_client: TestClient,
+    retrieval_db_model,
+):
+    db_retrieval_id = retrieval_db_model.id
+    response = test_client.get(
+        f"/api/v1/references/retrieval/{db_retrieval_id}",
+    )
     assert response.status_code == 200
