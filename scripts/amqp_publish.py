@@ -23,15 +23,15 @@ async def main() -> None:
             ExchangeType.TOPIC,
         )
 
-        payload = {
-            "type": "person",
-            "fields": {
-                "first_name": "John",
-                "last_name": "Doe",
-                "identifiers": [{"type": "orcid", "value": "0000-0002-1825-0097"}],
-            },
-        }
-        for _ in range(0, 5):
+        for i in range(0, 5):
+            payload = {
+                "type": "person",
+                "fields": {
+                    "first_name": f"John - {i}",
+                    "last_name": "Doe",
+                    "identifiers": [{"type": "orcid", "value": "0000-0002-1825-0097"}],
+                },
+            }
             message = aio_pika.Message(
                 json.dumps(payload).encode(),
                 delivery_mode=DeliveryMode.PERSISTENT,
