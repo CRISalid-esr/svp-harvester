@@ -17,4 +17,6 @@ class DevAppSettings(AppSettings):
 
     logging_level: int = logging.DEBUG
 
+    loguru_level: str = "DEBUG"
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
