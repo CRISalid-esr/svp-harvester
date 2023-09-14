@@ -17,10 +17,10 @@ class ScanrHarvester(AbstractHarvester):
     ) -> None:
         await asyncio.sleep(random.randint(1, 2) / 10)
         if result_queue:
-            await result_queue.put(11)
+            await result_queue.put({"type": "ReferenceEvent", "id": 11})
         await asyncio.sleep(random.randint(1, 3) / 10)
         if result_queue:
-            await result_queue.put(12)
+            await result_queue.put({"type": "ReferenceEvent", "id": 12})
 
     def is_relevant(self, entity: BaseModel) -> bool:
         return True

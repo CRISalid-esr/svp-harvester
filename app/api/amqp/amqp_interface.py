@@ -4,6 +4,7 @@ import json
 import aio_pika
 from aio_pika import ExchangeType
 
+from app.api.amqp.amqp_publisher import AMQPPublisher
 from app.db.models import Retrieval
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
@@ -15,18 +16,22 @@ DEFAULT_RESULT_TIMEOUT = 600
 class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
+    # TODO Class is too complex. Pylint warning on number of attributes. Refactoring needed.
+
     WAIT_BEFORE_SHUTDOWN = 30
     TASKS_BUFFERING_LIMIT = 5000
     TASKS_PARALLELISM_LIMIT = 1000
     MAX_EXPECTED_RESULTS = 10000
     EXCHANGE = "publications"
-    KEYS = ["task.person.references.retrieval"]
+    KEYS = ["task.entity.references.retrieval"]
 
     def __init__(self, settings: AppSettings):
         """Init AMQP Connexion class"""
         self.settings = settings
         self.queue: aio_pika.Queue | None = None
         self.channel: aio_pika.Channel | None = None
+        self.exchange: aio_pika.Exchange | None = None
+        self.publisher: AMQPPublisher | None = None
         self.connexion: aio_pika.abc.AbstractRobustConnection | None = None
         self.tasks_queue: asyncio.Queue | None = None
         self.workers: list[asyncio.Task] | None = None
@@ -44,6 +49,7 @@ class AMQPInterface:
 
         await self._connect()
         await self._bind_queue()
+        await self._init_publisher()
         async with self.queue.iterator() as queue_iter:
             async for message in queue_iter:
                 # pylints warns about code that is pretty identical to official aiopika examples
@@ -106,16 +112,23 @@ class AMQPInterface:
     ):
         try:
             while True:
-                num = await asyncio.wait_for(result_queue.get(), timeout=timeout)
-                print(f"Got result {num} for retrieval: {retrieval.id}")
+                result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
+                print(f"Got result {result} for retrieval: {retrieval.id}")
+                await self.publisher.publish(result)
         except asyncio.TimeoutError:
             print(f"Timeout while waiting for retrieval {retrieval.id} results ")
         except KeyboardInterrupt:
             print(f"Waiting for retrieval {retrieval.id} results interrupted by user")
+        except Exception as exception:
+            print(f"Exception {exception} during harvesting result processing")
+            raise exception
 
-    async def _bind_queue(self):
+    async def _init_publisher(self) -> None:
+        self.publisher = AMQPPublisher(self.exchange)
+
+    async def _bind_queue(self) -> None:
         # Bind service message queue to publication exchange
-        exchange = await self.channel.declare_exchange(
+        self.exchange = await self.channel.declare_exchange(
             self.EXCHANGE,
             ExchangeType.TOPIC,
         )
@@ -124,7 +137,7 @@ class AMQPInterface:
             self.settings.amqp_queue_name, durable=True
         )
         for key in self.KEYS:
-            await self.queue.bind(exchange, routing_key=key)
+            await self.queue.bind(self.exchange, routing_key=key)
 
     async def _connect(self) -> None:
         self.connexion = await self._connexion()

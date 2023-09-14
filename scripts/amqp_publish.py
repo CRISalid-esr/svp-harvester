@@ -14,7 +14,7 @@ async def main() -> None:
     )
 
     async with connection:
-        routing_key = "task.person.references.retrieval"
+        routing_key = "task.entity.references.retrieval"
 
         channel = await connection.channel()
 
@@ -23,7 +23,7 @@ async def main() -> None:
             ExchangeType.TOPIC,
         )
 
-        for i in range(0, 5):
+        for i in range(0, 1):
             payload = {
                 "type": "person",
                 "fields": {
