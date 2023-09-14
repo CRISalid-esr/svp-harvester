@@ -3,6 +3,7 @@ import asyncio
 from fastapi import FastAPI
 from pydantic import ValidationError
 from starlette.staticfiles import StaticFiles
+from loguru import logger
 
 from app.api.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
@@ -30,6 +31,10 @@ class SvpHarvester(FastAPI):
         )
 
         self.include_router(gui_router)
+
+        logger.add("logs/info_{time}.log",
+                   format="Log: [{extra[log_id]}:{time} - {level} - {message}",
+                   level=settings.loguru_level, enqueue=True, rotation='1 week', compression="zip")
 
         self.add_exception_handler(ValidationError, http422_error_handler)
 

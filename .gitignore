@@ -161,3 +161,4 @@ cython_debug/
 .run/
 
 app/templates/node_modules
+/logs
