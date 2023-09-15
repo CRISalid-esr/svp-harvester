@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from starlette.staticfiles import StaticFiles
 
-from app.api.amqp.amqp_interface import AMQPInterface
+from app.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.config import get_app_settings

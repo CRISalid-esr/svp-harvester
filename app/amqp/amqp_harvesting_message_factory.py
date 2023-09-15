@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.api.amqp.abstract_amqp_message_factory import AbstractAMQPMessageFactory
+from app.amqp.abstract_amqp_message_factory import AbstractAMQPMessageFactory
 from app.db.daos import HarvestingDAO
 from app.db.session import async_session
 
