@@ -13,10 +13,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
-from app.db.daos import RetrievalDAO
+from app.db.daos import RetrievalDAO, HarvestingDAO
 from app.db.models import (
     Person as DbPerson,
     Identifier as DbIdentifier,
+    State,
 )
 from app.db.session import Base, engine
 from app.models.identifiers import IdentifierTypeEnum
@@ -26,7 +27,7 @@ environ["APP_ENV"] = "TEST"
 
 
 @pytest.fixture(name="test_app")
-def app(event_loop) -> FastAPI:
+def app() -> FastAPI:
     """Provide app as fixture"""
     # pylint: disable=import-outside-toplevel
     from app.main import SvpHarvester  # local import for testing purpose
@@ -34,43 +35,45 @@ def app(event_loop) -> FastAPI:
     return SvpHarvester()
 
 
-@pytest.fixture
-def test_client(test_app: FastAPI) -> TestClient:
+@pytest.fixture(name="test_client")
+def fixture_test_client(test_app: FastAPI) -> TestClient:
     """Provide test client as fixture"""
     return TestClient(test_app)
 
 
-@pytest.fixture(autouse=True)
-def event_loop(request):
+@pytest.fixture(autouse=True, name="event_loop")
+def fixture_event_loop():
+    """Provide an event loop for all tests"""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
 
 
-@pytest_asyncio.fixture(autouse=True)
-async def async_session(event_loop) -> AsyncSession:
+@pytest_asyncio.fixture(autouse=True, name="async_session")
+async def fixture_async_session() -> AsyncSession:
+    """Provide an async db session for all tests"""
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-    async with session() as s:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+    async with session() as test_session:
+        async with engine.begin() as test_connexion:
+            await test_connexion.run_sync(Base.metadata.create_all)
 
-        yield s
+        yield test_session
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+    async with engine.begin() as test_connexion:
+        await test_connexion.run_sync(Base.metadata.drop_all)
 
     await engine.dispose()
 
 
-@pytest.fixture
-def _base_path() -> pathlib.Path:
+@pytest.fixture(name="_base_path")
+def fixture_base_path() -> pathlib.Path:
     """Get the current folder of the test"""
     return pathlib.Path(__file__).parent
 
 
-@pytest.fixture
-def person_without_identifiers(person_without_identifiers_json):
+@pytest.fixture(name="person_without_identifiers")
+def fixture_person_without_identifiers(person_without_identifiers_json):
     """
     Generate a person with only first name and last name in Pydantic format
     :return: person with only first name and last name in Pydantic format
@@ -78,8 +81,8 @@ def person_without_identifiers(person_without_identifiers_json):
     return _person_from_json_data(person_without_identifiers_json)
 
 
-@pytest.fixture
-def person_without_identifiers_json(_base_path):
+@pytest.fixture(name="person_without_identifiers_json")
+def fixture_person_without_identifiers_json(_base_path):
     """
     Generate a person with only first name and last name in JSON format
     :param _base_path: test data directory base
@@ -88,8 +91,8 @@ def person_without_identifiers_json(_base_path):
     return _json_from_file(_base_path, "person_without_identifier")
 
 
-@pytest.fixture
-def person_with_name_and_idref_db_model():
+@pytest.fixture(name="person_with_name_and_idref_db_model")
+def fixture_person_with_name_and_idref_db_model():
     """
     Generate a person with first name, last name and IDREF in DB model format
     :return: person with first name, last name and IDREF  in DB model format
@@ -101,15 +104,38 @@ def person_with_name_and_idref_db_model():
     )
 
 
-@pytest_asyncio.fixture
-async def retrieval_db_model(async_session, person_with_name_and_idref_db_model):
+@pytest_asyncio.fixture(name="retrieval_db_model")
+async def fixture_retrieval_db_model(
+    async_session, person_with_name_and_idref_db_model
+):
+    """
+    Generate a retrieval with a person with first name, last name and IDREF in DB model format
+
+    :param async_session: async db session
+    :param person_with_name_and_idref_db_model: person  in DB model format
+    :return: retrieval with a person with first name, last name and IDREF  in DB model format
+    """
     return await RetrievalDAO(async_session).create_retrieval(
         person_with_name_and_idref_db_model
     )
 
 
-@pytest.fixture
-def person_with_name_and_idref(person_with_name_and_idref_json):
+@pytest_asyncio.fixture(name="harvesting_db_model")
+async def fixture_harvesting_db_model(async_session, retrieval_db_model):
+    """
+    Generate a harvesting with a retrieval in DB model format
+
+    :param async_session: async db session
+    :param retrieval_db_model: retrieval in DB model format
+    :return:  harvesting in DB model format
+    """
+    return await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model, "idref", State.RUNNING
+    )
+
+
+@pytest.fixture(name="person_with_name_and_idref")
+def fixture_person_with_name_and_idref(person_with_name_and_idref_json):
     """
     Generate a person with first name, last name and IDREF in Pydantic format
     :return: person with first name, last name and IDREF  in Pydantic format
@@ -117,8 +143,8 @@ def person_with_name_and_idref(person_with_name_and_idref_json):
     return _person_from_json_data(person_with_name_and_idref_json)
 
 
-@pytest.fixture
-def person_with_name_and_idref_json(_base_path):
+@pytest.fixture(name="person_with_name_and_idref_json")
+def fixture_person_with_name_and_idref_json(_base_path):
     """
     Generate a person with only first name and last name in Json format
     :param _base_path: test data directory base
@@ -127,18 +153,17 @@ def person_with_name_and_idref_json(_base_path):
     return _json_from_file(_base_path, "person_with_name_and_idref")
 
 
-@pytest.fixture
-def person_with_last_name_only(person_with_last_name_only_json):
+@pytest.fixture(name="person_with_last_name_only")
+def fixture_person_with_last_name_only(person_with_last_name_only_json):
     """
     Generate a person with first name, last name and IDREF in Pydantic format
-    :param _base_path: test data directory base
     :return: person with first name, last name and IDREF in Pydantic format
     """
     return _person_from_json_data(person_with_last_name_only_json)
 
 
-@pytest.fixture
-def person_with_last_name_only_json(_base_path):
+@pytest.fixture(name="person_with_last_name_only_json")
+def fixture_person_with_last_name_only_json(_base_path):
     """
     Generate a person with only last name in JSON format
     :param _base_path: test data directory base

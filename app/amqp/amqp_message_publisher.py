@@ -23,7 +23,7 @@ class AMQPMessagePublisher:
             delivery_mode=DeliveryMode.PERSISTENT,
         )
         await self.exchange.publish(
-            message,
+            message=message,
             routing_key=routing_key,
         )
         print(str(payload))
