@@ -12,9 +12,9 @@ class AbstractAMQPMessageFactory(ABC):
         return self._build_routing_key(), await self._build_payload()
 
     @abstractmethod
-    def _build_routing_key(self) -> str:
+    def _build_routing_key(self) -> str:  # pragma: no cover
         raise NotImplementedError()
 
     @abstractmethod
-    async def _build_payload(self) -> str:
+    async def _build_payload(self) -> str:  # pragma: no cover
         raise NotImplementedError()
