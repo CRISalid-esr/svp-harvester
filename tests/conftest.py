@@ -8,7 +8,9 @@ from os import environ
 
 import pytest
 import pytest_asyncio
+from _pytest.logging import LogCaptureFixture
 from fastapi import FastAPI
+from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
@@ -181,3 +183,23 @@ def _json_from_file(base_path, person):
     with open(file, encoding="utf-8") as json_file:
         input_data = json_file.read()
     return json.loads(input_data)
+
+
+@pytest.fixture(autouse=True)
+def caplog(caplog: LogCaptureFixture):
+    """
+    Make pytest work with loguru. See:
+    https://loguru.readthedocs.io/en/stable/resources/migration.html#making-things-work-with-pytest-and-caplog
+
+    :param caplog: pytest fixture
+    :return: loguru compatible caplog
+    """
+    handler_id = logger.add(
+        caplog.handler,
+        format="{message}",
+        level=0,
+        filter=lambda record: record["level"].no >= caplog.handler.level,
+        enqueue=True,
+    )
+    yield caplog
+    logger.remove(handler_id)

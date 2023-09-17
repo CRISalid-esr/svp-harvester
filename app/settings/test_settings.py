@@ -18,6 +18,8 @@ class TestAppSettings(AppSettings):
 
     logging_level: int = logging.DEBUG
 
+    loguru_level: str = "DEBUG"
+
     model_config = SettingsConfigDict(env_file=".test.env", extra="ignore")
 
     harvesters_settings_file: str = os.path.join(
