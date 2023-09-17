@@ -1,3 +1,5 @@
 [MASTER]
 disable=missing-module-docstring,
-        too-few-public-methods,
+        too-few-public-methods
+
+ignore-patterns=alembic/versions/*

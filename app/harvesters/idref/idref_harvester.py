@@ -17,10 +17,10 @@ class IdrefHarvester(AbstractHarvester):
     ) -> None:
         await asyncio.sleep(random.randint(1, 3) / 10)
         if result_queue:
-            await result_queue.put(21)
+            await result_queue.put(({"type": "ReferenceEvent", "id": 21}))
         await asyncio.sleep(random.randint(1, 2) / 10)
         if result_queue:
-            await result_queue.put(22)
+            await result_queue.put({"type": "ReferenceEvent", "id": 22})
 
     def is_relevant(self, entity: BaseModel) -> bool:
         return True

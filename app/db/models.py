@@ -1,10 +1,22 @@
+from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import List
 
+from dataclasses_json import dataclass_json
 from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+
+
+class State(Enum):
+    """Identifier types"""
+
+    IDLE = "idle"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
 
 class Retrieval(Base):
@@ -23,15 +35,22 @@ class Retrieval(Base):
     entity: Mapped["Entity"] = relationship(back_populates="retrievals")
 
 
+@dataclass_json
+@dataclass
 class Harvesting(Base):
     """Model for persistence of harvestings"""
 
     __tablename__ = "harvestings"
 
+    # pylint: disable=C0103
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
     retrieval: Mapped["Retrieval"] = relationship(back_populates="harvesters")
+
+    state: Mapped[str] = mapped_column(
+        nullable=False, index=True, default=State.IDLE.value
+    )
 
     reference_events: Mapped[List["ReferenceEvent"]] = relationship(
         back_populates="harvesting", cascade="all, delete"
@@ -80,8 +99,7 @@ class Identifier(Base):
 
 class Person(Entity):
     """
-    Model
-    for persisted person
+    Model for persisted person
     """
 
     __tablename__ = "people"
