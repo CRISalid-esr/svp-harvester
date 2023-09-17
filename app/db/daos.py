@@ -1,6 +1,7 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Retrieval, Harvesting, Entity
+from app.db.models import Retrieval, Harvesting, Entity, State
 
 
 class RetrievalDAO:
@@ -43,17 +44,29 @@ class HarvestingDAO:
         self.db_session = db_session
 
     async def create_harvesting(
-        self, retrieval: Retrieval, harvester: str
+        self, retrieval: Retrieval, harvester: str, state: State
     ) -> Harvesting:
         """
         Create a harvesting for a retrieval
 
+        :param state: state of the harvesting
         :param retrieval: retrieval to which the harvesting belongs
         :param harvester: type of harvester (idref, orcid, etc.)
         :return:
         """
-        harvesting = Harvesting(harvester=harvester)
+        harvesting = Harvesting(harvester=harvester, state=state.value)
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
-        await self.db_session.flush()
+        await self.db_session.commit()
         return harvesting
+
+    async def get_harvesting_by_id(self, harvesting_id) -> Harvesting | None:
+        """
+        Get a harvesting by its id
+
+        :param harvesting_id: id of the harvesting
+        :return: the harvesting or None if not found
+        """
+        statement = select(Harvesting).where(Harvesting.id == harvesting_id)
+        result = await self.db_session.scalar(statement)
+        return result if result else None

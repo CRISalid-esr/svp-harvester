@@ -7,7 +7,9 @@ from app.db.daos import RetrievalDAO, HarvestingDAO
 from app.db.models import (
     Person as DbPerson,
     Identifier as DbIdentifier,
-    Retrieval as DbRetrieval, Harvesting,
+    Retrieval as DbRetrieval,
+    Harvesting,
+    State,
 )
 from app.models.identifiers import IdentifierTypeEnum
 
@@ -16,20 +18,33 @@ from app.models.identifiers import IdentifierTypeEnum
 async def test_create_retrieval(
     async_session: AsyncSession, person_with_name_and_idref_db_model
 ):
+    """
+    Test that we can create a retrieval for a person in the database.
+    :param async_session:  async session fixture
+    :param person_with_name_and_idref_db_model:  person with name and idref fixture
+    :return: None
+    """
     dao = RetrievalDAO(async_session)
-    retrieval = await dao.create_retrieval(person_with_name_and_idref_db_model)
+    await dao.create_retrieval(person_with_name_and_idref_db_model)
     stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
     retrieval_from_db = (await async_session.execute(stmt)).scalar_one()
     assert retrieval_from_db.entity.first_name == "John"
     assert retrieval_from_db.entity.last_name == "Doe"
     assert len(retrieval_from_db.entity.identifiers) == 1
 
+
 @pytest.mark.asyncio
 async def test_get_retrieval(
     async_session: AsyncSession, person_with_name_and_idref_db_model
 ):
+    """
+    Test that we can get a retrieval by its id.
+    :param async_session: async session fixture
+    :param person_with_name_and_idref_db_model: person with name and idref fixture
+    :return: None
+    """
     dao = RetrievalDAO(async_session)
-    retrieval = await dao.create_retrieval(person_with_name_and_idref_db_model)
+    await dao.create_retrieval(person_with_name_and_idref_db_model)
     stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
     created_retrieval = (await async_session.execute(stmt)).scalar_one()
     retrieval_id = created_retrieval.id
@@ -38,12 +53,19 @@ async def test_get_retrieval(
     assert retrieval_from_db.entity.last_name == "Doe"
     assert len(retrieval_from_db.entity.identifiers) == 1
 
+
 @pytest.mark.asyncio
 async def test_create_retrieval_registers_person(
     async_session: AsyncSession, person_with_name_and_idref_db_model
 ):
+    """
+    Test that creating a retrieval registers the person in the database
+    :param async_session: async session fixture
+    :param person_with_name_and_idref_db_model:   person with name and idref fixture
+    :return: None
+    """
     dao = RetrievalDAO(async_session)
-    retrieval = await dao.create_retrieval(person_with_name_and_idref_db_model)
+    await dao.create_retrieval(person_with_name_and_idref_db_model)
     stmt = (
         select(DbPerson)
         .join(DbPerson.identifiers)
@@ -55,12 +77,17 @@ async def test_create_retrieval_registers_person(
     assert person_from_db.identifiers[0].type == IdentifierTypeEnum.IDREF
     assert person_from_db.identifiers[0].value == "123456789"
 
+
 @pytest.mark.asyncio
-async def test_create_harvesting(
-    async_session: AsyncSession, retrieval_db_model
-):
+async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model):
+    """
+    Test that we can create a harvesting for a retrieval in the database.
+    :param async_session: async session fixture
+    :param retrieval_db_model: retrieval fixture
+    :return: None
+    """
     dao = HarvestingDAO(async_session)
-    await dao.create_harvesting(retrieval_db_model, "idref")
+    await dao.create_harvesting(retrieval_db_model, "idref", state=State.RUNNING)
     stmt = (
         select(Harvesting)
         .join(Harvesting.retrieval)
