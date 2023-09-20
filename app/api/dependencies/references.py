@@ -9,7 +9,7 @@ def build_person_from_fields(
     # pylint: disable=unused-argument
     idref: str | None = None,
     orcid: str | None = None,
-    id_hal: str | None = None,
+    id_hal_i: str | None = None,
 ) -> Person:
     """
 
@@ -17,7 +17,7 @@ def build_person_from_fields(
     :param last_name: last name
     :param idref: IdRef identifier
     :param orcid: ORCID identifier
-    :param id_hal: HAL identifier
+    :param id_hal_i: HAL numeric identifier
     :return: person
     """
     parameters = dict(locals())
@@ -26,9 +26,9 @@ def build_person_from_fields(
             "first_name": first_name,
             "last_name": last_name,
             "identifiers": [
-                {"type": id.value, "value": parameters[id.value]}
-                for id in IdentifierTypeEnum
-                if parameters[id.value] is not None
+                {"type": identifier.value, "value": parameters[identifier.value]}
+                for identifier in IdentifierTypeEnum
+                if parameters[identifier.value] is not None
             ],
         }
     )

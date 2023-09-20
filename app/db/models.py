@@ -4,10 +4,11 @@ from enum import Enum
 from typing import List
 
 from dataclasses_json import dataclass_json
-from sqlalchemy import Column, String, ForeignKey, DateTime
+from sqlalchemy import Column, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+from app.models.identifiers import IdentifierTypeEnum
 
 
 class State(Enum):
@@ -32,7 +33,7 @@ class Retrieval(Base):
     )
 
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
-    entity: Mapped["Entity"] = relationship(back_populates="retrievals")
+    entity: Mapped["Entity"] = relationship(back_populates="retrievals", lazy="joined")
 
 
 @dataclass_json
@@ -46,7 +47,9 @@ class Harvesting(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
-    retrieval: Mapped["Retrieval"] = relationship(back_populates="harvesters")
+    retrieval: Mapped["Retrieval"] = relationship(
+        back_populates="harvesters", lazy="raise"
+    )
 
     state: Mapped[str] = mapped_column(
         nullable=False, index=True, default=State.IDLE.value
@@ -57,30 +60,6 @@ class Harvesting(Base):
     )
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
-
-
-class Entity(Base):
-    """
-    Base Model for entities for which we want to fetch references
-    """
-
-    __tablename__ = "entities"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[str]
-
-    __mapper_args__ = {
-        "polymorphic_identity": "employee",
-        "polymorphic_on": "type",
-    }
-
-    identifiers: Mapped[List["Identifier"]] = relationship(
-        back_populates="entity", cascade="all, delete"
-    )
-
-    retrievals: Mapped[List["Retrieval"]] = relationship(
-        back_populates="entity", cascade="all, delete"
-    )
 
 
 class Identifier(Base):
@@ -94,7 +73,51 @@ class Identifier(Base):
     type: Mapped[str] = mapped_column(nullable=False, index=True)
     value: Mapped[str] = mapped_column(nullable=False, index=True)
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
-    entity: Mapped["Entity"] = relationship(back_populates="identifiers")
+    entity: Mapped["Entity"] = relationship(back_populates="identifiers", lazy="raise")
+
+    class Type(Enum):
+        """Identifier types"""
+
+        ORCID = "orcid"
+        IDREF = "idref"
+        ID_HAL_I = "id_hal_i"
+        ID_HAL_S = "id_hal_s"
+
+
+class Entity(Base):
+    """
+    Base Model for entities for which we want to fetch references
+    """
+
+    __tablename__ = "entities"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    type: Mapped[str]
+
+    __mapper_args__ = {
+        "polymorphic_identity": "entity",
+        "polymorphic_on": "type",
+    }
+
+    identifiers: Mapped[List["Identifier"]] = relationship(
+        back_populates="entity", cascade="all, delete", lazy="joined"
+    )
+
+    retrievals: Mapped[List["Retrieval"]] = relationship(
+        back_populates="entity", cascade="all, delete", lazy="raise"
+    )
+
+    def get_identifier(self, identifier_type: IdentifierTypeEnum) -> str | None:
+        """
+        Get identifier value for a given type
+
+        :param identifier_type: type of the identifier
+        :return: the identifier or None if not found
+        """
+        for identifier in self.identifiers:
+            if identifier.type == identifier_type.value:
+                return identifier.value
+        return None
 
 
 class Person(Entity):
@@ -112,6 +135,102 @@ class Person(Entity):
     }
 
 
+references_subjects_table = Table(
+    "references_subjects_table",
+    Base.metadata,
+    Column("reference_id", ForeignKey("references.id")),
+    Column("concept_id", ForeignKey("concepts.id")),
+)
+
+
+class LiteralField(Base):
+    """
+    Model for persistence of titles
+    """
+
+    __tablename__ = "literal_fields"
+
+    type: Mapped[str]
+
+    __mapper_args__ = {
+        "polymorphic_identity": "literal_field",
+        "polymorphic_on": "type",
+    }
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    value: Mapped[str] = mapped_column(nullable=False)
+    language: Mapped[str] = mapped_column(nullable=False, index=True)
+
+
+class Title(LiteralField):
+    """
+    Model for persistence of titles
+    """
+
+    __tablename__ = "titles"
+
+    id: Mapped[int] = mapped_column(ForeignKey("literal_fields.id"), primary_key=True)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "title",
+    }
+
+    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
+    reference: Mapped["Reference"] = relationship(back_populates="titles", lazy="raise")
+
+
+class Subtitle(LiteralField):
+    """
+    Model for persistence of subtitles
+    """
+
+    __tablename__ = "subtitles"
+
+    id: Mapped[int] = mapped_column(ForeignKey("literal_fields.id"), primary_key=True)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "subtitle",
+    }
+
+    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
+    reference: Mapped["Reference"] = relationship(
+        back_populates="subtitles", lazy="raise"
+    )
+
+
+class Label(LiteralField):
+    """
+    Model for persistence of keyword labels
+    """
+
+    __tablename__ = "labels"
+
+    id: Mapped[int] = mapped_column(ForeignKey("literal_fields.id"), primary_key=True)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "label",
+    }
+
+    concept_id: Mapped[int] = mapped_column(ForeignKey("concepts.id"))
+    concept: Mapped["Concept"] = relationship(back_populates="labels", lazy="raise")
+
+
+class Concept(Base):
+    """
+    Model for persistence of keywords
+    """
+
+    __tablename__ = "concepts"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
+    uri: Mapped[str] = mapped_column(nullable=True, index=False, unique=True)
+
+    labels: Mapped[List["Label"]] = relationship(
+        back_populates="concept", cascade="all, delete", lazy="joined"
+    )
+
+
 class Reference(Base):
     """
     Model for persistence of references
@@ -121,10 +240,17 @@ class Reference(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
-    title: Mapped[str]
+    titles: Mapped[List["Title"]] = relationship(
+        back_populates="reference", cascade="all, delete", lazy="joined"
+    )
+    subtitles: Mapped[List["Subtitle"]] = relationship(
+        back_populates="reference", cascade="all, delete", lazy="joined"
+    )
+
+    subjects: Mapped[List[Concept]] = relationship(secondary=references_subjects_table)
 
     reference_events: Mapped[List["ReferenceEvent"]] = relationship(
-        back_populates="reference", cascade="all, delete"
+        back_populates="reference", cascade="all, delete", lazy="raise"
     )
 
     hash: Mapped[str] = mapped_column(String, index=True)
@@ -141,7 +267,19 @@ class ReferenceEvent(Base):
     type: Mapped[str] = mapped_column(nullable=False, index=True)
 
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
-    reference: Mapped["Reference"] = relationship(back_populates="reference_events")
+    reference: Mapped["Reference"] = relationship(
+        back_populates="reference_events", lazy="joined"
+    )
 
     harvesting_id: Mapped[int] = mapped_column(ForeignKey("harvestings.id"))
-    harvesting: Mapped["Harvesting"] = relationship(back_populates="reference_events")
+    harvesting: Mapped["Harvesting"] = relationship(
+        back_populates="reference_events", lazy="joined"
+    )
+
+    class Type(Enum):
+        """Reference events types"""
+
+        CREATED = "created"
+        UPDATED = "updated"
+        DELETED = "deleted"
+        UNCHANGED = "unchanged"

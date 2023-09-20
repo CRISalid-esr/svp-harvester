@@ -27,7 +27,7 @@ async def test_create_retrieval(
     dao = RetrievalDAO(async_session)
     await dao.create_retrieval(person_with_name_and_idref_db_model)
     stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
-    retrieval_from_db = (await async_session.execute(stmt)).scalar_one()
+    retrieval_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert retrieval_from_db.entity.first_name == "John"
     assert retrieval_from_db.entity.last_name == "Doe"
     assert len(retrieval_from_db.entity.identifiers) == 1
@@ -46,7 +46,7 @@ async def test_get_retrieval(
     dao = RetrievalDAO(async_session)
     await dao.create_retrieval(person_with_name_and_idref_db_model)
     stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
-    created_retrieval = (await async_session.execute(stmt)).scalar_one()
+    created_retrieval = (await async_session.execute(stmt)).unique().scalar_one()
     retrieval_id = created_retrieval.id
     retrieval_from_db = await dao.get_retrieval_by_id(retrieval_id)
     assert retrieval_from_db.entity.first_name == "John"
@@ -71,7 +71,7 @@ async def test_create_retrieval_registers_person(
         .join(DbPerson.identifiers)
         .where(DbIdentifier.value == "123456789")
     )
-    person_from_db = (await async_session.execute(stmt)).scalar_one()
+    person_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert person_from_db.first_name == "John"
     assert len(person_from_db.identifiers) == 1
     assert person_from_db.identifiers[0].type == IdentifierTypeEnum.IDREF

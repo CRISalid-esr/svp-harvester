@@ -145,23 +145,55 @@ def fixture_person_with_name_and_idref(person_with_name_and_idref_json):
     return _person_from_json_data(person_with_name_and_idref_json)
 
 
+@pytest.fixture(name="person_with_name_and_id_hal_i")
+def fixture_person_with_name_and_id_hal_i(person_with_name_and_id_hal_i_json):
+    """
+    Generate a person with first name, last name and ID_HAL_I in Pydantic format
+    :return: person with first name, last name and ID_HAL_I  in Pydantic format
+    """
+    return _person_from_json_data(person_with_name_and_id_hal_i_json)
+
+
 @pytest.fixture(name="person_with_name_and_idref_json")
 def fixture_person_with_name_and_idref_json(_base_path):
     """
-    Generate a person with only first name and last name in Json format
+    Generate a person with first name, last name and IDREF in Json format
     :param _base_path: test data directory base
-    :return: person with only first name and last name in Json format
+    :return: person with first name, last name and IDREF in Json format
     """
     return _json_from_file(_base_path, "person_with_name_and_idref")
+
+
+@pytest.fixture(name="person_with_name_and_id_hal_i_json")
+def fixture_person_with_name_and_id_hal_i_json(_base_path):
+    """
+    Generate a person with first name, last name and ID_HAL_I in Json format
+    :param _base_path: test data directory base
+    :return: person with first name, last name and ID_HAL_I in Json format
+    """
+    return _json_from_file(_base_path, "person_with_name_and_id_hal_i")
 
 
 @pytest.fixture(name="person_with_last_name_only")
 def fixture_person_with_last_name_only(person_with_last_name_only_json):
     """
-    Generate a person with first name, last name and IDREF in Pydantic format
-    :return: person with first name, last name and IDREF in Pydantic format
+    Generate a person with  last name only in Pydantic format
+    :param person_with_last_name_only_json: person with last name only in json format
+    :return: person with last name only in Pydantic format
     """
     return _person_from_json_data(person_with_last_name_only_json)
+
+
+@pytest.fixture(name="person_with_last_name_and_first_name")
+def fixture_person_with_last_name_and_first_name(
+    person_with_last_name_and_first_name_json,
+):
+    """
+    Generate a person with first name and last name in Pydantic format
+    :param person_with_last_name_and_first_name_json: person in json format
+    :return: person with first name and last name in Pydantic format
+    """
+    return _person_from_json_data(person_with_last_name_and_first_name_json)
 
 
 @pytest.fixture(name="person_with_last_name_only_json")
@@ -169,9 +201,19 @@ def fixture_person_with_last_name_only_json(_base_path):
     """
     Generate a person with only last name in JSON format
     :param _base_path: test data directory base
-    :return: person with only first name and last name in JSON format
+    :return: person with only last name in JSON format
     """
     return _json_from_file(_base_path, "person_with_last_name_only")
+
+
+@pytest.fixture(name="person_with_last_name_and_first_name_json")
+def fixture_person_with_last_name_and_first_name_json(_base_path):
+    """
+    Generate a person with first name and last name in JSON format
+    :param _base_path: test data directory base
+    :return: person with first name and last name in JSON format
+    """
+    return _json_from_file(_base_path, "person_with_last_name_and_first_name")
 
 
 def _person_from_json_data(input_data):
@@ -186,7 +228,7 @@ def _json_from_file(base_path, person):
 
 
 @pytest.fixture(autouse=True)
-def caplog(caplog: LogCaptureFixture):
+def caplog(caplog: LogCaptureFixture):  # pylint: disable=redefined-outer-name
     """
     Make pytest work with loguru. See:
     https://loguru.readthedocs.io/en/stable/resources/migration.html#making-things-work-with-pytest-and-caplog

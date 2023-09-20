@@ -1,0 +1,103 @@
+from enum import Enum
+from urllib.parse import urlencode
+
+
+class HalApiQueryBuilder:
+    """
+    This class provides an abstraction to build a query for the HAL API.
+    """
+
+    class QueryParameters(Enum):
+        """
+        Enum for named parameters used in main query
+        """
+
+        AUTH_ID_HAL_I = "authIdHal_i"
+
+    DEFAULT_DOC_TYPES = [
+        "ART",
+        "OUV",
+        "COUV",
+        "COMM",
+        "THESE",
+        "HDR",
+        "REPORT",
+        "NOTICE",
+        "PROCEEDINGS",
+    ]
+
+    DEFAULT_FIELDS = [
+        "docid",
+        "*_title_s",
+        "*_subTitle_s",
+        "*_abstract_s",
+        "*_keyword_s",
+        "authIdForm_i",
+        "authFullNameFormIDPersonIDIDHal_fs",
+        "docType_s",
+        "publicationDate_tdate",
+        "citationFull_s",
+        "citationRef_s",
+        "authIdHasStructure_fs",
+        "labStructId_i",
+    ]
+
+    DEFAULT_SORT_PARAMETER = "docid"
+    DEFAULT_SORT_DIRECTION = "asc"
+
+    def __init__(self) -> None:
+        self.identifier_type = None
+        self.identifier_value = None
+        self.fields = self.DEFAULT_FIELDS
+        self.doc_types = self.DEFAULT_DOC_TYPES
+        self.sort_parameter = self.DEFAULT_SORT_PARAMETER
+        self.sort_direction = self.DEFAULT_SORT_DIRECTION
+
+    def set_query(
+        self, identifier_type: QueryParameters, identifier_value: str
+    ) -> None:
+        """
+        Set the field name and value representing the entity for which the query is built.
+
+        :param identifier_type: the name of the field, from the QueryParameters enum
+        :param identifier_value: the value of the field
+        :return: None
+        """
+        self.identifier_type = identifier_type
+        self.identifier_value = identifier_value
+
+    def build_query(self):
+        """
+        Main building method, returns a query string for the HAL API.
+        :return: a query string
+        """
+        params = (
+            self._query_param()
+            | self._cursor_mark_param()
+            | self._sort_param()
+            | self._rows_param()
+            | self._filter_param()
+            | self._fields_param()
+        )
+        return urlencode(params)
+
+    def _query_param(self):
+        assert (
+            self.identifier_type is not None and self.identifier_value is not None
+        ), "Set the query parameters before building the query. "
+        return {"q": f"{self.identifier_type.value}:{self.identifier_value}"}
+
+    def _cursor_mark_param(self):
+        return {}
+
+    def _sort_param(self):
+        return {"sort": f"{self.sort_parameter} {self.sort_direction}"}
+
+    def _filter_param(self):
+        return {"fq": f"docType_s:({' OR '.join(self.doc_types)})"}
+
+    def _fields_param(self):
+        return {"fl": ",".join(self.fields)}
+
+    def _rows_param(self):
+        return {}

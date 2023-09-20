@@ -29,7 +29,7 @@ async def main() -> None:
                 "fields": {
                     "first_name": f"John - {i}",
                     "last_name": "Doe",
-                    "identifiers": [{"type": "orcid", "value": "0000-0002-1825-0097"}],
+                    "identifiers": [{"type": "id_hal_i", "value": "10227"}],
                 },
             }
             message = aio_pika.Message(

@@ -10,7 +10,7 @@ class IdentifierTypeEnum(str, Enum):
     """Identifier types"""
 
     IDREF = "idref"
-    ID_HAL = "id_hal"
+    ID_HAL_I = "id_hal_i"
     ORCID = "orcid"
 
 
