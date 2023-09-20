@@ -23,13 +23,13 @@ async def main() -> None:
             ExchangeType.TOPIC,
         )
 
-        for i in range(0, 1):
+        for _ in range(0, 1):
             payload = {
                 "type": "person",
                 "fields": {
-                    "first_name": f"John - {i}",
-                    "last_name": "Doe",
-                    "identifiers": [{"type": "id_hal_i", "value": "10227"}],
+                    "first_name": "Mary",
+                    "last_name": "Researcher",
+                    "identifiers": [{"type": "id_hal_i", "value": "744464"}],
                 },
             }
             message = aio_pika.Message(
