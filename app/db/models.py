@@ -28,7 +28,7 @@ class Retrieval(Base):
     __tablename__ = "retrievals"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    harvesters: Mapped[List["Harvesting"]] = relationship(
+    harvesting: Mapped[List["Harvesting"]] = relationship(
         back_populates="retrieval", cascade="all, delete"
     )
 
@@ -48,7 +48,7 @@ class Harvesting(Base):
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
     retrieval: Mapped["Retrieval"] = relationship(
-        back_populates="harvesters", lazy="raise"
+        back_populates="harvesting", lazy="raise"
     )
 
     state: Mapped[str] = mapped_column(
