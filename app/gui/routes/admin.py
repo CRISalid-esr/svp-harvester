@@ -14,17 +14,10 @@ async def overview(request: Request):
 
 
 @router.get("/retrieve")
-async def retrieve(request: Request):
+async def get_retrieve(request: Request):
     """Return the retrieve page in the admin gui"""
     return templates.TemplateResponse("retrieve.html.jinja",
                                       {"request": request, "page": "retrieve"})
-
-
-# @router.post("/retrieve")
-# async def retrieve(request: Request):
-#     """Get the data from the retrieve page in admin gui"""
-#     return templates.TemplateResponse("retrieve.html.jinja",
-#                                       {"request": request, "page": "retrieve"})
 
 
 @router.get("/list_endpoints/")
