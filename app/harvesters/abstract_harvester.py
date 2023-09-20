@@ -91,8 +91,13 @@ class AbstractHarvester(ABC):
                 new_references.append(reference)
         except ExternalApiError as error:
             await self.handle_error(error)
+        new_references_source_identifiers = [
+            ref.source_identifier for ref in new_references
+        ]
         deleted_references = [
-            ref for ref in previous_references if ref not in new_references
+            ref
+            for ref in previous_references
+            if ref.source_identifier not in new_references_source_identifiers
         ]
         for reference in deleted_references:
             reference_event = await ReferencesRecorder().register_deletion(

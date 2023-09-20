@@ -19,24 +19,16 @@ class HalReferencesConverter:
         :return: Reference object
         """
         new_ref = Reference()
-        map(
-            lambda title: new_ref.titles.append(  # pylint: disable=unnecessary-lambda
-                title
-            ),
-            self._titles(raw_data),
-        )
-        map(
-            lambda subtitle: new_ref.subtitles.append(  # pylint: disable=unnecessary-lambda
-                subtitle
-            ),
-            self._subtitles(raw_data),
-        )
-        map(
-            lambda subject: new_ref.subjects.append(  # pylint: disable=unnecessary-lambda
-                subject
-            ),
-            await self._subjects(raw_data),
-        )
+        [  # pylint: disable=expression-not-assigned
+            new_ref.titles.append(title) for title in self._titles(raw_data)
+        ]
+        [  # pylint: disable=expression-not-assigned
+            new_ref.subtitles.append(subtitle) for subtitle in self._subtitles(raw_data)
+        ]
+        [  # pylint: disable=expression-not-assigned
+            new_ref.subjects.append(subject)
+            async for subject in self._subjects(raw_data)
+        ]
         new_ref.hash = self._hash(raw_data)
         new_ref.source_identifier = raw_data["docid"]
         return new_ref

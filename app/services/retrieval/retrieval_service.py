@@ -4,7 +4,6 @@ from asyncio import Queue
 from typing import Annotated, Optional
 
 from fastapi import Depends
-from pydantic import BaseModel
 from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
@@ -14,6 +13,7 @@ from app.db.models import Retrieval, State, Entity
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
+from app.services.entities.entity_resolution_service import EntityResolutionService
 from app.settings.app_settings import AppSettings
 
 
@@ -38,10 +38,14 @@ class RetrievalService:
         self._build_harvesters()
         async with async_session() as session:
             async with session.begin():
-                self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    # TODO first check if entity is already in database
-                    EntityConverter(entity).to_db_model()
-                )
+                db_entity: Entity = EntityConverter(entity).to_db_model()
+                if existing_entity := await EntityResolutionService().already_exists(
+                    db_entity
+                ):
+                    db_entity = existing_entity
+                else:
+                    session.add(db_entity)
+                self.retrieval = await RetrievalDAO(session).create_retrieval(db_entity)
         return self.retrieval
 
     async def run(
@@ -51,7 +55,8 @@ class RetrievalService:
         Run the retrieval process by launching the harvesters
 
         :param result_queue: The queue to push the results to
-        :param in_background: If True, the harvesting will be launched in background (HTTP REST context)
+        :param in_background: If True, the harvesting will be launched in background
+            (HTTP REST context only)
         :return: None
         """
         assert self.retrieval is not None, "Retrieval must be registered before running"

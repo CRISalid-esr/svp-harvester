@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, Result, Row
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import (
@@ -10,6 +10,7 @@ from app.db.models import (
     ReferenceEvent,
     Concept,
     Label,
+    Identifier,
 )
 
 
@@ -56,7 +57,7 @@ class HarvestingDAO(AbstractDAO):
     """
 
     async def create_harvesting(
-        self, retrieval: Retrieval, harvester: str, state: State
+            self, retrieval: Retrieval, harvester: str, state: State
     ) -> Harvesting:
         """
         Create a harvesting for a retrieval
@@ -117,7 +118,7 @@ class ReferenceDAO(AbstractDAO):
     Data access object for references
     """
 
-    async def get_references_for_entity(self, entity_id: int) -> list[Reference]:
+    async def get_references_for_entity(self, entity_id: int) -> Result:
         """
         Get previously harvested references for an entity
 
@@ -131,10 +132,10 @@ class ReferenceDAO(AbstractDAO):
             .join(Retrieval)
             .where(Retrieval.entity_id == entity_id)
         )
-        return await self.db_session.execute(query)
+        return (await self.db_session.scalars(query)).unique()
 
     async def get_reference_by_source_identifier(
-        self, source_identifier: str, harvester: str
+            self, source_identifier: str, harvester: str
     ):
         """
         Get a reference by its source_identifier and the harvester it comes from
@@ -162,10 +163,10 @@ class ReferenceEventDAO:
         self.db_session = db_session
 
     async def create_reference_event(
-        self,
-        reference: Reference,
-        harvesting: Harvesting,
-        event_type: ReferenceEvent.Type,
+            self,
+            reference: Reference,
+            harvesting: Harvesting,
+            event_type: ReferenceEvent.Type,
     ) -> ReferenceEvent:
         """
         Create a reference event for a reference
@@ -183,8 +184,8 @@ class ReferenceEventDAO:
         return reference_event
 
     async def get_reference_event_by_id(
-        self, reference_event_id: int
-    ) -> ReferenceEvent:
+            self, reference_event_id: int
+    ) -> ReferenceEvent | None:
         """
         Get a reference event by its id
 
@@ -200,7 +201,7 @@ class ConceptDAO(AbstractDAO):
     """
 
     async def get_concept_by_label_and_language(
-        self, label: str, language: str
+            self, label: str, language: str
     ) -> Concept | None:
         """
         Get a concept by its label and language
@@ -215,3 +216,29 @@ class ConceptDAO(AbstractDAO):
             .where(Label.value == label, Label.language == language)
         )
         return await self.db_session.scalar(query)
+
+
+class IdentifierDAO(AbstractDAO):
+    """
+    Data access object for identifiers
+    """
+
+    async def get_identifier_and_entity_by_type_and_value(
+            self, identifier_type: str, identifier_value: str
+    ) -> Row[Identifier, Entity] | None:
+        """
+        Get an identifier (along with the associated entity) by its type and value
+
+        :param identifier_type: type of the identifier
+        :param identifier_value: value of the identifier
+        :return: the identifier or None if not found
+        """
+        query = (
+            select(Identifier, Entity)
+            .join(Entity)
+            .where(
+                Identifier.type == identifier_type, Identifier.value == identifier_value
+            )
+        )
+
+        return (await self.db_session.execute(query)).unique().first()
