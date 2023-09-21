@@ -1,0 +1,201 @@
+{% extends "./base.html.jinja" %}
+{#  faire  le tempating de base du mockup figma #}
+
+
+{% block head_title %} Collecte de données {% endblock %}
+{% block page_title %}Collecte de données{% endblock %}<
+{% block first_section_title %}Critères de recherche{% endblock %}
+{%  block first_section_content %}
+    <div class="row">
+        <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3">
+            <h5>Type d'identifiant</h5>
+
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-searcher-tab" data-bs-toggle="pill" data-bs-target="#pills-searcher" type="button" role="tab" aria-controls="pills-searcher" aria-selected="true">Chercheur</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill" data-bs-target="#pills-laboratory" type="button" role="tab" aria-controls="pills-laboratory" aria-selected="false">Structure de recherche</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-research-group-tab" data-bs-toggle="pill" data-bs-target="#pills-research-group" type="button" role="tab" aria-controls="pills-research-group" aria-selected="false">Institutions</button>
+              </li>
+            <!--
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
+              </li>
+            -->
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-searcher" role="tabpanel" aria-labelledby="pills-searcher-tab" tabindex="0">Searcher form variant</div>
+              <div class="tab-pane fade" id="pills-laboratory" role="tabpanel" aria-labelledby="pills-laboratory-tab" tabindex="0">Lab form variant</div>
+              <div class="tab-pane fade" id="pills-research-group" role="tabpanel" aria-labelledby="pills-research-group-tab" tabindex="0">Research group form variant</div>
+                <!--
+              <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
+              -->
+            </div>
+            <form>
+                <div class="input-group mt-3 mb-3">
+                    <div style="width: max-content;">
+                        <select class="form-select rounded-end-0" aria-label="Example select with button addon">
+                            <option selected disabled value="">Sélectionnez un type d'identifiant</option>
+                            <option value="hal">HAL</option>
+                            <option value="orcid">ORCID</option>
+                            <option value="arxiv">ARXIV</option>
+                            <option value="pubmed">PUBMED</option>
+                        </select>
+                    </div>
+                    <input type="text" class="form-control rounded-start-0" placeholder="Identifiant" required>
+                </div>
+
+                <div class="input-group mt-3 mb-3">
+                    <div style="width: max-content;">
+                        <select class="form-select rounded-end-0" aria-label="Example select with button addon">
+                            <option selected disabled value="">Sélectionnez un type d'identifiant</option>
+                            <option value="hal">HAL</option>
+                            <option value="orcid">ORCID</option>
+                            <option value="arxiv">ARXIV</option>
+                            <option value="pubmed">PUBMED</option>
+                        </select>
+                    </div>
+                    <input type="text" class="form-control rounded-0" placeholder="Identifiant">
+                    <button type="button" class="btn btn-danger rounded-start-0">Supprimer</button>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-sm mt-3 mb-3">Rajouter un identifiant</button>
+
+                <h5>Type de recherche</h5>
+                <span hidden>Type d'événement </span>
+                <select class="form-select mt-3 mb-3" aria-label="Default select example" required>
+                    <option selected disabled value=""></option>
+                    <option value="all">Recherche Globale</option>
+                    <option value="new">Rechercher les nouveautés</option>
+                    <option value="updated">Rechercher les mises à jour</option>
+                    <option value="unchanged">rechercher les correspondances</option>
+                </select>
+
+
+                <h5>Filtrer par type de notices</h5>
+
+                <select class="form-select mt-3 mb-3" aria-label="Default select example">
+                    <option selected disabled value=""></option>
+                    <option value="ART">Article dans une revue</option>
+                    <option value="COMM">Communication dans un congrès</option>
+                    <option value="POSTER">Poster de conférence</option>
+                    <option value="PROCEEDINGS">Recueil des communications</option>
+                    <option value="ISSUE">N°spécial de revue</option>
+                    <option value="OUV">Ouvrages</option>
+                    <option value="COUV">Chapitre d'ouvrage</option>
+                    <option value="BLOG">Article de blog scientifique</option>
+                    <option value="NOTICE">Notice d’encyclopédie ou de dictionnaire</option>
+                    <option value="TRAD">Traduction</option>
+                    <option value="PATENT">Brevet</option>
+                    <option value="BLOG">Article de blog scientifique</option>
+                    <option value="OTHER">Autre publication scientifique</option>
+                    <option value="UNDEFINED">Pré-publication, Document de travail</option>
+                    <option value="REPORT">Rapport</option>
+                    <option value="THESE">Thèse</option>
+                    <option value="HDR">HDR</option>
+                    <option value="LECTURE">Cours</option>
+                    <option value="MEM">Mémoire d'étudiant</option>
+                    <option value="IMG">Image</option>
+                    <option value="VIDEO">Vidéo</option>
+                    <option value="SON">Son</option>
+                    <option value="MAP">Carte</option>
+                    <option value="SOFTWARE">Son</option>
+                    <option value="SON">Logiciel</option>
+                    <option value="PRESCONF">Document associé à des manifestations scientifiques</option>
+                    <option value="CREPORT">Chapitre de rapport</option>
+                    <option value="ETABTHESE">Thèse d'établissement</option>
+                    <option value="MEMLIC">typdoc_MEMLIC</option>
+                    <option value="NOTE">Note de lecture</option>
+                    <option value="OTHERREPORT">Autre rapport, séminaire, workshop</option>
+                    <option value="REPACT">Rapport d'activité</option>
+                    <option value="SYNTHESE">Notes de synthèse</option>
+                </select>
+
+                <h5>Intervalle de recherche</h5>
+                <span></span>
+                <div class="input-group mt-3 mb-3">
+                    <input type="text" aria-label="Since date" class="form-control" placeholder="De: Optionnel">
+                    <input type="text" aria-label="Last date" class="form-control" placeholder="À: Optionnel">
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">Lancer la recherche</button>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-1 order-md-2 d-none d-md-block"></div>
+        <div class="col-md-3 order-md-3 col-12">
+            <div class="card bg-light mb-3 ms-auto">
+                <div class="card-header">État de la collecte</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            HAL:
+                            <div class="d-flex align-items-center">
+                                <strong role="status">Loading...</strong>
+                                <div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            ORCID:
+                            <div class="d-flex align-items-center">
+                                <strong role="status">Loading...</strong>
+                                <div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            ARXIV:
+                            <div class="d-flex align-items-center">
+                                <strong role="status">Loading...</strong>
+                                <div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            PUBMED:
+                            <div class="d-flex align-items-center">
+                                <strong role="status">Loading...</strong>
+                                <div class="spinner-border spinner-border-sm ms-auto" aria-hidden="true"></div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block second_section_title %} Résultats de la recherche {% endblock %}
+{% block second_section_content %}
+    <div class="table-responsive">
+                                <table class="table table-striped table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Source</th>
+                                        <th scope="col">Identifiant du document</th>
+                                        <th scope="col">Identifiant parent</th>
+                                        <th scope="col">Titre</th>
+                                        <th scope="col">Date de publication</th>
+                                        <th scope="col">Type</th>
+                                        <th scope="col">Statut</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>HAL</td>
+                                        <td>hal-04104161</td>
+                                        <td>david-reymond</td>
+                                        <td>Visualisations de la Science Ouverte (SoVisu)</td>
+                                        <td>23-05-2023</td>
+                                        <td>Logiciel</td>
+                                        <td>Nouveau</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+{% endblock %}
