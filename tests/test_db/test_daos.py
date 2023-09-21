@@ -95,3 +95,19 @@ async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model
     )
     harvesting_from_db = (await async_session.execute(stmt)).scalar_one()
     assert harvesting_from_db.harvester == "idref"
+
+
+@pytest.mark.asyncio
+async def test_update_harvesting_state(async_session: AsyncSession, retrieval_db_model):
+    """
+    Test that we can create a harvesting for a retrieval in the database.
+    :param async_session: async session fixture
+    :param retrieval_db_model: retrieval fixture
+    :return: None
+    """
+    dao = HarvestingDAO(async_session)
+    harvesting = await dao.create_harvesting(retrieval_db_model, "idref", state=State.RUNNING)
+    await async_session.commit()
+    await dao.update_harvesting_state(harvesting.id, State.COMPLETED)
+    harvesting_from_db = await dao.get_harvesting_by_id(harvesting.id)
+    assert harvesting_from_db.state == State.COMPLETED.value

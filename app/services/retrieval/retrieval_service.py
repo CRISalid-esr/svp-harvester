@@ -21,9 +21,9 @@ class RetrievalService:
     """Main harvesters orchestration service"""
 
     def __init__(
-        self,
-        settings: Annotated[AppSettings, Depends(get_app_settings)],
-        background_tasks: BackgroundTasks = None,
+            self,
+            settings: Annotated[AppSettings, Depends(get_app_settings)],
+            background_tasks: BackgroundTasks = None,
     ):
         """Init RetrievalService class"""
         self.settings = settings
@@ -39,8 +39,8 @@ class RetrievalService:
         async with async_session() as session:
             async with session.begin():
                 db_entity: Entity = EntityConverter(entity).to_db_model()
-                if existing_entity := await EntityResolutionService().already_exists(
-                    db_entity
+                if existing_entity := await EntityResolutionService(session).already_exists(
+                        db_entity
                 ):
                     db_entity = existing_entity
                 else:
@@ -49,7 +49,7 @@ class RetrievalService:
         return self.retrieval
 
     async def run(
-        self, result_queue: Queue = None, in_background: bool = False
+            self, result_queue: Queue = None, in_background: bool = False
     ) -> None:
         """
         Run the retrieval process by launching the harvesters
@@ -78,35 +78,36 @@ class RetrievalService:
 
     @staticmethod
     def _harvester_factory(
-        harvester_module: str, harvester_class: str
+            harvester_module: str, harvester_class: str
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
     async def _launch_harvesters(
-        self, retrieval: Retrieval, result_queue: Queue = None
+            self, retrieval: Retrieval, result_queue: Queue = None
     ):
         pending_harvesters = []
         harversting_tasks_index = {}
         async with async_session() as session:
-            for harvester_name, harvester in self.harvesters.items():
-                if not harvester.is_relevant(self.entity):
-                    print(f"{harvester_name} while not run for {self.entity}")
-                    continue
-                harvesting = await HarvestingDAO(session).create_harvesting(
-                    retrieval=retrieval,
-                    harvester=harvester_name,
-                    state=State.RUNNING,
-                )
-                if result_queue is not None:
-                    harvester.set_result_queue(result_queue)
-                harvester.set_entity_id(self.retrieval.entity_id)
-                harvester.set_harvesting_id(harvesting.id)
-                task = asyncio.create_task(
-                    harvester.run(),
-                    name=f"{harvester_name}_harvester_retrieval_{retrieval.id}",
-                )
-                pending_harvesters.append(task)
-                harversting_tasks_index[harvesting.id] = task
+            async with session.begin():
+                for harvester_name, harvester in self.harvesters.items():
+                    if not harvester.is_relevant(self.entity):
+                        print(f"{harvester_name} while not run for {self.entity}")
+                        continue
+                    harvesting = await HarvestingDAO(session).create_harvesting(
+                        retrieval=retrieval,
+                        harvester=harvester_name,
+                        state=State.RUNNING,
+                    )
+                    if result_queue is not None:
+                        harvester.set_result_queue(result_queue)
+                    harvester.set_entity_id(self.retrieval.entity_id)
+                    harvester.set_harvesting_id(harvesting.id)
+                    task = asyncio.create_task(
+                        harvester.run(),
+                        name=f"{harvester_name}_harvester_retrieval_{retrieval.id}",
+                    )
+                    pending_harvesters.append(task)
+                    harversting_tasks_index[harvesting.id] = task
 
         while pending_harvesters:
             done_harvesters, pending_harvesters = await asyncio.wait(

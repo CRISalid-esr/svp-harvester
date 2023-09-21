@@ -70,7 +70,6 @@ class HarvestingDAO(AbstractDAO):
         harvesting = Harvesting(harvester=harvester, state=state.value)
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
-        await self.db_session.commit()
         return harvesting
 
     async def get_harvesting_by_id(self, harvesting_id) -> Harvesting | None:
@@ -180,7 +179,6 @@ class ReferenceEventDAO:
         reference_event.reference = reference
         reference_event.harvesting = harvesting
         self.db_session.add(reference_event)
-        await self.db_session.commit()
         return reference_event
 
     async def get_reference_event_by_id(
