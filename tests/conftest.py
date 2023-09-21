@@ -90,7 +90,7 @@ def fixture_person_without_identifiers_json(_base_path):
     :param _base_path: test data directory base
     :return: person with only first name and last name in JSON format
     """
-    return _json_from_file(_base_path, "person_without_identifier")
+    return _person_json_data_from_file(_base_path, "person_without_identifier")
 
 
 @pytest.fixture(name="person_with_name_and_idref_db_model")
@@ -106,9 +106,22 @@ def fixture_person_with_name_and_idref_db_model():
     )
 
 
+@pytest.fixture(name="person_with_name_and_id_hal_i_db_model")
+def fixture_person_with_name_and_id_hal_i_db_model():
+    """
+    Generate a person with first name, last name and Id_Hal_i in DB model format
+    :return: person with first name, last name and Id_Hal_i  in DB model format
+    """
+    return DbPerson(
+        first_name="John",
+        last_name="Doe",
+        identifiers=[DbIdentifier(type=IdentifierTypeEnum.ID_HAL_I, value="123456789")],
+    )
+
+
 @pytest_asyncio.fixture(name="retrieval_db_model")
 async def fixture_retrieval_db_model(
-    async_session, person_with_name_and_idref_db_model
+        async_session, person_with_name_and_idref_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and IDREF in DB model format
@@ -119,6 +132,22 @@ async def fixture_retrieval_db_model(
     """
     return await RetrievalDAO(async_session).create_retrieval(
         person_with_name_and_idref_db_model
+    )
+
+
+@pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i")
+async def fixture_retrieval_db_model_for_person_with_id_hal_i(
+        async_session, person_with_name_and_id_hal_i_db_model
+):
+    """
+    Generate a retrieval with a person with first name, last name and ID_HAL_I in DB model format
+
+    :param async_session: async db session
+    :param person_with_name_and_id_hal_i_db_model: person  in DB model format
+    :return: retrieval with a person with first name, last name and ID_HAL_I  in DB model format
+    """
+    return await RetrievalDAO(async_session).create_retrieval(
+        person_with_name_and_id_hal_i_db_model
     )
 
 
@@ -133,6 +162,21 @@ async def fixture_harvesting_db_model(async_session, retrieval_db_model):
     """
     return await HarvestingDAO(async_session).create_harvesting(
         retrieval_db_model, "idref", State.RUNNING
+    )
+
+
+@pytest_asyncio.fixture(name="hal_harvesting_db_model")
+async def fixture_hal_harvesting_db_model(async_session,
+                                          retrieval_db_model_for_person_with_id_hal_i):
+    """
+    Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
+
+    :param async_session: async db session
+    :param retrieval_db_model_for_person_with_id_hal_i: retrieval in DB model format
+    :return:  Hal harvesting in DB model format
+    """
+    return await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model_for_person_with_id_hal_i, "hal", State.RUNNING
     )
 
 
@@ -161,7 +205,7 @@ def fixture_person_with_name_and_idref_json(_base_path):
     :param _base_path: test data directory base
     :return: person with first name, last name and IDREF in Json format
     """
-    return _json_from_file(_base_path, "person_with_name_and_idref")
+    return _person_json_data_from_file(_base_path, "person_with_name_and_idref")
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_i_json")
@@ -171,7 +215,7 @@ def fixture_person_with_name_and_id_hal_i_json(_base_path):
     :param _base_path: test data directory base
     :return: person with first name, last name and ID_HAL_I in Json format
     """
-    return _json_from_file(_base_path, "person_with_name_and_id_hal_i")
+    return _person_json_data_from_file(_base_path, "person_with_name_and_id_hal_i")
 
 
 @pytest.fixture(name="person_with_last_name_only")
@@ -186,7 +230,7 @@ def fixture_person_with_last_name_only(person_with_last_name_only_json):
 
 @pytest.fixture(name="person_with_last_name_and_first_name")
 def fixture_person_with_last_name_and_first_name(
-    person_with_last_name_and_first_name_json,
+        person_with_last_name_and_first_name_json,
 ):
     """
     Generate a person with first name and last name in Pydantic format
@@ -203,7 +247,7 @@ def fixture_person_with_last_name_only_json(_base_path):
     :param _base_path: test data directory base
     :return: person with only last name in JSON format
     """
-    return _json_from_file(_base_path, "person_with_last_name_only")
+    return _person_json_data_from_file(_base_path, "person_with_last_name_only")
 
 
 @pytest.fixture(name="person_with_last_name_and_first_name_json")
@@ -213,15 +257,35 @@ def fixture_person_with_last_name_and_first_name_json(_base_path):
     :param _base_path: test data directory base
     :return: person with first name and last name in JSON format
     """
-    return _json_from_file(_base_path, "person_with_last_name_and_first_name")
+    return _person_json_data_from_file(_base_path, "person_with_last_name_and_first_name")
 
 
 def _person_from_json_data(input_data):
     return PydanticPerson(**input_data)
 
 
-def _json_from_file(base_path, person):
-    file = pathlib.Path(base_path / f"data/people/{person}.json")
+def _person_json_data_from_file(base_path, person):
+    file_path = f"data/people/{person}.json"
+    return _json_data_from_file(base_path, file_path)
+
+
+@pytest.fixture(name="hal_api_docs_for_one_researcher")
+def fixture_hal_api_docs_for_one_researcher(_base_path):
+    """
+    Generate a HAL API response for one researcher in JSON format
+    :param _base_path: test data directory base
+    :return: HAL API response for one researcher in JSON format
+    """
+    return _hal_api_json_data_from_file(_base_path, "docs_for_one_researcher")
+
+
+def _hal_api_json_data_from_file(base_path, file_name):
+    file_path = f"data/hal_api/{file_name}.json"
+    return _json_data_from_file(base_path, file_path)
+
+
+def _json_data_from_file(base_path, file_path):
+    file = pathlib.Path(base_path / file_path)
     with open(file, encoding="utf-8") as json_file:
         input_data = json_file.read()
     return json.loads(input_data)

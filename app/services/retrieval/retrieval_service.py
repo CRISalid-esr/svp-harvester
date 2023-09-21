@@ -86,7 +86,7 @@ class RetrievalService:
             self, retrieval: Retrieval, result_queue: Queue = None
     ):
         pending_harvesters = []
-        harversting_tasks_index = {}
+        harvesting_tasks_index = {}
         async with async_session() as session:
             async with session.begin():
                 for harvester_name, harvester in self.harvesters.items():
@@ -107,7 +107,7 @@ class RetrievalService:
                         name=f"{harvester_name}_harvester_retrieval_{retrieval.id}",
                     )
                     pending_harvesters.append(task)
-                    harversting_tasks_index[harvesting.id] = task
+                    harvesting_tasks_index[harvesting.id] = task
 
         while pending_harvesters:
             done_harvesters, pending_harvesters = await asyncio.wait(
