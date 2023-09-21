@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.daos import RetrievalDAO, HarvestingDAO
+from app.db.daos import RetrievalDAO, HarvestingDAO, EntityDAO
 from app.db.models import (
     Person as DbPerson,
     Identifier as DbIdentifier,
@@ -111,3 +111,19 @@ async def test_update_harvesting_state(async_session: AsyncSession, retrieval_db
     await dao.update_harvesting_state(harvesting.id, State.COMPLETED)
     harvesting_from_db = await dao.get_harvesting_by_id(harvesting.id)
     assert harvesting_from_db.state == State.COMPLETED.value
+
+@pytest.mark.asyncio
+async def test_get_entity_by_id( async_session: AsyncSession):
+    """
+    Test that we can get an entity by its id.
+    :param async_session: async session fixture
+    :return: None
+    """
+    person = DbPerson(first_name="John", last_name="Doe")
+    async_session.add(person)
+    await async_session.commit()
+    dao = EntityDAO(async_session)
+    entity_from_db = await dao.get_entity_by_id(person.id)
+    assert isinstance(entity_from_db, DbPerson)
+    assert entity_from_db.first_name == "John"
+    assert entity_from_db.last_name == "Doe"

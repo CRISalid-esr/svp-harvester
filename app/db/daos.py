@@ -102,7 +102,7 @@ class EntityDAO(AbstractDAO):
     Data access object for abstract entities
     """
 
-    async def get_entity_by_id(self, entity_id: int) -> Harvesting | None:
+    async def get_entity_by_id(self, entity_id: int) -> Entity | None:
         """
         Get an entity by its id
 
