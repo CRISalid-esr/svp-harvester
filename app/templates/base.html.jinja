@@ -9,6 +9,7 @@
     {% block head %}
         <title>{% block head_title %}  head_title {% endblock %} - SVP</title>
     {% endblock %}
+    <script src="/static/js/main.js"></script>
 </head>
 <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -35,14 +36,14 @@
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link {% if page == "overview" %} active {% endif %}"  aria-current="page" href="/admin">
+                                <a {% if page == "overview" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin">
                                     <span data-feather="home"></span>
                                     Overview
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    scripta odio commune qui
+                                <a {% if page == "retrieve" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %}  href="admin/retrieve">
+                                    Collecte de données
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -233,6 +234,5 @@
             </main>
         </div>
     </div>
-<script src="static/js/main.js"></script>
 </body>
 </html>
