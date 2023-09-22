@@ -5,6 +5,7 @@ from unittest.mock import Mock, AsyncMock
 import aio_pika
 import pytest
 from aio_pika import Exchange, Channel, Connection, DeliveryMode
+from sqlalchemy.ext.asyncio import AsyncSession
 from yarl import URL
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
@@ -17,8 +18,11 @@ def mock_message():
         yield exch
 
 
-async def test_publish_harvesting_status(mocked_message: Mock, harvesting_db_model):
+async def test_publish_harvesting_status(async_session: AsyncSession,
+                                         mocked_message: Mock, harvesting_db_model):
     """Test that a message is published to the AMQP queue when the publish method is called."""
+    async_session.add(harvesting_db_model)
+    await async_session.commit()
     mock_exchange = Exchange(
         Channel(Connection(URL("http://foobar"))), "tests_amqp_queue"
     )
