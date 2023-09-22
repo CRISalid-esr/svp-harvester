@@ -21,13 +21,21 @@ class Person(Entity):
     @model_validator(mode="before")
     @classmethod
     def _check_minimal_information(cls, data: dict, _: ValidationInfo) -> dict:
-        # there is at least one identifier
+        if identifier := data.get("identifiers"):
+            # check that each identifier is a hash with type and value
+            assert all(
+                isinstance(i, dict) and i.get("type") and i.get("value")
+                for i in identifier
+            ), "Each identifier must be a hash with type and value"
+
+        # check that there is at least one identifier
         assert any(
             # pylint: disable=cell-var-from-loop
-            list(filter(lambda h: h["type"] == t.value, data.get("identifiers") or []))
+            list(filter(lambda h: h.get("type", None)
+                                  == t.value, data.get("identifiers", []) or []))
             for t in IdentifierTypeEnum
         ) or all(
-            # or there are both first name and last name
+            # or that there are both first name and last name
             [data.get("last_name"), data.get("first_name")]
         ), "At least one identifier or the entire name must be provided"
         return data
