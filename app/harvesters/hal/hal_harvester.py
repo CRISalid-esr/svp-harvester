@@ -23,7 +23,7 @@ class HalHarvester(AbstractHarvester):
                 identifier_type=HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I,
                 identifier_value=id_hal_i,
             )
-        async for doc in HalApiClient().fetch(builder.build_query()):
+        async for doc in HalApiClient().fetch(builder.build()):
             yield doc
 
     def is_relevant(self, entity: Entity) -> bool:

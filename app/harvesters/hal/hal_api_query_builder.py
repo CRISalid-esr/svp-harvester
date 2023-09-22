@@ -63,10 +63,12 @@ class HalApiQueryBuilder:
         :param identifier_value: the value of the field
         :return: None
         """
+        # check that identifier_type is a valid QueryParameters
+        assert identifier_type in self.QueryParameters, "Invalid identifier type"
         self.identifier_type = identifier_type
         self.identifier_value = identifier_value
 
-    def build_query(self):
+    def build(self) -> str:
         """
         Main building method, returns a query string for the HAL API.
         :return: a query string
