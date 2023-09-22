@@ -12,8 +12,7 @@ class Form {
     }
 
     addListeners() {
-        console.log(this.rootElement)
-        this.rootElement.addEventListener("submit", this.handleSubmit.bind(this))
+        this.rootElement.addEventListener("submit", this.handleSubmit.bind(this));
     }
 
     handleSubmit(event) {
