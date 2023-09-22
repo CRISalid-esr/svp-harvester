@@ -7,7 +7,8 @@
 {% block first_section_title %}Critères de recherche{% endblock %}
 {%  block first_section_content %}
     <div class="row">
-        <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3">
+        <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
+            <form id="form-element">
             <h5>Type d'identifiant</h5>
 
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -34,7 +35,7 @@
               <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
               -->
             </div>
-            <form>
+
                 <div class="input-group mt-3 mb-3">
                     <div style="width: max-content;">
                         <select class="form-select rounded-end-0" aria-label="Example select with button addon">
@@ -121,7 +122,7 @@
                     <input type="text" aria-label="Last date" class="form-control" placeholder="À: Optionnel">
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary">Lancer la recherche</button>
+                    <button type="submit" class="btn btn-primary" id="run-retrieval-btn">Lancer la recherche</button>
                 </div>
 
             </form>
