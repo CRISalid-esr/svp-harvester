@@ -21,15 +21,15 @@ actors, structures and research projects.
 
 The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research
 entity" (actor, structure or research project) and to return a list of references to publications
-that are associated with the research entity :
+that are associated with the research entity.
+
+The list of accepted identifiers is not exhaustive as the service is extensible by design.
 
 - Idref
 - Idhal
 - ORCID
 - ResearcherID
 - ...
-
-- The list is not exhaustive and the service is highly extensible by design.
 
 The references are obtained through a set of modular harvesters that are designed to query various scholarly publication
 databases and repositories :
@@ -46,9 +46,12 @@ databases and repositories :
 
 ![svp-harvester overall behavior](img/svp-harvester-overall-behavior.png?raw=true "Overall behavior")
 
+Requests and results are registered in the database for monitoring purposes. The harvesting history may be consulted
+through the web interface.
+
 ### Input
 
-The research entities mays be submitted to the harverster in 4 way :
+The research entities may be submitted to the harvester in 4 ways :
 
 - Manually, through the web interface
 - By querying the REST API asynchronoulsy
@@ -60,7 +63,10 @@ The research entities mays be submitted to the harverster in 4 way :
 The structure of the JSON output complies with
 the [SciencePlus publications model](https://documentation.abes.fr/aidescienceplusabes/index.html#ModeleDonnees).
 
-## Development ressources (installation outside of a containerized environment)
+Please note that references deduplication is out of scope of SoVisu+ Harvester and should be handled by another SoVisu+
+component.
+
+## Technical overview
 
 ### Used technologies
 
@@ -80,6 +86,8 @@ Client side (admin interface) :
 - Webpack
 - Bootstrap
 - Jest
+
+## Development ressources (installation outside of a containerized environment)
 
 ### Database configuration
 
@@ -159,6 +167,7 @@ npm install
 npm run build
 
 ```
+
 or
 
 ```bash
@@ -173,7 +182,7 @@ From project root :
 APP_ENV=DEV uvicorn app.main:app --reload
 ```
 
-or 
+or
 
 ```bash
 APP_ENV=DEV python3 app/main.py 
