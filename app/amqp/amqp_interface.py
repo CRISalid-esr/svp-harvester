@@ -31,8 +31,9 @@ class AMQPInterface:
 
     async def listen(self):
         """Listen to AMQP queue"""
-        await self._attach_message_processing_workers()
         await self._connect()
+        await self._declare_exchange()
+        await self._attach_message_processing_workers()
         await self._bind_queue()
         await self._listen_to_messages()
 
@@ -76,12 +77,18 @@ class AMQPInterface:
                     async with message.process():
                         await self.inner_tasks_queue.put(message.body)
 
-    async def _bind_queue(self) -> None:
-        # Bind service message queue to publication exchange
+    async def _declare_exchange(self) -> None:
+        """
+        Declare the publication exchange
+        :return: None
+        """
         self.pika_exchange = await self.pika_channel.declare_exchange(
             self.EXCHANGE,
             ExchangeType.TOPIC,
         )
+
+    async def _bind_queue(self) -> None:
+        # Bind service message queue to publication exchange
         await self.pika_channel.set_qos(prefetch_count=100)
         self.pika_queue = await self.pika_channel.declare_queue(
             self.settings.amqp_queue_name, durable=True

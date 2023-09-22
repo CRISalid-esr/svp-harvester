@@ -1,5 +1,7 @@
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
+from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.idref_harvester import IdrefHarvester
+from app.harvesters.idref.idref_references_converter import IdrefReferencesConverter
 from app.settings.app_settings import AppSettings
 
 
@@ -9,4 +11,9 @@ class IdrefHarvesterFactory(AbstractHarvesterFactory):
     @classmethod
     def harvester(cls, settings: AppSettings) -> IdrefHarvester:
         """Return IdrefHarvester instance"""
-        return IdrefHarvester(settings)
+        return IdrefHarvester(settings=settings, converter=cls.converter())
+
+    @classmethod
+    def converter(cls) -> AbstractReferencesConverter:
+        """Return IdrefReferencesConverter instance"""
+        return IdrefReferencesConverter()

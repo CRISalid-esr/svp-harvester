@@ -12,10 +12,11 @@ class AMQPHarvestingMessageFactory(AbstractAMQPMessageFactory):
         return "event.references.harvesting.state"
 
     async def _build_payload(self) -> dict[str, Any]:
+        assert "id" in self.content, "Harvesting id is required"
         async with async_session() as session:
             async with session.begin():
                 harvesting = await HarvestingDAO(session).get_harvesting_by_id(
-                    self.content["id"]
+                    self.content.get("id")
                 )
                 return {
                     "harvesting": harvesting.id,

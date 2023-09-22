@@ -2,6 +2,9 @@ import aio_pika
 from aio_pika import DeliveryMode
 
 from app.amqp.amqp_harvesting_message_factory import AMQPHarvestingMessageFactory
+from app.amqp.amqp_reference_event_message_factory import (
+    AMQPReferenceEventMessageFactory,
+)
 
 DEFAULT_RESULT_TIMEOUT = 600
 
@@ -32,4 +35,6 @@ class AMQPMessagePublisher:
     async def _build_message(content) -> tuple[str | None, str | None]:
         if content.get("type") == "Harvesting":
             return await AMQPHarvestingMessageFactory(content).build_message()
+        if content.get("type") == "ReferenceEvent":
+            return await AMQPReferenceEventMessageFactory(content).build_message()
         return None, None

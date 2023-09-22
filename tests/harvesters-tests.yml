@@ -4,3 +4,6 @@
 - name: scanr
   module: app.harvesters.scanr.scanr_harvester_factory
   class: ScanrHarvesterFactory
+- name: hal
+  module: app.harvesters.hal.hal_harvester_factory
+  class: HalHarvesterFactory
