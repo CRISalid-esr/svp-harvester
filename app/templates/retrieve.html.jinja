@@ -6,7 +6,7 @@
 {% block page_title %}Collecte de données{% endblock %}<
 {% block first_section_title %}Critères de recherche{% endblock %}
 {%  block first_section_content %}
-    <div class="row">
+    <div class="row" id="retrieve-page-content">
         <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
             <form id="form-element">
             <h5>Type d'identifiant</h5>
@@ -35,39 +35,15 @@
               <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
               -->
             </div>
+                <div id="identifier-fields-container"></div>
 
-                <div class="input-group mt-3 mb-3">
-                    <div style="width: max-content;">
-                        <select class="form-select rounded-end-0" aria-label="Example select with button addon">
-                            <option selected disabled value="">Sélectionnez un type d'identifiant</option>
-                            <option value="hal">HAL</option>
-                            <option value="orcid">ORCID</option>
-                            <option value="arxiv">ARXIV</option>
-                            <option value="pubmed">PUBMED</option>
-                        </select>
-                    </div>
-                    <input type="text" class="form-control rounded-start-0" placeholder="Identifiant" required>
-                </div>
 
-                <div class="input-group mt-3 mb-3">
-                    <div style="width: max-content;">
-                        <select class="form-select rounded-end-0" aria-label="Example select with button addon">
-                            <option selected disabled value="">Sélectionnez un type d'identifiant</option>
-                            <option value="hal">HAL</option>
-                            <option value="orcid">ORCID</option>
-                            <option value="arxiv">ARXIV</option>
-                            <option value="pubmed">PUBMED</option>
-                        </select>
-                    </div>
-                    <input type="text" class="form-control rounded-0" placeholder="Identifiant">
-                    <button type="button" class="btn btn-danger rounded-start-0">Supprimer</button>
-                </div>
 
-                <button type="button" class="btn btn-primary btn-sm mt-3 mb-3">Rajouter un identifiant</button>
+
 
                 <h5>Type de recherche</h5>
                 <span hidden>Type d'événement </span>
-                <select class="form-select mt-3 mb-3" aria-label="Default select example" required>
+                <select class="form-select mt-3 mb-3" aria-label="Default select example">
                     <option selected disabled value=""></option>
                     <option value="all">Recherche Globale</option>
                     <option value="new">Rechercher les nouveautés</option>

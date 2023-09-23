@@ -5,7 +5,6 @@ class Client {
 
     constructor(env) {
         this.env = env;
-        console.log(this.apiUrl());
     }
 
     async postRetrieval(identifiers) {

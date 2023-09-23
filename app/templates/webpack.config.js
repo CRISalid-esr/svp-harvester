@@ -7,7 +7,7 @@ module.exports = {
         path: path.resolve(__dirname, '../static/js')
     },
     resolve: {
-        fallback: {"crypto": false,  "path": false,  "os": false },
+        fallback: {"crypto": false, "path": false, "os": false, "fs": false}
     },
     module: {
         rules: [
