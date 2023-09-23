@@ -9,15 +9,25 @@ router = APIRouter()
 @router.get("")
 async def overview(request: Request):
     """Return the overview page in the admin gui"""
-    return templates.TemplateResponse("index.html.jinja",
-                                      {"request": request, "page": "overview"})
+    return templates.TemplateResponse(
+        "index.html.jinja", {"request": request, "page": "overview"}
+    )
 
 
 @router.get("/retrieve")
 async def get_retrieve(request: Request):
     """Return the retrieve page in the admin gui"""
-    return templates.TemplateResponse("retrieve.html.jinja",
-                                      {"request": request, "page": "retrieve"})
+    return templates.TemplateResponse(
+        "retrieve.html.jinja", {"request": request, "page": "retrieve"}
+    )
+
+
+@router.get("/history")
+async def get_history(request: Request):
+    """Return the history page in the admin gui"""
+    return templates.TemplateResponse(
+        "history.html.jinja", {"request": request, "page": "history"}
+    )
 
 
 @router.get("/list_endpoints/")
