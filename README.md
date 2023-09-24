@@ -89,6 +89,17 @@ Client side (admin interface) :
 
 ## Development ressources (installation outside of a containerized environment)
 
+### Basic requirements
+
+Install Postgresql, RabbitMQ and the web server you want to use as a front-end.
+
+Note that poetry is not required as requirements are exported to requirements.txt.
+
+Clone the projet, copy .env.example to .env and .test.env and update them. All the values defined in the app/settings
+classes (AppSettings, TestSettings, DevSettings...)
+can be overriden either through .env files or through environment variables (the latter takes precedence over the
+former).
+
 ### Database configuration
 
 #### Database creation
@@ -118,8 +129,15 @@ DB_PASSWORD="your_secret"
 
 The project uses [alembic](https://alembic.sqlalchemy.org/en/latest/) for schema versioning and migration.
 
+At development time, migrations are generated automatically from the models (see app/models and alembic/versions).
+
 ```bash
 APP_ENV=DEV alembic revision --autogenerate -m "Explain what you did to the model"
+```
+
+At deployment time, migrations are applied to the database.
+
+```bash
 APP_ENV=DEV alembic upgrade head
 ``` 
 
@@ -151,6 +169,8 @@ coverage report --show-missing
 ### Assets compilation
 
 The project uses [webpack](https://webpack.js.org/) for assets compilation.
+
+Update source/js/env.js file before compilation to match your environment. 
 
 From app/templates :
 
