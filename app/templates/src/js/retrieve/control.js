@@ -6,6 +6,7 @@ class Control {
         this.form = form;
         this.rootElement = rootElement;
         this.client = client;
+        this.retrievalUrl = null;
         this.addSubmitListener();
     }
 
@@ -23,10 +24,24 @@ class Control {
                 value: identifier.identifierValue
             }
         });
-
         this.client.postRetrieval({identifiers: identifiers})
             .then((response) => {
-                console.log(response);
+                this.retrievalUrl = response.data.retrieval_url;
+                this.pollHarvestingState();
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    pollHarvestingState() {
+        this.client.getHarvestingState(this.retrievalUrl)
+            .then((response) => {
+                console.log(response.data);
+                if (response.data.state === "PENDING") {
+                    setTimeout(this.pollHarvestingState, 1000);
+                } else if (response.data.state === "SUCCESS") {
+                    this.form.setHarvestingState(response.data);
+                }
             }).catch((error) => {
             console.log(error);
         });

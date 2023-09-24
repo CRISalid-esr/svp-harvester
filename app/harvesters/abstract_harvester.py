@@ -77,6 +77,9 @@ class AbstractHarvester(ABC):
         new_references = []
         try:
             async for result in self.fetch_results():
+                # How to return nothing from an async generator ?
+                if result is None or result == "end":
+                    break
                 reference = await self.converter.convert(result)
                 reference_event: ReferenceEvent = await ReferencesRecorder().register(
                     harvesting=await self.get_harvesting(), new_ref=reference
