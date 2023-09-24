@@ -170,7 +170,8 @@ coverage report --show-missing
 
 The project uses [webpack](https://webpack.js.org/) for assets compilation.
 
-Update source/js/env.js file before compilation to match your environment. 
+Copy app/templates/src/js/env.js.example to app/templates/src/js/env.js and update it with your values before compiling
+the assets.
 
 From app/templates :
 
