@@ -1,9 +1,10 @@
 class Control {
 
 
-    constructor(env, form, rootElement, client) {
+    constructor(env, form, harvestingDashboard, rootElement, client) {
         this.env = env;
         this.form = form;
+        this.harvestingDashboard = harvestingDashboard;
         this.rootElement = rootElement;
         this.client = client;
         this.retrievalUrl = null;
@@ -36,15 +37,24 @@ class Control {
     pollHarvestingState() {
         this.client.getHarvestingState(this.retrievalUrl)
             .then((response) => {
-                console.log(response.data);
-                if (response.data.state === "PENDING") {
-                    setTimeout(this.pollHarvestingState, 1000);
-                } else if (response.data.state === "SUCCESS") {
-                    this.form.setHarvestingState(response.data);
+                const retrieval = response.data
+                this.harvestingDashboard.updateWidgets(retrieval.harvestings);
+                if (!this.finished(retrieval)) {
+                    setTimeout(this.pollHarvestingState.bind(this), 1000);
                 }
             }).catch((error) => {
             console.log(error);
         });
+    }
+
+    finished(retrieval) {
+        let completed = true;
+        for (const harvesting of retrieval.harvestings) {
+            if (["completed", "failed"].indexOf(harvesting.state) === -1) {
+                completed = false;
+            }
+        }
+        return completed;
     }
 
 
