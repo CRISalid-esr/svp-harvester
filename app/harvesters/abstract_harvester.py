@@ -77,6 +77,9 @@ class AbstractHarvester(ABC):
         new_references = []
         try:
             async for result in self.fetch_results():
+                # How to return nothing from an async generator ?
+                if result is None or result == "end":
+                    break
                 reference = await self.converter.convert(result)
                 reference_event: ReferenceEvent = await ReferencesRecorder().register(
                     harvesting=await self.get_harvesting(), new_ref=reference
@@ -89,29 +92,29 @@ class AbstractHarvester(ABC):
                     }
                 )
                 new_references.append(reference)
+            new_references_source_identifiers = [
+                ref.source_identifier for ref in new_references
+            ]
+            deleted_references = [
+                ref
+                for ref in previous_references
+                if ref.source_identifier not in new_references_source_identifiers
+            ]
+            for reference in deleted_references:
+                reference_event = await ReferencesRecorder().register_deletion(
+                    harvesting=await self.get_harvesting(), old_ref=reference
+                )
+                await self._put_in_queue(
+                    {
+                        "type": "ReferenceEvent",
+                        "id": reference_event.id,
+                        "change": ReferenceEvent.Type.DELETED.value,
+                    }
+                )
+            await self._update_harvesting_state(State.COMPLETED)
+            await self._notify_harvesting_state()
         except ExternalApiError as error:
             await self.handle_error(error)
-        new_references_source_identifiers = [
-            ref.source_identifier for ref in new_references
-        ]
-        deleted_references = [
-            ref
-            for ref in previous_references
-            if ref.source_identifier not in new_references_source_identifiers
-        ]
-        for reference in deleted_references:
-            reference_event = await ReferencesRecorder().register_deletion(
-                harvesting=await self.get_harvesting(), old_ref=reference
-            )
-            await self._put_in_queue(
-                {
-                    "type": "ReferenceEvent",
-                    "id": reference_event.id,
-                    "change": ReferenceEvent.Type.DELETED.value,
-                }
-            )
-        await self._update_harvesting_state(State.COMPLETED)
-        await self._notify_harvesting_state()
 
     async def _notify_harvesting_state(self):
         await self._put_in_queue(

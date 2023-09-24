@@ -28,8 +28,8 @@ class Retrieval(Base):
     __tablename__ = "retrievals"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    harvesting: Mapped[List["Harvesting"]] = relationship(
-        back_populates="retrieval", cascade="all, delete"
+    harvestings: Mapped[List["Harvesting"]] = relationship(
+        back_populates="retrieval", cascade="all, delete", lazy="raise"
     )
 
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
@@ -48,7 +48,7 @@ class Harvesting(Base):
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
     retrieval: Mapped["Retrieval"] = relationship(
-        back_populates="harvesting", lazy="raise"
+        back_populates="harvestings", lazy="raise"
     )
 
     state: Mapped[str] = mapped_column(
@@ -56,7 +56,7 @@ class Harvesting(Base):
     )
 
     reference_events: Mapped[List["ReferenceEvent"]] = relationship(
-        back_populates="harvesting", cascade="all, delete"
+        back_populates="harvesting", cascade="all, delete", lazy="raise"
     )
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
