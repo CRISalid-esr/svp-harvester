@@ -1,5 +1,8 @@
 // Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
+// from https://stackoverflow.com/a/74992564
+$bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
 
 body {
   font-size: .875rem;

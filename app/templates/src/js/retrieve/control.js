@@ -1,11 +1,13 @@
 class Control {
 
 
-    constructor(env, form, rootElement, client) {
+    constructor(env, form, harvestingDashboard, rootElement, client) {
         this.env = env;
         this.form = form;
+        this.harvestingDashboard = harvestingDashboard;
         this.rootElement = rootElement;
         this.client = client;
+        this.retrievalUrl = null;
         this.addSubmitListener();
     }
 
@@ -23,13 +25,36 @@ class Control {
                 value: identifier.identifierValue
             }
         });
-
         this.client.postRetrieval({identifiers: identifiers})
             .then((response) => {
-                console.log(response);
+                this.retrievalUrl = response.data.retrieval_url;
+                this.pollHarvestingState();
             }).catch((error) => {
             console.log(error);
         });
+    }
+
+    pollHarvestingState() {
+        this.client.getHarvestingState(this.retrievalUrl)
+            .then((response) => {
+                const retrieval = response.data
+                this.harvestingDashboard.updateWidgets(retrieval.harvestings);
+                if (!this.finished(retrieval)) {
+                    setTimeout(this.pollHarvestingState.bind(this), 1000);
+                }
+            }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    finished(retrieval) {
+        let completed = true;
+        for (const harvesting of retrieval.harvestings) {
+            if (["completed", "failed"].indexOf(harvesting.state) === -1) {
+                completed = false;
+            }
+        }
+        return completed;
     }
 
 

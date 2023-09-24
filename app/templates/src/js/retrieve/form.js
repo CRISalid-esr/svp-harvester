@@ -11,6 +11,12 @@ class Form {
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
         this.renewAddIdentifierControl();
         this.addSubmitListener();
+        this.addIdentifierField(
+            {
+                "identifierType": "id_hal_i",
+                "identifierValue": "10227"
+            }
+        )
     }
 
     addSubmitListener() {
@@ -69,6 +75,7 @@ class Form {
     }
 
     addIdentifierField(content) {
+        console.log(content)
         content = {...content, identifierLabel: this.env.IDENTIFIERS[content.identifierType]};
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);

@@ -34,6 +34,13 @@ module.exports = {
                         loader: 'sass-loader'
                     }
                 ]
+            },
+            // from https://stackoverflow.com/a/74992564
+            {
+                rules: [{
+                    test: /\.woff2?$/,
+                    type: "asset/resource",
+                }]
             }
         ]
     }

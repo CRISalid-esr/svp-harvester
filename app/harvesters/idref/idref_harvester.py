@@ -11,11 +11,9 @@ class IdrefHarvester(AbstractHarvester):
     Harvester for data.idref.fl
     """
 
-    async def run(self) -> None:
-        await asyncio.sleep(random.randint(1, 3) / 10)
-
     async def fetch_results(self):
-        yield
+        await asyncio.sleep(random.randint(1, 20) / 10)
+        yield "end"
 
     def is_relevant(self, entity: BaseModel) -> bool:
         return True

@@ -8,6 +8,7 @@ from app.api.dependencies.references import build_person_from_fields
 from app.db.daos import RetrievalDAO
 from app.db.session import async_session
 from app.models.people import Person
+from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
 
 router = APIRouter()
@@ -40,7 +41,7 @@ async def create_retrieval_async(
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person,
     request: Request,
-) -> str:
+) -> JSONResponse:
     """
     Fetch references for a person in an in_background way
     :param person: person built from fields
@@ -49,16 +50,19 @@ async def create_retrieval_async(
     retrieval = await retrieval_service.register(person)
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
-    return f"{request.url}/{retrieval.id}"
+    return JSONResponse(
+        {"retrieval_id": retrieval.id, "retrieval_url": f"{request.url}/{retrieval.id}"}
+    )
 
 
 @router.get(
     "/retrieval/{retrieval_id}",
     name="references:get-retrieval-result",
+    response_model=RetrievalModel,
 )
 async def get_retrieval_result(
     retrieval_id: int,
-) -> JSONResponse:
+) -> RetrievalModel:
     """
     Get result of a retrieval in an asynchronous way
 
@@ -66,6 +70,7 @@ async def get_retrieval_result(
     :return: json representation of the references
     """
     async with async_session() as session:
-        async with session.begin():
-            retrieval = await RetrievalDAO(session).get_retrieval_by_id(retrieval_id)
-    return retrieval
+        retrieval = await RetrievalDAO(session).get_complete_retrieval_by_id(
+            retrieval_id
+        )
+    return RetrievalModel.model_validate(retrieval)
