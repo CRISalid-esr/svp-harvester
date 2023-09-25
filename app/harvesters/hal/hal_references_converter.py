@@ -41,7 +41,7 @@ class HalReferencesConverter:
 
     def _subtitles(self, raw_data):
         for value, language in self._values_from_field_pattern(
-            r".*_subtitle_s$", raw_data
+            r".*_subTitle_s$", raw_data
         ):
             yield Subtitle(value=value, language=language)
 
