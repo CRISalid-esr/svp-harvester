@@ -1,15 +1,17 @@
 """ References routes"""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
 from app.api.dependencies.references import build_person_from_fields
+from app.config import get_app_settings
 from app.db.daos import RetrievalDAO
 from app.db.session import async_session
 from app.models.people import Person
 from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
+from app.settings.app_settings import AppSettings
 
 router = APIRouter()
 
@@ -38,12 +40,14 @@ async def create_retrieval_sync(
     name="references:create-retrieval-for-entity-async",
 )
 async def create_retrieval_async(
+    settings: Annotated[AppSettings, Depends(get_app_settings)],
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person,
-    request: Request,
 ) -> JSONResponse:
     """
     Fetch references for a person in an in_background way
+    :param settings: app settings
+    :param retrieval_service: retrieval service
     :param person: person built from fields
     :return: json response
     """
@@ -51,7 +55,12 @@ async def create_retrieval_async(
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
     return JSONResponse(
-        {"retrieval_id": retrieval.id, "retrieval_url": f"{request.url}/{retrieval.id}"}
+        {
+            "retrieval_id": retrieval.id,
+            "retrieval_url": f"{settings.api_host}"
+            f"{settings.api_prefix}/{settings.api_version}"
+            f"/references/retrieval/{retrieval.id}",
+        }
     )
 
 

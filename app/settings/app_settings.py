@@ -25,6 +25,7 @@ class AppSettings(BaseSettings):
     app_env: AppEnvTypes = AppEnvTypes.PROD
     debug: bool = False
 
+    api_host: str = "http://localhost:8000"
     api_prefix: str = "/api"
     api_version: str = "v0"
 
