@@ -88,6 +88,7 @@ async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model
     """
     dao = HarvestingDAO(async_session)
     await dao.create_harvesting(retrieval_db_model, "idref", state=State.RUNNING)
+    await async_session.commit()
     stmt = (
         select(Harvesting)
         .join(Harvesting.retrieval)
@@ -106,14 +107,17 @@ async def test_update_harvesting_state(async_session: AsyncSession, retrieval_db
     :return: None
     """
     dao = HarvestingDAO(async_session)
-    harvesting = await dao.create_harvesting(retrieval_db_model, "idref", state=State.RUNNING)
+    harvesting = await dao.create_harvesting(
+        retrieval_db_model, "idref", state=State.RUNNING
+    )
     await async_session.commit()
     await dao.update_harvesting_state(harvesting.id, State.COMPLETED)
     harvesting_from_db = await dao.get_harvesting_by_id(harvesting.id)
     assert harvesting_from_db.state == State.COMPLETED.value
 
+
 @pytest.mark.asyncio
-async def test_get_entity_by_id( async_session: AsyncSession):
+async def test_get_entity_by_id(async_session: AsyncSession):
     """
     Test that we can get an entity by its id.
     :param async_session: async session fixture

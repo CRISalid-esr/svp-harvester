@@ -72,7 +72,7 @@ class AbstractHarvester(ABC):
         await self._update_harvesting_state(State.RUNNING)
         await self._notify_harvesting_state()
         previous_references = await ReferencesRecorder().get_previous_references(
-            self.entity_id
+            self.entity_id, (await self.get_harvesting()).harvester
         )
         new_references = []
         try:

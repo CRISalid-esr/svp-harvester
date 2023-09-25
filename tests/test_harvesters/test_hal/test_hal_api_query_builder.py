@@ -43,6 +43,7 @@ def test_build_query(hal_query_builder):
         "fl": ["field1,field2,field3"],
         "fq": ["docType_s:(ART OR OUV OR COUV)"],
         "q": ["authIdHal_i:test_value"],
+        "rows": ["1000"],
         "sort": ["test_key_parameter dsc"],
     }
 

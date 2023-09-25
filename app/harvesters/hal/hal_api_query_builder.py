@@ -44,6 +44,7 @@ class HalApiQueryBuilder:
 
     DEFAULT_SORT_PARAMETER = "docid"
     DEFAULT_SORT_DIRECTION = "asc"
+    DEFAULT_ROWS = 1000
 
     def __init__(self) -> None:
         self.identifier_type = None
@@ -102,4 +103,4 @@ class HalApiQueryBuilder:
         return {"fl": ",".join(self.fields)}
 
     def _rows_param(self):
-        return {}
+        return {"rows": self.DEFAULT_ROWS}
