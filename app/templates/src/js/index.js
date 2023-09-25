@@ -2,7 +2,6 @@ import env from "./env"
 import Client from "./common/client"
 import RetrievePage from "./retrieve/retrieve_page"
 
-
 const init = function () {
     const pageIdentifier = document.getElementById("page-identifier").value;
     switch (pageIdentifier) {
