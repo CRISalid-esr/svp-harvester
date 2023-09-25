@@ -13,6 +13,8 @@ class Reference(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    source_identifier: str
+
     id: int
 
     titles: List[LiteralFields] = []

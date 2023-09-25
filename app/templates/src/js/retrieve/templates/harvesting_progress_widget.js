@@ -1,7 +1,7 @@
 const harvesting_progress_widget = `<li class="list-group-item">
                             <%= harvester %>
                             <div class="clearfix">
-                                <strong role="status" class="float-start"><%= state %></strong>
+                                <strong role="status" class="float-start"><%= state %> (<%= reference_events.length %> results)</strong>
                                 <% if(state=="running"){ %>
                                     <div class="spinner-border spinner-border-sm ms-auto float-end" aria-hidden="true"></div>
                                  <% } else if(state=="completed") { %>  

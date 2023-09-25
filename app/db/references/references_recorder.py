@@ -69,7 +69,9 @@ class ReferencesRecorder:
                     event_type=ReferenceEvent.Type.DELETED,
                 )
 
-    async def get_previous_references(self, entity_id) -> list[Reference]:
+    async def get_previous_references(
+        self, entity_id: int, harvester: str
+    ) -> list[Reference]:
         """
         Get the previously harvested references for an entity
 
@@ -78,7 +80,9 @@ class ReferencesRecorder:
         """
         async with async_session() as session:
             async with session.begin():
-                return await ReferenceDAO(session).get_references_for_entity(entity_id)
+                return await ReferenceDAO(
+                    session
+                ).get_references_for_entity_and_harvester(entity_id, harvester)
 
     async def _create_reference(self, new_ref: Reference):
         async with async_session() as session:

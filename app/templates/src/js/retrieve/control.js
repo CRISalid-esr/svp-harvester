@@ -1,10 +1,11 @@
 class Control {
 
 
-    constructor(env, form, harvestingDashboard, rootElement, client) {
+    constructor(env, form, harvestingDashboard, referencesTable, rootElement, client) {
         this.env = env;
         this.form = form;
         this.harvestingDashboard = harvestingDashboard;
+        this.referencesTable = referencesTable;
         this.rootElement = rootElement;
         this.client = client;
         this.retrievalUrl = null;
@@ -39,8 +40,10 @@ class Control {
             .then((response) => {
                 const retrieval = response.data
                 this.harvestingDashboard.updateWidgets(retrieval.harvestings);
+                this.referencesTable.updateTable(retrieval.harvestings);
+
                 if (!this.finished(retrieval)) {
-                    setTimeout(this.pollHarvestingState.bind(this), 1000);
+                    setTimeout(this.pollHarvestingState.bind(this), 500);
                 }
             }).catch((error) => {
             console.log(error);

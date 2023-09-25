@@ -121,7 +121,7 @@ def fixture_person_with_name_and_id_hal_i_db_model():
 
 @pytest_asyncio.fixture(name="retrieval_db_model")
 async def fixture_retrieval_db_model(
-        async_session, person_with_name_and_idref_db_model
+    async_session, person_with_name_and_idref_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and IDREF in DB model format
@@ -137,7 +137,7 @@ async def fixture_retrieval_db_model(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i")
 async def fixture_retrieval_db_model_for_person_with_id_hal_i(
-        async_session, person_with_name_and_id_hal_i_db_model
+    async_session, person_with_name_and_id_hal_i_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and ID_HAL_I in DB model format
@@ -166,8 +166,9 @@ async def fixture_harvesting_db_model(async_session, retrieval_db_model):
 
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model")
-async def fixture_hal_harvesting_db_model(async_session,
-                                          retrieval_db_model_for_person_with_id_hal_i):
+async def fixture_hal_harvesting_db_model(
+    async_session, retrieval_db_model_for_person_with_id_hal_i
+):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
 
@@ -230,7 +231,7 @@ def fixture_person_with_last_name_only(person_with_last_name_only_json):
 
 @pytest.fixture(name="person_with_last_name_and_first_name")
 def fixture_person_with_last_name_and_first_name(
-        person_with_last_name_and_first_name_json,
+    person_with_last_name_and_first_name_json,
 ):
     """
     Generate a person with first name and last name in Pydantic format
@@ -257,7 +258,9 @@ def fixture_person_with_last_name_and_first_name_json(_base_path):
     :param _base_path: test data directory base
     :return: person with first name and last name in JSON format
     """
-    return _person_json_data_from_file(_base_path, "person_with_last_name_and_first_name")
+    return _person_json_data_from_file(
+        _base_path, "person_with_last_name_and_first_name"
+    )
 
 
 def _person_from_json_data(input_data):

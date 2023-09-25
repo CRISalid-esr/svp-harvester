@@ -1,8 +1,6 @@
 {% extends "./base.html.jinja" %}
-{#  faire  le tempating de base du mockup figma #}
 
-
-{% block head_title %} Collecte de données {% endblock %}
+{% block head_title %}Collecte de données{% endblock %}
 {% block page_title %}Collecte de données{% endblock %}<
 {% block first_section_title %}Critères de recherche{% endblock %}
 {%  block first_section_content %}
@@ -122,30 +120,9 @@
 
 {% block second_section_title %} Résultats de la recherche {% endblock %}
 {% block second_section_content %}
-    <div class="table-responsive">
-                                <table class="table table-striped table-sm">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Source</th>
-                                        <th scope="col">Identifiant du document</th>
-                                        <th scope="col">Identifiant parent</th>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Date de publication</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Statut</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>HAL</td>
-                                        <td>hal-04104161</td>
-                                        <td>david-reymond</td>
-                                        <td>Visualisations de la Science Ouverte (SoVisu)</td>
-                                        <td>23-05-2023</td>
-                                        <td>Logiciel</td>
-                                        <td>Nouveau</td>
-                                    </tr>
-                                    </tbody>
+    <div>
+                                <table id="references-table">
+
                                 </table>
                             </div>
 {% endblock %}

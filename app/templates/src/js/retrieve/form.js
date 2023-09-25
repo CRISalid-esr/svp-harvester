@@ -38,13 +38,20 @@ class Form {
         for (const eventType of ["input"]) {
             this.addIdentifierControlElement.addEventListener(eventType, this.updateAddIdentifierButton.bind(this));
         }
+        const self = this;
+        this.addIdentifierControlElement.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                self.handleAddIdentifierAction();
+            }
+        });
         this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
         this.handleAddIdentifierButton();
     }
 
     handleAddIdentifierButton() {
         this.addIdentifierButton = this.formElement.querySelector("#add-identifier-button");
-        this.addIdentifierButton.addEventListener("click", this.handleAddIdentifierButtonClick.bind(this));
+        this.addIdentifierButton.addEventListener("click", this.handleAddIdentifierAction.bind(this));
         this.updateAddIdentifierButton()
     }
 
@@ -70,7 +77,7 @@ class Form {
         return {identifierType: identifierType, identifierValue: identifierValue};
     }
 
-    handleAddIdentifierButtonClick() {
+    handleAddIdentifierAction() {
         this.addIdentifierField(this.getIdentifierFieldContent(this.addIdentifierControlElement))
     }
 

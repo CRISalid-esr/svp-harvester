@@ -39,7 +39,6 @@ class RetrievalDAO(AbstractDAO):
         retrieval = Retrieval()
         retrieval.entity = entity
         self.db_session.add(retrieval)
-        await self.db_session.flush()
         return retrieval
 
     async def get_retrieval_by_id(self, retrieval_id: int) -> Retrieval | None:
@@ -136,11 +135,14 @@ class ReferenceDAO(AbstractDAO):
     Data access object for references
     """
 
-    async def get_references_for_entity(self, entity_id: int) -> ScalarResult:
+    async def get_references_for_entity_and_harvester(
+        self, entity_id: int, harvester: str
+    ) -> ScalarResult:
         """
         Get previously harvested references for an entity
 
         :param entity_id: id of the entity
+        :param harvester: harvester name of the harvesting
         :return: list of references
         """
         query = (
@@ -148,7 +150,9 @@ class ReferenceDAO(AbstractDAO):
             .join(ReferenceEvent)
             .join(Harvesting)
             .join(Retrieval)
+            .where(ReferenceEvent.type != ReferenceEvent.Type.DELETED.value)
             .where(Retrieval.entity_id == entity_id)
+            .where(Harvesting.harvester == harvester)
         )
         return (await self.db_session.scalars(query)).unique()
 
