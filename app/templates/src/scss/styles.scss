@@ -3,6 +3,8 @@
 // from https://stackoverflow.com/a/74992564
 $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 @import "~bootstrap-icons/font/bootstrap-icons.scss";
+@import '~datatables.net-dt/css/jquery.dataTables.css';
+@import '../../node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.min.css';
 
 body {
   font-size: .875rem;
@@ -103,4 +105,11 @@ body {
 .form-control-dark:focus {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+}
+
+#references-table {
+  pre {
+    background-color: #000000;
+    margin-left: 3em;
+  }
 }

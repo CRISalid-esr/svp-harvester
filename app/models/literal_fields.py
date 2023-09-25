@@ -10,6 +10,5 @@ class LiteralFields(BaseModel):
 
     id: int
 
-    type: str
     value: str
     language: str
