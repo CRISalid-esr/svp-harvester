@@ -12,7 +12,7 @@
     <script src="/static/js/main.js"></script>
 </head>
 <body>
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <header class="navbar sticky-top navbar-dark bg-primary flex-md-nowrap p-0 shadow">
         {% block header %}
             <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/admin">SoVisu Plus Harvester</a>
             <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
@@ -30,8 +30,8 @@
     </header>
 
     <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="row gx-0">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-info sidebar collapse">
                 {% block menu %}
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
@@ -78,26 +78,30 @@
                 {% endblock %}
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="col-md-9 ms-sm-auto col-lg-10">
                 {% block main %}
                     {%  block first_section %}
-                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom  bg-info ps-md-2 ms-lg-n2">
                                 <h1>{% block page_title %} page_title {% endblock %}</h1>
                             </div>
+
+                        <div class="ps-md-2">
                         <h2>{% block first_section_title %} first_section_title {% endblock %}</h2>
                         {% block first_section_content %}
                             <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
                         {% endblock %}
+                        </div>
 
                     {% endblock %}
 
                     {%  block second_section %}
+                    <div class="bg-light ms-md-n2 ps-md-2 mt-2">
                         <h2>{% block second_section_title %}second_section_title {% endblock %}</h2>
 
                         {% block second_section_content %}
 
                         {% endblock %}
-
+                    </div>
                     {% endblock %}
 
                 {% endblock %}
