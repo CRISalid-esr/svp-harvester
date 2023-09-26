@@ -1,7 +1,22 @@
+import gettext
+import os
+
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 
-templates = Jinja2Templates(directory="./app/templates")
+current_locale = "fr_FR"
+locale_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "locales")
+gnu_translations = gettext.translation(
+    domain="admin", localedir=locale_path, languages=[current_locale]
+)
+gnu_translations.install()
+
+templates = Jinja2Templates(
+    directory="./app/templates",
+    extensions=["jinja2.ext.i18n"],
+)
+env = templates.env
+env.install_gettext_translations(gnu_translations, newstyle=True)
 
 router = APIRouter()
 
