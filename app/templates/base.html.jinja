@@ -21,6 +21,10 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+            <select class="ms-4" data-width="fit" onchange="window.location.href = '?locale=' + this.value;">
+                <option {% if locale == "en_US" %}selected{% endif %} value="en_US">English</option>
+                <option {% if locale == "fr_FR" -%}selected{% endif %}   value="fr_FR">Français</option>
+            </select>
             <div class="navbar-nav">
                 <div class="nav-item text-nowrap">
                     <a class="nav-link px-3" href="#">Sign out</a>
@@ -36,19 +40,19 @@
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a {% if page == "overview" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin">
+                                <a {% if page == "overview" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %} href="/admin?locale={{ locale }}">
                                     <span data-feather="home"></span>
-                                    Accueil
+                                    {% trans %}Admin dashboard : overview{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a {% if page == "retrieve" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %}  href="/admin/retrieve">
-                                    Collecte de données
+                                <a {% if page == "retrieve" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %}  href="/admin/retrieve?locale={{ locale }}">
+                                    {% trans %}Data retrieval{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a {% if page == "history" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %}  href="/admin/history">
-                                    Historique des collectes
+                                <a {% if page == "history" %}class="nav-link  active"  aria-current="page" {% else %}class="nav-link" {% endif %}  href="/admin/history?locale={{ locale }}">
+                                    {% trans %}Harvesting history{% endtrans %}
                                 </a>
                             </li>
 

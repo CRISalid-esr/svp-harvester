@@ -1,22 +1,8 @@
-import gettext
-import os
-
 from fastapi import APIRouter, Request
-from fastapi.templating import Jinja2Templates
 
-current_locale = "fr_FR"
-locale_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "locales")
-gnu_translations = gettext.translation(
-    domain="admin", localedir=locale_path, languages=[current_locale]
-)
-gnu_translations.install()
+from app.gui.routes.templating import get_templating_engine
 
-templates = Jinja2Templates(
-    directory="./app/templates",
-    extensions=["jinja2.ext.i18n"],
-)
-env = templates.env
-env.install_gettext_translations(gnu_translations, newstyle=True)
+I18N_DOMAIN = "admin"
 
 router = APIRouter()
 
@@ -24,24 +10,26 @@ router = APIRouter()
 @router.get("")
 async def overview(request: Request):
     """Return the overview page in the admin gui"""
-    return templates.TemplateResponse(
-        "index.html.jinja", {"request": request, "page": "overview"}
+    return get_templating_engine("admin", request.state.locale).TemplateResponse(
+        "index.html.jinja", {"request": request, "page": "overview", "locale": request.state.locale}
     )
 
 
 @router.get("/retrieve")
 async def get_retrieve(request: Request):
     """Return the retrieve page in the admin gui"""
-    return templates.TemplateResponse(
-        "retrieve.html.jinja", {"request": request, "page": "retrieve"}
+    return get_templating_engine("admin", request.state.locale).TemplateResponse(
+        "retrieve.html.jinja",
+        {"request": request, "page": "retrieve", "locale": request.state.locale}
     )
 
 
 @router.get("/history")
 async def get_history(request: Request):
     """Return the history page in the admin gui"""
-    return templates.TemplateResponse(
-        "history.html.jinja", {"request": request, "page": "history"}
+    return get_templating_engine(I18N_DOMAIN, request.state.locale).TemplateResponse(
+        "history.html.jinja",
+        {"request": request, "page": "history", "locale": request.state.locale}
     )
 
 

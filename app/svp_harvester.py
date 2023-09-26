@@ -1,15 +1,16 @@
 import asyncio
 
 from fastapi import FastAPI
+from loguru import logger
 from pydantic import ValidationError
 from starlette.staticfiles import StaticFiles
-from loguru import logger
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.config import get_app_settings
 from app.gui.routes.gui import router as gui_router
+from app.i18n.i18n_middleware import i18n_middleware
 from app.logging.logging_middleware import log_middleware
 
 
@@ -44,6 +45,8 @@ class SvpHarvester(FastAPI):
 
         self.add_exception_handler(ValidationError, http422_error_handler)
         self.middleware("http")(log_middleware)
+        self.middleware("http")(i18n_middleware)
+
         self.add_event_handler("startup", self.open_rabbitmq_connexion)
         self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
 
