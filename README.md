@@ -208,3 +208,31 @@ or
 ```bash
 APP_ENV=DEV python3 app/main.py 
 ```
+
+# Templates I18N
+
+To update the translation files, run the following command from the project root :
+
+```bash
+pybabel extract --mapping babel.cfg --output-file=locales/admin.pot ./app/templates/
+```
+
+To init a po file for a new language :
+
+```bash
+pybabel init --domain=admin --input-file=locales/admin.pot --output-dir=locales --locale=NEW_one
+```
+
+To update the .po files with the new strings :
+
+```bash
+pybabel update --domain=admin --input-file=locales/admin.pot --output-dir=locales
+```
+
+To compile the .po files to .mo files :
+
+```bash
+pybabel compile --domain=admin --directory=locales --use-fuzzy
+```
+
+See [Babel commad line documentation](https://babel.pocoo.org/en/latest/cmdline.html) for more information.
