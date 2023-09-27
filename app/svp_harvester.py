@@ -10,12 +10,14 @@ from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.config import get_app_settings
 from app.gui.routes.gui import router as gui_router
-from app.i18n.i18n_middleware import i18n_middleware
-from app.logging.logging_middleware import log_middleware
 
 
 class SvpHarvester(FastAPI):
     """Main application, routing logic, middlewares and startup/shutdown events"""
+
+    # All middlewares have been disabled due to Faspi/Starlette bug
+    # https://stackoverflow.com/questions/70043665/fastapi-unvicorn-request-hanging-during-invocation-of-call-next-path-operation
+    # https://stackoverflow.com/questions/68830274/blocked-code-while-using-middleware-and-dependency-injections-to-log-requests-in
 
     def __init__(self):
         super().__init__()
@@ -44,8 +46,6 @@ class SvpHarvester(FastAPI):
         )
 
         self.add_exception_handler(ValidationError, http422_error_handler)
-        self.middleware("http")(log_middleware)
-        self.middleware("http")(i18n_middleware)
 
         self.add_event_handler("startup", self.open_rabbitmq_connexion)
         self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
