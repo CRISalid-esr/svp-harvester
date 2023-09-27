@@ -19,6 +19,7 @@ sqlalchemy = "^2.0.20"
 dataclasses-json = "^0.6.0"
 loguru = "^0.7.2"
 aio-pika = "^9.3.0"
+babel = "^2.12.1"
 
 [tool.poetry.group.development.dependencies]
 black = "^23.7.0"
