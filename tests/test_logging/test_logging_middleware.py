@@ -1,10 +1,12 @@
 """Test the references API."""
 import logging
 
+import pytest
 from _pytest.logging import LogCaptureFixture
 from fastapi.testclient import TestClient
 
 
+@pytest.mark.skip(reason="Middleware has been disabled")
 def test_request_with_unprocessable_entity_logged(
     test_client: TestClient, caplog: LogCaptureFixture
 ):
@@ -20,6 +22,7 @@ def test_request_with_unprocessable_entity_logged(
     assert any("HTTP/1.1 422 Unprocessable Entity" in m for m in messages) is True
 
 
+@pytest.mark.skip(reason="Middleware has been disabled")
 def test_valid_request_logged(
     test_client: TestClient,
     person_with_name_and_idref_json,
