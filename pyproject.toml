@@ -9,7 +9,7 @@ packages = [{ include = "svp_harvester" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = { extras = ["all"], version = "^0.100.0" }
+fastapi = {version = "0.103.1", extras = ["all"]}
 pytest-asyncio = "^0.21.1"
 amqp-mock = "^0.5.1"
 aiofiles = "^23.2.1"
