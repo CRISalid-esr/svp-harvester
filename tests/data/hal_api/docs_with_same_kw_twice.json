@@ -1,0 +1,109 @@
+{
+  "response": {
+    "numFound": 97,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "1299757",
+        "citationRef_s": "<i>Journal of International Economics</i>, 2015, 97 (1), pp.29-44. <a target=\"_blank\" href=\"https://dx.doi.org/10.1016/j.jinteco.2015.04.008\">&#x27E8;10.1016/j.jinteco.2015.04.008&#x27E9;</a>",
+        "citationFull_s": "Lionel Fontagné, Gianluca Orefice, Roberta Piermartini, Nadia Rocha. Product Standards and Margins of Trade: Firm-Level Evidence Product Standards and Margins of Trade: Firm-Level Evidence. <i>Journal of International Economics</i>, 2015, 97 (1), pp.29-44. <a target=\"_blank\" href=\"https://dx.doi.org/10.1016/j.jinteco.2015.04.008\">&#x27E8;10.1016/j.jinteco.2015.04.008&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-01299757\">&#x27E8;hal-01299757&#x27E9;</a>",
+        "en_title_s": [
+          "Product Standards and Margins of Trade: Firm-Level Evidence Product Standards and Margins of Trade: Firm-Level Evidence"
+        ],
+        "en_keyword_s": [
+          "International trade"
+        ],
+        "en_abstract_s": [
+          "This paper considers the heterogenous trade effects of restrictive Sanitary and Phyto-Sanitary (SPS) measures on exporters of different sizes, and the channels via which aggregate exports fall: firm participation, export values and pricing strategies. We do so by matching a detailed panel of French firm exports to a new database of SPS regulatory measures that have been raised as of concern in the dedicated committees of the WTO. By using specific trade concerns to capture the restrictiveness of product standards, we focus only on standards that are perceived as trade barriers. We analyze their effects on three trade-related outcomes: (i) the probability to export and to exit the export market (the firm-product extensive margin), (ii) the value exported (the firm-product intensive margin), and (iii) export prices. We find that SPS concerns discourage the presence of exporters in SPS-imposing foreign markets. We also find a negative effect of SPS imposition on the intensive margins of trade. These negative effects SPS are attenuated in larger firms."
+        ],
+        "authIdForm_i": [
+          6574,
+          951488,
+          1139367,
+          1145946
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Lionel Fontagné_FacetSep_6574-6113_FacetSep_lionelfontagne",
+          "Gianluca Orefice_FacetSep_951488-0_FacetSep_",
+          "Roberta Piermartini_FacetSep_1139367-0_FacetSep_",
+          "Nadia Rocha_FacetSep_1145946-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_301309_FacetSep_Paris School of Economics",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_59704_FacetSep_École normale supérieure - Paris",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_301545_FacetSep_École des Ponts ParisTech",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_577435_FacetSep_Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_15080_FacetSep_Centre d'économie de la Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_39083_FacetSep_Centre d'Etudes Prospectives et d'Informations Internationales",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_309406_FacetSep_Centre d'analyse stratégique",
+          "951488-0_FacetSep_Gianluca Orefice_JoinSep_379791_FacetSep_Centre d'Etudes Prospectives et d'Informations Internationales",
+          "1139367-0_FacetSep_Roberta Piermartini_JoinSep_313299_FacetSep_WTO",
+          "1145946-0_FacetSep_Nadia Rocha_JoinSep_313299_FacetSep_WTO"
+        ],
+        "labStructId_i": [
+          15080,
+          39083
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2015-09-01T00:00:00Z"
+      },
+      {
+        "docid": "1416567",
+        "citationRef_s": "<i>The World Economy</i>, 2017, 40 (1), pp.36-55. <a target=\"_blank\" href=\"https://dx.doi.org/10.1111/twec.12479\">&#x27E8;10.1111/twec.12479&#x27E9;</a>",
+        "citationFull_s": "Lionel Fontagné, Jean Fouré, Alexander Keck. Simulating World Trade in the Decades Ahead: Driving Forces and Policy Implications. <i>The World Economy</i>, 2017, 40 (1), pp.36-55. <a target=\"_blank\" href=\"https://dx.doi.org/10.1111/twec.12479\">&#x27E8;10.1111/twec.12479&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-01416567\">&#x27E8;hal-01416567&#x27E9;</a>",
+        "en_title_s": [
+          "Simulating World Trade in the Decades Ahead: Driving Forces and Policy Implications"
+        ],
+        "en_keyword_s": [
+          "International trade",
+          "Financial crisis",
+          "International trade"
+        ],
+        "en_abstract_s": [
+          "Notwithstanding the current slowdown, the geography and composition of international trade are changing fast. We link a macroeconomic growth model and sectoral computable general equilibrium framework in order to project the world economy forward to the year 2035 and assess to what extent current trends in trade are expected to continue. Constructing fully traceable scenarios based on assumptions grounded in the literature, we are also able to isolate the relative impact of key economic drivers. We find that the stakes for developing countries are particularly high: the emergence of new players in the world economy, intensification of South–South trade and diversification into skill-intensive activities may continue only in a dynamic economic and open trade environment. Current trends towards increased regionalisation may be reversed, with multilateral trade relationships gaining in importance. Hypothetical mega-regionals could slow down, but not frustrate the prevalence of multilateralism. Continuing technological progress is likely to have the biggest impact on future economic developments around the globe. Population dynamics are influential as well: for some countries, upskilling will be crucial; for others, labour shortages may be addressed through migration. Several developing countries would benefit from increased capital mobility; others will only diversify into dynamic sectors, when trade costs are further reduced."
+        ],
+        "authIdForm_i": [
+          6574,
+          629095,
+          395289
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Lionel Fontagné_FacetSep_6574-6113_FacetSep_lionelfontagne",
+          "Jean Fouré_FacetSep_629095-0_FacetSep_",
+          "Alexander Keck_FacetSep_395289-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_301309_FacetSep_Paris School of Economics",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_59704_FacetSep_École normale supérieure - Paris",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_301545_FacetSep_École des Ponts ParisTech",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_577435_FacetSep_Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_15080_FacetSep_Centre d'économie de la Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_39083_FacetSep_Centre d'Etudes Prospectives et d'Informations Internationales",
+          "6574-6113_FacetSep_Lionel Fontagné_JoinSep_309406_FacetSep_Centre d'analyse stratégique",
+          "629095-0_FacetSep_Jean Fouré_JoinSep_39083_FacetSep_Centre d'Etudes Prospectives et d'Informations Internationales",
+          "629095-0_FacetSep_Jean Fouré_JoinSep_309406_FacetSep_Centre d'analyse stratégique",
+          "395289-0_FacetSep_Alexander Keck_JoinSep_313299_FacetSep_WTO"
+        ],
+        "labStructId_i": [
+          15080,
+          39083
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2017-01-01T00:00:00Z"
+      }
+    ]
+  }
+}

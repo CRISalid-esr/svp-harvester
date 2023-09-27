@@ -25,10 +25,13 @@ class HalReferencesConverter:
         [  # pylint: disable=expression-not-assigned
             new_ref.subtitles.append(subtitle) for subtitle in self._subtitles(raw_data)
         ]
-        [  # pylint: disable=expression-not-assigned
-            new_ref.subjects.append(subject)
-            async for subject in self._subjects(raw_data)
-        ]
+        async for subject in self._subjects(raw_data):
+            # Concept from hal may be repeated, avoid duplicates
+            if subject.id is None or subject.id not in list(
+                map(lambda s: s.id, new_ref.subjects)
+            ):
+                new_ref.subjects.append(subject)
+
         new_ref.hash = self._hash(raw_data)
         new_ref.source_identifier = raw_data["docid"]
         return new_ref
