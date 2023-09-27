@@ -3,13 +3,12 @@ from starlette.requests import Request
 LANGUAGES_LIST = ["en", "fr", "en_US", "fr_FR"]
 
 
-async def i18n_middleware(request: Request, call_next):
+def get_request_locale(request: Request) -> str:
     """
-    Middleware to set the locale in the request state
+    Extrate the locale from the request
 
     :param request: incoming request
-    :param call_next: next call in the chain
-    :return:
+    :return:  locale
     """
     locale = (
         request.headers.get("locale", None)
@@ -20,6 +19,4 @@ async def i18n_middleware(request: Request, call_next):
 
     if locale not in LANGUAGES_LIST:
         locale = "en_US"
-    request.state.locale = locale
-
-    return await call_next(request)
+    return locale
