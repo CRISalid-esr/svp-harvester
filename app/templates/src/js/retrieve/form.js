@@ -186,7 +186,6 @@ class Form {
     checkIdentifierFormat(identifierType, identifierValue) {
         return new RegExp(this.env.IDENTIFIERS[identifierType].format).test(identifierValue);
     }
-
 }
 
 export default Form;
