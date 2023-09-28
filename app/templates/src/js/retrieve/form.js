@@ -65,6 +65,23 @@ class Form {
         this.updateSubmitButtonState();
     }
 
+    handleEditIdentifierButtonClick(event) {
+        const identifierFieldElement = event.target.closest(".identifier-field-container");
+        const editIdentifierButton = identifierFieldElement.querySelector(".btn-edit-identifier");
+        editIdentifierButton.setAttribute("disabled", true);
+        const inputField = identifierFieldElement.querySelector("input");
+        // validate input field content on keypress
+        inputField.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                inputField.setAttribute("disabled", true);
+                editIdentifierButton.removeAttribute("disabled");
+            }
+        });
+        inputField.removeAttribute("disabled");
+        inputField.focus();
+    }
+
     updateAddIdentifierButton = () => {
         const newIdentifierFieldContent = this.getIdentifierFieldContent(this.addIdentifierControlElement);
         if (newIdentifierFieldContent.identifierType && newIdentifierFieldContent.identifierValue) {
@@ -85,12 +102,13 @@ class Form {
     }
 
     addIdentifierField(content) {
-        console.log(content)
         content = {...content, identifierLabel: this.env.IDENTIFIERS[content.identifierType]};
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
         removeIdentifierButton.addEventListener("click", this.handleRemoveIdentifierButtonClick.bind(this));
+        const editIdentifierButton = this.identifierFieldElement.querySelector(".btn-edit-identifier");
+        editIdentifierButton.addEventListener("click", this.handleEditIdentifierButtonClick.bind(this));
         this.renewAddIdentifierControl();
         this.updateSubmitButtonState();
     }
