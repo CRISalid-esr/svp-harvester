@@ -4,11 +4,11 @@ const add_identifier_control = `
                         <select class="form-select rounded-end-0" aria-label="Example select with button addon" id="add-identifier-control-select">
                             <option selected disabled value="">Sélectionnez un type d'identifiant</option>
                             <% Object.entries(identifiers).forEach(function(identifier){ %>
-                                <option value="<%= identifier[0] %>"><%= identifier[1] %></option>
+                                <option value="<%= identifier[0] %>"><%= identifier[1]['label'] %></option>
                             <% }); %>
                         </select>
                     </div>
-                    <input type="text" class="form-control rounded-0" placeholder="Identifiant" id="add-identifier-control-input">
+                    <input type="text" class="form-control rounded-0" id="add-identifier-control-input">
                     <button type="button" class="btn btn-success rounded-start-0" id="add-identifier-control-button"><i class="bi bi-plus-circle"></i></button>
                 </div>
 `

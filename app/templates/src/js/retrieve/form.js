@@ -31,6 +31,10 @@ class Form {
             this.addIdentifierControlElement.remove();
         }
         this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, {identifiers: this.remainingIdentifiers()}));
+        this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
+        this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
+        this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
+        this.addIdentifierSelectField = this.formElement.querySelector("#add-identifier-control-select");
         for (const eventType of ["input"]) {
             this.addIdentifierControlElement.addEventListener(eventType, this.updateAddIdentifierControlState.bind(this));
         }
@@ -41,10 +45,6 @@ class Form {
                 self.handleAddIdentifierAction();
             }
         });
-        this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
-        this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
-        this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
-        this.addIdentifierSelectField = this.formElement.querySelector("#add-identifier-control-select");
         this.addIdentifierButton.addEventListener("click", this.handleAddIdentifierAction.bind(this));
         this.updateAddIdentifierControlState()
     }
@@ -80,11 +80,12 @@ class Form {
             }
         });
         inputField.addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !validateIdentifierButton.hasAttribute("disabled")) {
                 event.preventDefault();
                 self.handleIdentifierValidation(event);
             }
         });
+        validateIdentifierButton.addEventListener("click", this.handleIdentifierValidation.bind(this));
         inputField.removeAttribute("disabled");
         inputField.focus();
     }
@@ -106,9 +107,16 @@ class Form {
     }
 
     updateAddIdentifierControlState = () => {
-        const newIdentifierFieldContent = this.getIdentifierFieldContent(this.addIdentifierControlElement);
-        if (newIdentifierFieldContent.identifierType && newIdentifierFieldContent.identifierValue) {
-            if (this.checkIdentifierFormat(newIdentifierFieldContent.identifierType, newIdentifierFieldContent.identifierValue)) {
+        const addIdentifierControlContent = this.getIdentifierFieldContent(this.addIdentifierControlElement);
+        if (addIdentifierControlContent.identifierType) {
+            this.addIdentifierInputField.removeAttribute("disabled");
+            this.addIdentifierInputField.placeholder = this.env.IDENTIFIERS[addIdentifierControlContent.identifierType].placeholder;
+        } else {
+            this.addIdentifierInputField.setAttribute("disabled", true);
+            this.addIdentifierInputField.placeholder = "Select identifier type";
+        }
+        if (addIdentifierControlContent.identifierType && addIdentifierControlContent.identifierValue) {
+            if (this.checkIdentifierFormat(addIdentifierControlContent.identifierType, addIdentifierControlContent.identifierValue)) {
                 this.addIdentifierButton.removeAttribute("disabled");
                 this.addIdentifierInputField.classList.remove("is-invalid");
             } else {
@@ -134,7 +142,7 @@ class Form {
     }
 
     addIdentifierField(content) {
-        content = {...content, identifierLabel: this.env.IDENTIFIERS[content.identifierType]};
+        content = {...content, identifierLabel: this.env.IDENTIFIERS[content.identifierType].label};
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
@@ -176,15 +184,7 @@ class Form {
     }
 
     checkIdentifierFormat(identifierType, identifierValue) {
-        if (identifierType === "id_hal_i") {
-            //check that value is a 9 digit max integer
-            return /^[0-9]{1,9}$/.test(identifierValue);
-        }
-        if (identifierType === "orcid") {
-            //check that value is a valid orcid
-            return /^([0-9]{4}-){3}[0-9]{3}[0-9X]$/.test(identifierValue);
-        }
-        return false;
+        return new RegExp(this.env.IDENTIFIERS[identifierType].format).test(identifierValue);
     }
 
 }
