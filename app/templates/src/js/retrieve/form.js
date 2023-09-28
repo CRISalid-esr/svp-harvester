@@ -113,7 +113,7 @@ class Form {
             this.addIdentifierInputField.placeholder = this.env.IDENTIFIERS[addIdentifierControlContent.identifierType].placeholder;
         } else {
             this.addIdentifierInputField.setAttribute("disabled", true);
-            this.addIdentifierInputField.placeholder = "Select identifier type";
+            this.addIdentifierInputField.placeholder = "";
         }
         if (addIdentifierControlContent.identifierType && addIdentifierControlContent.identifierValue) {
             if (this.checkIdentifierFormat(addIdentifierControlContent.identifierType, addIdentifierControlContent.identifierValue)) {
