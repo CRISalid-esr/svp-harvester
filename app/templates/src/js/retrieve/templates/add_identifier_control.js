@@ -9,7 +9,7 @@ const add_identifier_control = `
                         </select>
                     </div>
                     <input type="text" class="form-control rounded-0" placeholder="Identifiant">
-                    <button type="button" class="btn btn-success rounded-start-0" id="add-identifier-button">Ajouter</button>
+                    <button type="button" class="btn btn-success rounded-start-0" id="add-identifier-button"><i class="bi bi-plus-circle"></i></button>
                 </div>
 `
 export default add_identifier_control;
