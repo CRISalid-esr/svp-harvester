@@ -21,7 +21,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-            <select class="ms-4" data-width="fit" onchange="window.location.href = '?locale=' + this.value;">
+            <select class="form-select form-select-sm ms-4 w-auto" data-width="fit" onchange="window.location.href = '?locale=' + this.value;">
                 <option {% if locale == "en_US" %}selected{% endif %} value="en_US">English</option>
                 <option {% if locale == "fr_FR" -%}selected{% endif %}   value="fr_FR">Français</option>
             </select>
