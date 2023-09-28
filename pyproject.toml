@@ -37,7 +37,6 @@ jinja2 = {extras = ["i18n"], version = "^3.1.2"}
 optional = true
 
 [tool.poetry.group.production.dependencies]
-aio-pika = "^9.1.4"
 
 [build-system]
 requires = ["poetry-core"]
