@@ -9,8 +9,10 @@ class Form {
         this.rootElement = rootElement;
         this.formElement = rootElement.querySelector("#form-element");
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
+        this.runRetrievalButton = this.formElement.querySelector("#run-retrieval-btn");
         this.renewAddIdentifierControl();
         this.addSubmitListener();
+        this.updateSubmitButtonState()
         this.addIdentifierField(
             {
                 "identifierType": "id_hal_i",
@@ -60,6 +62,7 @@ class Form {
         identifierFieldElement.remove();
         this.updateAddIdentifierButton();
         this.renewAddIdentifierControl();
+        this.updateSubmitButtonState();
     }
 
     updateAddIdentifierButton = () => {
@@ -89,6 +92,7 @@ class Form {
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
         removeIdentifierButton.addEventListener("click", this.handleRemoveIdentifierButtonClick.bind(this));
         this.renewAddIdentifierControl();
+        this.updateSubmitButtonState();
     }
 
     getIdentifierFieldsContent() {
@@ -107,6 +111,14 @@ class Form {
             }
         }
         return remainingIdentifiers;
+    }
+
+    updateSubmitButtonState() {
+        if (this.getIdentifierFieldsContent().length > 0) {
+            this.runRetrievalButton.removeAttribute("disabled");
+        } else {
+            this.runRetrievalButton.setAttribute("disabled", true);
+        }
     }
 }
 
