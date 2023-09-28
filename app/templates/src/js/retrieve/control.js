@@ -18,7 +18,7 @@ class Control {
 
     handleSubmit(event) {
         console.log(event);
-        const formFieldContent = this.form.getIdentifierFieldsContent()
+        const formFieldContent = this.form.getIdentifierFieldsContent(true)
         // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
         const identifiers = formFieldContent.map((identifier) => {
             return {
