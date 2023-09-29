@@ -5,6 +5,8 @@ description = ""
 authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
 license = "Cecill"
 readme = "README.md"
+repository = "https://github.com/jdp1ps/svp-harvester"
+documentation = ""
 packages = [{ include = "svp_harvester" }]
 
 [tool.poetry.dependencies]
@@ -20,6 +22,9 @@ dataclasses-json = "^0.6.0"
 loguru = "^0.7.2"
 aio-pika = "^9.3.0"
 
+[tool.poetry.group.development]
+optional = true
+
 [tool.poetry.group.development.dependencies]
 black = "^23.7.0"
 uvicorn = { extras = ["standard"], version = "^0.23.1" }
@@ -28,9 +33,10 @@ coverage = "^7.2.7"
 jinja2 = {extras = ["i18n"], version = "^3.1.2"}
 
 
+[tool.poetry.group.production]
+optional = true
 
 [tool.poetry.group.production.dependencies]
-aio-pika = "^9.1.4"
 
 [build-system]
 requires = ["poetry-core"]
