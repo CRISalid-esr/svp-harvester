@@ -12,7 +12,7 @@ router = APIRouter()
 async def overview(request: Request):
     """Return the overview page in the admin gui"""
     return get_templating_engine("admin", get_request_locale(request)).TemplateResponse(
-        "index.html.jinja",
+        "overview.html.jinja",
         {"request": request, "page": "overview", "locale": get_request_locale(request)},
     )
 
