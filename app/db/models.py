@@ -8,7 +8,6 @@ from sqlalchemy import Column, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
-from app.models.identifiers import IdentifierTypeEnum
 
 
 class State(Enum):
@@ -107,7 +106,7 @@ class Entity(Base):
         back_populates="entity", cascade="all, delete", lazy="raise"
     )
 
-    def get_identifier(self, identifier_type: IdentifierTypeEnum) -> str | None:
+    def get_identifier(self, identifier_type: Identifier.Type) -> str | None:
         """
         Get identifier value for a given type
 
