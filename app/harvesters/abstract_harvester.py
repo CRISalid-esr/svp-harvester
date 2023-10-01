@@ -8,8 +8,12 @@ from app.db.daos import EntityDAO, HarvestingDAO
 from app.db.models import State, Harvesting, ReferenceEvent, Entity
 from app.db.references.references_recorder import ReferencesRecorder
 from app.db.session import async_session
+from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
-from app.harvesters.exceptions.external_api_error import ExternalApiError
+from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.settings.app_settings import AppSettings
 
 
@@ -58,7 +62,7 @@ class AbstractHarvester(ABC):
         """
 
     @abstractmethod
-    async def fetch_results(self) -> Generator[dict, None, None]:
+    async def fetch_results(self) -> Generator[AbstractHarvesterRawResult, None, None]:
         """
         Fetch the results from the external API
         :return: A generator of results
@@ -76,11 +80,14 @@ class AbstractHarvester(ABC):
         )
         new_references = []
         try:
+            result: AbstractHarvesterRawResult
             async for result in self.fetch_results():
-                # How to return nothing from an async generator ?
                 if result is None or result == "end":
                     break
                 reference = await self.converter.convert(result)
+                if reference is None:
+                    # TODO log something
+                    continue
                 reference_event: ReferenceEvent = await ReferencesRecorder().register(
                     harvesting=await self.get_harvesting(), new_ref=reference
                 )
@@ -113,7 +120,18 @@ class AbstractHarvester(ABC):
                 )
             await self._update_harvesting_state(State.COMPLETED)
             await self._notify_harvesting_state()
-        except ExternalApiError as error:
+        # main point to handle all errors related to external endpoints unavailability
+        # harvester should let external ExternalEndpointFailure bubble up to this point
+        # because the harvesting cant recover from them
+        except ExternalEndpointFailure as error:
+            await self.handle_error(error)
+        # if an UnexpectedFormatException bubbles up to this point
+        # it means that the harvester prefers to stop delivering results
+        # but results may have been delivered before the exception
+        # An harvester could decide to handle this exception on a lower level
+        # and continue to deliver results
+        # in which case it will not bubble up to this point
+        except UnexpectedFormatException as error:
             await self.handle_error(error)
 
     async def _notify_harvesting_state(self):
@@ -132,12 +150,13 @@ class AbstractHarvester(ABC):
                     self.harvesting_id, state
                 )
 
-    async def handle_error(self, error: ExternalApiError) -> None:
+    async def handle_error(self, error: Exception) -> None:
         """
         Persist and notify an error occurred during the harvesting
-        :param error: The error message
+        :param error: The error object
         :return: None
         """
+        # TODO add informations about the error to the harvesting
         await self._update_harvesting_state(State.FAILED)
         await self._put_in_queue(
             {
@@ -168,6 +187,15 @@ class AbstractHarvester(ABC):
             async with async_session() as session:
                 self.entity = await EntityDAO(session).get_entity_by_id(self.entity_id)
         return self.entity
+
+    async def _get_entity_class_name(self) -> str:
+        """
+        Retrieve the entity class name for which to harvest references
+        from the database if not already done
+        :return: The entity class name for which to harvest references
+        """
+        entity = await self._get_entity()
+        return entity.__class__.__name__
 
     async def get_harvesting(self) -> Harvesting:
         """

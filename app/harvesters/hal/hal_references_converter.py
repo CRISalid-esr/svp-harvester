@@ -5,6 +5,7 @@ from typing import Generator
 from app.db.daos import ConceptDAO
 from app.db.models import Reference, Title, Subtitle, Concept, Label
 from app.db.session import async_session
+from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as JsonRawResult
 
 
 class HalReferencesConverter:
@@ -12,28 +13,30 @@ class HalReferencesConverter:
     Converts raw data from HAL to a normalised Reference object
     """
 
-    async def convert(self, raw_data: dict) -> Reference:
+    async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from HAL to a normalised Reference object
         :param raw_data: raw data from HAL
         :return: Reference object
         """
+        json_payload = raw_data.payload
         new_ref = Reference()
         [  # pylint: disable=expression-not-assigned
-            new_ref.titles.append(title) for title in self._titles(raw_data)
+            new_ref.titles.append(title) for title in self._titles(json_payload)
         ]
         [  # pylint: disable=expression-not-assigned
-            new_ref.subtitles.append(subtitle) for subtitle in self._subtitles(raw_data)
+            new_ref.subtitles.append(subtitle)
+            for subtitle in self._subtitles(json_payload)
         ]
-        async for subject in self._subjects(raw_data):
+        async for subject in self._subjects(json_payload):
             # Concept from hal may be repeated, avoid duplicates
             if subject.id is None or subject.id not in list(
                 map(lambda s: s.id, new_ref.subjects)
             ):
                 new_ref.subjects.append(subject)
 
-        new_ref.hash = self._hash(raw_data)
-        new_ref.source_identifier = raw_data["docid"]
+        new_ref.hash = self._hash(json_payload)
+        new_ref.source_identifier = raw_data.source_identifier
         return new_ref
 
     def _titles(self, raw_data):
