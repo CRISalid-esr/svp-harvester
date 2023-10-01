@@ -13,6 +13,18 @@ class Form {
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
+        this.addIdentifierField(
+            {
+                identifierType: "idref",
+                identifierValue: "108540952"
+            }
+        );
+        this.addIdentifierField(
+            {
+                identifierType: "id_hal_i",
+                identifierValue: "10227"
+            }
+        );
     }
 
     addSubmitListener() {

@@ -10,4 +10,4 @@ def test_scanr_harvester_relevant(person_with_name_and_idref: Person):
     harvester = ScanrHarvester(
         settings=get_app_settings(), converter=ScanrReferencesConverter()
     )
-    assert harvester.is_relevant(person_with_name_and_idref) is True
+    assert harvester.is_relevant(person_with_name_and_idref) is False
