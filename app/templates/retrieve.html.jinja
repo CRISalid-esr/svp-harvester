@@ -3,39 +3,62 @@
 {% block head_title %}{% trans %}Data retrieval{% endtrans %}{% endblock %}
 {% block page_title %}{% trans %}Data retrieval{% endtrans %}{% endblock %}
 {% block first_section_title %}{% trans %}Entity parameters{% endtrans %}{% endblock %}
-{%  block first_section_content %}
+{% block first_section_content %}
     <div class="row" id="retrieve-page-content">
         <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
             <form id="form-element">
-            <h5>{% trans %}Entity type{% endtrans %}</h5>
-
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-searcher-tab" data-bs-toggle="pill" data-bs-target="#pills-searcher" type="button" role="tab" aria-controls="pills-searcher" aria-selected="true">{% trans %}Searcher{% endtrans %}</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill" data-bs-target="#pills-laboratory" type="button" role="tab" aria-controls="pills-laboratory" aria-selected="false">{% trans %}Searcher structure{% endtrans %}</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-research-group-tab" data-bs-toggle="pill" data-bs-target="#pills-research-group" type="button" role="tab" aria-controls="pills-research-group" aria-selected="false">{% trans %}Institution{% endtrans %}</button>
-              </li>
-            <!--
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled</button>
-              </li>
-            -->
-            </ul>
-            <div class="tab-content" id="pills-tabContent">
-              <div class="tab-pane fade show active" id="pills-searcher" role="tabpanel" aria-labelledby="pills-searcher-tab" tabindex="0">Searcher form variant</div>
-              <div class="tab-pane fade" id="pills-laboratory" role="tabpanel" aria-labelledby="pills-laboratory-tab" tabindex="0">Lab form variant</div>
-              <div class="tab-pane fade" id="pills-research-group" role="tabpanel" aria-labelledby="pills-research-group-tab" tabindex="0">Research group form variant</div>
-                <!--
-              <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
-              -->
-            </div>
+                <div class="row">
+                    <div class="col-md-10">
+                        <h5>{% trans %}Entity type{% endtrans %}</h5>
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pills-searcher-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-searcher" type="button" role="tab"
+                                        aria-controls="pills-searcher" aria-selected="true">{% trans %}
+                                    Researcher{% endtrans %}</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-laboratory" type="button" role="tab"
+                                        aria-controls="pills-laboratory" aria-selected="false">{% trans %}Research
+                                    structure{% endtrans %}</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-research-group-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-research-group" type="button" role="tab"
+                                        aria-controls="pills-research-group" aria-selected="false">{% trans %}
+                                    Institution{% endtrans %}</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-project-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-project" type="button" role="tab"
+                                        aria-controls="pills-project" aria-selected="false">{% trans %}
+                                    Project{% endtrans %}</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 d-flex justify-content-end">
+                        <div class="text-md-end">
+                            <h5>{% trans %}Safe mode{% endtrans %}</h5>
+                            <input id="safe-mode-toggle" type="checkbox" data-toggle="toggle" checked/>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-searcher" role="tabpanel"
+                         aria-labelledby="pills-searcher-tab" tabindex="0">Searcher form variant
+                    </div>
+                    <div class="tab-pane fade" id="pills-laboratory" role="tabpanel"
+                         aria-labelledby="pills-laboratory-tab" tabindex="0">Lab form variant
+                    </div>
+                    <div class="tab-pane fade" id="pills-research-group" role="tabpanel"
+                         aria-labelledby="pills-research-group-tab" tabindex="0">Research group form variant
+                    </div>
+                    <!--
+                  <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
+                  -->
+                </div>
                 <div id="identifier-fields-container"></div>
-
-
 
 
                 <div class="row">
@@ -83,12 +106,13 @@
                             <option value="ETABTHESE">{% trans %}Establishment thesis{% endtrans %}</option>
                             <option value="MEMLIC">{% trans %}typdoc_MEMLIC{% endtrans %}</option>
                             <option value="NOTE">{% trans %}Reading note{% endtrans %}</option>
-                            <option value="OTHERREPORT">{% trans %}Other reports, seminars, workshops{% endtrans %}</option>
+                            <option value="OTHERREPORT">{% trans %}Other reports, seminars,
+                                workshops{% endtrans %}</option>
                             <option value="REPACT">{% trans %}Activity report{% endtrans %}</option>
                             <option value="SYNTHESE">{% trans %}Summary notes{% endtrans %}</option>
                         </select>
                     </div>
-                 </div>
+                </div>
 
                 <h5>{% trans %}Search range{% endtrans %}</h5>
                 <span></span>
@@ -97,7 +121,8 @@
                     <input type="text" aria-label="Last date" class="form-control" placeholder="À: Optionnel">
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i class="bi bi-search"></i>{% trans %}Start search{% endtrans %}</button>
+                    <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i class="bi bi-search"></i>
+                        {% trans %}Start search{% endtrans %}</button>
                 </div>
 
             </form>
@@ -120,11 +145,11 @@
         <h2>{% trans %}Search results{% endtrans %}</h2>
 
 
-    <div>
-        <table id="references-table">
+        <div>
+            <table id="references-table">
 
-        </table>
-    </div>
+            </table>
+        </div>
 
     </div>
 
