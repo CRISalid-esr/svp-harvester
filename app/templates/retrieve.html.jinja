@@ -162,14 +162,27 @@
                         data-bs-title="{% trans %}Harvesting range help text{% endtrans %}"
                 ></i></h5>
                 <span></span>
-                <div class="input-group mt-3 mb-3">
-                    <input type="text" aria-label="Since date" class="form-control" placeholder="De: Optionnel">
-                    <input type="text" aria-label="Last date" class="form-control" placeholder="À: Optionnel">
+                <div class="row">
+                    <div id="date-range-picker-container" class="d-flex col-md-8 col-12">
+                        <div>
+                            <label for="data-range-start">{% trans %}From{% endtrans %}     </label>
+                            <input id="data-range-start" type="text" aria-label="Since date" class="form-control"
+                                   placeholder="De: Optionnel">
+                        </div>
+                        <div class="ms-2">
+                            <label for="data-range-end">{% trans %}To : {% endtrans %}     </label>
+                            <input id="date-range-end" type="text" aria-label="Last date"
+                                   class="form-control" placeholder="À:
+                        Optionnel">
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end col-md-4 col-12">
+                        <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i
+                                class="bi bi-search"></i>
+                            {% trans %}Start search{% endtrans %}</button>
+                    </div>
                 </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i class="bi bi-search"></i>
-                        {% trans %}Start search{% endtrans %}</button>
-                </div>
+
 
             </form>
         </div>
@@ -187,7 +200,7 @@
         </div>
     </div>
 
-    <div class="bg-light ms-md-n2 ps-md-3 mt-2">
+    <div class="bg-light ms-md-n2 ps-md-3 mt-5">
         <h2>{% trans %}Search results{% endtrans %}</h2>
 
 

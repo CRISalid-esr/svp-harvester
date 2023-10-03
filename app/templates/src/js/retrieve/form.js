@@ -1,8 +1,9 @@
 import ejs from "ejs";
+import TomSelect from "tom-select";
+import DateRangePicker from 'vanillajs-datepicker/DateRangePicker';
 import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
-import TomSelect from "tom-select";
 
 class Form {
     constructor(env, rootElement) {
@@ -14,6 +15,7 @@ class Form {
         this.handleReferenceTypeSelect();
         this.handleEventTypeSelect();
         this.handleDataSourcesSelect();
+        this.handleDatePickers();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
@@ -50,6 +52,13 @@ class Form {
             sortField: {field: "text"},
             plugins: ['checkbox_options', 'remove_button'],
         });
+    }
+
+    handleDatePickers() {
+        this.dateRangePicker = new DateRangePicker(this.formElement.querySelector("#date-range-picker-container"), {
+            buttonClass: 'btn',
+            clearButton: 'true',
+        })
     }
 
     addSubmitListener() {

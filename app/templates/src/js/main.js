@@ -6,7 +6,6 @@ import '../scss/styles.scss'
 import * as bootstrap from 'bootstrap'
 import 'bootstrap5-toggle/js/bootstrap5-toggle.ecmas.min'
 import 'tom-select/dist/js/tom-select.complete.min'
-
 // Import our custom JS
 import env from "./env"
 import Client from "./common/client"
