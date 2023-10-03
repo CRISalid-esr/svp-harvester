@@ -1,13 +1,29 @@
 // Import all of Bootstrap's CSS
 $enable-negative-margins: true;
 $info: #dcebfe;
+//Generate utilites for Cursor
+//https://5balloons.info/cursor-pointer-and-other-classes-for-bootstrap-5
+@import "~bootstrap/scss/bootstrap-utilities";
+$utilities: map-merge(
+                $utilities,
+                (
+                        "cursor": (
+                                property: cursor,
+                                values: auto default pointer wait text move help not-allowed
+                        ),
+                )
+);
 @import "~bootstrap/scss/bootstrap";
 // from https://stackoverflow.com/a/74992564
 $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 
 @import "~bootstrap-icons/font/bootstrap-icons.scss";
+@import "~bootstrap5-toggle/css/bootstrap5-toggle.min.css";
 @import '~datatables.net-dt/css/jquery.dataTables.css';
+@import '~tom-select/dist/css/tom-select.bootstrap5.min.css';
+@import '~vanillajs-datepicker/sass/datepicker-bs5.scss';
 @import '../../node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.min.css';
+
 
 body {
   font-size: .875rem;
