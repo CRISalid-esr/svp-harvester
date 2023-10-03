@@ -1,6 +1,18 @@
 // Import all of Bootstrap's CSS
 $enable-negative-margins: true;
 $info: #dcebfe;
+//Generate utilites for Cursor
+//https://5balloons.info/cursor-pointer-and-other-classes-for-bootstrap-5
+@import "~bootstrap/scss/bootstrap-utilities";
+$utilities: map-merge(
+                $utilities,
+                (
+                        "cursor": (
+                                property: cursor,
+                                values: auto default pointer wait text move help not-allowed
+                        ),
+                )
+);
 @import "~bootstrap/scss/bootstrap";
 // from https://stackoverflow.com/a/74992564
 $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";

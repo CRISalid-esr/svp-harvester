@@ -9,12 +9,16 @@
             <form id="form-element">
                 <div class="row">
                     <div class="col-md-10">
-                        <h5>{% trans %}Entity type{% endtrans %}</h5>
+                        <h5>{% trans %}Entity type{% endtrans %} <i
+                                class="bi bi-info-circle cursor-help"
+                                data-bs-toggle="tooltip"
+                                data-bs-title="{% trans %}Choose the entity type for which you want to retrieve notices{% endtrans %}"
+                        ></i></h5>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="pills-searcher-tab" data-bs-toggle="pill"
-                                        data-bs-target="#pills-searcher" type="button" role="tab"
-                                        aria-controls="pills-searcher" aria-selected="true">{% trans %}
+                                <button class="nav-link active" id="pills-researcher-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-researcher" type="button" role="tab"
+                                        aria-controls="pills-researcher" aria-selected="true">{% trans %}
                                     Researcher{% endtrans %}</button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -24,9 +28,9 @@
                                     structure{% endtrans %}</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills-research-group-tab" data-bs-toggle="pill"
-                                        data-bs-target="#pills-research-group" type="button" role="tab"
-                                        aria-controls="pills-research-group" aria-selected="false">{% trans %}
+                                <button class="nav-link" id="pills-institution-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-institution" type="button" role="tab"
+                                        aria-controls="pills-institution" aria-selected="false">{% trans %}
                                     Institution{% endtrans %}</button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -39,24 +43,30 @@
                     </div>
                     <div class="col-md-2 d-flex justify-content-end">
                         <div class="text-md-end">
-                            <h5>{% trans %}Safe mode{% endtrans %}</h5>
-                            <input id="safe-mode-toggle" type="checkbox" data-toggle="toggle" checked/>
+                            <h5>{% trans %}Safe mode{% endtrans %} <i
+                                    class="bi bi-info-circle cursor-help"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-title="{% trans %}In safe mode, the harvesting will not alter the harvesting history for the given entity.{% endtrans %}"
+                            ></i></h5>
+                            <input id="safe-mode-toggle" type="checkbox" data-toggle="toggle" checked
+                                   aria-label="Toggle safe mode" aria-checked="true"/>
                         </div>
                     </div>
                 </div>
+                {#TODO put the content in the tabs#}
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-searcher" role="tabpanel"
-                         aria-labelledby="pills-searcher-tab" tabindex="0">Searcher form variant
+                    <div class="tab-pane fade show active" id="pills-researcher" role="tabpanel"
+                         aria-labelledby="pills-researcher-tab" tabindex="0">
                     </div>
                     <div class="tab-pane fade" id="pills-laboratory" role="tabpanel"
-                         aria-labelledby="pills-laboratory-tab" tabindex="0">Lab form variant
+                         aria-labelledby="pills-laboratory-tab" tabindex="0">
                     </div>
-                    <div class="tab-pane fade" id="pills-research-group" role="tabpanel"
-                         aria-labelledby="pills-research-group-tab" tabindex="0">Research group form variant
+                    <div class="tab-pane fade" id="pills-institution" role="tabpanel"
+                         aria-labelledby="pills-institution-tab" tabindex="0">
                     </div>
-                    <!--
-                  <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">test</div>
-                  -->
+                    <div class="tab-pane fade" id="pills-project" role="tabpanel"
+                         aria-labelledby="pills-project-tab" tabindex="0">
+                    </div>
                 </div>
                 <div id="identifier-fields-container"></div>
 
