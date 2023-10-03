@@ -1,4 +1,6 @@
 import ejs from "ejs";
+import TomSelect from "tom-select";
+import DateRangePicker from 'vanillajs-datepicker/DateRangePicker';
 import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
@@ -10,6 +12,10 @@ class Form {
         this.formElement = rootElement.querySelector("#form-element");
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
         this.runRetrievalButton = this.formElement.querySelector("#run-retrieval-btn");
+        this.handleReferenceTypeSelect();
+        this.handleEventTypeSelect();
+        this.handleDataSourcesSelect();
+        this.handleDatePickers();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
@@ -25,6 +31,34 @@ class Form {
                 identifierValue: "10227"
             }
         );
+    }
+
+    handleReferenceTypeSelect() {
+        this.referenceTypeSelect = new TomSelect("#reference-type-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'dropdown_input', 'remove_button'],
+        });
+    }
+
+    handleEventTypeSelect() {
+        this.referenceTypeSelect = new TomSelect("#event-type-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'remove_button'],
+        });
+    }
+
+    handleDataSourcesSelect() {
+        this.referenceTypeSelect = new TomSelect("#data-sources-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'remove_button'],
+        });
+    }
+
+    handleDatePickers() {
+        this.dateRangePicker = new DateRangePicker(this.formElement.querySelector("#date-range-picker-container"), {
+            buttonClass: 'btn',
+            clearButton: 'true',
+        })
     }
 
     addSubmitListener() {
