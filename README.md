@@ -214,7 +214,7 @@ APP_ENV=DEV python3 app/main.py
 To update the translation files, run the following command from the project root :
 
 ```bash
-pybabel extract --mapping babel.cfg --output-file=locales/admin.pot ./app/templates/
+pybabel extract --mapping babel.cfg --output-file=locales/admin.pot .
 ```
 
 To init a po file for a new language :
