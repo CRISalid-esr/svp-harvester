@@ -12,7 +12,7 @@
                         <h5>{% trans %}Entity type{% endtrans %} <i
                                 class="bi bi-info-circle cursor-help"
                                 data-bs-toggle="tooltip"
-                                data-bs-title="{% trans %}Choose the entity type for which you want to retrieve notices{% endtrans %}"
+                                data-bs-title="{% trans %}Entity type help text{% endtrans %}"
                         ></i></h5>
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item" role="presentation">
@@ -46,7 +46,7 @@
                             <h5>{% trans %}Safe mode{% endtrans %} <i
                                     class="bi bi-info-circle cursor-help"
                                     data-bs-toggle="tooltip"
-                                    data-bs-title="{% trans %}In safe mode, the harvesting will not alter the harvesting history for the given entity.{% endtrans %}"
+                                    data-bs-title="{% trans %}Safe mode help text{% endtrans %}"
                             ></i></h5>
                             <input id="safe-mode-toggle" type="checkbox" data-toggle="toggle" checked
                                    aria-label="Toggle safe mode" aria-checked="true"/>
@@ -69,62 +69,98 @@
                     </div>
                 </div>
                 <div id="identifier-fields-container"></div>
-
-
                 <div class="row">
                     <div class="col-md-6 col-12">
-                        <h5>{% trans %}Search type{% endtrans %}</h5>
+                        <h5>{% trans %}Harvesting type{% endtrans %} <i
+                                class="bi bi-info-circle cursor-help"
+                                data-bs-toggle="tooltip"
+                                data-bs-title="{% trans %}Harvesting type help text{% endtrans %}"
+                        ></i></h5>
                         <span hidden>{% trans %}Event type{% endtrans %}</span>
-                        <select class="form-select mt-3 mb-3" aria-label="Default select example">
-                            <option selected disabled value=""></option>
-                            <option value="all">{% trans %}Comprehensive search{% endtrans %}</option>
-                            <option value="new">{% trans %}Novelty search{% endtrans %}</option>
-                            <option value="updated">{% trans %}Search for updates{% endtrans %}</option>
-                            <option value="unchanged">{% trans %}Search for matches{% endtrans %}</option>
+                        <select id="event-type-select"
+                                class="mt-3 mb-3"
+                                multiple="multiple"
+                                aria-label="{% trans %}Search type{% endtrans %}">
+                            <option selected value="created">{% trans %}New references{% endtrans %}</option>
+                            <option selected value="updated">{% trans %}Updated references{% endtrans %}</option>
+                            <option selected value="deleted">{% trans %}Deleted references{% endtrans %}</option>
+                            <option selected value="unchanged">{% trans %}Unchanged references{% endtrans %}</option>
                         </select>
                     </div>
                     <div class="col-md-6 col-12">
-                        <h5>{% trans %}Filter by notice type{% endtrans %}</h5>
+                        <h5>{% trans %}Data sources{% endtrans %} <i
+                                class="bi bi-info-circle cursor-help"
+                                data-bs-toggle="tooltip"
+                                data-bs-title="{% trans %}Data sources help text{% endtrans %}"
+                        ></i></h5>
+                        <span hidden>{% trans %}Data sources{% endtrans %}</span>
+                        <select id="data-sources-select"
+                                class="mt-3 mb-3"
+                                multiple="multiple"
+                                aria-label="{% trans %}Data sources{% endtrans %}">
+                            <option selected value="hal">{% trans %}Hal{% endtrans %}</option>
+                            <option selected value="idref">{% trans %}Data.idref.fr{% endtrans %}</option>
+                            <option selected value="openalex">{% trans %}OpenAlex{% endtrans %}</option>
+                            <option selected value="scanr">{% trans %}Scanr{% endtrans %}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>{% trans %}Notice types{% endtrans %} <i
+                                class="bi bi-info-circle cursor-help"
+                                data-bs-toggle="tooltip"
+                                data-bs-title="{% trans %}Notice types help text{% endtrans %}"
+                        ></i></h5>
 
-                        <select class="form-select mt-3 mb-3" aria-label="Default select example">
-                            <option selected disabled value=""></option>
-                            <option value="ART">{% trans %}Journal article{% endtrans %}</option>
-                            <option value="COMM">{% trans %}Conference presentation{% endtrans %}</option>
-                            <option value="POSTER">{% trans %}Conference poster{% endtrans %}</option>
-                            <option value="PROCEEDINGS">{% trans %}Proceedings{% endtrans %}</option>
-                            <option value="ISSUE">{% trans %}Special journal issue{% endtrans %}</option>
-                            <option value="OUV">{% trans %}Book{% endtrans %}</option>
-                            <option value="COUV">{% trans %}Book chapter{% endtrans %}</option>
-                            <option value="BLOG">{% trans %}Scientific blog post{% endtrans %}</option>
-                            <option value="NOTICE">{% trans %}Encyclopedia or dictionary notice{% endtrans %}</option>
-                            <option value="TRAD">{% trans %}Translation{% endtrans %}</option>
-                            <option value="PATENT">{% trans %}Patent{% endtrans %}</option>
-                            <option value="OTHER">{% trans %}Other scientific publication{% endtrans %}</option>
-                            <option value="UNDEFINED">{% trans %}Working paper{% endtrans %}</option>
-                            <option value="REPORT">{% trans %}Report{% endtrans %}</option>
-                            <option value="THESE">{% trans %}Thésis{% endtrans %}</option>
-                            <option value="HDR">{% trans %}HDR{% endtrans %}</option>
-                            <option value="LECTURE">{% trans %}Lecture{% endtrans %}</option>
-                            <option value="MEM">{% trans %}Student thesis{% endtrans %}</option>
-                            <option value="IMG">{% trans %}Image{% endtrans %}</option>
-                            <option value="VIDEO">{% trans %}Video{% endtrans %}</option>
-                            <option value="SON">{% trans %}Sound{% endtrans %}</option>
-                            <option value="MAP">{% trans %}Map{% endtrans %}</option>
-                            <option value="SOFTWARE">{% trans %}Software{% endtrans %}</option>
-                            <option value="PRESCONF">{% trans %}Document for scientific events{% endtrans %}</option>
-                            <option value="CREPORT">{% trans %}Report Chapter{% endtrans %}</option>
-                            <option value="ETABTHESE">{% trans %}Establishment thesis{% endtrans %}</option>
-                            <option value="MEMLIC">{% trans %}typdoc_MEMLIC{% endtrans %}</option>
-                            <option value="NOTE">{% trans %}Reading note{% endtrans %}</option>
-                            <option value="OTHERREPORT">{% trans %}Other reports, seminars,
+                        <select id="reference-type-select"
+                                class="mt-3 mb-3"
+                                multiple="multiple"
+                                aria-label="{% trans %}Filter by notice type{% endtrans %}">
+                            <option selected value="ART">{% trans %}Journal article{% endtrans %}</option>
+                            <option selected value="COMM">{% trans %}Conference presentation{% endtrans %}</option>
+                            <option selected value="POSTER">{% trans %}Conference poster{% endtrans %}</option>
+                            <option selected value="PROCEEDINGS">{% trans %}Proceedings{% endtrans %}</option>
+                            <option selected value="ISSUE">{% trans %}Special journal issue{% endtrans %}</option>
+                            <option selected value="OUV">{% trans %}Book{% endtrans %}</option>
+                            <option selected value="COUV">{% trans %}Book chapter{% endtrans %}</option>
+                            <option selected value="BLOG">{% trans %}Scientific blog post{% endtrans %}</option>
+                            <option selected value="NOTICE">{% trans %}Encyclopedia or dictionary
+                                notice{% endtrans %}</option>
+                            <option selected value="TRAD">{% trans %}Translation{% endtrans %}</option>
+                            <option selected value="PATENT">{% trans %}Patent{% endtrans %}</option>
+                            <option selected value="OTHER">{% trans %}Other scientific
+                                publication{% endtrans %}</option>
+                            <option selected value="UNDEFINED">{% trans %}Working paper{% endtrans %}</option>
+                            <option selected value="REPORT">{% trans %}Report{% endtrans %}</option>
+                            <option selected value="THESE">{% trans %}Thésis{% endtrans %}</option>
+                            <option selected value="HDR">{% trans %}HDR{% endtrans %}</option>
+                            <option selected value="LECTURE">{% trans %}Lecture{% endtrans %}</option>
+                            <option selected value="MEM">{% trans %}Student thesis{% endtrans %}</option>
+                            <option selected value="IMG">{% trans %}Image{% endtrans %}</option>
+                            <option selected value="VIDEO">{% trans %}Video{% endtrans %}</option>
+                            <option selected value="SON">{% trans %}Sound{% endtrans %}</option>
+                            <option selected value="MAP">{% trans %}Map{% endtrans %}</option>
+                            <option selected value="SOFTWARE">{% trans %}Software{% endtrans %}</option>
+                            <option selected value="PRESCONF">{% trans %}Document for scientific
+                                events{% endtrans %}</option>
+                            <option selected value="CREPORT">{% trans %}Report Chapter{% endtrans %}</option>
+                            <option selected value="ETABTHESE">{% trans %}Establishment thesis{% endtrans %}</option>
+                            <option selected value="MEMLIC">{% trans %}typdoc_MEMLIC{% endtrans %}</option>
+                            <option selected value="NOTE">{% trans %}Reading note{% endtrans %}</option>
+                            <option selected value="OTHERREPORT">{% trans %}Other reports, seminars,
                                 workshops{% endtrans %}</option>
-                            <option value="REPACT">{% trans %}Activity report{% endtrans %}</option>
-                            <option value="SYNTHESE">{% trans %}Summary notes{% endtrans %}</option>
+                            <option selected value="REPACT">{% trans %}Activity report{% endtrans %}</option>
+                            <option selected value="SYNTHESE">{% trans %}Summary notes{% endtrans %}</option>
                         </select>
                     </div>
                 </div>
 
-                <h5>{% trans %}Search range{% endtrans %}</h5>
+                <h5>{% trans %}Harvesting range{% endtrans %} <i
+                        class="bi bi-info-circle cursor-help"
+                        data-bs-toggle="tooltip"
+                        data-bs-title="{% trans %}Harvesting range help text{% endtrans %}"
+                ></i></h5>
                 <span></span>
                 <div class="input-group mt-3 mb-3">
                     <input type="text" aria-label="Since date" class="form-control" placeholder="De: Optionnel">

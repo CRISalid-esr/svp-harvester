@@ -2,6 +2,7 @@ import ejs from "ejs";
 import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
+import TomSelect from "tom-select";
 
 class Form {
     constructor(env, rootElement) {
@@ -10,6 +11,9 @@ class Form {
         this.formElement = rootElement.querySelector("#form-element");
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
         this.runRetrievalButton = this.formElement.querySelector("#run-retrieval-btn");
+        this.handleReferenceTypeSelect();
+        this.handleEventTypeSelect();
+        this.handleDataSourcesSelect();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
@@ -25,6 +29,27 @@ class Form {
                 identifierValue: "10227"
             }
         );
+    }
+
+    handleReferenceTypeSelect() {
+        this.referenceTypeSelect = new TomSelect("#reference-type-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'dropdown_input', 'remove_button'],
+        });
+    }
+
+    handleEventTypeSelect() {
+        this.referenceTypeSelect = new TomSelect("#event-type-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'remove_button'],
+        });
+    }
+
+    handleDataSourcesSelect() {
+        this.referenceTypeSelect = new TomSelect("#data-sources-select", {
+            sortField: {field: "text"},
+            plugins: ['checkbox_options', 'remove_button'],
+        });
     }
 
     addSubmitListener() {

@@ -34,6 +34,7 @@
     "ejs": "^3.1.9",
     "feather-icons": "^4.28.0",
     "pretty-print-json": "^2.0.3",
+    "tom-select": "^2.2.2",
     "zinggrid": "^1.6.0-0"
   }
 }
