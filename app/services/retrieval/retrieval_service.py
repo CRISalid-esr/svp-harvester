@@ -39,9 +39,9 @@ class RetrievalService:
         async with async_session() as session:
             async with session.begin():
                 db_entity: Entity = EntityConverter(entity).to_db_model()
-                if existing_entity := await EntityResolutionService(
-                    session
-                ).already_exists(db_entity):
+                if existing_entity := await EntityResolutionService(session).resolve(
+                    db_entity
+                ):
                     db_entity = existing_entity
                 else:
                     session.add(db_entity)
