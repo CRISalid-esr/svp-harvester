@@ -6,8 +6,8 @@ from typing import Optional
 from pydantic import model_validator
 from pydantic_core.core_schema import ValidationInfo
 
+from app.config import get_app_settings
 from app.models.entities import Entity
-from app.models.identifiers import IdentifierTypeEnum
 
 
 class Person(Entity):
@@ -21,6 +21,7 @@ class Person(Entity):
     @model_validator(mode="before")
     @classmethod
     def _check_minimal_information(cls, data: dict, _: ValidationInfo) -> dict:
+        settings = get_app_settings()
         if identifier := data.get("identifiers"):
             # check that each identifier is a hash with type and value
             assert all(
@@ -31,11 +32,38 @@ class Person(Entity):
         # check that there is at least one identifier
         assert any(
             # pylint: disable=cell-var-from-loop
-            list(filter(lambda h: h.get("type", None)
-                                  == t.value, data.get("identifiers", []) or []))
-            for t in IdentifierTypeEnum
+            list(
+                filter(
+                    lambda h: h.get("type", None) == t.get("key"),
+                    data.get("identifiers", []) or [],
+                )
+            )
+            for t in settings.identifiers
         ) or all(
             # or that there are both first name and last name
             [data.get("last_name"), data.get("first_name")]
         ), "At least one identifier or the entire name must be provided"
+        return data
+
+    @model_validator(mode="before")
+    @classmethod
+    def _check_identifiers_referenced_in_settings(
+        cls, data: dict, _: ValidationInfo
+    ) -> dict:
+        settings = get_app_settings()
+        # check that all provider identifiers are referenced in settings
+        # and list the invalid identifiers in assertion error message
+        invalid_identifiers = [
+            identifier.get("type")
+            for identifier in data.get("identifiers", [])
+            if identifier.get("type")
+            not in [
+                identifier_type.get("key") for identifier_type in settings.identifiers
+            ]
+        ]
+        assert not invalid_identifiers, (
+            f"Invalid identifiers: {', '.join(invalid_identifiers)}. "
+            "Valid identifiers are:"
+            f"{', '.join([identifier_type.get('key') for identifier_type in settings.identifiers])}"
+        )
         return data

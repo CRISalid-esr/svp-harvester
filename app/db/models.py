@@ -5,8 +5,9 @@ from typing import List
 
 from dataclasses_json import dataclass_json
 from sqlalchemy import Column, String, ForeignKey, DateTime, Table
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
+from app.config import get_app_settings
 from app.db.session import Base
 
 
@@ -74,13 +75,17 @@ class Identifier(Base):
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
     entity: Mapped["Entity"] = relationship(back_populates="identifiers", lazy="raise")
 
-    class Type(Enum):
-        """Identifier types"""
-
-        ORCID = "orcid"
-        IDREF = "idref"
-        ID_HAL_I = "id_hal_i"
-        ID_HAL_S = "id_hal_s"
+    @validates("type", include_removes=False, include_backrefs=True)
+    def _valide_identifier_is_referenced_by_settings(self, _, new_type):
+        """
+        Validate that the identifier is referenced by the settings
+        """
+        settings = get_app_settings()
+        if new_type not in [
+            identifier.get("key") for identifier in settings.identifiers
+        ]:
+            raise ValueError("Identifier type is not referenced by settings")
+        return new_type
 
 
 class Entity(Base):
@@ -99,14 +104,33 @@ class Entity(Base):
     }
 
     identifiers: Mapped[List["Identifier"]] = relationship(
-        back_populates="entity", cascade="all, delete", lazy="joined"
+        back_populates="entity", cascade="all, delete-orphan", lazy="joined"
     )
 
     retrievals: Mapped[List["Retrieval"]] = relationship(
         back_populates="entity", cascade="all, delete", lazy="raise"
     )
 
-    def get_identifier(self, identifier_type: Identifier.Type) -> str | None:
+    @validates("identifiers", include_removes=False, include_backrefs=True)
+    def _validate_no_more_than_one_identifier_of_same_type(self, _, new_identifier):
+        """
+        Validate that no more than one identifier of the same type is present
+
+        :param key:
+        :param address:
+        :return:
+        """
+        if new_identifier.type is None:
+            raise ValueError("Identifier type cannot be None")
+        if new_identifier.value is None:
+            raise ValueError("Identifier value cannot be None")
+        if self.has_identifier_of_type(new_identifier.type):
+            raise ValueError(
+                f"Identifier of type {new_identifier.type} already present for {self}"
+            )
+        return new_identifier
+
+    def get_identifier(self, identifier_type: str) -> str | None:
         """
         Get identifier value for a given type
 
@@ -114,9 +138,39 @@ class Entity(Base):
         :return: the identifier or None if not found
         """
         for identifier in self.identifiers:
-            if identifier.type == identifier_type.value:
+            if identifier.type == identifier_type:
                 return identifier.value
         return None
+
+    def has_identifier_of_type_and_value(
+        self, identifier_type: str, identifier_value: str
+    ) -> bool:
+        """
+        Check if an identifier of a given type and value is present
+
+        :param identifier_type: type of the identifier
+        :param identifier_value: value of the identifier
+        :return: True if the identifier is present, False otherwise
+        """
+        for identifier in self.identifiers:
+            if (
+                identifier.type == identifier_type
+                and identifier.value == identifier_value
+            ):
+                return True
+        return False
+
+    def has_identifier_of_type(self, identifier_type: str) -> bool:
+        """
+        Check if an identifier of a given type is present
+
+        :param identifier_type: type of the identifier
+        :return: True if the identifier is present, False otherwise
+        """
+        for identifier in self.identifiers:
+            if identifier and identifier.type == identifier_type:
+                return True
+        return False
 
 
 class Person(Entity):

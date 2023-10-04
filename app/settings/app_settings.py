@@ -9,18 +9,30 @@ from pydantic_settings import BaseSettings
 from app.settings.app_env_types import AppEnvTypes
 
 
-def lst_from_yml(yml_file: str) -> list[dict]:
-    """
-    Load settings from yml file
-    """
-    with open(yml_file, encoding="utf8") as file:
-        return yaml.load(file, Loader=yaml.FullLoader)
-
-
 class AppSettings(BaseSettings):
     """
     App settings main class with parameters definition
     """
+
+    @staticmethod
+    def settings_file_path(filename: str) -> str:
+        """
+        Get the path of a settings file
+
+        :param filename: The name of the settings file
+        :return: The path of the settings file
+        """
+        return os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), "..", "..", filename
+        )
+
+    @staticmethod
+    def lst_from_yml(yml_file: str) -> list[dict]:
+        """
+        Load settings from yml file
+        """
+        with open(yml_file, encoding="utf8") as file:
+            return yaml.load(file, Loader=yaml.FullLoader)
 
     app_env: AppEnvTypes = AppEnvTypes.PROD
     debug: bool = False
@@ -34,10 +46,11 @@ class AppSettings(BaseSettings):
     amqp_host: str = "127.0.0.1"
     amqp_queue_name: str = "svp-harvester"
 
-    harvesters_settings_file: str = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "..", "..", "harvesters.yml"
-    )
-    harvesters: list = lst_from_yml(harvesters_settings_file)
+    harvesters_settings_file: str = settings_file_path(filename="harvesters.yml")
+    harvesters: list = lst_from_yml(yml_file=harvesters_settings_file)
+
+    identifiers_settings_file: str = settings_file_path(filename="identifiers.yml")
+    identifiers: list = lst_from_yml(yml_file=identifiers_settings_file)
 
     db_engine: str = "postgresql+asyncpg"
     db_name: str = "svp_harvester"

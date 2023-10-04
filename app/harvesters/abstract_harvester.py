@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from asyncio import Queue
-from typing import Generator, Optional
+from typing import Optional, AsyncGenerator
 
 from pydantic import BaseModel
 
@@ -62,7 +62,9 @@ class AbstractHarvester(ABC):
         """
 
     @abstractmethod
-    async def fetch_results(self) -> Generator[AbstractHarvesterRawResult, None, None]:
+    async def fetch_results(
+        self,
+    ) -> AsyncGenerator[AbstractHarvesterRawResult, None]:
         """
         Fetch the results from the external API
         :return: A generator of results

@@ -5,7 +5,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from app.models.identifiers import Identifier, IdentifierTypeEnum
+from app.models.identifiers import Identifier
 
 
 class Entity(BaseModel):
@@ -15,7 +15,7 @@ class Entity(BaseModel):
 
     identifiers: List[Identifier] = []
 
-    def get_identifier(self, identifier_type: IdentifierTypeEnum) -> Optional[str]:
+    def get_identifier(self, identifier_type: str) -> Optional[str]:
         """
 
         :param identifier_type: Identifier type

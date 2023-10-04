@@ -1,6 +1,6 @@
 import asyncio
 import random
-from typing import Generator
+from typing import AsyncGenerator
 
 from pydantic import BaseModel
 
@@ -14,7 +14,7 @@ class ScanrHarvester(AbstractHarvester):
     Harvester for Scanr API
     """
 
-    async def fetch_results(self) -> Generator[RawResult, None, None]:
+    async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         if random.randint(0, 2) == 1:
             raise ExternalEndpointFailure("Scanr API is down")
         await asyncio.sleep(random.randint(1, 20) / 10)

@@ -2,7 +2,6 @@
 import pytest
 from pydantic import ValidationError
 
-from app.models.identifiers import IdentifierTypeEnum
 from app.models.people import Person
 
 
@@ -27,7 +26,19 @@ def test_person_with_name_and_idref(person_with_name_and_idref: Person):
     """
     assert person_with_name_and_idref.first_name == "John"
     assert person_with_name_and_idref.last_name == "Doe"
-    assert person_with_name_and_idref.get_identifier(IdentifierTypeEnum.IDREF) == "123456789"
+    assert person_with_name_and_idref.get_identifier("idref") == "123456789"
+
+
+def test_person_with_invalid_identifier(
+    person_with_name_and_unknown_identifier_type_json: dict,
+):
+    """
+    GIVEN a person with name and unknown identifier type
+    WHEN the person is created
+    THEN check a validation error is raised
+    """
+    with pytest.raises(ValidationError, match="Invalid identifiers: foobar"):
+        Person(**person_with_name_and_unknown_identifier_type_json)
 
 
 def test_person_with_last_name_only():
