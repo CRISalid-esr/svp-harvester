@@ -3,7 +3,7 @@ Person model
 """
 from typing import Optional
 
-from pydantic import model_validator
+from pydantic import model_validator, ConfigDict
 from pydantic_core.core_schema import ValidationInfo
 
 from app.config import get_app_settings
@@ -14,6 +14,8 @@ class Person(Entity):
     """
     Person identified by at least last name + first name or one of the identifiers
     """
+
+    model_config = ConfigDict(from_attributes=True)
 
     last_name: Optional[str] = None
     first_name: Optional[str] = None

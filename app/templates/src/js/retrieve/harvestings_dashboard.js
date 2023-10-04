@@ -1,12 +1,22 @@
 import ejs from "ejs";
 import stringToHTML from "../utils";
 import harvesting_progress_widget from "./templates/harvesting_progress_widget";
+import current_entity_identifier from "./templates/current_entity_identifier";
 
 class HarvestingDashboard {
     constructor(env, rootElement) {
         this.env = env;
         this.rootElement = rootElement;
         this.widgetContainerElement = rootElement.querySelector("#harvesting-progress-widgets-container");
+        this.identifiersContainerElement = rootElement.querySelector("#entity-identifiers-container");
+    }
+
+    updateIdentifiers(identifiers) {
+        this.identifiersContainerElement.innerHTML = "";
+        for (const identifier of identifiers) {
+            const identifierElement = stringToHTML(ejs.render(current_entity_identifier, identifier));
+            this.identifiersContainerElement.appendChild(identifierElement);
+        }
     }
 
     updateWidgets(harvestings) {
