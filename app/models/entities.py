@@ -3,7 +3,7 @@ Person model
 """
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.models.identifiers import Identifier
 
@@ -12,6 +12,8 @@ class Entity(BaseModel):
     """
     Source entity (person, organization, etc.) for which references are retrieved
     """
+
+    model_config = ConfigDict(from_attributes=True)
 
     identifiers: List[Identifier] = []
 

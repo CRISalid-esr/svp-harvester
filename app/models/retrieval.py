@@ -2,6 +2,7 @@ from typing import List
 
 from pydantic import BaseModel, ConfigDict
 
+from app.models.entities import Entity
 from app.models.harvesting import Harvesting
 
 
@@ -14,3 +15,5 @@ class Retrieval(BaseModel):
 
     id: int
     harvestings: List[Harvesting] = []
+
+    entity: Entity | None = None
