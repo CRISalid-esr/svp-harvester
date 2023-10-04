@@ -1,11 +1,10 @@
 from enum import Enum
-from typing import Generator
+from typing import AsyncGenerator
 
 import uritools
 from pydantic import BaseModel
 from rdflib import URIRef
 
-from app.db.models import Identifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -22,7 +21,6 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
 )
-from app.models.identifiers import IdentifierTypeEnum
 
 
 class IdrefHarvester(AbstractHarvester):
@@ -39,12 +37,10 @@ class IdrefHarvester(AbstractHarvester):
         HAL_JSON = "HAL_JSON"
         IDREF_SPARQL = "IDREF_SPARQL"
 
-    async def fetch_results(self) -> Generator[RawResult, None, None]:
+    async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
-            idref: str = (await self._get_entity()).get_identifier(
-                Identifier.Type.IDREF
-            )
+            idref: str = (await self._get_entity()).get_identifier("idref")
             assert (
                 idref is not None
             ), "Idref identifier is required when harvesting publications from data.idref.fr"
@@ -92,7 +88,7 @@ class IdrefHarvester(AbstractHarvester):
         uri: str | None = doc.get("pub", {}).get("value")
         if not uritools.isuri(uri):
             raise UnexpectedFormatException(
-                f"Invalid SUDOC URI provided " f"by Idref SPARQL endpoint: {uri}"
+                f"Invalid SUDOC URI from Idref SPARQL endpoint: {uri}"
             )
         client = SudocApiClient()
         pub = await client.fetch(uri)
@@ -134,4 +130,4 @@ class IdrefHarvester(AbstractHarvester):
         return {}
 
     def is_relevant(self, entity: BaseModel) -> bool:
-        return entity.get_identifier(IdentifierTypeEnum.IDREF) is not None
+        return entity.get_identifier("idref") is not None

@@ -11,7 +11,6 @@ from app.db.models import (
     Harvesting,
     State,
 )
-from app.models.identifiers import IdentifierTypeEnum
 
 
 @pytest.mark.asyncio
@@ -74,7 +73,7 @@ async def test_create_retrieval_registers_person(
     person_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert person_from_db.first_name == "John"
     assert len(person_from_db.identifiers) == 1
-    assert person_from_db.identifiers[0].type == IdentifierTypeEnum.IDREF
+    assert person_from_db.identifiers[0].type == "idref"
     assert person_from_db.identifiers[0].value == "123456789"
 
 

@@ -1,9 +1,15 @@
 """References dependencies."""
-from app.models.identifiers import IdentifierTypeEnum
+from typing import Annotated
+
+from fastapi import Depends
+
+from app.config import get_app_settings
 from app.models.people import Person
+from app.settings.app_settings import AppSettings
 
 
 def build_person_from_fields(
+    settings: Annotated[AppSettings, Depends(get_app_settings)],
     first_name: str | None = None,
     last_name: str | None = None,
     # pylint: disable=unused-argument
@@ -26,9 +32,12 @@ def build_person_from_fields(
             "first_name": first_name,
             "last_name": last_name,
             "identifiers": [
-                {"type": identifier.value, "value": parameters[identifier.value]}
-                for identifier in IdentifierTypeEnum
-                if parameters[identifier.value] is not None
+                {
+                    "type": identifier.get("key"),
+                    "value": parameters[identifier.get("key")],
+                }
+                for identifier in settings.identifiers
+                if parameters.get(identifier.get("key"), None) is not None
             ],
         }
     )

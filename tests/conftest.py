@@ -22,7 +22,6 @@ from app.db.models import (
     State,
 )
 from app.db.session import Base, engine
-from app.models.identifiers import IdentifierTypeEnum
 from app.models.people import Person as PydanticPerson
 
 environ["APP_ENV"] = "TEST"
@@ -102,7 +101,7 @@ def fixture_person_with_name_and_idref_db_model():
     return DbPerson(
         first_name="John",
         last_name="Doe",
-        identifiers=[DbIdentifier(type=IdentifierTypeEnum.IDREF, value="123456789")],
+        identifiers=[DbIdentifier(type="idref", value="123456789")],
     )
 
 
@@ -115,7 +114,7 @@ def fixture_person_with_name_and_id_hal_i_db_model():
     return DbPerson(
         first_name="John",
         last_name="Doe",
-        identifiers=[DbIdentifier(type=IdentifierTypeEnum.ID_HAL_I, value="123456789")],
+        identifiers=[DbIdentifier(type="id_hal_i", value="123456789")],
     )
 
 
@@ -207,6 +206,18 @@ def fixture_person_with_name_and_idref_json(_base_path):
     :return: person with first name, last name and IDREF in Json format
     """
     return _person_json_data_from_file(_base_path, "person_with_name_and_idref")
+
+
+@pytest.fixture(name="person_with_name_and_unknown_identifier_type_json")
+def fixture_person_with_name_and_unknown_identifier_type_json(_base_path):
+    """
+    Generate a person with first name, last name and unknown identifier type in Json format
+    :param _base_path: test data directory base
+    :return: person with first name, last name and unknown identifier type in Json format
+    """
+    return _person_json_data_from_file(
+        _base_path, "person_with_name_and_unknown_identifier_type"
+    )
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_i_json")
