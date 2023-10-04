@@ -40,6 +40,10 @@ class Control {
             .then((response) => {
                 const retrieval = response.data
                 this.harvestingDashboard.updateWidgets(retrieval.harvestings);
+                // with optional chaining
+                if (retrieval.entity?.identifiers?.length > 0) {
+                    this.harvestingDashboard.updateIdentifiers(retrieval.entity.identifiers);
+                }
                 this.referencesTable.updateTable(retrieval.harvestings);
 
                 if (!this.finished(retrieval)) {

@@ -7,6 +7,7 @@ from starlette.responses import JSONResponse
 from app.api.dependencies.references import build_person_from_fields
 from app.config import get_app_settings
 from app.db.daos import RetrievalDAO
+from app.db.models import Retrieval as DbRetrieval
 from app.db.session import async_session
 from app.models.people import Person
 from app.models.retrieval import Retrieval as RetrievalModel
@@ -79,7 +80,7 @@ async def get_retrieval_result(
     :return: json representation of the references
     """
     async with async_session() as session:
-        retrieval = await RetrievalDAO(session).get_complete_retrieval_by_id(
-            retrieval_id
-        )
+        retrieval: DbRetrieval = await RetrievalDAO(
+            session
+        ).get_complete_retrieval_by_id(retrieval_id)
     return RetrievalModel.model_validate(retrieval)
