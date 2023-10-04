@@ -16,17 +16,44 @@ class HalHarvester(AbstractHarvester):
 
     FORMATTER_NAME = "HAL"
 
+    IDENTIFIERS_BY_ENTITIES = {
+        "Person": [
+            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "id_hal_i"),
+            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s")
+        ]
+    }
+
+    async def _get_hal_query_parameters(self, entity_class: str):
+        """
+        Set the query parameters for an entity
+        """
+        entity = await self._get_entity()
+
+        query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
+        # List convenient query parameters for this entity class
+        # and choose the first one for which value is provided
+
+        for hal_query_parameter, identifier_key in query_parameters:
+            identifier_value = entity.get_identifier(identifier_key)
+            if identifier_value is not None:
+                return hal_query_parameter, identifier_value
+
+        assert False, "Unable to run hal harvester for a person without id_hal_i or id_hal_s"
+
     async def fetch_results(self) -> AsyncGenerator[JsonRawResult, None]:
+        """
+        Fetch results from the HAL API.
+        It is an asynchronous generator that yields JsonRawResult objects.
+        """
         builder = HalApiQueryBuilder()
-        if (await self._get_entity_class_name()) == "Person":
-            id_hal_i: str = (await self._get_entity()).get_identifier("id_hal_i")
-            assert (
-                id_hal_i is not None
-            ), "Unable to run hal harvester for a person without id_hal"
-            builder.set_query(
-                identifier_type=HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I,
-                identifier_value=id_hal_i,
-            )
+
+        identifier_type, identifier_value = await self._get_hal_query_parameters(
+            await self._get_entity_class_name())
+
+        builder.set_query(
+            identifier_type=identifier_type,
+            identifier_value=identifier_value,
+        )
         async for doc in HalApiClient().fetch(builder.build()):
             yield JsonRawResult(
                 payload=doc,
@@ -35,4 +62,7 @@ class HalHarvester(AbstractHarvester):
             )
 
     def is_relevant(self, entity: Entity) -> bool:
-        return entity.get_identifier("id_hal_i") is not None
+        """Check if one of the given identifiers is relevant for the harvester"""
+        identifiers = ["id_hal_i", "id_hal_s"]
+
+        return any(entity.get_identifier(identifier) is not None for identifier in identifiers)

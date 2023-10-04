@@ -13,6 +13,7 @@ class HalApiQueryBuilder:
         """
 
         AUTH_ID_HAL_I = "authIdHal_i"
+        AUTH_ID_HAL_S = "authIdHal_s"
 
     DEFAULT_DOC_TYPES = [
         "ART",
