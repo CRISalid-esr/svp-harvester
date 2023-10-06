@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+import urllib
 from unittest import mock
 
 import aiohttp
@@ -105,11 +106,75 @@ async def test_hal_harvester_finds_doc(
     reference_recorder_register_mock.assert_called_once()
 
 
-# TODO: make a test who check if hal_api_client_mock is asserted with id_hal_i
+@pytest.mark.asyncio
+async def test_hal_harvester_calls_hal_api_with_id_hal_s(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
+):
+    """
+    Given a person in db model format with an id_hal_s
+    When it is submitted to the harvester and the harvester is run
+    Then Hal API client is called with a query with id_hal_s as search criteria
 
-# TODO: make a test who check if hal_api_client_mock is asserted with id_hal_s
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_s:
+    :param hal_api_client_mock:
+    :param async_session:
+    :return:
+    """
+    async_session.add(hal_harvesting_db_model_id_hal_s)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_s.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_s.retrieval.entity_id)
+    await hal_harvester.run()
+    hal_api_client_mock.assert_called_once()
+    args, _ = hal_api_client_mock.call_args
+    query = urllib.parse.urlsplit(args[0]).query
+    # Split the query into a dict
+    query_dict = dict(urllib.parse.parse_qsl(query))
+    # Check that the query contains the id_hal_s as 'q' parameter
+    id_hal_s = hal_harvesting_db_model_id_hal_s.retrieval.entity.get_identifier(
+        "id_hal_s"
+    )
+    assert query_dict["q"] == f"authIdHal_s:{id_hal_s}"
 
-# TODO: make a test who check if hal_api_client_mock is asserted with id_hal_i when also id_hal_s
+
+@pytest.mark.asyncio
+async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
+):
+    """
+    Given a person in db model format with both an id_hal_i and an id_hal_s
+    When it is submitted to the harvester and the harvester is run
+    Then Hal API client is called with a query with id_hal_i as search criteria
+
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_s:
+    :param hal_api_client_mock:
+    :param async_session:
+    :return:
+    """
+    async_session.add(hal_harvesting_db_model_id_hal_i_s)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i_s.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i_s.retrieval.entity_id)
+    await hal_harvester.run()
+    hal_api_client_mock.assert_called_once()
+    args, _ = hal_api_client_mock.call_args
+    query = urllib.parse.urlsplit(args[0]).query
+    # Split the query into a dict
+    query_dict = dict(urllib.parse.parse_qsl(query))
+    # Check that the query contains the id_hal_i as 'q' parameter
+    id_hal_i = hal_harvesting_db_model_id_hal_i_s.retrieval.entity.get_identifier(
+        "id_hal_i"
+    )
+    assert query_dict["q"] == f"authIdHal_i:{id_hal_i}"
+
 
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_docs_in_db(
