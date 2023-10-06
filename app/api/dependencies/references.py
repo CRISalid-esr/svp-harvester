@@ -16,6 +16,7 @@ def build_person_from_fields(
     idref: str | None = None,
     orcid: str | None = None,
     id_hal_i: str | None = None,
+    id_hal_s: str | None = None,
 ) -> Person:
     """
 
@@ -24,6 +25,7 @@ def build_person_from_fields(
     :param idref: IdRef identifier
     :param orcid: ORCID identifier
     :param id_hal_i: HAL numeric identifier
+    :param id_hal_s: HAL alphabetic identifier
     :return: person
     """
     parameters = dict(locals())

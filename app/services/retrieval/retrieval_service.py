@@ -89,7 +89,7 @@ class RetrievalService:
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
             if not harvester.is_relevant(self.entity):
-                print(f"{harvester_name} while not run for {self.entity}")
+                print(f"{harvester_name} will not run for {self.entity}")
                 continue
             async with async_session() as session:
                 async with session.begin():
