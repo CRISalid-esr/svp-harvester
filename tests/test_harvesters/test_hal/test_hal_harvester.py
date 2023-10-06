@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+import urllib
 from unittest import mock
 
 import aiohttp
@@ -55,12 +56,20 @@ def fixture_hal_harvester() -> HalHarvester:
     return HalHarvester(settings=get_app_settings(), converter=converter)
 
 
-def test_hal_harvester_relevant_for_person_with_idhal(
+def test_hal_harvester_relevant_for_person_with_idhal_i(
     person_with_name_and_id_hal_i: Person,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an IDHAL."""
     assert hal_harvester.is_relevant(person_with_name_and_id_hal_i) is True
+
+
+def test_hal_harvester_relevant_for_person_with_idhal_s(
+    person_with_name_and_id_hal_s: Person,
+    hal_harvester: HalHarvester,
+):
+    """Test that the harvester will run if submitted with an IDHAL."""
+    assert hal_harvester.is_relevant(person_with_name_and_id_hal_s) is True
 
 
 def test_hal_harvester_not_relevant_for_person_with_idref_only(
@@ -82,41 +91,111 @@ def test_hal_harvester_not_relevant_for_person_with_last_name_and_first_name_onl
 @pytest.mark.asyncio
 async def test_hal_harvester_finds_doc(
     hal_harvester: HalHarvester,
-    hal_harvesting_db_model,
+    hal_harvesting_db_model_id_hal_i,
     reference_recorder_register_mock,
     hal_api_client_mock,
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
-    async_session.add(hal_harvesting_db_model)
+    async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
-    hal_harvester.set_harvesting_id(hal_harvesting_db_model.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model.retrieval.entity_id)
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     reference_recorder_register_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
+async def test_hal_harvester_calls_hal_api_with_id_hal_s(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
+):
+    """
+    Given a person in db model format with an id_hal_s
+    When it is submitted to the harvester and the harvester is run
+    Then Hal API client is called with a query with id_hal_s as search criteria
+
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_s:
+    :param hal_api_client_mock:
+    :param async_session:
+    :return:
+    """
+    async_session.add(hal_harvesting_db_model_id_hal_s)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_s.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_s.retrieval.entity_id)
+    await hal_harvester.run()
+    hal_api_client_mock.assert_called_once()
+    args, _ = hal_api_client_mock.call_args
+    query = urllib.parse.urlsplit(args[0]).query
+    # Split the query into a dict
+    query_dict = dict(urllib.parse.parse_qsl(query))
+    # Check that the query contains the id_hal_s as 'q' parameter
+    id_hal_s = hal_harvesting_db_model_id_hal_s.retrieval.entity.get_identifier(
+        "id_hal_s"
+    )
+    assert query_dict["q"] == f"authIdHal_s:{id_hal_s}"
+
+
+@pytest.mark.asyncio
+async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
+):
+    """
+    Given a person in db model format with both an id_hal_i and an id_hal_s
+    When it is submitted to the harvester and the harvester is run
+    Then Hal API client is called with a query with id_hal_i as search criteria
+
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_s:
+    :param hal_api_client_mock:
+    :param async_session:
+    :return:
+    """
+    async_session.add(hal_harvesting_db_model_id_hal_i_s)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i_s.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i_s.retrieval.entity_id)
+    await hal_harvester.run()
+    hal_api_client_mock.assert_called_once()
+    args, _ = hal_api_client_mock.call_args
+    query = urllib.parse.urlsplit(args[0]).query
+    # Split the query into a dict
+    query_dict = dict(urllib.parse.parse_qsl(query))
+    # Check that the query contains the id_hal_i as 'q' parameter
+    id_hal_i = hal_harvesting_db_model_id_hal_i_s.retrieval.entity.get_identifier(
+        "id_hal_i"
+    )
+    assert query_dict["q"] == f"authIdHal_i:{id_hal_i}"
+
+
+@pytest.mark.asyncio
 async def test_hal_harvester_registers_docs_in_db(
     hal_harvester: HalHarvester,
-    hal_harvesting_db_model,
+    hal_harvesting_db_model_id_hal_i,
     hal_api_client_mock,
     hal_api_docs_for_one_researcher: dict,
     async_session: AsyncSession,
 ):
     """Test that after harvesting, the references are registered in the database."""
-    async_session.add(hal_harvesting_db_model)
+    async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
-    hal_harvester.set_harvesting_id(hal_harvesting_db_model.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model.retrieval.entity_id)
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     stmt = (
         select(Reference, ReferenceEvent)
         .join(ReferenceEvent)
         .join(Harvesting)
-        .filter(Harvesting.id == hal_harvesting_db_model.id)
+        .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
     )
     result = (await async_session.execute(stmt)).unique()
     results = list(result)
@@ -138,7 +217,7 @@ async def test_hal_harvester_registers_docs_in_db(
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_one_kw_for_two_occurences(
     hal_harvester: HalHarvester,
-    hal_harvesting_db_model,
+    hal_harvesting_db_model_id_hal_i,
     hal_api_client_mock_same_kw_twice,
     async_session: AsyncSession,
 ):
@@ -146,10 +225,10 @@ async def test_hal_harvester_registers_one_kw_for_two_occurences(
     The first publication has a concept,
     and the same concept is mentioned twice in a later publication.
     """
-    async_session.add(hal_harvesting_db_model)
+    async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
-    hal_harvester.set_harvesting_id(hal_harvesting_db_model.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model.retrieval.entity_id)
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock_same_kw_twice.assert_called_once()
     stmt = (
@@ -159,7 +238,7 @@ async def test_hal_harvester_registers_one_kw_for_two_occurences(
         .join(Label, Concept.labels)
         .join(ReferenceEvent)
         .join(Harvesting)
-        .filter(Harvesting.id == hal_harvesting_db_model.id)
+        .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
     )
     result = (await async_session.execute(stmt)).unique()
     results = list(result)
