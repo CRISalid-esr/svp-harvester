@@ -236,3 +236,34 @@ pybabel compile --domain=admin --directory=locales --use-fuzzy
 ```
 
 See [Babel commad line documentation](https://babel.pocoo.org/en/latest/cmdline.html) for more information.
+
+# Documentation compilation and publication
+
+The documentation is written in reStructuredText and compiled with Sphinx.
+
+## HTML publication
+
+To export the documentation to HTML, run the following command from the `docs` directory :
+
+```bash
+python -m sphinx -b html source build/html
+```
+
+Then, copy the content of the `docs/build/html` directory to the server of your choice.
+
+## ReadTheDocs publication
+
+The documentation is automatically published on [ReadTheDocs](https://readthedocs.org/) at each push on the `dev-main`
+branch.
+The configuration settings are defined in the `docs/source/conf.py` file, which is specified in the `.readthedocs.yml` file as the entry point.
+
+## Confluence publication
+
+To export the documentation to Confluence through the Confluence Publisher plugin,
+
+- Copy `docs/source/confluence/conf.py.example` to `docs/source/confluence/conf.py` and update it with your values
+- Run the following command from the `docs` directory :
+
+```bash
+python -m sphinx -b confluence -c source/confluence source build/confluence -E -a
+```
