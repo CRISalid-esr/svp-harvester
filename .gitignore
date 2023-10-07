@@ -162,3 +162,5 @@ app/templates/node_modules
 
 app/static/js/*
 app/templates/src/js/env.js
+
+docs/source/conf.py.example
