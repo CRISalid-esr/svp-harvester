@@ -15,12 +15,12 @@ that are used by an institutional research information system in general and the
 SoVisu+ Harvester is implemented as a microservice that can be deployed in a containerized environment.
 
 It is intended to institutions that have already created and actively maintain a repository of matched identifiers for
-actors, structures and research projects.
+authors, structures and research projects.
 
 ### Overall use
 
 The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research
-entity" (actor, structure or research project) and to return a list of references to publications
+entity" (wich can be an author, research structure, reserach institution or research project) and to return a list of references to publications
 that are associated with the research entity.
 
 The list of accepted identifiers is not exhaustive as the service is extensible by design.
