@@ -5,6 +5,12 @@ Overview
 
 It is intended to provide a unified interface to the various scholarly publication databases and repositories that are used by an institutional research information system or a bibliographic data management system.
 
+
+Live demo
+---------
+
+📺 A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_.
+
 .. note:: SoVisu+ Harvester belongs to the SoVisu+ project, which aims to provide a set of robust and scalable components to build research information management systems. But it may also be used as a standalone tool or integrated to a completely different system.
 
 .. warning:: **SoVisu+ Harvester** does not control identifier matching : It is intended for use in institutions that have already created and actively maintain a repository of matched identifiers for authors, structures and research projects. It also does not perform deduplication of references, as this functionality will be implemented in a separate component.
