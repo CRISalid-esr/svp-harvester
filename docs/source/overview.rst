@@ -15,7 +15,7 @@ It also does not perform deduplication of references, as this functionality will
 Overall operating mode
 ----------------------
 
-The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research entity" (wich can be an author, research structure, reserach institution or research project) and to return a list of references to publications that are associated with the research entity.
+The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research entity" (wich can be an author, research structure, research institution or research project) and to return a list of references to publications that are associated with the research entity.
 
 .. image:: https://raw.githubusercontent.com/jdp1ps/svp-harvester/dev-main/img/svp-harvester-overall-behavior.png
   :width: 1000
@@ -26,7 +26,7 @@ Key Features:
 
 - **Extensibility :** SoVisu+ Harvester serves as a runner for a group of harvesters, each of which is defined with specific parameters in a configuration file. These harvesters are responsible for retrieving data from distinct sources and converting it into a uniform format.
 
-- **Flexible identifiers management:** The tool performs harvestings on behalf of various kinds of entities (wich may be persons, reserach structures, laboratories of projects). For each type of entity, it accepts a wide range of identifiers (such as IdRef, ORCID, IdHal) with which each harvester will perform his task as best as he can in a loosely coupled way.
+- **Flexible identifiers management:** The tool performs harvestings on behalf of various kinds of entities (wich may be persons, research structures, laboratories of projects). For each type of entity, it accepts a wide range of identifiers (such as IdRef, ORCID, IdHal) with which each harvester will perform his task as best as he can in a loosely coupled way.
 
 - **Parallel Processing:** To optimize performance, the harvesters are run concurrently. The results can be delivered in real-time or as a single batch upon completion of the process, with options for both synchronous and asynchronous modes.
 

@@ -20,7 +20,7 @@ authors, structures and research projects.
 ### Overall use
 
 The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research
-entity" (wich can be an author, research structure, reserach institution or research project) and to return a list of references to publications
+entity" (wich can be an author, research structure, research institution or research project) and to return a list of references to publications
 that are associated with the research entity.
 
 The list of accepted identifiers is not exhaustive as the service is extensible by design.
