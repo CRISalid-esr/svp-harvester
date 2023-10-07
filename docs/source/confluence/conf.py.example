@@ -9,6 +9,8 @@ extensions = [
     "sphinxcontrib.confluencebuilder",
 ]
 
+html_theme = "alabaster"
+
 # -- Confluence configuration -------------------------------------------------
 confluence_publish = True
 confluence_space_key = "SVPH"
