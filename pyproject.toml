@@ -34,12 +34,9 @@ uvicorn = { extras = ["standard"], version = "^0.23.1" }
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 jinja2 = {extras = ["i18n"], version = "^3.1.2"}
+sphinx = "^7.2.6"
+sphinxcontrib-confluencebuilder = "^2.3.0"
 
-
-[tool.poetry.group.production]
-optional = true
-
-[tool.poetry.group.production.dependencies]
 
 [build-system]
 requires = ["poetry-core"]
