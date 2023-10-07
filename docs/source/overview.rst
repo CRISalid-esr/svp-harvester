@@ -9,11 +9,11 @@ It is intended to provide a unified interface to the various scholarly publicati
 Live demo
 ---------
 
-📺 A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_.
+📺 A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_. **Please note that the screen is provided for administration and debugging purposes and is not intended for end-users.**
 
 .. note:: SoVisu+ Harvester belongs to the SoVisu+ project, which aims to provide a set of robust and scalable components to build research information management systems. But it may also be used as a standalone tool or integrated to a completely different system.
 
-.. warning:: **SoVisu+ Harvester** does not control identifier matching : It is intended for use in institutions that have already created and actively maintain a repository of matched identifiers for authors, structures and research projects. It also does not perform deduplication of references, as this functionality will be implemented in a separate component.
+.. warning:: **SoVisu+ Harvester** does not control identifiers matching : It is intended for use in institutions that have already created and actively maintain a repository of matched identifiers for authors, structures and research projects. It also does not perform deduplication of references, as this functionality will be implemented in a separate component.
 
 Overall operating mode
 ----------------------
