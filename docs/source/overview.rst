@@ -5,11 +5,29 @@ Overview
 
 It is intended to provide a unified interface to the various scholarly publication databases and repositories that are used by an institutional research information system or a bibliographic data management system.
 
+Project repository and live demo 📺
+-----------------------------------
+.. |ico1| image:: https://img.shields.io/badge/GitHub--repository-svp--harvester-blue?style=flat-square&logo=github
+   :target: https://github.com/jdp1ps/svp-harvester#readme
+    :alt: GitHub repository
+|ico1| Source code is available on Github
+
+🕘 The code will move to an institutional repository in the near future.
+
+.. |ico2| image:: https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&logo=amazon-aws
+   :target: http://13.51.241.83/admin/retrieve?locale=en_US
+    :alt: AWS EC2 Démo
+
+|ico2| A live demo on a basic AWS box.
+
+🕘 The demo reflects the current state of development and has no guarantee of stability.
+
+
 
 Live demo
 ---------
 
-📺 A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_. **Please note that the screen is provided for administration and debugging purposes and is not intended for end-users.**
+A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_. **Please note that the screen is provided for administration and debugging purposes and is not intended for end-users.**
 
 .. note:: SoVisu+ Harvester belongs to the SoVisu+ project, which aims to provide a set of robust and scalable components to build research information management systems. But it may also be used as a standalone tool or integrated to a completely different system.
 
