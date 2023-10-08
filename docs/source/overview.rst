@@ -21,15 +21,8 @@ Project repository and live demo 📺
 |ico2| A live demo on a basic AWS box.
 
 🕘 The demo reflects the current state of development and has no guarantee of stability.
+
 🛠️ The presented interface is intended for administration and debugging purposes and is not for end-users.
-
-
-
-
-Live demo
----------
-
-A live demo of the ongoing development version is available on `AWS box <http://13.51.241.83/admin/retrieve?locale=en_US>`_. **Please note that the screen is provided for administration and debugging purposes and is not intended for end-users.**
 
 .. note:: SoVisu+ Harvester belongs to the SoVisu+ project, which aims to provide a set of robust and scalable components to build research information management systems. But it may also be used as a standalone tool or integrated to a completely different system.
 
