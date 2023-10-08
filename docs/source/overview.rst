@@ -8,19 +8,21 @@ It is intended to provide a unified interface to the various scholarly publicati
 Project repository and live demo 📺
 -----------------------------------
 .. |ico1| image:: https://img.shields.io/badge/GitHub--repository-svp--harvester-blue?style=flat-square&logo=github
-   :target: https://github.com/jdp1ps/svp-harvester#readme
+    :target: https://github.com/jdp1ps/svp-harvester#readme
     :alt: GitHub repository
 |ico1| Source code is available on Github
 
 🕘 The code will move to an institutional repository in the near future.
 
 .. |ico2| image:: https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&logo=amazon-aws
-   :target: http://13.51.241.83/admin/retrieve?locale=en_US
+    :target: http://13.51.241.83/admin/retrieve?locale=en_US
     :alt: AWS EC2 Démo
 
 |ico2| A live demo on a basic AWS box.
 
 🕘 The demo reflects the current state of development and has no guarantee of stability.
+🛠️ The presented interface is intended for administration and debugging purposes and is not for end-users.
+
 
 
 
