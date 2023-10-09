@@ -4,7 +4,8 @@ from typing import Optional, AsyncGenerator
 
 from pydantic import BaseModel
 
-from app.db.daos import EntityDAO, HarvestingDAO
+from app.db.daos.entity_dao import EntityDAO
+from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.entity_model import Entity
 from app.db.models.reference_event_model import ReferenceEvent
 from app.db.models.harvesting_model import Harvesting

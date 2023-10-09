@@ -8,7 +8,8 @@ from starlette.background import BackgroundTasks
 
 from app.config import get_app_settings
 from app.db.conversions import EntityConverter
-from app.db.daos import RetrievalDAO, HarvestingDAO
+from app.db.daos.retrieval_dao import RetrievalDAO
+from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.retrieval_model import Retrieval
 from app.db.models.harvesting_model import Harvesting
 from app.db.models.entity_model import Entity

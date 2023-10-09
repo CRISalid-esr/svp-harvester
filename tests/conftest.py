@@ -15,7 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
-from app.db.daos import RetrievalDAO, HarvestingDAO
+from app.db.daos.retrieval_dao import RetrievalDAO
+from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.harvesting_model import Harvesting
 from app.db.models.identifier_model import Identifier as DbIdentifier
 from app.db.models.person_model import Person as DbPerson

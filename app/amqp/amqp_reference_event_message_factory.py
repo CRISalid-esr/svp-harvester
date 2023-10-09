@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.amqp.abstract_amqp_message_factory import AbstractAMQPMessageFactory
-from app.db.daos import ReferenceEventDAO
+from app.db.daos.reference_event_dao import ReferenceEventDAO
 from app.db.models.reference_event_model import ReferenceEvent
 from app.db.session import async_session
 
