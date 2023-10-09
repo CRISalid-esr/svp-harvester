@@ -2,17 +2,14 @@ from sqlalchemy import select, update, Row, ScalarResult
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.db.models import (
-    Retrieval,
-    Harvesting,
-    Entity,
-    State,
-    Reference,
-    ReferenceEvent,
-    Concept,
-    Label,
-    Identifier,
-)
+from app.db.models.retrieval_model import Retrieval
+from app.db.models.harvesting_model import Harvesting
+from app.db.models.entity_model import Entity
+from app.db.models.reference_model import Reference
+from app.db.models.reference_event_model import ReferenceEvent
+from app.db.models.concept_model import Concept
+from app.db.models.label_model import Label
+from app.db.models.identifier_model import Identifier
 
 
 class AbstractDAO:
@@ -75,7 +72,7 @@ class HarvestingDAO(AbstractDAO):
     """
 
     async def create_harvesting(
-        self, retrieval: Retrieval, harvester: str, state: State
+        self, retrieval: Retrieval, harvester: str, state: Harvesting.State
     ) -> Harvesting:
         """
         Create a harvesting for a retrieval
@@ -99,7 +96,7 @@ class HarvestingDAO(AbstractDAO):
         """
         return await self.db_session.get(Harvesting, harvesting_id)
 
-    async def update_harvesting_state(self, harvesting_id: int, state: State):
+    async def update_harvesting_state(self, harvesting_id: int, state: Harvesting.State):
         """
         Update the state of a harvesting
 

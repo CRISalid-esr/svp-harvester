@@ -9,7 +9,9 @@ from starlette.background import BackgroundTasks
 from app.config import get_app_settings
 from app.db.conversions import EntityConverter
 from app.db.daos import RetrievalDAO, HarvestingDAO
-from app.db.models import Retrieval, State, Entity
+from app.db.models.retrieval_model import Retrieval
+from app.db.models.harvesting_model import Harvesting
+from app.db.models.entity_model import Entity
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
@@ -96,7 +98,7 @@ class RetrievalService:
                     harvesting = await HarvestingDAO(session).create_harvesting(
                         retrieval=retrieval,
                         harvester=harvester_name,
-                        state=State.RUNNING,
+                        state=Harvesting.State.RUNNING,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)

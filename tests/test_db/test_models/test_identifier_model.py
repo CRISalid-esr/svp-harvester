@@ -2,7 +2,7 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import (
+from app.db.models.identifier_model import (
     Identifier as DbIdentifier,
 )
 

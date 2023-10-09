@@ -4,13 +4,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.daos import RetrievalDAO, HarvestingDAO, EntityDAO
-from app.db.models import (
-    Person as DbPerson,
-    Identifier as DbIdentifier,
-    Retrieval as DbRetrieval,
-    Harvesting,
-    State,
-)
+from app.db.models.person_model import Person as DbPerson
+
+from app.db.models.identifier_model import Identifier as DbIdentifier
+from app.db.models.retrieval_model import Retrieval as DbRetrieval
+from app.db.models.harvesting_model import Harvesting
 
 
 @pytest.mark.asyncio
@@ -86,7 +84,7 @@ async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model
     :return: None
     """
     dao = HarvestingDAO(async_session)
-    await dao.create_harvesting(retrieval_db_model, "idref", state=State.RUNNING)
+    await dao.create_harvesting(retrieval_db_model, "idref", state=Harvesting.State.RUNNING)
     await async_session.commit()
     stmt = (
         select(Harvesting)
@@ -107,12 +105,12 @@ async def test_update_harvesting_state(async_session: AsyncSession, retrieval_db
     """
     dao = HarvestingDAO(async_session)
     harvesting = await dao.create_harvesting(
-        retrieval_db_model, "idref", state=State.RUNNING
+        retrieval_db_model, "idref", state=Harvesting.State.RUNNING
     )
     await async_session.commit()
-    await dao.update_harvesting_state(harvesting.id, State.COMPLETED)
+    await dao.update_harvesting_state(harvesting.id, Harvesting.State.COMPLETED)
     harvesting_from_db = await dao.get_harvesting_by_id(harvesting.id)
-    assert harvesting_from_db.state == State.COMPLETED.value
+    assert harvesting_from_db.state == Harvesting.State.COMPLETED.value
 
 
 @pytest.mark.asyncio

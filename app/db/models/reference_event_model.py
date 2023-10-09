@@ -1,0 +1,37 @@
+from enum import Enum
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.session import Base
+
+
+class ReferenceEvent(Base):
+    """
+    Model for persistence of events related to references
+    """
+
+    __tablename__ = "reference_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    type: Mapped[str] = mapped_column(nullable=False, index=True)
+
+    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
+    reference: Mapped["app.db.models.reference_model.Reference"] = relationship(
+        "app.db.models.reference_model.Reference",
+        back_populates="reference_events", lazy="joined"
+    )
+
+    harvesting_id: Mapped[int] = mapped_column(ForeignKey("harvestings.id"))
+    harvesting: Mapped["app.db.models.harvesting_model.Harvesting"] = relationship(
+        "app.db.models.harvesting_model.Harvesting",
+        back_populates="reference_events", lazy="joined"
+    )
+
+    class Type(Enum):
+        """Reference events types"""
+
+        CREATED = "created"
+        UPDATED = "updated"
+        DELETED = "deleted"
+        UNCHANGED = "unchanged"

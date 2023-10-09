@@ -16,11 +16,9 @@ from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
 from app.db.daos import RetrievalDAO, HarvestingDAO
-from app.db.models import (
-    Person as DbPerson,
-    Identifier as DbIdentifier,
-    State,
-)
+from app.db.models.harvesting_model import Harvesting
+from app.db.models.identifier_model import Identifier as DbIdentifier
+from app.db.models.person_model import Person as DbPerson
 from app.db.session import Base, engine
 from app.models.people import Person as PydanticPerson
 
@@ -168,7 +166,7 @@ def fixture_person_with_name_and_id_hal_i_s_db_model():
 
 @pytest_asyncio.fixture(name="retrieval_db_model")
 async def fixture_retrieval_db_model(
-    async_session, person_with_name_and_idref_db_model
+        async_session, person_with_name_and_idref_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and IDREF in DB model format
@@ -184,7 +182,7 @@ async def fixture_retrieval_db_model(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i")
 async def fixture_retrieval_db_model_for_person_with_id_hal_i(
-    async_session, person_with_name_and_id_hal_i_db_model
+        async_session, person_with_name_and_id_hal_i_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and ID_HAL_I in DB model format
@@ -200,7 +198,7 @@ async def fixture_retrieval_db_model_for_person_with_id_hal_i(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_s")
 async def fixture_retrieval_db_model_for_person_with_id_hal_s(
-    async_session, person_with_name_and_id_hal_s_db_model
+        async_session, person_with_name_and_id_hal_s_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and ID_HAL_S in DB model format
@@ -216,7 +214,7 @@ async def fixture_retrieval_db_model_for_person_with_id_hal_s(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i_s")
 async def fixture_retrieval_db_model_for_person_with_id_hal_i_s(
-    async_session, person_with_name_and_id_hal_i_s_db_model
+        async_session, person_with_name_and_id_hal_i_s_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name, ID_HAL_I and ID_HAL_S
@@ -240,13 +238,13 @@ async def fixture_harvesting_db_model(async_session, retrieval_db_model):
     :return:  harvesting in DB model format
     """
     return await HarvestingDAO(async_session).create_harvesting(
-        retrieval_db_model, "idref", State.RUNNING
+        retrieval_db_model, "idref", Harvesting.State.RUNNING
     )
 
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i")
 async def fixture_hal_harvesting_db_model_id_hal_i(
-    async_session, retrieval_db_model_for_person_with_id_hal_i
+        async_session, retrieval_db_model_for_person_with_id_hal_i
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -256,13 +254,13 @@ async def fixture_hal_harvesting_db_model_id_hal_i(
     :return:  Hal harvesting in DB model format
     """
     return await HarvestingDAO(async_session).create_harvesting(
-        retrieval_db_model_for_person_with_id_hal_i, "hal", State.RUNNING
+        retrieval_db_model_for_person_with_id_hal_i, "hal", Harvesting.State.RUNNING
     )
 
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_s")
 async def fixture_hal_harvesting_db_model_id_hal_s(
-    async_session, retrieval_db_model_for_person_with_id_hal_s
+        async_session, retrieval_db_model_for_person_with_id_hal_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -272,13 +270,13 @@ async def fixture_hal_harvesting_db_model_id_hal_s(
     :return:  Hal harvesting in DB model format
     """
     return await HarvestingDAO(async_session).create_harvesting(
-        retrieval_db_model_for_person_with_id_hal_s, "hal", State.RUNNING
+        retrieval_db_model_for_person_with_id_hal_s, "hal", Harvesting.State.RUNNING
     )
 
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i_s")
 async def fixture_hal_harvesting_db_model_id_hal_i_s(
-    async_session, retrieval_db_model_for_person_with_id_hal_i_s
+        async_session, retrieval_db_model_for_person_with_id_hal_i_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -288,7 +286,7 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
     :return:  Hal harvesting in DB model format
     """
     return await HarvestingDAO(async_session).create_harvesting(
-        retrieval_db_model_for_person_with_id_hal_i_s, "hal", State.RUNNING
+        retrieval_db_model_for_person_with_id_hal_i_s, "hal", Harvesting.State.RUNNING
     )
 
 
@@ -373,7 +371,7 @@ def fixture_person_with_last_name_only(person_with_last_name_only_json):
 
 @pytest.fixture(name="person_with_last_name_and_first_name")
 def fixture_person_with_last_name_and_first_name(
-    person_with_last_name_and_first_name_json,
+        person_with_last_name_and_first_name_json,
 ):
     """
     Generate a person with first name and last name in Pydantic format
