@@ -52,3 +52,16 @@ def test_person_with_last_name_only():
         match="At least one identifier or the entire name must be provided",
     ):
         Person(last_name="Doe")
+
+
+def test_person_with_full_name_only(person_with_full_name_only: Person):
+    """
+    GIVEN a person with full name only
+    WHEN the person is created
+    THEN check the person has the correct attributes
+    :param person_with_full_name_only: person with full name only
+    """
+    assert person_with_full_name_only.full_name == "John Doe"
+    assert person_with_full_name_only.first_name is None
+    assert person_with_full_name_only.last_name is None
+    assert person_with_full_name_only.get_identifier("idref") is None

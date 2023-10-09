@@ -41,3 +41,16 @@ async def test_person_cannot_be_given_identifier_of_unknown_type(
             DbIdentifier(type="unknown", value="123456789")
         )
         async_session.add(person_with_name_and_idref_db_model)
+
+
+def test_update_full_name(person_with_name_and_id_hal_s_db_model):
+    """
+    GIVEN a person with a name and an identifier of any type
+    WHEN the first name is updated
+    THEN check that full name is updated as well
+    """
+    person = person_with_name_and_id_hal_s_db_model
+
+    person.first_name = 'Jane'
+
+    assert person.full_name == 'Jane Doe'

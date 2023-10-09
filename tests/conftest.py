@@ -92,6 +92,25 @@ def fixture_person_without_identifiers_json(_base_path):
     return _person_json_data_from_file(_base_path, "person_without_identifier")
 
 
+@pytest.fixture(name="person_with_full_name_only")
+def fixture_person_with_full_name_only(person_with_full_name_only_json):
+    """
+    Generate a person with only first name and last name in Pydantic format
+    :return: person with only first name and last name in Pydantic format
+    """
+    return _person_from_json_data(person_with_full_name_only_json)
+
+
+@pytest.fixture(name="person_with_full_name_only_json")
+def fixture_person_with_full_name_only_json(_base_path):
+    """
+    Generate a person with only first name and last name in JSON format
+    :param _base_path: test data directory base
+    :return: person with only first name and last name in JSON format
+    """
+    return _person_json_data_from_file(_base_path, "person_with_full_name_only")
+
+
 @pytest.fixture(name="person_with_name_and_idref_db_model")
 def fixture_person_with_name_and_idref_db_model():
     """
