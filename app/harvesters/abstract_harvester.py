@@ -102,12 +102,12 @@ class AbstractHarvester(ABC):
                 )
                 new_references.append(reference)
             new_references_source_identifiers = [
-                ref.source_identifier for ref in new_references
+                str(ref.source_identifier) for ref in new_references
             ]
             deleted_references = [
                 ref
                 for ref in previous_references
-                if ref.source_identifier not in new_references_source_identifiers
+                if str(ref.source_identifier) not in new_references_source_identifiers
             ]
             for reference in deleted_references:
                 reference_event = await ReferencesRecorder().register_deletion(
