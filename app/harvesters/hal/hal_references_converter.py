@@ -2,8 +2,12 @@ import hashlib
 import re
 from typing import Generator
 
-from app.db.daos import ConceptDAO
-from app.db.models import Reference, Title, Subtitle, Concept, Label
+from app.db.daos.concept_dao import ConceptDAO
+from app.db.models.reference_model import Reference
+from app.db.models.title_model import  Title
+from app.db.models.subtitle_model import Subtitle
+from app.db.models.concept_model import Concept
+from app.db.models.label_model import Label
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as JsonRawResult
 

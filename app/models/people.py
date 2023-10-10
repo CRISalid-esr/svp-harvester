@@ -19,6 +19,7 @@ class Person(Entity):
 
     last_name: Optional[str] = None
     first_name: Optional[str] = None
+    full_name: Optional[str] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -32,7 +33,7 @@ class Person(Entity):
             ), "Each identifier must be a hash with type and value"
 
         # check that there is at least one identifier
-        assert any(
+        has_valid_identifier = any(
             # pylint: disable=cell-var-from-loop
             list(
                 filter(
@@ -41,10 +42,20 @@ class Person(Entity):
                 )
             )
             for t in settings.identifiers
-        ) or all(
-            # or that there are both first name and last name
+        )
+
+        # check if full_name is provided
+        has_full_name = "full_name" in data and data["full_name"]
+
+        # Check if both first name and last name are provided
+        has_first_and_last_names = all(
             [data.get("last_name"), data.get("first_name")]
-        ), "At least one identifier or the entire name must be provided"
+        )
+
+        # check that there is at least one identifier
+        assert has_valid_identifier or has_full_name or has_first_and_last_names,\
+            "At least one identifier or the entire name must be provided"
+
         return data
 
     @model_validator(mode="before")
