@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -66,7 +65,8 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+docs/build/*
+!docs/build/html
 
 # PyBuilder
 .pybuilder/
@@ -162,3 +162,5 @@ app/templates/node_modules
 
 app/static/js/*
 app/templates/src/js/env.js
+
+docs/source/confluence/conf.py

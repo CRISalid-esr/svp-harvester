@@ -69,8 +69,8 @@ def test_hal_harvester_relevant_for_person_with_idhal_i(
 
 
 def test_hal_harvester_relevant_for_person_with_idhal_s(
-        person_with_name_and_id_hal_s: Person,
-        hal_harvester: HalHarvester,
+    person_with_name_and_id_hal_s: Person,
+    hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an IDHAL."""
     assert hal_harvester.is_relevant(person_with_name_and_id_hal_s) is True
@@ -112,10 +112,10 @@ async def test_hal_harvester_finds_doc(
 
 @pytest.mark.asyncio
 async def test_hal_harvester_calls_hal_api_with_id_hal_s(
-        hal_harvester: HalHarvester,
-        hal_harvesting_db_model_id_hal_s: Harvesting,
-        hal_api_client_mock,
-        async_session: AsyncSession,
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
 ):
     """
     Given a person in db model format with an id_hal_s
@@ -182,11 +182,11 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
 
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_docs_in_db(
-        hal_harvester: HalHarvester,
-        hal_harvesting_db_model_id_hal_i,
-        hal_api_client_mock,
-        hal_api_docs_for_one_researcher: dict,
-        async_session: AsyncSession,
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    hal_api_client_mock,
+    hal_api_docs_for_one_researcher: dict,
+    async_session: AsyncSession,
 ):
     """Test that after harvesting, the references are registered in the database."""
     async_session.add(hal_harvesting_db_model_id_hal_i)
@@ -220,10 +220,10 @@ async def test_hal_harvester_registers_docs_in_db(
 
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_one_kw_for_two_occurences(
-        hal_harvester: HalHarvester,
-        hal_harvesting_db_model_id_hal_i,
-        hal_api_client_mock_same_kw_twice,
-        async_session: AsyncSession,
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    hal_api_client_mock_same_kw_twice,
+    async_session: AsyncSession,
 ):
     """
     The first publication has a concept,

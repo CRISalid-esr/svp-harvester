@@ -291,6 +291,38 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
     )
 
 
+@pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_s")
+async def fixture_hal_harvesting_db_model_id_hal_s(
+    async_session, retrieval_db_model_for_person_with_id_hal_s
+):
+    """
+    Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
+
+    :param async_session: async db session
+    :param retrieval_db_model_for_person_with_id_hal_s: retrieval in DB model format
+    :return:  Hal harvesting in DB model format
+    """
+    return await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model_for_person_with_id_hal_s, "hal", State.RUNNING
+    )
+
+
+@pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i_s")
+async def fixture_hal_harvesting_db_model_id_hal_i_s(
+    async_session, retrieval_db_model_for_person_with_id_hal_i_s
+):
+    """
+    Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
+
+    :param async_session: async db session
+    :param retrieval_db_model_for_person_with_id_hal_i_s: retrieval in DB model format
+    :return:  Hal harvesting in DB model format
+    """
+    return await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model_for_person_with_id_hal_i_s, "hal", State.RUNNING
+    )
+
+
 @pytest.fixture(name="person_with_name_and_idref")
 def fixture_person_with_name_and_idref(person_with_name_and_idref_json):
     """

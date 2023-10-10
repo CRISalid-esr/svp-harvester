@@ -15,12 +15,12 @@ that are used by an institutional research information system in general and the
 SoVisu+ Harvester is implemented as a microservice that can be deployed in a containerized environment.
 
 It is intended to institutions that have already created and actively maintain a repository of matched identifiers for
-actors, structures and research projects.
+authors, structures and research projects.
 
 ### Overall use
 
 The SoVisu+ Harvester is designed to receive requests containing a list of identifiers for a so-called "research
-entity" (actor, structure or research project) and to return a list of references to publications
+entity" (wich can be an author, research structure, research institution or research project) and to return a list of references to publications
 that are associated with the research entity.
 
 The list of accepted identifiers is not exhaustive as the service is extensible by design.
@@ -236,3 +236,34 @@ pybabel compile --domain=admin --directory=locales --use-fuzzy
 ```
 
 See [Babel commad line documentation](https://babel.pocoo.org/en/latest/cmdline.html) for more information.
+
+# Documentation compilation and publication
+
+The documentation is written in reStructuredText and compiled with Sphinx.
+
+## HTML publication
+
+To export the documentation to HTML, run the following command from the `docs` directory :
+
+```bash
+python -m sphinx -b html source build/html
+```
+
+Then, copy the content of the `docs/build/html` directory to the server of your choice.
+
+## ReadTheDocs publication
+
+The documentation is automatically published on [ReadTheDocs](https://readthedocs.org/) at each push on the `dev-main`
+branch.
+The configuration settings are defined in the `docs/source/conf.py` file, which is specified in the `.readthedocs.yml` file as the entry point.
+
+## Confluence publication
+
+To export the documentation to Confluence through the Confluence Publisher plugin,
+
+- Copy `docs/source/confluence/conf.py.example` to `docs/source/confluence/conf.py` and update it with your values
+- Run the following command from the `docs` directory :
+
+```bash
+python -m sphinx -b confluence -c source/confluence source build/confluence -E -a
+```

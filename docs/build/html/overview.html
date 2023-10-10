@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; SoVisu+ Harvester V0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=0199fefd"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick start : deployment" href="quickstart/deployment.html" />
+    <link rel="prev" title="Welcome to SoVisu+ Harvester’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SoVisu+ Harvester
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-repository-and-live-demo">Project repository and live demo 📺</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overall-operating-mode">Overall operating mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extensibility">🧱 Extensibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flexible-identifiers-management">🆔 Flexible identifiers management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-processing">⚙️ Parallel Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standardized-output-format">🥫 Standardized Output Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#various-integration-modes">🔌 Various integration modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#harvesting-monitoring">👁 Harvesting monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functional-scope-limitations">Functional scope limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/deployment.html">Quick start : deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart/development.html">Quick start : development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/model.html">Reference : model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/entities.html">Reference : entity resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/identifiers.html">Reference : identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harvesters/overview.html">Harvesters : overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harvesters/hal.html">Harvesters : Hal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harvesters/idref.html">Harvesters : Idref</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SoVisu+ Harvester</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<p><strong>SoVisu+ Harvester</strong> is a generic tool designed for harvesting bibliographic references from various sources and to convert them into a common standardized format.</p>
+<p>It is intended to provide a unified interface to the various scholarly publication databases and repositories that are used by an institutional research information system or a bibliographic data management system.</p>
+<section id="project-repository-and-live-demo">
+<h2>Project repository and live demo 📺<a class="headerlink" href="#project-repository-and-live-demo" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/jdp1ps/svp-harvester#readme"><img alt="GitHub repository" src="https://img.shields.io/badge/GitHub--repository-svp--harvester-blue?style=flat-square&amp;logo=github" /></a> Source code is available on Github</p>
+<p>🕘 The code will move to an institutional repository in the near future.</p>
+<p><a class="reference external" href="http://13.51.241.83/admin/retrieve?locale=fr_FR"><img alt="AWS EC2 Démo" src="https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&amp;logo=amazon-aws" /></a> A live demo on a basic AWS box.</p>
+<p>🕘 The demo reflects the current state of development and has no guarantee of stability.</p>
+<p>🛠️ The presented interface is intended for administration and debugging purposes and is not for end-users.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SoVisu+ Harvester belongs to the SoVisu+ project, which aims to provide a set of robust and scalable components to build research information management systems. But it may also be used as a standalone tool or integrated to a completely different system.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>SoVisu+ Harvester</strong> does not control identifiers matching : It is intended for use in institutions that have already created and actively maintain a repository of matched identifiers for authors, structures and research projects. It also does not perform deduplication of references, as this functionality will be implemented in a separate component.</p>
+</div>
+</section>
+<section id="overall-operating-mode">
+<h2>Overall operating mode<a class="headerlink" href="#overall-operating-mode" title="Link to this heading"></a></h2>
+<p>The <strong>SoVisu+ Harvester</strong> is designed to receive requests containing a list of <a class="reference internal" href="reference/identifiers.html"><span class="doc">identifiers</span></a> for a so-called <a class="reference internal" href="reference/entities.html"><span class="doc">“research entity”</span></a> (which can be an author, research structure, research institution or research project) and to return a list of bibliographic references encoded with a <a class="reference internal" href="reference/model.html"><span class="doc">common model</span></a> that are associated with the research entity.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/jdp1ps/svp-harvester/dev-main/img/svp-harvester-overall-behavior.png"><img alt="**SoVisu+ Harvester** operating mode" src="https://raw.githubusercontent.com/jdp1ps/svp-harvester/dev-main/img/svp-harvester-overall-behavior.png" style="width: 1000px;" /></a>
+</section>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<section id="extensibility">
+<h3>🧱 Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading"></a></h3>
+<p><strong>SoVisu+ Harvester</strong> serves as a runner for a group of harvesters, each of which is defined with specific parameters in a configuration file. These harvesters are responsible for retrieving data from distinct sources and converting it into a uniform format.</p>
+</section>
+<section id="flexible-identifiers-management">
+<h3>🆔 Flexible identifiers management<a class="headerlink" href="#flexible-identifiers-management" title="Link to this heading"></a></h3>
+<p>The tool performs harvestings on behalf of various kinds of entities (wich may be persons, research structures, laboratories of projects). For each type of entity, it accepts a wide range of identifiers (such as IdRef, ORCID, IdHal) with which each harvester will perform his task as best as he can in a loosely coupled way.</p>
+</section>
+<section id="parallel-processing">
+<h3>⚙️ Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
+<p>To optimize performance, the harvesters are run concurrently. The results can be delivered in real-time or as a single batch upon completion of the process, with options for both synchronous and asynchronous modes.</p>
+</section>
+<section id="standardized-output-format">
+<h3>🥫 Standardized Output Format<a class="headerlink" href="#standardized-output-format" title="Link to this heading"></a></h3>
+<p>The harvested data is converted into a common format, aligning with the <a class="reference external" href="https://documentation.abes.fr/aidescienceplusabes/index.html#ModeleGeneral">SciencePlus data model</a>. This model is based on widely accepted ontologies in the field, such as Dublin Core, Bibo, Vivo, and more.</p>
+</section>
+<section id="various-integration-modes">
+<h3>🔌 Various integration modes<a class="headerlink" href="#various-integration-modes" title="Link to this heading"></a></h3>
+<p>The microservice is intended to be integrated in a bibliographic data management system or in a research information management system. It is compatible with service oriented architecture (throught REST API) as well as with message oriented architecture (throught AMQP protocol and RabbitMq).</p>
+</section>
+<section id="harvesting-monitoring">
+<h3>👁 Harvesting monitoring<a class="headerlink" href="#harvesting-monitoring" title="Link to this heading"></a></h3>
+<p>The database keeps track of all the harvestings and the errors that may arise during the process. To prevent nightly harvesting failures from becoming a system weakness, the harvesting history is readily accessible via a web interface, harvesting results or errors can be notified.</p>
+</section>
+</section>
+<section id="functional-scope-limitations">
+<h2>Functional scope limitations<a class="headerlink" href="#functional-scope-limitations" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>1. No identifiers matching:</strong> By design, it is up to the system client to perform identifier matching for each submitted entity before sending it to the harvester. Identifier matching is governed by complex rules that differ depending on the type of identifier and the type of entity (e.g., authenticated identifiers like ORCID or identifiers managed by librarians like IdRef). For this reason, the harvester does not perform any matching and always considers the submitted matches as valid. The so-called “entity resolution” component is intended to maintain a consistent harvesting history even in cases where matches change over time.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>2. No deduplication:</strong> Reference deduplication is a complex process that can be implemented via several approaches (rules engine or probabilistic artificial intelligence). The present tool does not perform any deduplication. It is up to the system client to perform deduplication on the harvested references.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to SoVisu+ Harvester’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart/deployment.html" class="btn btn-neutral float-right" title="Quick start : deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, SoVisu+ Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
