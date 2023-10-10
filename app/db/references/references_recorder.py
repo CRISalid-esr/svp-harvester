@@ -1,5 +1,5 @@
-from app.db.daos.reference_dao import ReferenceDAO
-from app.db.daos.reference_event_dao import ReferenceEventDAO
+from app.db.daos.reference import ReferenceDAO
+from app.db.daos.reference_event import ReferenceEventDAO
 from app.db.models.harvesting import Harvesting
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.reference import Reference

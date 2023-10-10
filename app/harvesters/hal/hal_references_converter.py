@@ -2,7 +2,7 @@ import hashlib
 import re
 from typing import Generator
 
-from app.db.daos.concept_dao import ConceptDAO
+from app.db.daos.concept import ConceptDAO
 from app.db.models.reference import Reference
 from app.db.models.title import  Title
 from app.db.models.subtitle import Subtitle
