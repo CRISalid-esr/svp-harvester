@@ -15,7 +15,7 @@ Project repository and live demo 📺
 🕘 The code will move to an institutional repository in the near future.
 
 .. |ico2| image:: https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&logo=amazon-aws
-    :target: http://13.51.241.83/admin/retrieve?locale=en_US
+    :target: http://13.51.241.83/admin/retrieve?locale=fr_FR
     :alt: AWS EC2 Démo
 
 |ico2| A live demo on a basic AWS box.
