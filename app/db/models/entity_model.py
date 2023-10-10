@@ -14,6 +14,7 @@ class Entity(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str]
+    name: Mapped[str] = mapped_column(nullable=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "entity",

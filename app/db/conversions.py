@@ -24,8 +24,7 @@ class EntityConverter:
 
     def _to_db_person(self) -> DbPerson:
         return DbPerson(
-            last_name=self.entity.last_name,
-            first_name=self.entity.first_name,
+            name=self.entity.name,
             identifiers=[
                 IdentifierConverter(i).to_db_model() for i in self.entity.identifiers
             ],

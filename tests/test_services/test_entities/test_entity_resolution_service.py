@@ -13,21 +13,18 @@ async def test_resolution_service_finds_previous_entity(async_session: AsyncSess
     """Test that if we submit an entity with an identifier that already exists in the database,
     we get back the existing entity."""
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[Identifier(type="idref", value="123456789")],
     )
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[Identifier(type="idref", value="123456789")],
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
-    assert existing_entity.first_name == "John"
-    assert existing_entity.last_name == "Doe"
+    assert existing_entity.name == "John Doe"
     assert len(existing_entity.identifiers) == 1
     assert existing_entity.identifiers[0].type == "idref"
 
@@ -43,15 +40,13 @@ async def test_resolution_service_updates_previous_entity(async_session: AsyncSe
     :return: None
     """
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[Identifier(type="idref", value="123456789")],
     )
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="id_hal_i", value="987654321"),
@@ -59,8 +54,7 @@ async def test_resolution_service_updates_previous_entity(async_session: AsyncSe
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
-    assert existing_entity.first_name == "John"
-    assert existing_entity.last_name == "Doe"
+    assert existing_entity.name == "John Doe"
     assert len(existing_entity.identifiers) == 2
     assert existing_entity.identifiers[0].type == "idref"
     assert existing_entity.identifiers[1].type == "id_hal_i"
@@ -87,8 +81,7 @@ async def test_resolution_service_respects_identifier_hierarchy(
         "priority"
     )
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="id_hal_i", value="987654321"),
@@ -97,8 +90,7 @@ async def test_resolution_service_respects_identifier_hierarchy(
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="id_hal_i", value="999999999"),
@@ -135,8 +127,7 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
         "priority"
     )
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="orcid", value="000000000"),
@@ -144,8 +135,7 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
     )
     async_session.add(entity1)
     entity2 = Person(
-        first_name="Jane",
-        last_name="Doe",
+        name="Jane Doe",
         identifiers=[
             Identifier(type="idref", value="987654321"),
             Identifier(type="orcid", value="111111111"),
@@ -154,8 +144,7 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
     async_session.add(entity2)
     service = EntityResolutionService(async_session)
     entity3 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="orcid", value="111111111"),
@@ -189,16 +178,14 @@ async def test_resolution_service_deletes_entity_if_it_loses_is_only_identifier(
         "priority"
     )
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="idref", value="123456789"),
         ],
     )
     async_session.add(entity1)
     entity2 = Person(
-        first_name="Jane",
-        last_name="Doe",
+        name="Jane Doe",
         identifiers=[
             Identifier(type="orcid", value="111111111"),
         ],
@@ -207,8 +194,7 @@ async def test_resolution_service_deletes_entity_if_it_loses_is_only_identifier(
     entity2_id = entity2.id
     service = EntityResolutionService(async_session)
     entity3 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[
             Identifier(type="idref", value="123456789"),
             Identifier(type="orcid", value="111111111"),
@@ -260,8 +246,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
         "priority"
     )
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="id_hal_i", value="1"),
             Identifier(type="idref", value="1"),
@@ -269,8 +254,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     )
     async_session.add(entity1)
     entity2 = Person(
-        first_name="Jane",
-        last_name="Doe",
+        name="Jane Doe",
         identifiers=[
             Identifier(type="id_hal_i", value="2"),
             Identifier(type="idref", value="2"),
@@ -279,8 +263,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     )
     async_session.add(entity2)
     entity3 = Person(
-        first_name="Johnny",
-        last_name="Doe",
+        name="Johnny Doe",
         identifiers=[
             Identifier(type="id_hal_i", value="3"),
             Identifier(type="orcid", value="3"),
@@ -288,8 +271,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     )
     async_session.add(entity3)
     entity4 = Person(
-        first_name="Jenny",
-        last_name="Doe",
+        name="Jenny Doe",
         identifiers=[
             Identifier(type="researcher_id", value="4"),
         ],
@@ -298,8 +280,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity4_id = entity4.id
     service = EntityResolutionService(async_session)
     entity5 = Person(
-        first_name="Johnny",
-        last_name="DoeVariant",
+        name="Johnny DoeVariant",
         identifiers=[
             Identifier(type="id_hal_i", value="3"),
             Identifier(type="idref", value="1"),

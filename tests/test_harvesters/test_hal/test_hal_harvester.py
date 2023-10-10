@@ -84,14 +84,6 @@ def test_hal_harvester_not_relevant_for_person_with_idref_only(
     assert hal_harvester.is_relevant(person_with_name_and_idref) is False
 
 
-def test_hal_harvester_not_relevant_for_person_with_last_name_and_first_name_only(
-        person_with_last_name_and_first_name: Person,
-        hal_harvester: HalHarvester,
-):
-    """Test that the harvester will not run if submitted with only a last name."""
-    assert hal_harvester.is_relevant(person_with_last_name_and_first_name) is False
-
-
 @pytest.mark.asyncio
 async def test_hal_harvester_finds_doc(
         hal_harvester: HalHarvester,
