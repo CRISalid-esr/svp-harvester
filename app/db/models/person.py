@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
-from app.db.models.entity_model import Entity
+from app.db.models.entity import Entity
 
 
 class Person(Entity):

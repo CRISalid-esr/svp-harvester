@@ -1,8 +1,8 @@
 from sqlalchemy import update
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.retrieval_model import Retrieval
+from app.db.models.harvesting import Harvesting
+from app.db.models.retrieval import Retrieval
 
 
 class HarvestingDAO(AbstractDAO):

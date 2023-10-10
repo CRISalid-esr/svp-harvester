@@ -10,9 +10,9 @@ from app.config import get_app_settings
 from app.db.conversions import EntityConverter
 from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.retrieval_model import Retrieval
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.entity_model import Entity
+from app.db.models.retrieval import Retrieval
+from app.db.models.harvesting import Harvesting
+from app.db.models.entity import Entity
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory

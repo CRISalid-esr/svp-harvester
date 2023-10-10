@@ -1,8 +1,8 @@
 from sqlalchemy import select, Row
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.entity_model import Entity
-from app.db.models.identifier_model import Identifier
+from app.db.models.entity import Entity
+from app.db.models.identifier import Identifier
 
 
 class IdentifierDAO(AbstractDAO):

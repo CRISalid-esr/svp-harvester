@@ -21,13 +21,13 @@ class Entity(Base):
         "polymorphic_on": "type",
     }
 
-    identifiers: Mapped[List["app.db.models.identifier_model.Identifier"]] = relationship(
-        "app.db.models.identifier_model.Identifier",
+    identifiers: Mapped[List["app.db.models.identifier.Identifier"]] = relationship(
+        "app.db.models.identifier.Identifier",
         back_populates="entity", cascade="all, delete-orphan", lazy="joined"
     )
 
-    retrievals: Mapped[List["app.db.models.retrieval_model.Retrieval"]] = relationship(
-        "app.db.models.retrieval_model.Retrieval",
+    retrievals: Mapped[List["app.db.models.retrieval.Retrieval"]] = relationship(
+        "app.db.models.retrieval.Retrieval",
         back_populates="entity", cascade="all, delete", lazy="raise"
     )
 

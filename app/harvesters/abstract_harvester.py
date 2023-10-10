@@ -6,9 +6,9 @@ from pydantic import BaseModel
 
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.entity_model import Entity
-from app.db.models.reference_event_model import ReferenceEvent
-from app.db.models.harvesting_model import Harvesting
+from app.db.models.entity import Entity
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.harvesting import Harvesting
 from app.db.references.references_recorder import ReferencesRecorder
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult

@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.daos.entity_dao import EntityDAO
-from app.db.models.person_model import Person as DbPerson
+from app.db.models.person import Person as DbPerson
 
 
 @pytest.mark.asyncio

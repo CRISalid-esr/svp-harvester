@@ -3,11 +3,11 @@ import re
 from typing import Generator
 
 from app.db.daos.concept_dao import ConceptDAO
-from app.db.models.reference_model import Reference
-from app.db.models.title_model import  Title
-from app.db.models.subtitle_model import Subtitle
-from app.db.models.concept_model import Concept
-from app.db.models.label_model import Label
+from app.db.models.reference import Reference
+from app.db.models.title import  Title
+from app.db.models.subtitle import Subtitle
+from app.db.models.concept import Concept
+from app.db.models.label import Label
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as JsonRawResult
 

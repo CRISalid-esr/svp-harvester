@@ -17,9 +17,9 @@ from starlette.testclient import TestClient
 
 from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.daos.retrieval_dao import RetrievalDAO
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.identifier_model import Identifier as DbIdentifier
-from app.db.models.person_model import Person as DbPerson
+from app.db.models.harvesting import Harvesting
+from app.db.models.identifier import Identifier as DbIdentifier
+from app.db.models.person import Person as DbPerson
 from app.db.session import Base, engine
 from app.models.people import Person as PydanticPerson
 

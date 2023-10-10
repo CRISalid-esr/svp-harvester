@@ -3,8 +3,8 @@ import hashlib
 import rdflib
 from rdflib import Graph, DC, Literal
 
-from app.db.models.reference_model import Reference
-from app.db.models.title_model import Title
+from app.db.models.reference import Reference
+from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.rdf_harvester_raw_result import (

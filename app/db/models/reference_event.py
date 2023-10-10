@@ -17,14 +17,14 @@ class ReferenceEvent(Base):
     type: Mapped[str] = mapped_column(nullable=False, index=True)
 
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
-    reference: Mapped["app.db.models.reference_model.Reference"] = relationship(
-        "app.db.models.reference_model.Reference",
+    reference: Mapped["app.db.models.reference.Reference"] = relationship(
+        "app.db.models.reference.Reference",
         back_populates="reference_events", lazy="joined"
     )
 
     harvesting_id: Mapped[int] = mapped_column(ForeignKey("harvestings.id"))
-    harvesting: Mapped["app.db.models.harvesting_model.Harvesting"] = relationship(
-        "app.db.models.harvesting_model.Harvesting",
+    harvesting: Mapped["app.db.models.harvesting.Harvesting"] = relationship(
+        "app.db.models.harvesting.Harvesting",
         back_populates="reference_events", lazy="joined"
     )
 

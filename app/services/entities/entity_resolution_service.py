@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import get_app_settings
 from app.db.daos.identifier_dao import IdentifierDAO
 from app.db.daos.entity_dao import EntityDAO
-from app.db.models.entity_model import Entity as DbEntity
+from app.db.models.entity import Entity as DbEntity
 
 
 class EntityResolutionService:

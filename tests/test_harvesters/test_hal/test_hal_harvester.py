@@ -9,11 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.config import get_app_settings
-from app.db.models.concept_model import Concept
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.label_model import Label
-from app.db.models.reference_event_model import ReferenceEvent
-from app.db.models.reference_model import Reference
+from app.db.models.concept import Concept
+from app.db.models.harvesting import Harvesting
+from app.db.models.label import Label
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.reference import Reference
 from app.db.references.references_recorder import ReferencesRecorder
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
