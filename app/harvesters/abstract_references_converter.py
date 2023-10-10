@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.db.models import Reference
+from app.db.models.reference_model import Reference
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 
 

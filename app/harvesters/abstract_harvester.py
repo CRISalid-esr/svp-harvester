@@ -4,8 +4,11 @@ from typing import Optional, AsyncGenerator
 
 from pydantic import BaseModel
 
-from app.db.daos import EntityDAO, HarvestingDAO
-from app.db.models import State, Harvesting, ReferenceEvent, Entity
+from app.db.daos.entity_dao import EntityDAO
+from app.db.daos.harvesting_dao import HarvestingDAO
+from app.db.models.entity_model import Entity
+from app.db.models.reference_event_model import ReferenceEvent
+from app.db.models.harvesting_model import Harvesting
 from app.db.references.references_recorder import ReferencesRecorder
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
@@ -75,7 +78,7 @@ class AbstractHarvester(ABC):
         Run the harvester asynchronously
         :return: None
         """
-        await self._update_harvesting_state(State.RUNNING)
+        await self._update_harvesting_state(Harvesting.State.RUNNING)
         await self._notify_harvesting_state()
         previous_references = await ReferencesRecorder().get_previous_references(
             self.entity_id, (await self.get_harvesting()).harvester
@@ -120,7 +123,7 @@ class AbstractHarvester(ABC):
                         "change": ReferenceEvent.Type.DELETED.value,
                     }
                 )
-            await self._update_harvesting_state(State.COMPLETED)
+            await self._update_harvesting_state(Harvesting.State.COMPLETED)
             await self._notify_harvesting_state()
         # main point to handle all errors related to external endpoints unavailability
         # harvester should let external ExternalEndpointFailure bubble up to this point
@@ -145,7 +148,7 @@ class AbstractHarvester(ABC):
             }
         )
 
-    async def _update_harvesting_state(self, state: State):
+    async def _update_harvesting_state(self, state: Harvesting.State):
         async with async_session() as session:
             async with session.begin():
                 await HarvestingDAO(session).update_harvesting_state(
@@ -159,7 +162,7 @@ class AbstractHarvester(ABC):
         :return: None
         """
         # TODO add informations about the error to the harvesting
-        await self._update_harvesting_state(State.FAILED)
+        await self._update_harvesting_state(Harvesting.State.FAILED)
         await self._put_in_queue(
             {
                 "type": "Harvesting",

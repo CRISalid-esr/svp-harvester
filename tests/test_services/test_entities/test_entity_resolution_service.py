@@ -3,7 +3,8 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_app_settings
-from app.db.models import Person, Identifier
+from app.db.models.person_model import Person
+from app.db.models.identifier_model import Identifier
 from app.services.entities.entity_resolution_service import EntityResolutionService
 
 

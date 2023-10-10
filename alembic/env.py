@@ -1,14 +1,50 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
-
 from app.config import get_app_settings
-from app.db import models
+from app.db.models import (
+    concept_model,
+    entity_model,
+    harvesting_model,
+    identifier_model,
+    label_model,
+    literal_field_model,
+    person_model,
+    reference_event_model,
+    reference_model,
+    retrieval_model,
+    subtitle_model,
+    title_model
+)
+from app.db.session import Base
+
+
+def _register_models_for_migrations():
+    """
+        This function is used to prevent models from being removed during code reformatting.
+        The models imported are necessary for the SQLAlchemy and Alembic, even though they
+        don't appear to be directly used in the script.
+        """
+    _ = (
+        concept_model,
+        entity_model,
+        harvesting_model,
+        identifier_model,
+        label_model,
+        literal_field_model,
+        person_model,
+        reference_event_model,
+        reference_model,
+        retrieval_model,
+        subtitle_model,
+        title_model
+    )
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -23,9 +59,11 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = models.Base.metadata
+target_metadata = Base.metadata
 settings = get_app_settings()
-config.set_main_option("sqlalchemy.url",  f'postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+config.set_main_option("sqlalchemy.url",
+                       f'postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

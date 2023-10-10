@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from app.db.models import Entity
+from app.db.models.entity_model import Entity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
 from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder

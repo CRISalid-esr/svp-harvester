@@ -1,5 +1,8 @@
-from app.db.daos import ReferenceDAO, ReferenceEventDAO
-from app.db.models import ReferenceEvent, Reference, Harvesting
+from app.db.daos.reference_dao import ReferenceDAO
+from app.db.daos.reference_event_dao import ReferenceEventDAO
+from app.db.models.harvesting_model import Harvesting
+from app.db.models.reference_event_model import ReferenceEvent
+from app.db.models.reference_model import Reference
 from app.db.session import async_session
 
 
@@ -9,7 +12,7 @@ class ReferencesRecorder:
     """
 
     async def register(
-        self, harvesting: Harvesting, new_ref: Reference
+            self, harvesting: Harvesting, new_ref: Reference
     ) -> ReferenceEvent:
         """
         Register a new reference in the database
@@ -38,7 +41,7 @@ class ReferencesRecorder:
                 )
 
     async def exists(
-        self, new_ref: Reference, harvesting: Harvesting
+            self, new_ref: Reference, harvesting: Harvesting
     ) -> Reference | None:
         """
         Check if a reference already exists in the database
@@ -52,7 +55,7 @@ class ReferencesRecorder:
             )
 
     async def register_deletion(
-        self, harvesting: Harvesting, old_ref: Reference
+            self, harvesting: Harvesting, old_ref: Reference
     ) -> ReferenceEvent:
         """
         Register an event for a deleted reference
@@ -70,7 +73,7 @@ class ReferencesRecorder:
                 )
 
     async def get_previous_references(
-        self, entity_id: int, harvester: str
+            self, entity_id: int, harvester: str
     ) -> list[Reference]:
         """
         Get the previously harvested references for an entity
