@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 
 from app.api.dependencies.references import build_person_from_fields
 from app.config import get_app_settings
-from app.db.daos.retrieval import RetrievalDAO
+from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as DbRetrieval
 from app.db.session import async_session
 from app.models.people import Person
