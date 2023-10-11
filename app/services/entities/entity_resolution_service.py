@@ -15,7 +15,7 @@ class EntityResolutionService:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def resolve(self, entity_to_resolve: DbEntity) -> DbEntity | None:
+    async def resolve(self, entity_to_resolve: DbEntity, nullify: list[str] = None):
         """
         Find an entity that has yet been submitted by its identifiers
         and resolve potential identifier conflicts
@@ -49,6 +49,8 @@ class EntityResolutionService:
         # the elected entity is the first one in the list
         # (the one with the highest priority identifier)
         elected_entity: DbEntity = matching_entities[0]
+
+        self._remove_nullified_identifiers(elected_entity, nullify)
         # we need to update the elected entity with the identifiers of the entity we want to resolve
         # and to remove the identifiers from the elected entities if they already exist
         entities_to_delete = []
@@ -85,3 +87,12 @@ class EntityResolutionService:
             await entity_dao.delete(entity_to_delete)
         # return the elected entity
         return elected_entity
+
+    @staticmethod
+    def _remove_nullified_identifiers(existing_entity, nullify):
+        if not nullify:
+            return
+        identifiers = existing_entity.identifiers
+        for identifier in identifiers:
+            if identifier.type in nullify:
+                existing_entity.identifiers.remove(identifier)

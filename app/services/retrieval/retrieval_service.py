@@ -1,7 +1,7 @@
 import asyncio
 import importlib
 from asyncio import Queue
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 
 from fastapi import Depends
 from starlette.background import BackgroundTasks
@@ -35,20 +35,23 @@ class RetrievalService:
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[Entity] = None
 
-    async def register(self, entity: Entity) -> Retrieval:
+    async def register(self, entity: Entity, nullify: List[str] = None) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
         self._build_harvesters()
+        # new entity is not saved to db yet
+        new_entity: Entity = EntityConverter(entity).to_db_model()
         async with async_session() as session:
             async with session.begin():
-                db_entity: Entity = EntityConverter(entity).to_db_model()
-                if existing_entity := await EntityResolutionService(session).resolve(
-                    db_entity
-                ):
-                    db_entity = existing_entity
-                else:
-                    session.add(db_entity)
-                self.retrieval = await RetrievalDAO(session).create_retrieval(db_entity)
+                existing_entity = await EntityResolutionService(session).resolve(
+                    new_entity, nullify=nullify
+                )
+        async with async_session() as session:
+            async with session.begin():
+                # this will add the new entity to the db if it does not exist
+                self.retrieval = await RetrievalDAO(session).create_retrieval(
+                    existing_entity or new_entity
+                )
         return self.retrieval
 
     async def run(
