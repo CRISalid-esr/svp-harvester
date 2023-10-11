@@ -1,5 +1,5 @@
 """ References routes"""
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
@@ -24,13 +24,15 @@ router = APIRouter()
 async def create_retrieval_sync(
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person = Depends(build_person_from_fields),
+    nullify: List[str] = None,
 ) -> JSONResponse:
     """
     Fetch references for a person in a synchronous way
     :param person: person built from fields
+    :param nullify: list of identifiers to nullify for the person
     :return: json response
     """
-    retrieval = await retrieval_service.register(person)
+    retrieval = await retrieval_service.register(person, nullify=nullify)
     await retrieval_service.run(in_background=False)
     # TODO query database to get all harvesting results
     return JSONResponse({"retrieval_id": retrieval.id})
@@ -44,15 +46,17 @@ async def create_retrieval_async(
     settings: Annotated[AppSettings, Depends(get_app_settings)],
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person,
+    nullify: List[str] = None,
 ) -> JSONResponse:
     """
     Fetch references for a person in an in_background way
     :param settings: app settings
     :param retrieval_service: retrieval service
     :param person: person built from fields
+    :param nullify: list of identifiers to nullify for the person
     :return: json response
     """
-    retrieval = await retrieval_service.register(person)
+    retrieval = await retrieval_service.register(person, nullify=nullify)
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
     return JSONResponse(
