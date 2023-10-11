@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.daos.harvesting import HarvestingDAO
+from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.harvesting import Harvesting
 from app.db.models.retrieval import Retrieval as DbRetrieval
 
