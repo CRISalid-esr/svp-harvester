@@ -16,8 +16,8 @@ class Identifier(Base):
     type: Mapped[str] = mapped_column(nullable=False, index=True)
     value: Mapped[str] = mapped_column(nullable=False, index=True)
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
-    entity: Mapped["app.db.models.entity_model.Entity"] = relationship(
-        "app.db.models.entity_model.Entity", back_populates="identifiers", lazy="raise")
+    entity: Mapped["app.db.models.entity.Entity"] = relationship(
+        "app.db.models.entity.Entity", back_populates="identifiers", lazy="raise")
 
     @validates("type", include_removes=False, include_backrefs=True)
     def _valide_identifier_is_referenced_by_settings(self, _, new_type):

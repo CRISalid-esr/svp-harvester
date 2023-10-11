@@ -1,6 +1,6 @@
-from app.db.models.entity_model import Entity as DbEntity
-from app.db.models.identifier_model import Identifier as DbIdentifier
-from app.db.models.person_model import Person as DbPerson
+from app.db.models.entity import Entity as DbEntity
+from app.db.models.identifier import Identifier as DbIdentifier
+from app.db.models.person import Person as DbPerson
 from app.models.entities import Entity as PydanticEntity
 from app.models.identifiers import Identifier as PydanticIdentifier
 
@@ -24,8 +24,7 @@ class EntityConverter:
 
     def _to_db_person(self) -> DbPerson:
         return DbPerson(
-            last_name=self.entity.last_name,
-            first_name=self.entity.first_name,
+            name=self.entity.name,
             identifiers=[
                 IdentifierConverter(i).to_db_model() for i in self.entity.identifiers
             ],

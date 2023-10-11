@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.concept_model import Concept
-from app.db.models.label_model import Label
+from app.db.models.concept import Concept
+from app.db.models.label import Label
 
 
 class ConceptDAO(AbstractDAO):

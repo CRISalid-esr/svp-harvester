@@ -3,10 +3,10 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.daos.retrieval_dao import RetrievalDAO
-from app.db.models.identifier_model import Identifier as DbIdentifier
-from app.db.models.person_model import Person as DbPerson
-from app.db.models.retrieval_model import Retrieval as DbRetrieval
+from app.db.daos.retrieval import RetrievalDAO
+from app.db.models.identifier import Identifier as DbIdentifier
+from app.db.models.person import Person as DbPerson
+from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
 @pytest.mark.asyncio
@@ -21,10 +21,9 @@ async def test_create_retrieval(
     """
     dao = RetrievalDAO(async_session)
     await dao.create_retrieval(person_with_name_and_idref_db_model)
-    stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
+    stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.name == "John Doe")
     retrieval_from_db = (await async_session.execute(stmt)).unique().scalar_one()
-    assert retrieval_from_db.entity.first_name == "John"
-    assert retrieval_from_db.entity.last_name == "Doe"
+    assert retrieval_from_db.entity.name == "John Doe"
     assert len(retrieval_from_db.entity.identifiers) == 1
 
 
@@ -40,12 +39,11 @@ async def test_get_retrieval(
     """
     dao = RetrievalDAO(async_session)
     await dao.create_retrieval(person_with_name_and_idref_db_model)
-    stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.first_name == "John")
+    stmt = select(DbRetrieval).join(DbPerson).where(DbPerson.name == "John Doe")
     created_retrieval = (await async_session.execute(stmt)).unique().scalar_one()
     retrieval_id = created_retrieval.id
     retrieval_from_db = await dao.get_retrieval_by_id(retrieval_id)
-    assert retrieval_from_db.entity.first_name == "John"
-    assert retrieval_from_db.entity.last_name == "Doe"
+    assert retrieval_from_db.entity.name == "John Doe"
     assert len(retrieval_from_db.entity.identifiers) == 1
 
 
@@ -67,7 +65,7 @@ async def test_create_retrieval_registers_person(
         .where(DbIdentifier.value == "123456789")
     )
     person_from_db = (await async_session.execute(stmt)).unique().scalar_one()
-    assert person_from_db.first_name == "John"
+    assert person_from_db.name == "John Doe"
     assert len(person_from_db.identifiers) == 1
     assert person_from_db.identifiers[0].type == "idref"
     assert person_from_db.identifiers[0].value == "123456789"

@@ -16,23 +16,23 @@ class Reference(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
-    titles: Mapped[List["app.db.models.title_model.Title"]] = relationship(
-        "app.db.models.title_model.Title",
+    titles: Mapped[List["app.db.models.title.Title"]] = relationship(
+        "app.db.models.title.Title",
         back_populates="reference", cascade="all, delete", lazy="joined"
     )
-    subtitles: Mapped[List["app.db.models.subtitle_model.Subtitle"]] = relationship(
-        "app.db.models.subtitle_model.Subtitle",
+    subtitles: Mapped[List["app.db.models.subtitle.Subtitle"]] = relationship(
+        "app.db.models.subtitle.Subtitle",
         back_populates="reference", cascade="all, delete", lazy="joined"
     )
 
-    subjects: Mapped[List["app.db.models.concept_model.Concept"]] = relationship(
-        "app.db.models.concept_model.Concept",
+    subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
+        "app.db.models.concept.Concept",
         secondary=references_subjects_table)
 
     reference_events: Mapped[
-        List["app.db.models.reference_event_model.ReferenceEvent"]
+        List["app.db.models.reference_event.ReferenceEvent"]
     ] = relationship(
-        "app.db.models.reference_event_model.ReferenceEvent",
+        "app.db.models.reference_event.ReferenceEvent",
         back_populates="reference", cascade="all, delete", lazy="raise"
     )
 

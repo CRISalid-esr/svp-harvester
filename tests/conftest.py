@@ -16,11 +16,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
-from app.db.daos.retrieval_dao import RetrievalDAO
-from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.identifier_model import Identifier as DbIdentifier
-from app.db.models.person_model import Person as DbPerson
+from app.db.daos.harvesting import HarvestingDAO
+from app.db.daos.retrieval import RetrievalDAO
+from app.db.models.harvesting import Harvesting
+from app.db.models.identifier import Identifier as DbIdentifier
+from app.db.models.person import Person as DbPerson
 from app.db.session import Base, engine
 from app.models.people import Person as PydanticPerson
 
@@ -92,25 +92,6 @@ def fixture_person_without_identifiers_json(_base_path):
     return _person_json_data_from_file(_base_path, "person_without_identifier")
 
 
-@pytest.fixture(name="person_with_full_name_only")
-def fixture_person_with_full_name_only(person_with_full_name_only_json):
-    """
-    Generate a person with only first name and last name in Pydantic format
-    :return: person with only first name and last name in Pydantic format
-    """
-    return _person_from_json_data(person_with_full_name_only_json)
-
-
-@pytest.fixture(name="person_with_full_name_only_json")
-def fixture_person_with_full_name_only_json(_base_path):
-    """
-    Generate a person with only first name and last name in JSON format
-    :param _base_path: test data directory base
-    :return: person with only first name and last name in JSON format
-    """
-    return _person_json_data_from_file(_base_path, "person_with_full_name_only")
-
-
 @pytest.fixture(name="person_with_name_and_idref_db_model")
 def fixture_person_with_name_and_idref_db_model():
     """
@@ -118,8 +99,7 @@ def fixture_person_with_name_and_idref_db_model():
     :return: person with first name, last name and IDREF  in DB model format
     """
     return DbPerson(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[DbIdentifier(type="idref", value="123456789")],
     )
 
@@ -131,8 +111,7 @@ def fixture_person_with_name_and_id_hal_i_db_model():
     :return: person with first name, last name and Id_Hal_i  in DB model format
     """
     return DbPerson(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[DbIdentifier(type="id_hal_i", value="123456789")],
     )
 
@@ -144,8 +123,7 @@ def fixture_person_with_name_and_id_hal_s_db_model():
     :return: person with first name, last name and Id_Hal_s  in DB model format
     """
     return DbPerson(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[DbIdentifier(type="id_hal_s", value="john-doe")],
     )
 
@@ -157,8 +135,7 @@ def fixture_person_with_name_and_id_hal_i_s_db_model():
     :return: person with first name, last name and Id_Hal_i and Id_Hal_s  in DB model format
     """
     return DbPerson(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             DbIdentifier(type="id_hal_i", value="123456789"),
             DbIdentifier(type="id_hal_s", value="john-doe"),
@@ -294,7 +271,7 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_s")
 async def fixture_hal_harvesting_db_model_id_hal_s(
-    async_session, retrieval_db_model_for_person_with_id_hal_s
+        async_session, retrieval_db_model_for_person_with_id_hal_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -310,7 +287,7 @@ async def fixture_hal_harvesting_db_model_id_hal_s(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i_s")
 async def fixture_hal_harvesting_db_model_id_hal_i_s(
-    async_session, retrieval_db_model_for_person_with_id_hal_i_s
+        async_session, retrieval_db_model_for_person_with_id_hal_i_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -333,24 +310,6 @@ def fixture_person_with_name_and_idref(person_with_name_and_idref_json):
     return _person_from_json_data(person_with_name_and_idref_json)
 
 
-@pytest.fixture(name="person_with_name_and_id_hal_i")
-def fixture_person_with_name_and_id_hal_i(person_with_name_and_id_hal_i_json):
-    """
-    Generate a person with first name, last name and ID_HAL_I in Pydantic format
-    :return: person with first name, last name and ID_HAL_I  in Pydantic format
-    """
-    return _person_from_json_data(person_with_name_and_id_hal_i_json)
-
-
-@pytest.fixture(name="person_with_name_and_id_hal_s")
-def fixture_person_with_name_and_id_hal_s(person_with_name_and_id_hal_s_json):
-    """
-    Generate a person with first name, last name and ID_HAL_I in Pydantic format
-    :return: person with first name, last name and ID_HAL_I  in Pydantic format
-    """
-    return _person_from_json_data(person_with_name_and_id_hal_s_json)
-
-
 @pytest.fixture(name="person_with_name_and_idref_json")
 def fixture_person_with_name_and_idref_json(_base_path):
     """
@@ -361,16 +320,13 @@ def fixture_person_with_name_and_idref_json(_base_path):
     return _person_json_data_from_file(_base_path, "person_with_name_and_idref")
 
 
-@pytest.fixture(name="person_with_name_and_unknown_identifier_type_json")
-def fixture_person_with_name_and_unknown_identifier_type_json(_base_path):
+@pytest.fixture(name="person_with_name_and_id_hal_i")
+def fixture_person_with_name_and_id_hal_i(person_with_name_and_id_hal_i_json):
     """
-    Generate a person with first name, last name and unknown identifier type in Json format
-    :param _base_path: test data directory base
-    :return: person with first name, last name and unknown identifier type in Json format
+    Generate a person with first name, last name and ID_HAL_I in Pydantic format
+    :return: person with first name, last name and ID_HAL_I  in Pydantic format
     """
-    return _person_json_data_from_file(
-        _base_path, "person_with_name_and_unknown_identifier_type"
-    )
+    return _person_from_json_data(person_with_name_and_id_hal_i_json)
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_i_json")
@@ -383,6 +339,15 @@ def fixture_person_with_name_and_id_hal_i_json(_base_path):
     return _person_json_data_from_file(_base_path, "person_with_name_and_id_hal_i")
 
 
+@pytest.fixture(name="person_with_name_and_id_hal_s")
+def fixture_person_with_name_and_id_hal_s(person_with_name_and_id_hal_s_json):
+    """
+    Generate a person with first name, last name and ID_HAL_I in Pydantic format
+    :return: person with first name, last name and ID_HAL_I  in Pydantic format
+    """
+    return _person_from_json_data(person_with_name_and_id_hal_s_json)
+
+
 @pytest.fixture(name="person_with_name_and_id_hal_s_json")
 def fixture_person_with_name_and_id_hal_s_json(_base_path):
     """
@@ -393,47 +358,15 @@ def fixture_person_with_name_and_id_hal_s_json(_base_path):
     return _person_json_data_from_file(_base_path, "person_with_name_and_id_hal_s")
 
 
-@pytest.fixture(name="person_with_last_name_only")
-def fixture_person_with_last_name_only(person_with_last_name_only_json):
+@pytest.fixture(name="person_with_name_and_unknown_identifier_type_json")
+def fixture_person_with_name_and_unknown_identifier_type_json(_base_path):
     """
-    Generate a person with  last name only in Pydantic format
-    :param person_with_last_name_only_json: person with last name only in json format
-    :return: person with last name only in Pydantic format
-    """
-    return _person_from_json_data(person_with_last_name_only_json)
-
-
-@pytest.fixture(name="person_with_last_name_and_first_name")
-def fixture_person_with_last_name_and_first_name(
-    person_with_last_name_and_first_name_json,
-):
-    """
-    Generate a person with first name and last name in Pydantic format
-    :param person_with_last_name_and_first_name_json: person in json format
-    :return: person with first name and last name in Pydantic format
-    """
-    return _person_from_json_data(person_with_last_name_and_first_name_json)
-
-
-@pytest.fixture(name="person_with_last_name_only_json")
-def fixture_person_with_last_name_only_json(_base_path):
-    """
-    Generate a person with only last name in JSON format
+    Generate a person with first name, last name and unknown identifier type in Json format
     :param _base_path: test data directory base
-    :return: person with only last name in JSON format
-    """
-    return _person_json_data_from_file(_base_path, "person_with_last_name_only")
-
-
-@pytest.fixture(name="person_with_last_name_and_first_name_json")
-def fixture_person_with_last_name_and_first_name_json(_base_path):
-    """
-    Generate a person with first name and last name in JSON format
-    :param _base_path: test data directory base
-    :return: person with first name and last name in JSON format
+    :return: person with first name, last name and unknown identifier type in Json format
     """
     return _person_json_data_from_file(
-        _base_path, "person_with_last_name_and_first_name"
+        _base_path, "person_with_name_and_unknown_identifier_type"
     )
 
 
