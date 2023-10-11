@@ -316,8 +316,7 @@ async def test_resolution_service_removes_nullified_identifiers(
     :return: None
     """
     entity1 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="id_hal_i", value="1"),
             Identifier(type="idref", value="1"),
@@ -326,8 +325,7 @@ async def test_resolution_service_removes_nullified_identifiers(
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
-        first_name="John",
-        last_name="Doe",
+        name="John Doe",
         identifiers=[
             Identifier(type="idref", value="1"),
         ],
