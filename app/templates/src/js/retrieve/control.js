@@ -33,7 +33,7 @@ class Control {
             .map((identifier) => {
                 return identifier.identifierType
             })
-        this.client.postRetrieval({person: {identifiers: identifiers}, nullify: identifiersToNullify})
+        this.client.postRetrieval({entity: {identifiers: identifiers}, nullify: identifiersToNullify})
             .then((response) => {
                 this.retrievalUrl = response.data.retrieval_url;
                 this.pollHarvestingState();

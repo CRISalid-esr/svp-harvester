@@ -25,7 +25,7 @@ def test_fetch_references_async_with_name_and_idref(
     """Test the create_retrieval_sync endpoint."""
     response = test_client.post(
         "/api/v1/references/retrieval",
-        json=person_with_name_and_idref_json,
+        json={"entity": person_with_name_and_idref_json},
     )
     assert response.status_code == 200
 
@@ -37,7 +37,7 @@ def test_fetch_references_async_with_name_and_unknown_identifier_type(
     """Test the create_retrieval_sync endpoint."""
     response = test_client.post(
         "/api/v1/references/retrieval",
-        json=person_with_name_and_unknown_identifier_type_json,
+        json={"entity": person_with_name_and_unknown_identifier_type_json},
     )
     assert response.status_code == 422
 
