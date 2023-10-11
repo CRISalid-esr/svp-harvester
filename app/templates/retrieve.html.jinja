@@ -69,6 +69,13 @@
                          aria-labelledby="pills-project-tab" tabindex="0">
                     </div>
                 </div>
+                <div id=name-field-container">
+                    {#TODO put the name_field_container in js#}
+                    <div class="input-group flex-nowrap">
+                      <span class="input-group-text" id="addon-wrapping">entity_name</span>
+                      <input type="text" class="form-control" placeholder="John Doe" aria-label="entity name input">
+                </div>
+                </div>
                 <div id="identifier-fields-container"></div>
                 <div class="row">
                     <div class="col-md-6 col-12">
@@ -188,8 +195,13 @@
                 <div class="card-header">{% trans %}retrieve_page_current_entity_card_title{% endtrans %}</div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush" id="entity-identifiers-container">
-
-
+                    {# TODO: add entity_name module in js #}
+                        <li class="list-group-item">
+                            <strong>Entity_name</strong>
+                            <div class="clearfix">
+                                <span role="status" class="float-start">entity_name_value </span>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
