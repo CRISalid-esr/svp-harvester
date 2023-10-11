@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.models.literal_field_model import LiteralField
+from app.db.models.literal_field import LiteralField
 
 
 class Title(LiteralField):
@@ -18,6 +18,6 @@ class Title(LiteralField):
     }
 
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
-    reference: Mapped["app.db.models.reference_model.Reference"] = relationship(
-        "app.db.models.reference_model.Reference",
+    reference: Mapped["app.db.models.reference.Reference"] = relationship(
+        "app.db.models.reference.Reference",
         back_populates="titles", lazy="raise")

@@ -4,7 +4,7 @@ import json
 import aio_pika
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
-from app.db.models.retrieval_model import Retrieval
+from app.db.models.retrieval import Retrieval
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings

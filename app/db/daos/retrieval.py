@@ -2,10 +2,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.entity_model import Entity
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.reference_event_model import ReferenceEvent
-from app.db.models.retrieval_model import Retrieval
+from app.db.models.entity import Entity
+from app.db.models.harvesting import Harvesting
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.retrieval import Retrieval
 
 
 class RetrievalDAO(AbstractDAO):

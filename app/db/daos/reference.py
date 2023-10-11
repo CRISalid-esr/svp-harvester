@@ -1,9 +1,9 @@
 from sqlalchemy import select, ScalarResult
 
-from app.db.models.harvesting_model import Harvesting
-from app.db.models.reference_event_model import ReferenceEvent
-from app.db.models.reference_model import Reference
-from app.db.models.retrieval_model import Retrieval
+from app.db.models.harvesting import Harvesting
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.reference import Reference
+from app.db.models.retrieval import Retrieval
 from app.db.abstract_dao import AbstractDAO
 
 

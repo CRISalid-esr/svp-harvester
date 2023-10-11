@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.models.literal_field_model import LiteralField
+from app.db.models.literal_field import LiteralField
 
 
 class Label(LiteralField):
@@ -18,6 +18,6 @@ class Label(LiteralField):
     }
 
     concept_id: Mapped[int] = mapped_column(ForeignKey("concepts.id"))
-    concept: Mapped["app.db.models.concept_model.Concept"] = relationship(
-        "app.db.models.concept_model.Concept",
+    concept: Mapped["app.db.models.concept.Concept"] = relationship(
+        "app.db.models.concept.Concept",
         back_populates="labels", lazy="raise")

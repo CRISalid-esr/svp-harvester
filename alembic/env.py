@@ -8,18 +8,18 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.config import get_app_settings
 from app.db.models import (
-    concept_model,
-    entity_model,
-    harvesting_model,
-    identifier_model,
-    label_model,
-    literal_field_model,
-    person_model,
-    reference_event_model,
-    reference_model,
-    retrieval_model,
-    subtitle_model,
-    title_model
+    concept,
+    entity,
+    harvesting,
+    identifier,
+    label,
+    literal_field,
+    person,
+    reference_event,
+    reference,
+    retrieval,
+    subtitle,
+    title
 )
 from app.db.session import Base
 
@@ -31,18 +31,18 @@ def _register_models_for_migrations():
         don't appear to be directly used in the script.
         """
     _ = (
-        concept_model,
-        entity_model,
-        harvesting_model,
-        identifier_model,
-        label_model,
-        literal_field_model,
-        person_model,
-        reference_event_model,
-        reference_model,
-        retrieval_model,
-        subtitle_model,
-        title_model
+        concept,
+        entity,
+        harvesting,
+        identifier,
+        label,
+        literal_field,
+        person,
+        reference_event,
+        reference,
+        retrieval,
+        subtitle,
+        title
     )
 
 

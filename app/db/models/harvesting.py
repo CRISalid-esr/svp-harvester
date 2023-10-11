@@ -29,8 +29,8 @@ class Harvesting(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
-    retrieval: Mapped["app.db.models.retrieval_model.Retrieval"] = relationship(
-        "app.db.models.retrieval_model.Retrieval",
+    retrieval: Mapped["app.db.models.retrieval.Retrieval"] = relationship(
+        "app.db.models.retrieval.Retrieval",
         back_populates="harvestings", lazy="raise"
     )
 
@@ -39,8 +39,8 @@ class Harvesting(Base):
     )
 
     reference_events: Mapped[
-        List["app.db.models.reference_event_model.ReferenceEvent"]] = relationship(
-        "app.db.models.reference_event_model.ReferenceEvent",
+        List["app.db.models.reference_event.ReferenceEvent"]] = relationship(
+        "app.db.models.reference_event.ReferenceEvent",
         back_populates="harvesting", cascade="all, delete", lazy="raise"
     )
 

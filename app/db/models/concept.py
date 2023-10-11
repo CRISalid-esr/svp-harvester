@@ -16,7 +16,7 @@ class Concept(Base):
 
     uri: Mapped[str] = mapped_column(nullable=True, index=False, unique=True)
 
-    labels: Mapped[List["app.db.models.label_model.Label"]] = relationship(
-        "app.db.models.label_model.Label",
+    labels: Mapped[List["app.db.models.label.Label"]] = relationship(
+        "app.db.models.label.Label",
         back_populates="concept", cascade="all, delete", lazy="joined"
     )
