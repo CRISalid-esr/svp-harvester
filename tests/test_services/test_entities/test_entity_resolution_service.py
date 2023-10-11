@@ -301,3 +301,38 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     assert len(entity3.identifiers) == 1
     assert entity3.has_identifier_of_type_and_value("orcid", "3")
     assert await async_session.get(Person, entity4_id) is None
+
+
+@pytest.mark.asyncio
+async def test_resolution_service_removes_nullified_identifiers(
+    async_session: AsyncSession,
+):
+    """
+    GIVEN an existing person entity with idhal and idref
+    WHEN we submit a new person entity with the same idref and 'idhal' to nullify
+    THEN the existing entity loses its idhal
+
+    :param async_session: async session fixture
+    :return: None
+    """
+    entity1 = Person(
+        first_name="John",
+        last_name="Doe",
+        identifiers=[
+            Identifier(type="id_hal_i", value="1"),
+            Identifier(type="idref", value="1"),
+        ],
+    )
+    async_session.add(entity1)
+    service = EntityResolutionService(async_session)
+    entity2 = Person(
+        first_name="John",
+        last_name="Doe",
+        identifiers=[
+            Identifier(type="idref", value="1"),
+        ],
+    )
+    existing_entity = await service.resolve(entity2, nullify=["id_hal_i"])
+    assert existing_entity is not None
+    assert len(existing_entity.identifiers) == 1
+    assert existing_entity.has_identifier_of_type_and_value("idref", "1")

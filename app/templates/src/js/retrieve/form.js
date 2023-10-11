@@ -5,6 +5,9 @@ import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
 
+
+const IDENTIFIER_NULL_VALUE = "null";
+
 class Form {
     constructor(env, rootElement) {
         this.env = env;
@@ -19,18 +22,6 @@ class Form {
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
-        this.addIdentifierField(
-            {
-                identifierType: "idref",
-                identifierValue: "108540952"
-            }
-        );
-        this.addIdentifierField(
-            {
-                identifierType: "id_hal_i",
-                identifierValue: "10227"
-            }
-        );
     }
 
     handleReferenceTypeSelect() {
@@ -81,9 +72,8 @@ class Form {
         this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
         this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
         this.addIdentifierSelectField = this.formElement.querySelector("#add-identifier-control-select");
-        for (const eventType of ["input"]) {
-            this.addIdentifierControlElement.addEventListener(eventType, this.updateAddIdentifierControlState.bind(this));
-        }
+        this.addIdentifierInputField.addEventListener("input", this.updateAddIdentifierControlState.bind(this));
+        this.addIdentifierSelectField.addEventListener("change", this.updateAddIdentifierControlState.bind(this));
         const self = this;
         this.addIdentifierControlElement.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
@@ -108,12 +98,11 @@ class Form {
         const editIdentifierButton = identifierFieldElement.querySelector(".btn-edit-identifier");
         const validateIdentifierButton = identifierFieldElement.querySelector(".btn-validate-identifier");
         const inputField = identifierFieldElement.querySelector("input");
-        const selectField = identifierFieldElement.querySelector("select");
         editIdentifierButton.classList.add("d-none");
         validateIdentifierButton.classList.remove("d-none");
-        var self = this;
-        inputField.addEventListener('input', function () {
-            if (self.checkIdentifierFormat(selectField.value, inputField.value)) {
+        const self = this;
+        inputField.addEventListener('keyup', function () {
+            if (self.checkIdentifierFormat(identifierFieldElement)) {
                 inputField.classList.remove("is-invalid");
                 validateIdentifierButton.removeAttribute("disabled");
                 identifierFieldElement.dataset.validData = true;
@@ -141,8 +130,7 @@ class Form {
         const editIdentifierButton = identifierFieldElement.querySelector(".btn-edit-identifier");
         const validateIdentifierButton = identifierFieldElement.querySelector(".btn-validate-identifier");
         const inputField = identifierFieldElement.querySelector("input");
-        const selectField = identifierFieldElement.querySelector("select");
-        if (this.checkIdentifierFormat(selectField.value, inputField.value)) {
+        if (this.checkIdentifierFormat(identifierFieldElement)) {
             inputField.setAttribute("disabled", true);
             inputField.classList.remove("is-invalid");
             editIdentifierButton.classList.remove("d-none");
@@ -153,7 +141,7 @@ class Form {
     }
 
     updateAddIdentifierControlState = () => {
-        const addIdentifierControlContent = this.getIdentifierFieldContent(this.addIdentifierControlElement);
+        const addIdentifierControlContent = this.getIdentifierFieldContent(this.addIdentifierControlElement, true);
         if (addIdentifierControlContent.identifierType) {
             this.addIdentifierInputField.removeAttribute("disabled");
             this.addIdentifierInputField.placeholder = this.env.IDENTIFIERS[addIdentifierControlContent.identifierType].placeholder;
@@ -162,7 +150,7 @@ class Form {
             this.addIdentifierInputField.placeholder = "";
         }
         if (addIdentifierControlContent.identifierType && addIdentifierControlContent.identifierValue) {
-            if (this.checkIdentifierFormat(addIdentifierControlContent.identifierType, addIdentifierControlContent.identifierValue)) {
+            if (this.checkIdentifierFormat(this.addIdentifierControlElement)) {
                 this.addIdentifierButton.removeAttribute("disabled");
                 this.addIdentifierInputField.classList.remove("is-invalid");
             } else {
@@ -174,9 +162,14 @@ class Form {
         }
     }
 
-    getIdentifierFieldContent(newIdentifierFieldElement) {
-        const identifierType = newIdentifierFieldElement.querySelector("select").value;
-        const identifierValue = newIdentifierFieldElement.querySelector("input").value;
+    getIdentifierFieldContent(newIdentifierFieldElement, explicitNullValue) {
+        const identifierType = newIdentifierFieldElement.querySelector("select.identifier-control-select").value;
+        const identifierValue = newIdentifierFieldElement.querySelector("input.identifier-control-input").value;
+        //if identifier value il an empty or blank string, return the explicit "null" value
+        // user are allowed to clear an identifier value this way
+        if (identifierValue.match(/^\s*$/)) {
+            return {identifierType: identifierType, identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""};
+        }
         return {identifierType: identifierType, identifierValue: identifierValue};
     }
 
@@ -184,7 +177,7 @@ class Form {
         if (this.addIdentifierButton.hasAttribute("disabled")) {
             return;
         }
-        this.addIdentifierField(this.getIdentifierFieldContent(this.addIdentifierControlElement))
+        this.addIdentifierField(this.getIdentifierFieldContent(this.addIdentifierControlElement, false))
     }
 
     addIdentifierField(content) {
@@ -206,7 +199,7 @@ class Form {
             if (validOnly && identifierFieldElement.dataset.validData === "false") {
                 continue;
             }
-            identifierFieldsContent.push(this.getIdentifierFieldContent(identifierFieldElement));
+            identifierFieldsContent.push(this.getIdentifierFieldContent(identifierFieldElement, false));
         }
         return identifierFieldsContent;
     }
@@ -229,8 +222,13 @@ class Form {
         }
     }
 
-    checkIdentifierFormat(identifierType, identifierValue) {
-        return new RegExp(this.env.IDENTIFIERS[identifierType].format).test(identifierValue);
+    checkIdentifierFormat(identifierFieldElement) {
+        // return true if the value is an empty or blank string to allow the user to clear the field
+        const identifierElementContent = this.getIdentifierFieldContent(identifierFieldElement, true);
+        if (identifierElementContent.identifierValue === IDENTIFIER_NULL_VALUE) {
+            return true;
+        }
+        return new RegExp(this.env.IDENTIFIERS[identifierElementContent.identifierType].format).test(identifierElementContent.identifierValue);
     }
 }
 

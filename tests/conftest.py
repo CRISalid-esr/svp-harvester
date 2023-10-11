@@ -5,6 +5,7 @@ import asyncio
 import json
 import pathlib
 from os import environ
+from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
@@ -50,7 +51,7 @@ def fixture_event_loop():
 
 
 @pytest_asyncio.fixture(autouse=True, name="async_session")
-async def fixture_async_session() -> AsyncSession:
+async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
     """Provide an async db session for all tests"""
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
@@ -144,7 +145,7 @@ def fixture_person_with_name_and_id_hal_i_s_db_model():
 
 @pytest_asyncio.fixture(name="retrieval_db_model")
 async def fixture_retrieval_db_model(
-        async_session, person_with_name_and_idref_db_model
+    async_session, person_with_name_and_idref_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and IDREF in DB model format
@@ -160,7 +161,7 @@ async def fixture_retrieval_db_model(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i")
 async def fixture_retrieval_db_model_for_person_with_id_hal_i(
-        async_session, person_with_name_and_id_hal_i_db_model
+    async_session, person_with_name_and_id_hal_i_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and ID_HAL_I in DB model format
@@ -176,7 +177,7 @@ async def fixture_retrieval_db_model_for_person_with_id_hal_i(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_s")
 async def fixture_retrieval_db_model_for_person_with_id_hal_s(
-        async_session, person_with_name_and_id_hal_s_db_model
+    async_session, person_with_name_and_id_hal_s_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name and ID_HAL_S in DB model format
@@ -192,7 +193,7 @@ async def fixture_retrieval_db_model_for_person_with_id_hal_s(
 
 @pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_id_hal_i_s")
 async def fixture_retrieval_db_model_for_person_with_id_hal_i_s(
-        async_session, person_with_name_and_id_hal_i_s_db_model
+    async_session, person_with_name_and_id_hal_i_s_db_model
 ):
     """
     Generate a retrieval with a person with first name, last name, ID_HAL_I and ID_HAL_S
@@ -222,7 +223,7 @@ async def fixture_harvesting_db_model(async_session, retrieval_db_model):
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i")
 async def fixture_hal_harvesting_db_model_id_hal_i(
-        async_session, retrieval_db_model_for_person_with_id_hal_i
+    async_session, retrieval_db_model_for_person_with_id_hal_i
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -238,7 +239,7 @@ async def fixture_hal_harvesting_db_model_id_hal_i(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_s")
 async def fixture_hal_harvesting_db_model_id_hal_s(
-        async_session, retrieval_db_model_for_person_with_id_hal_s
+    async_session, retrieval_db_model_for_person_with_id_hal_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -254,7 +255,7 @@ async def fixture_hal_harvesting_db_model_id_hal_s(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i_s")
 async def fixture_hal_harvesting_db_model_id_hal_i_s(
-        async_session, retrieval_db_model_for_person_with_id_hal_i_s
+    async_session, retrieval_db_model_for_person_with_id_hal_i_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
