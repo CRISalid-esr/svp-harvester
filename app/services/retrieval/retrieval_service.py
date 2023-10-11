@@ -39,32 +39,20 @@ class RetrievalService:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
         self._build_harvesters()
-
-        db_entity: Entity = EntityConverter(entity).to_db_model()
+        # new entity is not saved to db yet
+        new_entity: Entity = EntityConverter(entity).to_db_model()
         async with async_session() as session:
             async with session.begin():
                 existing_entity = await EntityResolutionService(session).resolve(
-                    db_entity
+                    new_entity, nullify=nullify
                 )
         async with async_session() as session:
             async with session.begin():
-                if existing_entity:
-                    self.remove_nullified_identifiers(existing_entity, nullify)
-                    db_entity = existing_entity
-                else:
-                    session.add(db_entity)
-
-                self.retrieval = await RetrievalDAO(session).create_retrieval(db_entity)
+                # this will add the new entity to the db if it does not exist
+                self.retrieval = await RetrievalDAO(session).create_retrieval(
+                    existing_entity or new_entity
+                )
         return self.retrieval
-
-    def remove_nullified_identifiers(self, existing_entity, nullify):
-        if not nullify:
-            return
-        for identifier_type in nullify:
-            identifiers = existing_entity.identifiers
-            for identifier in identifiers:
-                if identifier.type == identifier_type:
-                    existing_entity.identifiers.remove(identifier)
 
     async def run(
         self, result_queue: Queue = None, in_background: bool = False
