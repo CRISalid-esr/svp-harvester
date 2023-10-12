@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-09 09:10+0200\n"
+"POT-Creation-Date: 2023-10-12 05:22+0200\n"
 "PO-Revision-Date: 2023-09-26 08:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -76,146 +76,164 @@ msgstr ""
 msgid "retrieve_page_entity_type_select_project_pill"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:46
-msgid "retrieve_page_self_mode_switch_label"
+#: app/templates/retrieve.html.jinja:48
+msgid "retrieve_page_history_safe_mode_switch_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:49
-msgid "retrieve_page_safe_mode_switch_help_text"
+#: app/templates/retrieve.html.jinja:51
+msgid "retrieve_page_history_safe_mode_switch_help_text"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:52
-msgid "retrieve_page_self_mode_switch_aria_label"
+#: app/templates/retrieve.html.jinja:54 app/templates/retrieve.html.jinja:61
+msgid "retrieve_page_history_safe_mode_switch_aria_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:75
-msgid "retrieve_page_harvesting_type_select_label"
+#: app/templates/retrieve.html.jinja:63
+msgid "retrieve_page_identifiers_safe_mode_switch_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:78
-msgid "retrieve_page_harvesting_type_help_text"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:83
-msgid "retrieve_page_harvesting_type_select_aria_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:85
-msgid "retrieve_page_harvesting_type_new_references_option_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:88
-msgid "retrieve_page_harvesting_type_updated_references_option_label"
+#: app/templates/retrieve.html.jinja:66
+msgid "retrieve_page_identifiers_safe_mode_switch_help_text"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:91
-msgid "retrieve_page_harvesting_type_deleted_references_option_label"
+msgid "retrieve_page_harvesting_type_select_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:94
-msgid "retrieve_page_harvesting_type_unchanged_references_option_label"
+msgid "retrieve_page_harvesting_type_help_text"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:99
-msgid "retrieve_page_harvester_select_label"
+msgid "retrieve_page_harvesting_type_select_aria_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:102
-msgid "retrieve_page_harvester_select_help_text"
+#: app/templates/retrieve.html.jinja:101
+msgid "retrieve_page_harvesting_type_new_references_option_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:104
+msgid "retrieve_page_harvesting_type_updated_references_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:107
-msgid "Data sources"
+msgid "retrieve_page_harvesting_type_deleted_references_option_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:109
-msgid "retrieve_page_harvester_hal_option_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:112
-msgid "retrieve_page_harvester_idref_option_label"
+#: app/templates/retrieve.html.jinja:110
+msgid "retrieve_page_harvesting_type_unchanged_references_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:115
-msgid "retrieve_page_harvester_openalex_option_label"
+msgid "retrieve_page_harvester_select_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:118
-msgid "retrieve_page_harvester_scanr_option_label"
+msgid "retrieve_page_harvester_select_help_text"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:123
+msgid "Data sources"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:125
-msgid "retrieve_page_reference_type_select_label"
+msgid "retrieve_page_harvester_hal_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:128
-msgid "retrieve_page_reference_type_select_help_text"
+msgid "retrieve_page_harvester_idref_option_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:131
+msgid "retrieve_page_harvester_openalex_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:134
-msgid "retrieve_page_reference_type_select_aria_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:136
-msgid "retrieve_page_reference_type_article_option_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:138
-msgid "retrieve_page_reference_type_book_option_label"
+msgid "retrieve_page_harvester_scanr_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:141
-msgid "retrieve_page_reference_type_book_section_option_label"
+msgid "retrieve_page_reference_type_select_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:143
-msgid "retrieve_page_reference_type_book_chapter_option_label"
+#: app/templates/retrieve.html.jinja:144
+msgid "retrieve_page_reference_type_select_help_text"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:149
-msgid "retrieve_page_harvesting_range_select_label"
+#: app/templates/retrieve.html.jinja:150
+msgid "retrieve_page_reference_type_select_aria_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:152
-msgid "retrieve_page_harvesting_range_select_help_text"
+msgid "retrieve_page_reference_type_article_option_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:154
+msgid "retrieve_page_reference_type_book_option_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:157
+msgid "retrieve_page_reference_type_book_section_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:159
-msgid "retrieve_page_harvesting_range_start_input_label"
+msgid "retrieve_page_reference_type_book_chapter_option_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:162
-msgid "retrieve_page_harvesting_range_start_input_aria_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:164
-msgid "retrieve_page_harvesting_range_start_input_placeholder"
+#: app/templates/retrieve.html.jinja:165
+msgid "retrieve_page_harvesting_range_select_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:168
-msgid "retrieve_page_harvesting_range_end_input_label"
+msgid "retrieve_page_harvesting_range_select_help_text"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:170
-msgid "retrieve_page_harvesting_range_end_input_arial_label"
-msgstr ""
-
-#: app/templates/retrieve.html.jinja:172
-msgid "retrieve_page_harvesting_range_end_input_placeholder"
+#: app/templates/retrieve.html.jinja:175
+msgid "retrieve_page_harvesting_range_start_input_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:178
-msgid "retrieve_page_launch_retrieval_button_label"
+msgid "retrieve_page_harvesting_range_start_input_aria_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:180
+msgid "retrieve_page_harvesting_range_start_input_placeholder"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:184
+msgid "retrieve_page_harvesting_range_end_input_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:186
+msgid "retrieve_page_harvesting_range_end_input_arial_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:188
+msgid "retrieve_page_harvesting_range_end_input_placeholder"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:194
+msgid "retrieve_page_launch_retrieval_button_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:204
 msgid "retrieve_page_current_entity_card_title"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:197
+#: app/templates/retrieve.html.jinja:213
 msgid "retrieve_page_collection_status_card_title"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:209
+#: app/templates/retrieve.html.jinja:225
 msgid "retrieve_page_search_result_panel_title"
 msgstr ""
+
+#~ msgid "retrieve_page_self_mode_switch_label"
+#~ msgstr ""
+
+#~ msgid "retrieve_page_safe_mode_switch_help_text"
+#~ msgstr ""
+
+#~ msgid "retrieve_page_self_mode_switch_aria_label"
+#~ msgstr ""
+
