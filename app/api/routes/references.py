@@ -45,18 +45,19 @@ async def create_retrieval_sync(
 async def create_retrieval_async(
     settings: Annotated[AppSettings, Depends(get_app_settings)],
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
-    entity: Person,
+    person: Person | None,
     nullify: List[str] = None,
 ) -> JSONResponse:
     """
     Fetch references for a person in an in_background way
+
     :param settings: app settings
     :param retrieval_service: retrieval service
-    :param entity: person built from fields
+    :param person: entity built from fields
     :param nullify: list of identifiers to nullify for the person
     :return: json response
     """
-    retrieval = await retrieval_service.register(entity, nullify=nullify)
+    retrieval = await retrieval_service.register(person, nullify=nullify)
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
     return JSONResponse(

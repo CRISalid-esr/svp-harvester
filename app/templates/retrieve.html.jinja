@@ -85,11 +85,10 @@
                          aria-labelledby="pills-project-tab" tabindex="0">
                     </div>
                 </div>
-                <div id=name-field-container">
-                    {#TODO put the name_field_container in js#}
+                <div id="name-field-container">
                     <div class="input-group flex-nowrap">
-                      <span class="input-group-text" id="addon-wrapping">entity_name</span>
-                      <input type="text" class="form-control" placeholder="John Doe" aria-label="entity name input">
+                      <span class="input-group-text" id="addon-wrapping">{% trans %}retrieve_page_entity_name_input_label{% endtrans %}</span>
+                      <input type="text" id="name-field-input" class="form-control" placeholder="{% trans %}retrieve_page_entity_name_input_placeholder{% endtrans %}" aria-label="{% trans %}retrieve_page_entity_name_input_aria_label{% endtrans %}">
                 </div>
                 </div>
                 <div id="identifier-fields-container"></div>

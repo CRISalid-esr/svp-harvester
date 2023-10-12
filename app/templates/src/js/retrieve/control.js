@@ -16,11 +16,12 @@ class Control {
         this.rootElement.addEventListener("entity_submit", this.handleSubmit.bind(this));
     }
 
-    handleSubmit() {
-        const formFieldContent = this.form.getIdentifierFieldsContent(true)
+    handleSubmit(event) {
+        const formIdentifiers = event.detail.identifiers;
+        const formName = event.detail.name;
         // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
         // remove empty values
-        const identifiers = formFieldContent
+        const identifiers = formIdentifiers
             .filter((identifier) => identifier.identifierType && identifier.identifierValue)
             .map((identifier) => {
                 return {
@@ -28,12 +29,12 @@ class Control {
                     value: identifier.identifierValue
                 }
             });
-        const identifiersToNullify = formFieldContent
+        const identifiersToNullify = formIdentifiers
             .filter((identifier) => !identifier.identifierValue)
             .map((identifier) => {
                 return identifier.identifierType
             })
-        this.client.postRetrieval({entity: {identifiers: identifiers}, nullify: identifiersToNullify})
+        this.client.postRetrieval({person: {identifiers: identifiers, name: formName}, nullify: identifiersToNullify})
             .then((response) => {
                 this.retrievalUrl = response.data.retrieval_url;
                 this.pollHarvestingState();
