@@ -8,7 +8,7 @@
         <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
             <form id="form-element">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <h5>{% trans %}retrieve_page_entity_type_select_label{% endtrans %} <i
                                 class="bi bi-info-circle cursor-help"
                                 data-bs-toggle="tooltip"
@@ -41,16 +41,32 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-2 d-flex justify-content-end">
+                    <div class="col-md-4 d-flex justify-content-end align-items-end">
                         <div class="text-md-end">
-                            <h5>{% trans %}retrieve_page_self_mode_switch_label{% endtrans %} <i
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="history-safe-mode-toggle">
+                                    {% trans %}retrieve_page_history_safe_mode_switch_label{% endtrans %} <i
                                     class="bi bi-info-circle cursor-help"
                                     data-bs-toggle="tooltip"
-                                    data-bs-title="{% trans %}retrieve_page_safe_mode_switch_help_text{% endtrans %}"
-                            ></i></h5>
-                            <input id="safe-mode-toggle" type="checkbox" data-toggle="toggle" checked
-                                   aria-label="{% trans %}retrieve_page_self_mode_switch_aria_label{% endtrans %}"
-                                   aria-checked="true"/>
+                                    data-bs-title="{% trans %}retrieve_page_history_safe_mode_switch_help_text{% endtrans %}"
+                            ></i></label>
+                                <input class="form-check-input" type="checkbox" id="history-safe-mode-toggle"
+                                        aria-label="{% trans %}retrieve_page_history_safe_mode_switch_aria_label{% endtrans %}"
+                                       checked />
+
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="identifiers-safe-mode-toggle"
+                                       aria-label="{% trans %}retrieve_page_history_safe_mode_switch_aria_label{% endtrans %}"
+                                       checked />
+                                <label class="form-check-label checkbox-inline" for="identifiers-safe-mode-toggle">
+                                    {% trans %}retrieve_page_identifiers_safe_mode_switch_label{% endtrans %} <i
+                                    class="bi bi-info-circle cursor-help"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-title="{% trans %}retrieve_page_identifiers_safe_mode_switch_help_text{% endtrans %}"
+                            ></i></label>
+
+                            </div>
                         </div>
                     </div>
                 </div>
