@@ -334,3 +334,34 @@ async def test_resolution_service_removes_nullified_identifiers(
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 1
     assert existing_entity.has_identifier_of_type_and_value("idref", "1")
+
+
+@pytest.mark.asyncio
+async def test_resolution_updates_person_name(
+    async_session: AsyncSession,
+):
+    """
+    GIVEN an existing person entity with name and idref
+    WHEN we submit a new person entity with the same idref and another name
+    THEN the existing entity has the new name
+
+    :param async_session: async session fixture
+    :return: None
+    """
+    entity1 = Person(
+        name="John Doe",
+        identifiers=[
+            Identifier(type="idref", value="1"),
+        ],
+    )
+    async_session.add(entity1)
+    service = EntityResolutionService(async_session)
+    entity2 = Person(
+        name="Jane Doe",
+        identifiers=[
+            Identifier(type="idref", value="1"),
+        ],
+    )
+    existing_entity = await service.resolve(entity2)
+    assert existing_entity is not None
+    assert existing_entity.name == "Jane Doe"

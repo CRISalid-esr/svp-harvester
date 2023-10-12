@@ -101,3 +101,52 @@ async def test_post_request_creates_person_with_name_in_db(
         )
     )
     assert person.scalars().first().name == person_with_name_and_idref_json.get("name")
+
+
+@pytest.mark.asyncio
+async def test_a_second_post_request_updates_the_name_of_the_person_in_db(
+    test_client: TestClient,
+    person_with_name_and_idref_json,
+    async_session: AsyncSession,
+):
+    """
+    GIVEN a first POST request to the retrieval endpoint with a person with name and IDREF
+    WHEN a second POST request is made with the same IDREF and a different name
+    THEN the name of the person in the database is updated.
+
+    :param test_client: test client
+    :param person_with_name_and_idref_json: person with name and IDREF in JSON format
+    :param async_session: async session
+    :return: None
+    """
+    response = test_client.post(
+        REFERENCES_RETRIEVAL_API_PATH,
+        json={"person": person_with_name_and_idref_json},
+    )
+    assert response.status_code == 200
+    person = await async_session.execute(
+        select(Person)
+        .join(Identifier)
+        .where(Identifier.type == "idref")
+        .where(
+            Identifier.value
+            == person_with_name_and_idref_json.get("identifiers")[0].get("value")
+        )
+    )
+    assert person.scalars().first().name == person_with_name_and_idref_json.get("name")
+    person_with_name_and_idref_json["name"] = "new name"
+    response = test_client.post(
+        REFERENCES_RETRIEVAL_API_PATH,
+        json={"person": person_with_name_and_idref_json},
+    )
+    assert response.status_code == 200
+    person = await async_session.execute(
+        select(Person)
+        .join(Identifier)
+        .where(Identifier.type == "idref")
+        .where(
+            Identifier.value
+            == person_with_name_and_idref_json.get("identifiers")[0].get("value")
+        )
+    )
+    assert person.scalars().first().name == "new name"
