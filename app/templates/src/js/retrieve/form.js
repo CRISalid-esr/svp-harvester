@@ -15,8 +15,8 @@ class Form {
         this.formElement = rootElement.querySelector("#form-element");
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
         this.runRetrievalButton = this.formElement.querySelector("#run-retrieval-btn");
-        this.handleReferenceTypeSelect();
-        this.handleEventTypeSelect();
+        this.handleReferenceTypesSelect();
+        this.handleEventTypesSelect();
         this.handleDataSourcesSelect();
         this.handleDatePickers();
         this.renewAddIdentifierControl();
@@ -24,24 +24,24 @@ class Form {
         this.updateSubmitButtonState();
     }
 
-    handleReferenceTypeSelect() {
+    handleReferenceTypesSelect() {
         this.referenceTypeSelect = new TomSelect("#reference-type-select", {
             sortField: {field: "text"},
-            plugins: ['checkbox_options', 'dropdown_input', 'remove_button'],
+            plugins: ['checkbox_options', 'dropdown_input', 'remove_button', 'clear_button'],
         });
     }
 
-    handleEventTypeSelect() {
-        this.referenceTypeSelect = new TomSelect("#event-type-select", {
+    handleEventTypesSelect() {
+        this.eventTypeSelect = new TomSelect("#event-type-select", {
             sortField: {field: "text"},
-            plugins: ['checkbox_options', 'remove_button'],
+            plugins: ['checkbox_options', 'remove_button', 'clear_button'],
         });
     }
 
     handleDataSourcesSelect() {
-        this.referenceTypeSelect = new TomSelect("#data-sources-select", {
+        this.dataSourcesTypeSelect = new TomSelect("#data-sources-select", {
             sortField: {field: "text"},
-            plugins: ['checkbox_options', 'remove_button'],
+            plugins: ['checkbox_options', 'remove_button', 'clear_button'],
         });
     }
 
