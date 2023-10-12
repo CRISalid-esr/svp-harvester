@@ -49,8 +49,9 @@ class Control {
                 const retrieval = response.data
                 this.harvestingDashboard.updateWidgets(retrieval.harvestings);
                 // with optional chaining
-                if (retrieval.entity?.identifiers?.length > 0) {
-                    this.harvestingDashboard.updateIdentifiers(retrieval.entity.identifiers);
+                if (retrieval.entity?.identifiers?.length > 0 || retrieval.entity.name.length > 0) {
+                    this.harvestingDashboard.updateEntityCard(retrieval.entity);
+
                 }
                 this.referencesTable.updateTable(retrieval.harvestings);
 
