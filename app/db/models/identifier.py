@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.config import get_app_settings
@@ -18,6 +18,8 @@ class Identifier(Base):
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))
     entity: Mapped["app.db.models.entity.Entity"] = relationship(
         "app.db.models.entity.Entity", back_populates="identifiers", lazy="raise")
+
+    __table_args__ = (UniqueConstraint('type', 'value'),)
 
     @validates("type", include_removes=False, include_backrefs=True)
     def _valide_identifier_is_referenced_by_settings(self, _, new_type):

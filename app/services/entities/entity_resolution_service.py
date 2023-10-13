@@ -53,9 +53,10 @@ class EntityResolutionService:
         self._remove_nullified_identifiers(elected_entity, nullify)
         # we need to update the elected entity with the identifiers of the entity we want to resolve
         # and to remove the identifiers from the elected entities if they already exist
-        entities_to_delete = []
+
         # dont use db entities in loop as some of them will be deleted and the loop will break
         identifiers_type_and_values = [(i.type, i.value) for i in submitted_identifiers]
+        """
         for identifier_type, identifier_value in identifiers_type_and_values:
             # check if the elected entity has the identifier to add
             # if it does not, add it
@@ -85,6 +86,35 @@ class EntityResolutionService:
         # delete the entities that have no more identifiers
         for entity_to_delete in entities_to_delete:
             await entity_dao.delete(entity_to_delete)
+        """
+
+        # TODO: 1- Loop through all identifiers of entity_to_resolve
+        for identifier_type, identifier_value in identifiers_type_and_values:
+            entities_to_delete = []
+            # TODO: 2- Check if an existing entity (other than elected_entity) has this identifier
+            for existing_entity in matching_entities:
+                if existing_entity == elected_entity:
+                    continue
+                if existing_entity.has_identifier_of_type_and_value(
+                        identifier_type, identifier_value
+                ):
+                    # TODO: 3- If such an entity exists, Remove this identifier from the entity
+                    entity_dao.remove_identifier_by_type_and_value(
+                        existing_entity, identifier_type, identifier_value
+                    )
+                    # TODO: 4- If the entity is left with no identifiers, mark it for deletion
+                    if not existing_entity.identifiers:
+                        entities_to_delete.append(existing_entity)
+            # TODO: 5- entities left with no identifiers are deleted from the database
+            for entity_to_delete in entities_to_delete:
+                await entity_dao.delete(entity_to_delete)
+            # TODO: 6- Then, identifiers are added to the elected_entity
+
+            # add the identifier to the elected entity
+            #         # or override the existing value if it already exists
+            entity_dao.add_or_override_identifier(
+                elected_entity, identifier_type, identifier_value
+            )
         # return the elected entity
         return elected_entity
 
