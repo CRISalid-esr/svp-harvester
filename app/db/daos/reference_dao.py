@@ -13,7 +13,7 @@ class ReferenceDAO(AbstractDAO):
     """
 
     async def get_references_for_entity_and_harvester(
-            self, entity_id: int, harvester: str
+        self, entity_id: int, harvester: str
     ) -> ScalarResult:
         """
         Get previously harvested references for an entity
@@ -33,11 +33,29 @@ class ReferenceDAO(AbstractDAO):
         )
         return (await self.db_session.scalars(query)).unique()
 
-    async def get_reference_by_source_identifier(
-            self, source_identifier: str, harvester: str
+    async def get_references_by_source_identifier(
+        self, source_identifier: str, harvester: str
     ):
         """
-        Get a reference by its source_identifier and the harvester it comes from
+        Get all references by their source_identifier and the harvester they come from
+
+        :param source_identifier: source identifier of the references
+        :param harvester: harvester name of the harvesting they come from
+        :return: the references
+        """
+        query = (
+            select(Reference)
+            .where(Reference.source_identifier == source_identifier)
+            .where(Reference.harvester == harvester)
+        )
+        return (await self.db_session.execute(query)).scalars().unique().all()
+
+    async def get_last_reference_by_source_identifier(
+        self, source_identifier: str, harvester: str
+    ):
+        """
+        Get the reference with the highest version number
+        with a given source_identifier and harvester
 
         :param source_identifier: source identifier of the reference
         :param harvester: harvester name of the harvesting it comes from
@@ -45,9 +63,8 @@ class ReferenceDAO(AbstractDAO):
         """
         query = (
             select(Reference)
-            .join(ReferenceEvent)
-            .join(Harvesting)
             .where(Reference.source_identifier == source_identifier)
-            .where(Harvesting.harvester == harvester)
+            .where(Reference.harvester == harvester)
+            .order_by(Reference.version.desc())
         )
-        return (await self.db_session.execute(query)).unique().scalar_one_or_none()
+        return (await self.db_session.execute(query)).scalars().first()

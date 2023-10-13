@@ -1,8 +1,9 @@
+from sqlalchemy import ScalarResult
+
 from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.reference_event_dao import ReferenceEventDAO
-from app.db.models.harvesting import Harvesting
-from app.db.models.reference_event import ReferenceEvent
 from app.db.models.reference import Reference
+from app.db.models.reference_event import ReferenceEvent
 from app.db.session import async_session
 
 
@@ -11,23 +12,26 @@ class ReferencesRecorder:
     Class to assist harvester with the recording in database of references logic
     """
 
-    async def register(
-            self, harvesting: Harvesting, new_ref: Reference
-    ) -> ReferenceEvent:
+    async def register(self, harvesting_id: int, new_ref: Reference) -> ReferenceEvent:
         """
         Register a new reference in the database
-        :param new_ref: The reference to register
-        :return: None
+
+        :param harvesting_id: id of the harvesting to which the reference event is linked
+        :param new_ref: reference to register
+        :return: the reference event
         """
+
         event_type = None
         ref = None
-        if old_ref := await self.exists(new_ref, harvesting):
+        if old_ref := await self.exists(new_ref):
             if old_ref.hash != new_ref.hash:
                 event_type = ReferenceEvent.Type.UPDATED
-                await self._update_reference(old_ref, new_ref)
+                new_ref.version = old_ref.version + 1
+                await self._create_reference(new_ref)
+                ref = new_ref
             else:
                 event_type = ReferenceEvent.Type.UNCHANGED
-            ref = old_ref
+                ref = old_ref
         else:
             event_type = ReferenceEvent.Type.CREATED
             await self._create_reference(new_ref)
@@ -35,46 +39,43 @@ class ReferencesRecorder:
         async with async_session() as session:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
-                    harvesting=harvesting,
+                    harvesting_id=harvesting_id,
                     reference=ref,
                     event_type=event_type,
                 )
 
-    async def exists(
-            self, new_ref: Reference, harvesting: Harvesting
-    ) -> Reference | None:
+    async def exists(self, new_ref: Reference) -> Reference | None:
         """
         Check if a reference already exists in the database
         :param new_ref: the new reference to compare with
-        :param harvesting: the current harvesting
         :return: the reference if it exists, None otherwise
         """
         async with async_session() as session:
-            return await ReferenceDAO(session).get_reference_by_source_identifier(
-                new_ref.source_identifier, harvesting.harvester
+            return await ReferenceDAO(session).get_last_reference_by_source_identifier(
+                new_ref.source_identifier, new_ref.harvester
             )
 
     async def register_deletion(
-            self, harvesting: Harvesting, old_ref: Reference
+        self, harvesting_id: int, old_ref: Reference
     ) -> ReferenceEvent:
         """
         Register an event for a deleted reference
 
-        :param harvesting: the harvesting during which the deletion was detected
+        :param harvesting_id: id of the harvesting during which the deletion occurred
         :param old_ref: the reference that was deleted
         :return: the reference event related to the deletion
         """
         async with async_session() as session:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
-                    harvesting=harvesting,
+                    harvesting_id=harvesting_id,
                     reference=old_ref,
                     event_type=ReferenceEvent.Type.DELETED,
                 )
 
     async def get_previous_references(
-            self, entity_id: int, harvester: str
-    ) -> list[Reference]:
+        self, entity_id: int, harvester: str
+    ) -> ScalarResult[Reference]:
         """
         Get the previously harvested references for an entity
 
@@ -91,6 +92,3 @@ class ReferencesRecorder:
         async with async_session() as session:
             async with session.begin():
                 session.add(new_ref)
-
-    def _update_reference(self, old_ref, new_ref):
-        pass
