@@ -271,7 +271,7 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_s")
 async def fixture_hal_harvesting_db_model_id_hal_s(
-        async_session, retrieval_db_model_for_person_with_id_hal_s
+    async_session, retrieval_db_model_for_person_with_id_hal_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I
@@ -287,7 +287,7 @@ async def fixture_hal_harvesting_db_model_id_hal_s(
 
 @pytest_asyncio.fixture(name="hal_harvesting_db_model_id_hal_i_s")
 async def fixture_hal_harvesting_db_model_id_hal_i_s(
-        async_session, retrieval_db_model_for_person_with_id_hal_i_s
+    async_session, retrieval_db_model_for_person_with_id_hal_i_s
 ):
     """
     Generate a Hal harvesting with a retrieval in DB model format for person with ID_HAL_I

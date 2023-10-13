@@ -93,8 +93,13 @@ class AbstractHarvester(ABC):
                 if reference is None:
                     # TODO log something
                     continue
+                assert (
+                    reference.source_identifier is not None
+                ), "Source identifier should be set on reference"
+                # copy the harvester name from the harvesting to the reference
+                reference.harvester = (await self.get_harvesting()).harvester
                 reference_event: ReferenceEvent = await ReferencesRecorder().register(
-                    harvesting=await self.get_harvesting(), new_ref=reference
+                    harvesting_id=(await self.get_harvesting()).id, new_ref=reference
                 )
                 await self._put_in_queue(
                     {
@@ -114,7 +119,7 @@ class AbstractHarvester(ABC):
             ]
             for reference in deleted_references:
                 reference_event = await ReferencesRecorder().register_deletion(
-                    harvesting=await self.get_harvesting(), old_ref=reference
+                    harvesting_id=(await self.get_harvesting()).id, old_ref=reference
                 )
                 await self._put_in_queue(
                     {
