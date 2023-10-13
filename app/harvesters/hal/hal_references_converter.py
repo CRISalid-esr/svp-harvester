@@ -40,6 +40,7 @@ class HalReferencesConverter:
                 new_ref.subjects.append(subject)
 
         new_ref.hash = self._hash(json_payload)
+        new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
         return new_ref
 
