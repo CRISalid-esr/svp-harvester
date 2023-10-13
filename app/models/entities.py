@@ -17,6 +17,8 @@ class Entity(BaseModel):
 
     identifiers: List[Identifier] = []
 
+    name: Optional[str] = None
+
     def get_identifier(self, identifier_type: str) -> Optional[str]:
         """
 

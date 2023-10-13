@@ -85,6 +85,12 @@
                          aria-labelledby="pills-project-tab" tabindex="0">
                     </div>
                 </div>
+                <div id="name-field-container">
+                    <div class="input-group flex-nowrap">
+                      <span class="input-group-text" id="addon-wrapping">{% trans %}retrieve_page_entity_name_input_label{% endtrans %}</span>
+                      <input type="text" id="name-field-input" class="form-control" placeholder="{% trans %}retrieve_page_entity_name_input_placeholder{% endtrans %}" aria-label="{% trans %}retrieve_page_entity_name_input_aria_label{% endtrans %}">
+                </div>
+                </div>
                 <div id="identifier-fields-container"></div>
                 <div class="row">
                     <div class="col-md-6 col-12">
@@ -203,9 +209,7 @@
             <div class="card bg-light mb-3 ms-auto">
                 <div class="card-header">{% trans %}retrieve_page_current_entity_card_title{% endtrans %}</div>
                 <div class="card-body">
-                    <ul class="list-group list-group-flush" id="entity-identifiers-container">
-
-
+                    <ul class="list-group list-group-flush" id="entity-attributes-card-container">
                     </ul>
                 </div>
             </div>
