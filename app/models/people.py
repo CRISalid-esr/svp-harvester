@@ -1,9 +1,8 @@
 """
 Person model
 """
-from typing import Optional
 
-from pydantic import model_validator, ConfigDict
+from pydantic import ConfigDict, model_validator
 from pydantic_core.core_schema import ValidationInfo
 
 from app.config import get_app_settings
@@ -12,12 +11,10 @@ from app.models.entities import Entity
 
 class Person(Entity):
     """
-    Person identified by at least last name + first name or one of the identifiers
+    Person identified by at least full name or one of the identifiers
     """
 
     model_config = ConfigDict(from_attributes=True)
-
-    name: Optional[str] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -46,8 +43,9 @@ class Person(Entity):
         has_name = "name" in data and data["name"]
 
         # check that there is at least one identifier
-        assert has_valid_identifier or has_name,\
-            "At least one identifier or the entire name must be provided"
+        assert (
+            has_valid_identifier or has_name
+        ), "At least one identifier or the entire name must be provided"
 
         return data
 

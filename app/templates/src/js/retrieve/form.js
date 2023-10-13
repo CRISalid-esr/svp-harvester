@@ -59,7 +59,14 @@ class Form {
     handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
-        const entitySubmitEvent = new CustomEvent("entity_submit", {identifiers: this.getIdentifierFieldsContent(true)});
+        const entitySubmitEvent = new CustomEvent("entity_submit",
+            {detail:
+                    {
+                        identifiers: this.getIdentifierFieldsContent(true),
+                        name: this.formElement.querySelector("#name-field-input").value,
+                    }
+            }
+        );
         this.rootElement.dispatchEvent(entitySubmitEvent);
     }
 
