@@ -160,7 +160,7 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
 
 
 @pytest.mark.asyncio
-async def test_resolution_service_deletes_entity_if_it_loses_is_only_identifier(
+async def test_resolution_service_deletes_entity_if_its_loses_is_only_identifier(
     async_session: AsyncSession,
 ):
     """
