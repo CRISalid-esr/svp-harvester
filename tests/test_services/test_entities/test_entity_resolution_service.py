@@ -160,7 +160,7 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
 
 
 @pytest.mark.asyncio
-async def test_resolution_service_deletes_entity_if_it_loses_is_only_identifier(
+async def test_resolution_service_deletes_entity_if_its_loses_is_only_identifier(
     async_session: AsyncSession,
 ):
     """
@@ -253,6 +253,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
         ],
     )
     async_session.add(entity1)
+
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
@@ -262,6 +263,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
         ],
     )
     async_session.add(entity2)
+
     entity3 = Person(
         name="Johnny Doe",
         identifiers=[
@@ -270,6 +272,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
         ],
     )
     async_session.add(entity3)
+
     entity4 = Person(
         name="Jenny Doe",
         identifiers=[
@@ -278,6 +281,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     )
     async_session.add(entity4)
     entity4_id = entity4.id
+
     service = EntityResolutionService(async_session)
     entity5 = Person(
         name="Johnny DoeVariant",

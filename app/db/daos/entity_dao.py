@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.entity import Entity
 from app.db.models.identifier import Identifier
@@ -17,9 +19,8 @@ class EntityDAO(AbstractDAO):
         """
         return await self.db_session.get(Entity, entity_id)
 
-    @staticmethod
-    def add_or_override_identifier(
-            entity: Entity, identifier_type: str, identifier_value: str
+    async def take_or_create_identifier(
+        self, entity: Entity, identifier_type: str, identifier_value: str
     ):
         """
         Add an identifier of the given type to an entity,
@@ -30,17 +31,49 @@ class EntityDAO(AbstractDAO):
         :param identifier_value: value of the identifier
         :return: None
         """
-        for existing_identifier in entity.identifiers:
-            if existing_identifier.type == identifier_type:
-                existing_identifier.value = identifier_value
-                return
+        # search if the identifier of given type and value exists in the whole table
+        query = select(Identifier).where(
+            Identifier.type == identifier_type, Identifier.value == identifier_value
+        )
+        identifier_of_same_type_and_value = (
+            (await self.db_session.execute(query)).unique().scalar_one_or_none()
+        )
+        if (
+            identifier_of_same_type_and_value
+            and identifier_of_same_type_and_value.entity_id == entity.id
+        ):
+            # if the identifier of same type and value belongs to the entity
+            # do nothing
+            return
+        # search if entity already has identifier of same type
+        identifier_of_same_type = next(
+            (
+                identifier
+                for identifier in entity.identifiers
+                if identifier.type == identifier_type
+            ),
+            None,
+        )
+        if identifier_of_same_type_and_value:
+            # if the entity already has an identifier of same type
+            # delete it
+            if identifier_of_same_type:
+                entity.identifiers.remove(identifier_of_same_type)
+            # attach the identifier of same type and value to the entity
+            entity.identifiers.append(identifier_of_same_type_and_value)
+            return
+        if identifier_of_same_type:
+            # if the entity already has an identifier of same type
+            # update its value
+            identifier_of_same_type.value = identifier_value
+            return
+        # in last extremity, create a new identifier
         entity.identifiers.append(
             Identifier(type=identifier_type, value=identifier_value)
         )
 
-    @staticmethod
     def remove_identifier_by_type_and_value(
-            entity: Entity, identifier_type: str, identifier_value: str
+        self, entity: Entity, identifier_type: str, identifier_value: str
     ):
         """
         Remove an identifier from an entity
@@ -52,8 +85,8 @@ class EntityDAO(AbstractDAO):
         """
         for identifier in entity.identifiers:
             if (
-                    identifier.type == identifier_type
-                    and identifier.value == identifier_value
+                identifier.type == identifier_type
+                and identifier.value == identifier_value
             ):
                 entity.identifiers.remove(identifier)
                 return
