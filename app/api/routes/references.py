@@ -32,6 +32,7 @@ async def create_retrieval_sync(
     :param nullify: list of identifiers to nullify for the person
     :return: json response
     """
+    # TODO none of the entitty identifiers should be listed in nullify
     retrieval = await retrieval_service.register(entity, nullify=nullify)
     await retrieval_service.run(in_background=False)
     # TODO query database to get all harvesting results
@@ -57,6 +58,7 @@ async def create_retrieval_async(
     :param nullify: list of identifiers to nullify for the person
     :return: json response
     """
+    # TODO none of the entitty identifiers should be listed in nullify
     retrieval = await retrieval_service.register(person, nullify=nullify)
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
