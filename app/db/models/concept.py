@@ -18,5 +18,7 @@ class Concept(Base):
 
     labels: Mapped[List["app.db.models.label.Label"]] = relationship(
         "app.db.models.label.Label",
-        back_populates="concept", cascade="all, delete", lazy="joined"
+        back_populates="concept",
+        cascade="all, delete-orphan",
+        lazy="joined",
     )
