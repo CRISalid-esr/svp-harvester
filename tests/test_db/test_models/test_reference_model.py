@@ -8,7 +8,7 @@ from app.db.models.title import Title
 
 
 @pytest.mark.asyncio
-async def test_titles_cascade_deletion(async_session: AsyncSession):
+async def test_orphan_titles_deletion(async_session: AsyncSession):
     """
     GIVEN a reference with a title
     WHEN the reference is deleted
