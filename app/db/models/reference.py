@@ -24,13 +24,13 @@ class Reference(Base, VersionedRecord):
     titles: Mapped[List["app.db.models.title.Title"]] = relationship(
         "app.db.models.title.Title",
         back_populates="reference",
-        cascade="all, delete",
+        cascade="all, delete-orphan",
         lazy="joined",
     )
     subtitles: Mapped[List["app.db.models.subtitle.Subtitle"]] = relationship(
         "app.db.models.subtitle.Subtitle",
         back_populates="reference",
-        cascade="all, delete",
+        cascade="all, delete-orphan",
         lazy="joined",
     )
 
