@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 from asyncio import Queue
-from typing import Optional, AsyncGenerator
-
-from pydantic import BaseModel
+from typing import Optional, AsyncGenerator, Type
 
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.entity import Entity
-from app.db.models.reference_event import ReferenceEvent
 from app.db.models.harvesting import Harvesting
+from app.db.models.reference_event import ReferenceEvent
 from app.db.references.references_recorder import ReferencesRecorder
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
@@ -17,6 +15,7 @@ from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpoint
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
+from app.models.entities import Entity as PydanticEntity
 from app.settings.app_settings import AppSettings
 
 
@@ -59,7 +58,7 @@ class AbstractHarvester(ABC):
         self.harvesting_id = harvesting_id
 
     @abstractmethod
-    def is_relevant(self, entity: BaseModel) -> bool:  # pragma: no cover
+    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:  # pragma: no cover
         """
         Return True if the entity contains the required information for the harvester to do his job
         """

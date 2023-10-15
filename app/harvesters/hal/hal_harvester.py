@@ -1,12 +1,12 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Type
 
-from app.db.models.entity import Entity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
 from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
+from app.models.entities import Entity as PydanticEntity
 
 
 class HalHarvester(AbstractHarvester):
@@ -19,7 +19,7 @@ class HalHarvester(AbstractHarvester):
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
             (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "id_hal_i"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s")
+            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s"),
         ]
     }
 
@@ -38,7 +38,9 @@ class HalHarvester(AbstractHarvester):
             if identifier_value is not None:
                 return hal_query_parameter, identifier_value
 
-        assert False, "Unable to run hal harvester for a person without id_hal_i or id_hal_s"
+        assert (
+            False
+        ), "Unable to run hal harvester for a person without id_hal_i or id_hal_s"
 
     async def fetch_results(self) -> AsyncGenerator[JsonRawResult, None]:
         """
@@ -48,7 +50,8 @@ class HalHarvester(AbstractHarvester):
         builder = HalApiQueryBuilder()
 
         identifier_type, identifier_value = await self._get_hal_query_parameters(
-            await self._get_entity_class_name())
+            await self._get_entity_class_name()
+        )
 
         builder.set_query(
             identifier_type=identifier_type,
@@ -61,8 +64,10 @@ class HalHarvester(AbstractHarvester):
                 formatter_name=HalHarvester.FORMATTER_NAME,
             )
 
-    def is_relevant(self, entity: Entity) -> bool:
+    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
         identifiers = ["id_hal_i", "id_hal_s"]
 
-        return any(entity.get_identifier(identifier) is not None for identifier in identifiers)
+        return any(
+            entity.get_identifier(identifier) is not None for identifier in identifiers
+        )
