@@ -1,3 +1,5 @@
+from typing import Type
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_app_settings
@@ -15,7 +17,9 @@ class EntityResolutionService:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def resolve(self, entity_to_resolve: DbEntity, nullify: list[str] = None):
+    async def resolve(
+        self, entity_to_resolve: Type[DbEntity], nullify: list[str] = None
+    ):
         """
         Find an entity that has yet been submitted by its identifiers
         and resolve potential identifier conflicts

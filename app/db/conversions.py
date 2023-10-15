@@ -1,3 +1,5 @@
+from typing import Type
+
 from app.db.models.entity import Entity as DbEntity
 from app.db.models.identifier import Identifier as DbIdentifier
 from app.db.models.person import Person as DbPerson
@@ -10,7 +12,7 @@ class EntityConverter:
     Service to convert Pydantic entities to DB models
     """
 
-    def __init__(self, entity: PydanticEntity):
+    def __init__(self, entity: Type[PydanticEntity]):
         self.entity = entity
 
     def to_db_model(self) -> DbEntity:

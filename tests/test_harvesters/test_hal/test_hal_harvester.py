@@ -48,7 +48,7 @@ def fixture_hal_api_client_mock_same_kw_twice(hal_api_docs_with_same_kw_twice: d
 def fixture_reference_recorder_register_mock():
     """Reference recorder mock to detect register method calls."""
     with mock.patch.object(
-            ReferencesRecorder, "register"
+        ReferencesRecorder, "register"
     ) as reference_recorder_register_mock:
         yield reference_recorder_register_mock
 
@@ -61,8 +61,8 @@ def fixture_hal_harvester() -> HalHarvester:
 
 
 def test_hal_harvester_relevant_for_person_with_idhal_i(
-        person_with_name_and_id_hal_i: Person,
-        hal_harvester: HalHarvester,
+    person_with_name_and_id_hal_i: Person,
+    hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an IDHAL."""
     assert hal_harvester.is_relevant(person_with_name_and_id_hal_i) is True
@@ -77,20 +77,21 @@ def test_hal_harvester_relevant_for_person_with_idhal_s(
 
 
 def test_hal_harvester_not_relevant_for_person_with_idref_only(
-        person_with_name_and_idref: Person,
-        hal_harvester: HalHarvester,
+    person_with_name_and_idref: Person,
+    hal_harvester: HalHarvester,
 ):
     """Test that the harvester will not run if submitted with only an IDREF."""
     assert hal_harvester.is_relevant(person_with_name_and_idref) is False
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_hal_harvester_finds_doc(
-        hal_harvester: HalHarvester,
-        hal_harvesting_db_model_id_hal_i,
-        reference_recorder_register_mock,
-        hal_api_client_mock,
-        async_session: AsyncSession,
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    reference_recorder_register_mock,
+    hal_api_client_mock,
+    async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
     async_session.add(hal_harvesting_db_model_id_hal_i)
@@ -102,6 +103,7 @@ async def test_hal_harvester_finds_doc(
     reference_recorder_register_mock.assert_called_once()
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_hal_harvester_calls_hal_api_with_id_hal_s(
     hal_harvester: HalHarvester,
@@ -137,12 +139,13 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_s(
     assert query_dict["q"] == f"authIdHal_s:{id_hal_s}"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
-        hal_harvester: HalHarvester,
-        hal_harvesting_db_model_id_hal_i_s: Harvesting,
-        hal_api_client_mock,
-        async_session: AsyncSession,
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i_s: Harvesting,
+    hal_api_client_mock,
+    async_session: AsyncSession,
 ):
     """
     Given a person in db model format with both an id_hal_i and an id_hal_s
@@ -172,6 +175,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
     assert query_dict["q"] == f"authIdHal_i:{id_hal_i}"
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_docs_in_db(
     hal_harvester: HalHarvester,
@@ -199,10 +203,10 @@ async def test_hal_harvester_registers_docs_in_db(
     reference = results[0][0]
     reference_event = results[0][1]
     assert (
-            reference.titles[0].value
-            == hal_api_docs_for_one_researcher.get("response")
-            .get("docs")[0]
-            .get("en_title_s")[0]
+        reference.titles[0].value
+        == hal_api_docs_for_one_researcher.get("response")
+        .get("docs")[0]
+        .get("en_title_s")[0]
     )
     assert reference.source_identifier == hal_api_docs_for_one_researcher.get(
         "response"
@@ -210,6 +214,7 @@ async def test_hal_harvester_registers_docs_in_db(
     assert reference_event.type == ReferenceEvent.Type.CREATED.value
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_one_kw_for_two_occurences(
     hal_harvester: HalHarvester,

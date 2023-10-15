@@ -1,8 +1,7 @@
 from enum import Enum
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Type
 
 import uritools
-from pydantic import BaseModel
 from rdflib import URIRef
 
 from app.harvesters.abstract_harvester import AbstractHarvester
@@ -21,6 +20,7 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
 )
+from app.models.entities import Entity as PydanticEntity
 
 
 class IdrefHarvester(AbstractHarvester):
@@ -129,5 +129,5 @@ class IdrefHarvester(AbstractHarvester):
         """
         return {}
 
-    def is_relevant(self, entity: BaseModel) -> bool:
+    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
         return entity.get_identifier("idref") is not None
