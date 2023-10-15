@@ -19,10 +19,10 @@ def _json_data_from_file(base_path, file_path) -> dict:
     return json.loads(input_data)
 
 
-def _person_json_data_from_file(base_path, person):
+def _person_json_data_from_file(base_path, person) -> dict:
     file_path = f"data/people/{person}.json"
     return _json_data_from_file(base_path, file_path)
 
 
-def _person_from_json_data(input_data):
+def _person_from_json_data(input_data) -> PydanticPerson:
     return PydanticPerson(**input_data)
