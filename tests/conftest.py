@@ -2,8 +2,6 @@ import asyncio
 from os import environ
 from typing import AsyncGenerator
 
-import pytest
-import pytest_asyncio
 from _pytest.logging import LogCaptureFixture
 from fastapi import FastAPI
 from loguru import logger
