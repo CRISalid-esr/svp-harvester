@@ -1,7 +1,7 @@
 import asyncio
 import importlib
 from asyncio import Queue
-from typing import Annotated, Optional, List
+from typing import Annotated, Optional, List, Type
 
 from fastapi import Depends
 from starlette.background import BackgroundTasks
@@ -12,10 +12,11 @@ from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.retrieval import Retrieval
 from app.db.models.harvesting import Harvesting
-from app.db.models.entity import Entity
+from app.db.models.entity import Entity as DbEntity
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
+from app.models.entities import Entity as PydanticEntity
 from app.services.entities.entity_resolution_service import EntityResolutionService
 from app.settings.app_settings import AppSettings
 
@@ -33,14 +34,16 @@ class RetrievalService:
         self.background_tasks = background_tasks
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
-        self.entity: Optional[Entity] = None
+        self.entity: Optional[PydanticEntity] = None
 
-    async def register(self, entity: Entity, nullify: List[str] = None) -> Retrieval:
+    async def register(
+        self, entity: Type[PydanticEntity], nullify: List[str] = None
+    ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
         self._build_harvesters()
         # new entity is not saved to db yet
-        new_entity: Entity = EntityConverter(entity).to_db_model()
+        new_entity: DbEntity = EntityConverter(entity).to_db_model()
         async with async_session() as session:
             async with session.begin():
                 existing_entity = await EntityResolutionService(session).resolve(

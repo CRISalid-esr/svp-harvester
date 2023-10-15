@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.identifier import Identifier
 from app.db.models.person import Person
 
+pytestmark = pytest.mark.integration
+
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
@@ -27,9 +29,11 @@ def test_create_retrieval_sync_error_with_name_only(test_client: TestClient):
     assert response.status_code == 422
 
 
-def test_fetch_references_async_with_name_and_idref(
+@pytest.mark.asyncio
+async def test_fetch_references_async_with_name_and_idref(
     test_client: TestClient,
     person_with_name_and_idref_json,
+    async_session: AsyncSession,
 ):
     """Test the create_retrieval_sync endpoint."""
     response = test_client.post(
@@ -37,6 +41,22 @@ def test_fetch_references_async_with_name_and_idref(
         json={"person": person_with_name_and_idref_json},
     )
     assert response.status_code == 200
+    person_name = person_with_name_and_idref_json["name"]
+    person_idref = person_with_name_and_idref_json["identifiers"][0]["value"]
+    # find the person in the database by idref
+    person = (
+        (
+            await async_session.execute(
+                select(Person)
+                .join(Identifier)
+                .filter(Identifier.value == person_idref and Identifier.type == "idref")
+            )
+        )
+        .unique()
+        .scalar_one_or_none()
+    )
+    assert person is not None
+    assert person.name == person_name
 
 
 def test_fetch_references_async_with_name_and_unknown_identifier_type(
