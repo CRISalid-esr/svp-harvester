@@ -5,7 +5,7 @@ from app.db.models.person import Person as DbPerson
 
 
 @pytest.fixture(name="person_with_name_and_idref_db_model")
-def fixture_person_with_name_and_idref_db_model():
+def fixture_person_with_name_and_idref_db_model() -> DbPerson:
     """
     Generate a person with first name, last name and IDREF in DB model format
     :return: person with first name, last name and IDREF  in DB model format
@@ -17,7 +17,7 @@ def fixture_person_with_name_and_idref_db_model():
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_i_db_model")
-def fixture_person_with_name_and_id_hal_i_db_model():
+def fixture_person_with_name_and_id_hal_i_db_model() -> DbPerson:
     """
     Generate a person with first name, last name and Id_Hal_i in DB model format
     :return: person with first name, last name and Id_Hal_i  in DB model format
@@ -29,7 +29,7 @@ def fixture_person_with_name_and_id_hal_i_db_model():
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_s_db_model")
-def fixture_person_with_name_and_id_hal_s_db_model():
+def fixture_person_with_name_and_id_hal_s_db_model() -> DbPerson:
     """
     Generate a person with first name, last name and Id_Hal_s in DB model format
     :return: person with first name, last name and Id_Hal_s  in DB model format
@@ -41,7 +41,7 @@ def fixture_person_with_name_and_id_hal_s_db_model():
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_i_s_db_model")
-def fixture_person_with_name_and_id_hal_i_s_db_model():
+def fixture_person_with_name_and_id_hal_i_s_db_model() -> DbPerson:
     """
     Generate a person with first name, last name and Id_Hal_i and Id_Hal_s in DB model format
     :return: person with first name, last name and Id_Hal_i and Id_Hal_s  in DB model format
