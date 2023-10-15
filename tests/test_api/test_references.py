@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.identifier import Identifier
 from app.db.models.person import Person
 
+pytestmark = pytest.mark.integration
+
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
