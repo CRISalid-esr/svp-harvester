@@ -6,7 +6,8 @@ import json
 import aio_pika
 from aio_pika import ExchangeType, DeliveryMode
 
-MAX_AUTHORS = 100
+MIN_AUTHORS = 400
+MAX_AUTHORS = 401
 
 
 async def main() -> None:
@@ -32,6 +33,8 @@ async def main() -> None:
             next(csv_file)
             for line in csv_file:
                 count += 1
+                if count <= MIN_AUTHORS:
+                    continue
                 if count > MAX_AUTHORS:
                     break
                 print(f"line {count}")
