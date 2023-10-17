@@ -1,6 +1,11 @@
+from sqlalchemy import select
+
 from app.db.abstract_dao import AbstractDAO
+from app.db.models.entity import Entity
+from app.db.models.harvesting import Harvesting
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
+from app.db.models.retrieval import Retrieval
 
 
 class ReferenceEventDAO(AbstractDAO):
@@ -38,3 +43,20 @@ class ReferenceEventDAO(AbstractDAO):
         :return:
         """
         return await self.db_session.get(ReferenceEvent, reference_event_id)
+
+    async def get_detailed_reference_event_by_id(
+        self, reference_event_id: int
+    ) -> ReferenceEvent | None:
+        """
+        Get a reference event by its id with reference, harvesting and entity
+        :param reference_event_id:  id of the reference event
+        :return:   the reference event or None if not found
+        """
+        stmt = (
+            select(ReferenceEvent, Entity)
+            .join(ReferenceEvent.harvesting)
+            .join(Harvesting.retrieval)
+            .join(Retrieval.entity)
+            .where(ReferenceEvent.id == reference_event_id)
+        )
+        return (await self.db_session.execute(stmt)).unique().first()

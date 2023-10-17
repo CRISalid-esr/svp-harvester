@@ -35,7 +35,9 @@ class Reference(Base, VersionedRecord):
     )
 
     subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
-        "app.db.models.concept.Concept", secondary=references_subjects_table
+        "app.db.models.concept.Concept",
+        secondary=references_subjects_table,
+        lazy="joined",
     )
 
     reference_events: Mapped[

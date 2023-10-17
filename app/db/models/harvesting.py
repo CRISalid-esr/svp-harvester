@@ -30,8 +30,7 @@ class Harvesting(Base):
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
     retrieval: Mapped["app.db.models.retrieval.Retrieval"] = relationship(
-        "app.db.models.retrieval.Retrieval",
-        back_populates="harvestings", lazy="raise"
+        "app.db.models.retrieval.Retrieval", back_populates="harvestings", lazy="raise"
     )
 
     state: Mapped[str] = mapped_column(
@@ -39,9 +38,12 @@ class Harvesting(Base):
     )
 
     reference_events: Mapped[
-        List["app.db.models.reference_event.ReferenceEvent"]] = relationship(
+        List["app.db.models.reference_event.ReferenceEvent"]
+    ] = relationship(
         "app.db.models.reference_event.ReferenceEvent",
-        back_populates="harvesting", cascade="all, delete", lazy="raise"
+        back_populates="harvesting",
+        cascade="all, delete",
+        lazy="joined",
     )
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
