@@ -15,6 +15,8 @@ from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import
 from tests.fixtures.hal_api_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.retrieval_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.harvesting_fixtures import *  # pylint: disable=unused-import, wildcard-import
+from tests.fixtures.reference_fixtures import *  # pylint: disable=unused-import, wildcard-import
+from tests.fixtures.reference_event_fixtures import *  # pylint: disable=unused-import, wildcard-import
 
 
 from app.db.session import engine, Base

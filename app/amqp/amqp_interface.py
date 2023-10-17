@@ -13,8 +13,7 @@ class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
     WAIT_BEFORE_SHUTDOWN = 30
-    TASKS_BUFFERING_LIMIT = 5000
-    TASKS_PARALLELISM_LIMIT = 1000
+    TASKS_PARALLELISM_LIMIT = 100
     INNER_TASKS_QUEUE_LENGTH = 10000
     EXCHANGE = "publications"
     KEYS = ["task.entity.references.retrieval"]

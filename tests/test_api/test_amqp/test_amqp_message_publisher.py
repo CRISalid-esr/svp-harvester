@@ -18,16 +18,30 @@ def mock_message():
         yield exch
 
 
-async def test_publish_harvesting_status(async_session: AsyncSession,
-                                         mocked_message: Mock, harvesting_db_model):
+@pytest.fixture(name="mocked_exchange")
+def mock_exchange():
+    """
+    Mocked RabbitMQ exchange to control publish calls.
+    """
+    mocked_exchange = Exchange(
+        Channel(Connection(URL("http://foobar"))), "tests_amqp_queue"
+    )
+    mocked_exchange.publish = AsyncMock()
+    return mocked_exchange
+
+
+@pytest.mark.asyncio
+async def test_publish_harvesting_status(
+    async_session: AsyncSession,
+    mocked_message: Mock,
+    mocked_exchange: Exchange,
+    harvesting_db_model,
+):
     """Test that a message is published to the AMQP queue when the publish method is called."""
     async_session.add(harvesting_db_model)
     await async_session.commit()
-    mock_exchange = Exchange(
-        Channel(Connection(URL("http://foobar"))), "tests_amqp_queue"
-    )
-    mock_exchange.publish = AsyncMock()
-    amqp_message_publisher = AMQPMessagePublisher(mock_exchange)
+
+    amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
     received_message_payload = {"type": "Harvesting", "id": harvesting_db_model.id}
     expected_sent_message_payload = {
         "harvesting": 1,
@@ -41,7 +55,50 @@ async def test_publish_harvesting_status(async_session: AsyncSession,
         str(expected_sent_message_payload).encode(),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
-    mock_exchange.publish.assert_called_once_with(
+    mocked_exchange.publish.assert_called_once_with(
+        message=mocked_message.return_value,
+        routing_key=expected_sent_message_routing_key,
+    )
+
+
+@pytest.mark.asyncio
+async def test_publish_created_reference(
+    async_session: AsyncSession,
+    mocked_message: Mock,
+    mocked_exchange: Exchange,
+    reference_event_db_model,
+):
+    """Test that a message is published to the AMQP queue when the publish method is called."""
+    async_session.add(reference_event_db_model)
+    await async_session.commit()
+
+    amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
+    received_message_payload = {
+        "type": "ReferenceEvent",
+        "id": reference_event_db_model.id,
+        "state": "created",
+    }
+    expected_sent_message_payload = {
+        "reference_event": {
+            "id": 1,
+            "type": "created",
+            "reference": {
+                "source_identifier": "123456789",
+                "id": 1,
+                "titles": [{"id": 1, "value": "title", "language": "fr"}],
+                "subtitles": [],
+                "concepts": [],
+            },
+        }
+    }
+
+    expected_sent_message_routing_key = "event.references.reference.event"
+    await amqp_message_publisher.publish(received_message_payload)
+    mocked_message.assert_called_once_with(
+        str(expected_sent_message_payload).encode(),
+        delivery_mode=DeliveryMode.PERSISTENT,
+    )
+    mocked_exchange.publish.assert_called_once_with(
         message=mocked_message.return_value,
         routing_key=expected_sent_message_routing_key,
     )

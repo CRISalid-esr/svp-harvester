@@ -2,8 +2,9 @@ from typing import Any
 
 from app.amqp.abstract_amqp_message_factory import AbstractAMQPMessageFactory
 from app.db.daos.reference_event_dao import ReferenceEventDAO
-from app.db.models.reference_event import ReferenceEvent
+from app.db.models.reference_event import ReferenceEvent as DbReferenceEvent
 from app.db.session import async_session
+from app.models.reference_events import ReferenceEvent as ReferenceEventModel
 
 
 class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
@@ -15,12 +16,10 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
     async def _build_payload(self) -> dict[str, Any]:
         async with async_session() as session:
             async with session.begin():
-                reference_event: ReferenceEvent = await ReferenceEventDAO(
+                reference_event: DbReferenceEvent = await ReferenceEventDAO(
                     session
                 ).get_reference_event_by_id(self.content.get("id"))
-                return {
-                    "reference_event": reference_event.id,
-                    "reference": reference_event.reference.id,
-                    "title": reference_event.reference.titles[0].value,
-                    "type": reference_event.type,
-                }
+                reference_event_representation: ReferenceEventModel = (
+                    ReferenceEventModel.model_validate(reference_event)
+                )
+                return {"reference_event": reference_event_representation.model_dump()}
