@@ -19,4 +19,4 @@ class Reference(BaseModel):
 
     titles: List[LiteralFields] = []
     subtitles: List[LiteralFields] = []
-    concepts: List[Concept] = []
+    subjects: List[Concept] = []

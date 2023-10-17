@@ -44,10 +44,12 @@ async def test_publish_harvesting_status(
     amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
     received_message_payload = {"type": "Harvesting", "id": harvesting_db_model.id}
     expected_sent_message_payload = {
-        "harvesting": 1,
         "harvester": "idref",
         "state": "running",
-        "retrieval": 1,
+        "entity": {
+            "identifiers": [{"type": "idref", "value": "123456789"}],
+            "name": "John Doe",
+        },
     }
     expected_sent_message_routing_key = "event.references.harvesting.state"
     await amqp_message_publisher.publish(received_message_payload)
@@ -61,6 +63,7 @@ async def test_publish_harvesting_status(
     )
 
 
+@pytest.mark.current
 @pytest.mark.asyncio
 async def test_publish_created_reference(
     async_session: AsyncSession,
@@ -80,16 +83,23 @@ async def test_publish_created_reference(
     }
     expected_sent_message_payload = {
         "reference_event": {
-            "id": 1,
             "type": "created",
             "reference": {
                 "source_identifier": "123456789",
-                "id": 1,
-                "titles": [{"id": 1, "value": "title", "language": "fr"}],
-                "subtitles": [],
-                "concepts": [],
+                "titles": [{"value": "title", "language": "fr"}],
+                "subtitles": [{"value": "subtitle", "language": "fr"}],
+                "subjects": [
+                    {
+                        "uri": "http://uri",
+                        "labels": [{"value": "label", "language": "fr"}],
+                    }
+                ],
             },
-        }
+        },
+        "entity": {
+            "identifiers": [{"type": "idref", "value": "123456789"}],
+            "name": "John Doe",
+        },
     }
 
     expected_sent_message_routing_key = "event.references.reference.event"
