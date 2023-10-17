@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.models.literal_fields import LiteralFields
+from app.models.literal_fields import LiteralField
 
 
 class Concept(BaseModel):
@@ -12,6 +12,6 @@ class Concept(BaseModel):
 
     id: int
 
-    uri: str
+    uri: str | None
 
-    labels: list[LiteralFields] = []
+    labels: list[LiteralField] = []

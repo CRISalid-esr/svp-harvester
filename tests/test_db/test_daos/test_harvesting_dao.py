@@ -17,14 +17,16 @@ async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model
     :return: None
     """
     dao = HarvestingDAO(async_session)
-    await dao.create_harvesting(retrieval_db_model, "idref", state=Harvesting.State.RUNNING)
+    await dao.create_harvesting(
+        retrieval_db_model, "idref", state=Harvesting.State.RUNNING
+    )
     await async_session.commit()
     stmt = (
         select(Harvesting)
         .join(Harvesting.retrieval)
         .where(DbRetrieval.id == retrieval_db_model.id)
     )
-    harvesting_from_db = (await async_session.execute(stmt)).scalar_one()
+    harvesting_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert harvesting_from_db.harvester == "idref"
 
 

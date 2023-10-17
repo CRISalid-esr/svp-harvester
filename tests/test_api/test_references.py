@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.identifier import Identifier
 from app.db.models.person import Person
+from app.db.models.reference_event import ReferenceEvent
 
 pytestmark = pytest.mark.integration
 
@@ -71,7 +72,7 @@ def test_fetch_references_async_with_name_and_unknown_identifier_type(
     assert response.status_code == 422
 
 
-async def test_get_retrieval_result(
+async def test_get_retrieval_result_response_ok(
     test_client: TestClient,
     retrieval_db_model,
     async_session: AsyncSession,
@@ -90,6 +91,104 @@ async def test_get_retrieval_result(
         f"/api/v1/references/retrieval/{db_retrieval_id}",
     )
     assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_get_retrieval_result_with_subects_without_uri(
+    test_client: TestClient,
+    reference_event_db_model: ReferenceEvent,
+    async_session: AsyncSession,
+):
+    """
+    Test the get_retrieval_result endpoint.
+    :param test_client:  test client
+    :param reference_event_db_model:  reference event from database
+    :param async_session: async session
+    :return:
+    """
+    reference_event_db_model.reference.subjects[0].uri = None
+    async_session.add(reference_event_db_model)
+    await async_session.commit()
+    db_retrieval_id = reference_event_db_model.harvesting.retrieval.id
+    response = test_client.get(
+        f"/api/v1/references/retrieval/{db_retrieval_id}",
+    )
+    assert response.status_code == 200
+    json_response = response.json()
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
+            0
+        ]["labels"][0]["value"]
+        == "label"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
+            0
+        ]["labels"][0]["language"]
+        == "fr"
+    )
+
+
+@pytest.mark.asyncio
+async def test_get_retrieval_result(
+    test_client: TestClient,
+    reference_event_db_model: ReferenceEvent,
+    async_session: AsyncSession,
+):
+    """
+    Test the get_retrieval_result endpoint.
+    :param test_client:  test client
+    :param reference_event_db_model:  reference event from database
+    :param async_session: async session
+    :return:
+    """
+    async_session.add(reference_event_db_model)
+    await async_session.commit()
+    db_retrieval_id = reference_event_db_model.harvesting.retrieval.id
+    response = test_client.get(
+        f"/api/v1/references/retrieval/{db_retrieval_id}",
+    )
+    assert response.status_code == 200
+    json_response = response.json()
+    assert json_response["harvestings"][0]["harvester"] == "idref"
+    assert len(json_response["harvestings"][0]["reference_events"]) == 1
+    assert json_response["harvestings"][0]["reference_events"][0]["type"] == "created"
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"][
+            "source_identifier"
+        ]
+        == "123456789"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["titles"][
+            0
+        ]["value"]
+        == "title"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["titles"][
+            0
+        ]["language"]
+        == "fr"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
+            0
+        ]["uri"]
+        == "http://uri"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
+            0
+        ]["labels"][0]["value"]
+        == "label"
+    )
+    assert (
+        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
+            0
+        ]["labels"][0]["language"]
+        == "fr"
+    )
 
 
 @pytest.mark.asyncio

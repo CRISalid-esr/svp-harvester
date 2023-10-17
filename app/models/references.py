@@ -3,7 +3,8 @@ from typing import List
 from pydantic import BaseModel, ConfigDict
 
 from app.models.concepts import Concept
-from app.models.literal_fields import LiteralFields
+from app.models.subtitles import Subtitle
+from app.models.titles import Title
 
 
 class Reference(BaseModel):
@@ -17,6 +18,6 @@ class Reference(BaseModel):
 
     id: int
 
-    titles: List[LiteralFields] = []
-    subtitles: List[LiteralFields] = []
-    concepts: List[Concept] = []
+    titles: List[Title] = []
+    subtitles: List[Subtitle] = []
+    subjects: List[Concept] = []

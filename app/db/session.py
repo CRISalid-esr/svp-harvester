@@ -26,6 +26,9 @@ else:  # pragma: no cover
         SQLALCHEMY_DATABASE_URL,
         future=True,
         echo=False,
+        pool_size=100,
+        max_overflow=2000,
+        pool_timeout=60,
     )
 async_session = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()

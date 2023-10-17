@@ -1,8 +1,9 @@
-from sqlalchemy import update
+from sqlalchemy import update, select
+from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.harvesting import Harvesting
-from app.db.models.retrieval import Retrieval
+from app.db.models.harvesting import Harvesting as DbHarvesting
+from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
 class HarvestingDAO(AbstractDAO):
@@ -11,8 +12,8 @@ class HarvestingDAO(AbstractDAO):
     """
 
     async def create_harvesting(
-            self, retrieval: Retrieval, harvester: str, state: Harvesting.State
-    ) -> Harvesting:
+        self, retrieval: DbRetrieval, harvester: str, state: DbHarvesting.State
+    ) -> DbHarvesting:
         """
         Create a harvesting for a retrieval
 
@@ -21,21 +22,39 @@ class HarvestingDAO(AbstractDAO):
         :param harvester: type of harvester (idref, orcid, etc.)
         :return:
         """
-        harvesting = Harvesting(harvester=harvester, state=state.value)
+        harvesting = DbHarvesting(harvester=harvester, state=state.value)
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
         return harvesting
 
-    async def get_harvesting_by_id(self, harvesting_id) -> Harvesting | None:
+    async def get_harvesting_by_id(self, harvesting_id) -> DbHarvesting | None:
         """
         Get a harvesting by its id
 
         :param harvesting_id: id of the harvesting
         :return: the harvesting or None if not found
         """
-        return await self.db_session.get(Harvesting, harvesting_id)
+        return await self.db_session.get(DbHarvesting, harvesting_id)
 
-    async def update_harvesting_state(self, harvesting_id: int, state: Harvesting.State):
+    async def get_harvesting_extended_info_by_id(
+        self, harvesting_id
+    ) -> DbHarvesting | None:
+        """
+        Get a harvesting without reference events but with retrieval and associated entity
+
+        :param harvesting_id: id of the harvesting
+        :return: the harvesting or None if not found
+        """
+        stmt = (
+            select(DbHarvesting)
+            .options(joinedload(DbHarvesting.retrieval))
+            .where(DbHarvesting.id == harvesting_id)
+        )
+        return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
+
+    async def update_harvesting_state(
+        self, harvesting_id: int, state: DbHarvesting.State
+    ):
         """
         Update the state of a harvesting
 
@@ -44,8 +63,8 @@ class HarvestingDAO(AbstractDAO):
         :return: None
         """
         stmt = (
-            update(Harvesting)
-            .where(Harvesting.id == harvesting_id)
+            update(DbHarvesting)
+            .where(DbHarvesting.id == harvesting_id)
             .values({"state": state.value})
         )
         await self.db_session.execute(stmt)
