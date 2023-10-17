@@ -1,9 +1,9 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class LiteralFields(BaseModel):
+class LiteralField(BaseModel):
     """
-    Pydantic model matching LiteralFields sql_alchemy model
+    Pydantic model matching LiteralField sql_alchemy model
     """
 
     model_config = ConfigDict(from_attributes=True)
