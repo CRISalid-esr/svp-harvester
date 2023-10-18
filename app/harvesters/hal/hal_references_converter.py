@@ -1,18 +1,16 @@
-import hashlib
 import re
 from typing import Generator
 
-from app.db.daos.concept_dao import ConceptDAO
 from app.db.models.reference import Reference
-from app.db.models.title import  Title
+from app.db.models.title import Title
 from app.db.models.subtitle import Subtitle
-from app.db.models.concept import Concept
-from app.db.models.label import Label
-from app.db.session import async_session
-from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as JsonRawResult
+from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.json_harvester_raw_result import (
+    JsonHarvesterRawResult as JsonRawResult,
+)
 
 
-class HalReferencesConverter:
+class HalReferencesConverter(AbstractReferencesConverter):
     """
     Converts raw data from HAL to a normalised Reference object
     """
@@ -60,34 +58,9 @@ class HalReferencesConverter:
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
             for value in raw_data[field]:
-                yield await self._get_or_create_concept(
+                yield await self._get_or_create_concept_by_label(
                     value=value, language=self._language_from_field_name(field)
                 )
-
-    async def _get_or_create_concept(self, value, language):
-        async with async_session() as session:
-            concept = await ConceptDAO(session).get_concept_by_label_and_language(
-                value, language
-            )
-        if concept is None:
-            concept = Concept()
-            concept.labels.append(Label(value=value, language=language))
-        return concept
-
-    def _hash(self, raw_data: dict):
-        reduced_dic: dict = dict(
-            zip(
-                self._hash_keys(),
-                [raw_data[k] for k in self._hash_keys() if k in raw_data],
-            )
-        )
-        string_to_hash = ""
-        for values in reduced_dic.values():
-            if isinstance(values, list):
-                string_to_hash += ",".join((str(value) for value in values))
-            else:
-                string_to_hash += str(values)
-        return hashlib.sha256(string_to_hash.encode()).hexdigest()
 
     def _hash_keys(self):
         return [

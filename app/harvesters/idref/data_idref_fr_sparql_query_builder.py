@@ -26,7 +26,7 @@ class DataIdrefFrSparqlQueryBuilder:
         author = PrefixedName
 
     def __init__(self) -> None:
-        self.subject_uri: str = None
+        self.subject_uri: str | None = None
         self.subject_type: DataIdrefFrSparqlQueryBuilder.SubjectType | None = None
 
     def set_idref_id(self, idref_id: str):
@@ -78,8 +78,26 @@ class DataIdrefFrSparqlQueryBuilder:
 
     def _build_person_query(self) -> str:
         return (
-            "select distinct ?pub ?role "  # caution: trailing space is important
-            f"where {{?pub ?role <{self.subject_uri}>}}\n"
+            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n"
+            "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
+            "PREFIX dcterms: <http://purl.org/dc/terms/> \n"
+            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+            "select distinct  ?pub ?role ?type ?title ?altLabel ?subject_uri ?subject_label \n "
+            f"where {{?pub ?role <{self.subject_uri}> . \n"
+            "OPTIONAL {"
+            "?pub rdf:type ?type \n"
+            "} . "
+            "OPTIONAL {"
+            "?pub dc:title ?title"
+            "} . "
+            "OPTIONAL {"
+            "?pub skos:altLabel ?altLabel"
+            "} . "
+            "OPTIONAL {"
+            "?pub dcterms:subject ?subject_uri . "
+            "?subject_uri skos:prefLabel ?subject_label "
+            "} . "
+            "}\n"
             "LIMIT 10000"
         )
 

@@ -6,8 +6,8 @@ import json
 import aio_pika
 from aio_pika import ExchangeType, DeliveryMode
 
-MIN_AUTHORS = 400
-MAX_AUTHORS = 401
+MIN_AUTHORS = 500
+MAX_AUTHORS = 600
 
 
 async def main() -> None:
@@ -40,8 +40,8 @@ async def main() -> None:
                 print(f"line {count}")
 
                 line = line.split(",")
-                # remove prefix 'https://www.idref.fr' from line 3 and remove trailing \n
-                line[3] = line[3].replace("https://www.idref.fr/", "").strip("\n")
+                idref = line[3].split(",")[0].strip("\n")
+                idref = idref.replace("https://www.idref.fr/", "").strip("\n")
                 payload = {
                     "type": "person",
                     "fields": {
@@ -49,7 +49,7 @@ async def main() -> None:
                         "identifiers": [
                             {"type": "id_hal_s", "value": line[1]},
                             {"type": "id_hal_i", "value": line[2]},
-                            {"type": "idref", "value": line[3]},
+                            {"type": "idref", "value": idref},
                         ],
                     },
                 }

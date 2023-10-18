@@ -11,7 +11,7 @@ class ConceptDAO(AbstractDAO):
     """
 
     async def get_concept_by_label_and_language(
-            self, label: str, language: str
+        self, label: str, language: str
     ) -> Concept | None:
         """
         Get a concept by its label and language
@@ -25,4 +25,14 @@ class ConceptDAO(AbstractDAO):
             .join(Label)
             .where(Label.value == label, Label.language == language)
         )
+        return await self.db_session.scalar(query)
+
+    async def get_concept_by_uri(self, uri: str) -> Concept | None:
+        """
+        Get a concept by its uri
+
+        :param uri: uri of the concept
+        :return: the concept or None if not found
+        """
+        query = select(Concept).where(Concept.uri == uri)
         return await self.db_session.scalar(query)
