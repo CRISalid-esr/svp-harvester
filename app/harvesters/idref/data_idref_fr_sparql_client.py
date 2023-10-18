@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Generator
+from typing import AsyncGenerator
 
 import aiohttp
 from aiosparql.client import SPARQLClient
@@ -14,9 +14,11 @@ class DataIdrefFrSparqlClient:
 
     class DataSources(Enum):
         """Typology of data sources for which data.idref.fr gathers data"""
+
         IDREF = "IDREF"
         HAL = "HAL"
         SUDOC = "SUDOC"
+        SCIENCE_PLUS = "SCIENCE_PLUS"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
@@ -26,7 +28,6 @@ class DataIdrefFrSparqlClient:
     DATA_SOURCES_PREFIXES = {
         DataSources.IDREF: [
             "http://www.idref.fr/",
-            "http://hub.abes.fr/",
             "http://journals.openedition.org/",
         ],
         DataSources.HAL: [
@@ -35,9 +36,12 @@ class DataIdrefFrSparqlClient:
         DataSources.SUDOC: [
             "http://www.sudoc.fr/",
         ],
+        DataSources.SCIENCE_PLUS: [
+            "http://hub.abes.fr/",
+        ],
     }
 
-    async def fetch_publications(self, query: str) -> Generator[dict, None, None]:
+    async def fetch_publications(self, query: str) -> AsyncGenerator[dict, None]:
         """
         Fetch publications list for a given author from the Idref sparql endpoint
 
@@ -47,16 +51,46 @@ class DataIdrefFrSparqlClient:
         client: SPARQLClient = self._get_client()
         try:
             response = await client.query(query)
+            # agregate results
+            publications = {}
             for result in response.get("results", {}).get("bindings", []):
                 if not any(
-                        result.get("role", {}).get("value", "").startswith(prefix)
-                        for prefix in self.AUTHORS_PREFIXES
+                    result.get("role", {}).get("value", "").startswith(prefix)
+                    for prefix in self.AUTHORS_PREFIXES
                 ):
                     continue
-                yield result | {
+                pub = result.get("pub", {}).get("value", "")
+                if pub not in publications:
+                    publications[pub] = {
+                        "uri": pub,
+                        "role": result.get("role", {}).get("value", ""),
+                        "title": [],
+                        "type": [],
+                        "altLabel": [],
+                        "subject": {},
+                    }
+                # replace by a loop
+                for key in ["type", "title", "altLabel"]:
+                    if (
+                        result.get(key, {}).get("value", "")
+                        not in publications[pub][key]
+                    ):
+                        publications[pub][key].append(
+                            result.get(key, {}).get("value", "")
+                        )
+                subject_uri = result.get("subject_uri", {}).get("value", "")
+                if subject_uri and subject_uri not in publications[pub]["subject"]:
+                    publications[pub]["subject"][subject_uri] = {
+                        "uri": subject_uri,
+                        "label": result.get("subject_label", {}).get("value", ""),
+                        "lang": result.get("subject_label", {}).get("xml:lang", ""),
+                    }
+
+            for publication in publications.values():
+                yield publication | {
                     # identify the secondary source to which the publication belongs
                     "secondary_source": self._result_source_code(
-                        result.get("pub", {}).get("value", "")
+                        publication.get("uri", "")
                     )
                 }
         except Exception as error:
@@ -80,8 +114,9 @@ class DataIdrefFrSparqlClient:
             pub_raw_data: dict = response.get("results", {}).get("bindings", [])
             # simplify the data structure by removing the first level of keys
             return {
-                data.get("prop", {}).get("value", ""):
-                    data.get("val", {}).get("value", "")
+                data.get("prop", {})
+                .get("value", ""): data.get("val", {})
+                .get("value", "")
                 for data in pub_raw_data
             }
         except Exception as error:

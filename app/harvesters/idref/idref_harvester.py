@@ -1,3 +1,5 @@
+import re
+import urllib
 from enum import Enum
 from typing import AsyncGenerator, Type
 
@@ -12,7 +14,7 @@ from app.harvesters.idref.data_idref_fr_sparql_client import DataIdrefFrSparqlCl
 from app.harvesters.idref.data_idref_fr_sparql_query_builder import (
     DataIdrefFrSparqlQueryBuilder as QueryBuilder,
 )
-from app.harvesters.idref.sudoc_api_client import SudocApiClient
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (
     AbstractHarvesterRawResult as RawResult,
 )
@@ -28,12 +30,17 @@ class IdrefHarvester(AbstractHarvester):
     Harvester for data.idref.fl
     """
 
+    SUDOC_URL_SUFFIX = "http://www.sudoc.fr/"
+    SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
+    SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
+
     class Formatters(Enum):
         """
         Source identifiers for idref, including secondary sources
         """
 
         SUDOC_RDF = "SUDOC_RDF"
+        SCIENCE_PLUS_RDF = "SCIENCE_PLUS_RDF"
         HAL_JSON = "HAL_JSON"
         IDREF_SPARQL = "IDREF_SPARQL"
 
@@ -51,12 +58,13 @@ class IdrefHarvester(AbstractHarvester):
         async for doc in DataIdrefFrSparqlClient().fetch_publications(builder.build()):
             coro = None
             if doc["secondary_source"] == "IDREF":
-                pass
-                # coro = self._query_publication_from_idref_endpoint(doc)
+                coro = self._convert_publication_from_idref_endpoint(doc)
             elif doc["secondary_source"] == "SUDOC":
                 coro = self._query_publication_from_sudoc_endpoint(doc)
             elif doc["secondary_source"] == "HAL":
                 coro = self._query_publication_from_hal_endpoint(doc)
+            elif doc["secondary_source"] == "SCIENCE_PLUS":
+                coro = self._query_publication_from_science_plus_endpoint(doc)
             else:
                 print(f"Unknown source {doc['secondary_source']}")
                 continue
@@ -85,36 +93,35 @@ class IdrefHarvester(AbstractHarvester):
         :param doc: the publication doc as result of the SPARQL query to data.idref.fr
         :return: the publication details
         """
-        uri: str | None = doc.get("pub", {}).get("value")
+        uri: str | None = doc.get("uri", "")
         if not uritools.isuri(uri):
             raise UnexpectedFormatException(
                 f"Invalid SUDOC URI from Idref SPARQL endpoint: {uri}"
             )
-        client = SudocApiClient()
-        pub = await client.fetch(uri)
+        assert uri.startswith(self.SUDOC_URL_SUFFIX), "Invalid Sudoc Id"
+        assert uri.endswith("/id"), "Provided Sudoc URI should end with /id"
+        # with regular expression, replace trailing "/id" by '.rdf' in document_uri
+        document_uri = re.sub(r"/id$", ".rdf", uri)
+        # with regular expression, replace "http://" by "https://" in document_uri
+        document_uri = re.sub(r"^http://", "https://", document_uri)
+        client = RdfResolver()
+        pub = await client.fetch(document_uri, output_format="xml")
         return RdfResult(
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.SUDOC_RDF.value,
         )
 
-    async def _query_publication_from_idref_endpoint(self, doc: dict) -> SparqlResult:
+    async def _convert_publication_from_idref_endpoint(self, doc: dict) -> SparqlResult:
         """
         Query the details of a publication from the IDREF API
 
         :param doc: the publication doc
         :return: the publication details
         """
-        uri = doc["pub"]["value"]
-        builder = (
-            QueryBuilder()
-            .set_subject_type(QueryBuilder.SubjectType.PUBLICATION)
-            .set_subject_uri(uri)
-        )
-        raw_data = await DataIdrefFrSparqlClient().fetch_publication(builder.build())
         return SparqlResult(
-            payload=raw_data,
-            source_identifier=URIRef(uri),
+            payload=doc,
+            source_identifier=URIRef(doc.get("uri")),
             formatter_name=self.Formatters.IDREF_SPARQL.value,
         )
 
@@ -128,6 +135,35 @@ class IdrefHarvester(AbstractHarvester):
         :return: the publication details
         """
         return {}
+
+    async def _query_publication_from_science_plus_endpoint(
+        self, doc: dict  # pylint: disable=unused-argument
+    ) -> RawResult:
+        """
+        Query the details of a publication from the Science+ API
+
+        :param doc: the publication doc
+        :return: the publication details
+        """
+        client = RdfResolver()
+        uri: str | None = doc.get("uri", "")
+        assert uri.startswith(self.SCIENCE_PLUS_URL_SUFFIX), "Invalid SciencePlus Id"
+        if not uritools.isuri(uri):
+            raise UnexpectedFormatException(
+                f"Invalid SUDOC URI from Idref SPARQL endpoint: {uri}"
+            )
+        params = {
+            "query": f'define sql:describe-mode "CBD"  DESCRIBE <{uri}>',
+            "output": "application/rdf+xml",
+        }
+        # concatenate encoded params to query suffix
+        query_uri = f"{self.SCIENCE_PLUS_QUERY_SUFFIX}?{urllib.parse.urlencode(params)}"
+        pub = await client.fetch(query_uri, output_format="xml")
+        return RdfResult(
+            payload=pub,
+            source_identifier=URIRef(uri),
+            formatter_name=self.Formatters.SCIENCE_PLUS_RDF.value,
+        )
 
     def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
         return entity.get_identifier("idref") is not None
