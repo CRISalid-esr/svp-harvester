@@ -14,6 +14,7 @@ class HalApiQueryBuilder:
 
         AUTH_ID_HAL_I = "authIdHal_i"
         AUTH_ID_HAL_S = "authIdHal_s"
+        AUTH_ORCID_ID_EXT_ID = "authORCIDIdExt_id"
 
     DEFAULT_DOC_TYPES = [
         "ART",
@@ -56,7 +57,7 @@ class HalApiQueryBuilder:
         self.sort_direction = self.DEFAULT_SORT_DIRECTION
 
     def set_query(
-        self, identifier_type: QueryParameters, identifier_value: str
+            self, identifier_type: QueryParameters, identifier_value: str
     ) -> None:
         """
         Set the field name and value representing the entity for which the query is built.
@@ -76,19 +77,23 @@ class HalApiQueryBuilder:
         :return: a query string
         """
         params = (
-            self._query_param()
-            | self._cursor_mark_param()
-            | self._sort_param()
-            | self._rows_param()
-            | self._filter_param()
-            | self._fields_param()
+                self._query_param()
+                | self._cursor_mark_param()
+                | self._sort_param()
+                | self._rows_param()
+                | self._filter_param()
+                | self._fields_param()
         )
         return urlencode(params)
 
     def _query_param(self):
         assert (
-            self.identifier_type is not None and self.identifier_value is not None
+                self.identifier_type is not None and self.identifier_value is not None
         ), "Set the query parameters before building the query. "
+        # Hal will add random results if the orcid id is not quoted
+        # thanks Alessandro Buccheri for the tip
+        if self.identifier_type == self.QueryParameters.AUTH_ORCID_ID_EXT_ID:
+            self.identifier_value = f"\"{self.identifier_value}\""
         return {"q": f"{self.identifier_type.value}:{self.identifier_value}"}
 
     def _cursor_mark_param(self):

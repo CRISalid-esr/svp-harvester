@@ -9,7 +9,7 @@ from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpoint
 DATA_IDREF_FR_URL = "https://data.idref.fr/sparql"
 
 
-class DataIdrefFrSparqlClient:
+class IdrefSparqlClient:
     """Async client for data.idref.fr SPARQL API, wrapper around aiosparql"""
 
     class DataSources(Enum):

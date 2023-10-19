@@ -4,7 +4,7 @@ import uritools
 from aiosparql.syntax import Namespace, PrefixedName, IRI
 
 
-class DataIdrefFrSparqlQueryBuilder:
+class IdrefSparqlQueryBuilder:
     """
     This class provides an abstraction to build a query for data.idref.fr sparql endpoint
     """
@@ -27,7 +27,8 @@ class DataIdrefFrSparqlQueryBuilder:
 
     def __init__(self) -> None:
         self.subject_uri: str | None = None
-        self.subject_type: DataIdrefFrSparqlQueryBuilder.SubjectType | None = None
+        self.orcid: str | None = None
+        self.subject_type: IdrefSparqlQueryBuilder.SubjectType | None = None
 
     def set_idref_id(self, idref_id: str):
         """
@@ -37,6 +38,16 @@ class DataIdrefFrSparqlQueryBuilder:
         :return: the query builder
         """
         self.subject_uri = f"http://www.idref.fr/{idref_id}/id"
+        return self
+
+    def set_orcid(self, orcid: str):
+        """
+        Set the orcid
+
+        :param orcid: the orcid of the subject
+        :return: the query builder
+        """
+        self.orcid = orcid
         return self
 
     def set_subject_type(self, subject_type: SubjectType):
@@ -66,13 +77,13 @@ class DataIdrefFrSparqlQueryBuilder:
         assert (
             self.subject_type is not None
         ), "Specify a subject type before building the query"
-        assert self.subject_uri is not None, (
-            "Specify a subject uri or an idref id for the subject "
+        assert self.subject_uri is not None or self.orcid is not None, (
+            "Specify an orcid or an idref id for the subject "
             "before building the query"
         )
-        if self.subject_type == DataIdrefFrSparqlQueryBuilder.SubjectType.PERSON:
+        if self.subject_type == IdrefSparqlQueryBuilder.SubjectType.PERSON:
             return self._build_person_query()
-        if self.subject_type == DataIdrefFrSparqlQueryBuilder.SubjectType.PUBLICATION:
+        if self.subject_type == IdrefSparqlQueryBuilder.SubjectType.PUBLICATION:
             return self._build_publication_query()
         raise ValueError(f"Unknown subject type {self.subject_type}")
 
@@ -83,7 +94,7 @@ class DataIdrefFrSparqlQueryBuilder:
             "PREFIX dcterms: <http://purl.org/dc/terms/> \n"
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
             "select distinct  ?pub ?role ?type ?title ?altLabel ?subject_uri ?subject_label \n "
-            f"where {{?pub ?role <{self.subject_uri}> . \n"
+            f"where {{ {self._person_sparql_filter()} \n"
             "OPTIONAL {"
             "?pub rdf:type ?type \n"
             "} . "
@@ -94,8 +105,8 @@ class DataIdrefFrSparqlQueryBuilder:
             "?pub skos:altLabel ?altLabel"
             "} . "
             "OPTIONAL {"
-            "?pub dcterms:subject ?subject_uri . "
-            "?subject_uri skos:prefLabel ?subject_label "
+            "?pub dcterms:subject ?concept_uri . "
+            "?concept_uri skos:prefLabel ?subject_label "
             "} . "
             "}\n"
             "LIMIT 10000"
@@ -107,3 +118,10 @@ class DataIdrefFrSparqlQueryBuilder:
             f"where {{<{self.subject_uri}> ?prop ?val}}\n"
             "LIMIT 10000"
         )
+
+    def _person_sparql_filter(self):
+        if self.subject_uri is not None:
+            return f"?pub ?role <{self.subject_uri}> ."
+        if self.orcid is not None:
+            return f"?pub ?role ?pers . \n" f'?pers vivo:orcidId "{self.orcid}" .'
+        raise ValueError("Specify an orcid or an idref id for the subject")
