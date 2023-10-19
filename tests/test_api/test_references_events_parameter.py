@@ -10,12 +10,38 @@ pytestmark = pytest.mark.integration
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
+@pytest.mark.current
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "event_types_1,event_types_2,num_results_1,num_results_2",
+    [
+        (
+            ["created", "updated", "deleted", "unchanged"],
+            ["created", "updated", "deleted", "unchanged"],
+            3,
+            4,
+        ),
+        (
+            ["created", "updated", "deleted", "unchanged"],
+            ["created", "updated", "deleted"],
+            3,
+            3,
+        ),
+        (["created", "updated", "deleted", "unchanged"], ["created", "updated"], 3, 2),
+        (["created", "updated", "deleted", "unchanged"], ["created"], 3, 1),
+        (["created", "updated", "deleted", "unchanged"], ["updated"], 3, 1),
+        (["created", "updated", "deleted", "unchanged"], ["deleted"], 3, 1),
+    ],
+)
 async def test_fetch_references_async_with_all_event_types(
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
     hal_api_docs_for_researcher_version_1,
     hal_api_docs_for_researcher_version_2,
+    event_types_1,
+    event_types_2,
+    num_results_1,
+    num_results_2,
 ):
     """
     GIVEN a test client and a person with name and id
@@ -39,7 +65,7 @@ async def test_fetch_references_async_with_all_event_types(
             REFERENCES_RETRIEVAL_API_PATH,
             json={
                 "person": person_with_name_and_id_hal_i_json,
-                "events": ["created", "updated", "deleted", "unchanged"],
+                "events": event_types_1,
             },
         )
         assert response.status_code == 200
@@ -51,18 +77,20 @@ async def test_fetch_references_async_with_all_event_types(
         json_response = response.json()
         assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
-        # it has 3 reference events
-        assert len(json_response["harvestings"][0]["reference_events"]) == 3
-        # all 3 reference events are of type created
+        assert len(json_response["harvestings"][0]["reference_events"]) == num_results_1
+        # all reference events are of type created
         assert all(
             reference_event["type"] == "created"
             for reference_event in json_response["harvestings"][0]["reference_events"]
         )
-        assert any(
-            reference_event["reference"]["titles"][0]["value"]
-            == "The metaphorical structuring of kinship in Latin"
-            for reference_event in json_response["harvestings"][0]["reference_events"]
-        )
+        if "created" in event_types_1:
+            assert any(
+                reference_event["reference"]["titles"][0]["value"]
+                == "The metaphorical structuring of kinship in Latin"
+                for reference_event in json_response["harvestings"][0][
+                    "reference_events"
+                ]
+            )
     # Now relaunch the same retrieval with a new version of the results
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
@@ -73,7 +101,7 @@ async def test_fetch_references_async_with_all_event_types(
             REFERENCES_RETRIEVAL_API_PATH,
             json={
                 "person": person_with_name_and_id_hal_i_json,
-                "events": ["created", "updated", "deleted", "unchanged"],
+                "events": event_types_2,
             },
         )
         assert response.status_code == 200
@@ -86,60 +114,68 @@ async def test_fetch_references_async_with_all_event_types(
         assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
         # it has 4 reference events
-        assert len(json_response["harvestings"][0]["reference_events"]) == 4
+        assert len(json_response["harvestings"][0]["reference_events"]) == num_results_2
         # among them, exactly one has the reference with source identifier 1719671 and is unchanged
-        assert (
-            len(
-                [
-                    reference_event
-                    for reference_event in json_response["harvestings"][0][
-                        "reference_events"
+        if "unchanged" in event_types_2:
+            assert (
+                len(
+                    [
+                        reference_event
+                        for reference_event in json_response["harvestings"][0][
+                            "reference_events"
+                        ]
+                        if reference_event["reference"]["source_identifier"]
+                        == "1719671"
+                        and reference_event["type"] == "unchanged"
                     ]
-                    if reference_event["reference"]["source_identifier"] == "1719671"
-                    and reference_event["type"] == "unchanged"
-                ]
+                )
+                == 1
             )
-            == 1
-        )
         # among them, exactly one has the reference with source identifier 3002983 and is created
-        assert (
-            len(
-                [
-                    reference_event
-                    for reference_event in json_response["harvestings"][0][
-                        "reference_events"
+        if "created" in event_types_2:
+            assert (
+                len(
+                    [
+                        reference_event
+                        for reference_event in json_response["harvestings"][0][
+                            "reference_events"
+                        ]
+                        if reference_event["reference"]["source_identifier"]
+                        == "3002983"
+                        and reference_event["type"] == "created"
                     ]
-                    if reference_event["reference"]["source_identifier"] == "3002983"
-                    and reference_event["type"] == "created"
-                ]
+                )
+                == 1
             )
-            == 1
-        )
         # among them, exactly one has the reference with source identifier 3002970 and is deleted
-        assert (
-            len(
-                [
-                    reference_event
-                    for reference_event in json_response["harvestings"][0][
-                        "reference_events"
+        if "deleted" in event_types_2:
+            assert (
+                len(
+                    [
+                        reference_event
+                        for reference_event in json_response["harvestings"][0][
+                            "reference_events"
+                        ]
+                        if reference_event["reference"]["source_identifier"]
+                        == "3002970"
+                        and reference_event["type"] == "deleted"
                     ]
-                    if reference_event["reference"]["source_identifier"] == "3002970"
-                    and reference_event["type"] == "deleted"
-                ]
+                )
+                == 1
             )
-            == 1
-        )
         # among them, exactly one has the reference with source identifier 2091947 and is updated
-        assert (
-            len(
-                [
-                    reference_event
-                    for reference_event in json_response["harvestings"][0][
-                        "reference_events"
+        if "updated" in event_types_2:
+            assert (
+                len(
+                    [
+                        reference_event
+                        for reference_event in json_response["harvestings"][0][
+                            "reference_events"
+                        ]
+                        if reference_event["reference"]["source_identifier"]
+                        == "2091947"
+                        and reference_event["type"] == "updated"
                     ]
-                    if reference_event["reference"]["source_identifier"] == "2091947"
-                    and reference_event["type"] == "updated"
-                ]
+                )
+                == 1
             )
-            == 1
-        )
