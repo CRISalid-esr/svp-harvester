@@ -17,6 +17,7 @@ from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.models.entities import Entity as PydanticEntity
+from app.models.reference_events import ReferenceEvent
 from app.services.entities.entity_resolution_service import EntityResolutionService
 from app.settings.app_settings import AppSettings
 
@@ -37,7 +38,10 @@ class RetrievalService:
         self.entity: Optional[PydanticEntity] = None
 
     async def register(
-        self, entity: Type[PydanticEntity], nullify: List[str] = None
+        self,
+        entity: Type[PydanticEntity],
+        events: List[ReferenceEvent.Type] = None,
+        nullify: List[str] = None,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
@@ -53,7 +57,7 @@ class RetrievalService:
             async with session.begin():
                 # this will add the new entity to the db if it does not exist
                 self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    existing_entity or new_entity
+                    entity=existing_entity or new_entity, event_types=events or []
                 )
         return self.retrieval
 
