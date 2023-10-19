@@ -74,11 +74,9 @@ class RetrievalService:
         """
         assert self.retrieval is not None, "Retrieval must be registered before running"
         if in_background:
-            self.background_tasks.add_task(
-                self._launch_harvesters, self.retrieval, result_queue
-            )
+            self.background_tasks.add_task(self._launch_harvesters, result_queue)
         else:
-            await self._launch_harvesters(self.retrieval, result_queue)
+            await self._launch_harvesters(result_queue)
 
     def _build_harvesters(self):
         for harvester_config in self.settings.harvesters:
@@ -95,9 +93,7 @@ class RetrievalService:
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
-    async def _launch_harvesters(
-        self, retrieval: Retrieval, result_queue: Queue = None
-    ):
+    async def _launch_harvesters(self, result_queue: Queue = None):
         pending_harvesters = []
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
@@ -107,7 +103,7 @@ class RetrievalService:
             async with async_session() as session:
                 async with session.begin():
                     harvesting = await HarvestingDAO(session).create_harvesting(
-                        retrieval=retrieval,
+                        retrieval=self.retrieval,
                         harvester=harvester_name,
                         state=Harvesting.State.RUNNING,
                     )
@@ -117,7 +113,7 @@ class RetrievalService:
             harvester.set_harvesting_id(harvesting.id)
             task = asyncio.create_task(
                 harvester.run(),
-                name=f"{harvester_name}_harvester_retrieval_{retrieval.id}",
+                name=f"{harvester_name}_harvester_retrieval_{self.retrieval.id}",
             )
             pending_harvesters.append(task)
             harvesting_tasks_index[harvesting.id] = task
@@ -126,5 +122,5 @@ class RetrievalService:
             done_harvesters, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
-            print(f"done : {len(done_harvesters)} for {retrieval.id}")
-            print(f"pending : {len(pending_harvesters)} for {retrieval.id}")
+            print(f"done : {len(done_harvesters)} for {self.retrieval.id}")
+            print(f"pending : {len(pending_harvesters)} for {self.retrieval.id}")
