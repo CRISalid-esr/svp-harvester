@@ -17,7 +17,6 @@ def test_build_query_without_subject_type_raises_error():
     with pytest.raises(AssertionError):
         idref_query_builder.build()
 
-@pytest.mark.current
 def test_build_query_for_person_with_idref():
     """
     GIVEN a HalApiQueryBuilder instance
