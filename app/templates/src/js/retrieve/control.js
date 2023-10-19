@@ -19,6 +19,7 @@ class Control {
     handleSubmit(event) {
         const formIdentifiers = event.detail.identifiers;
         const formName = event.detail.name;
+        const eventTypes = event.detail.eventTypes;
         // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
         // remove empty values
         const identifiers = formIdentifiers
@@ -34,7 +35,11 @@ class Control {
             .map((identifier) => {
                 return identifier.identifierType
             })
-        this.client.postRetrieval({person: {identifiers: identifiers, name: formName}, nullify: identifiersToNullify})
+        this.client.postRetrieval({
+            person: {identifiers: identifiers, name: formName},
+            nullify: identifiersToNullify,
+            events: eventTypes
+        })
             .then((response) => {
                 this.retrievalUrl = response.data.retrieval_url;
                 this.pollHarvestingState();

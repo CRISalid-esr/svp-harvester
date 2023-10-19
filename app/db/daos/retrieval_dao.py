@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
@@ -13,7 +15,9 @@ class RetrievalDAO(AbstractDAO):
     Data access object for Retrieval
     """
 
-    async def create_retrieval(self, entity: Entity) -> Retrieval:
+    async def create_retrieval(
+        self, entity: Entity, event_types: List[ReferenceEvent.Type] = None
+    ) -> Retrieval:
         """
         Create a retrieval for an entity we want to fetch references for
 
@@ -22,6 +26,7 @@ class RetrievalDAO(AbstractDAO):
         """
         retrieval = Retrieval()
         retrieval.entity = entity
+        retrieval.event_types = event_types or []
         self.db_session.add(retrieval)
         return retrieval
 

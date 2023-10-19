@@ -64,6 +64,7 @@ class Form {
                     {
                         identifiers: this.getIdentifierFieldsContent(true),
                         name: this.formElement.querySelector("#name-field-input").value,
+                        eventTypes: this.eventTypeSelect.getValue(),
                     }
             }
         );

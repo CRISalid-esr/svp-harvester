@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
-from app.harvesters.abstract_references_converter import AbstractReferencesConverter
-from app.settings.app_settings import AppSettings
 from app.harvesters.abstract_harvester import AbstractHarvester
+from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 
 
 class AbstractHarvesterFactory(ABC):
@@ -12,7 +11,7 @@ class AbstractHarvesterFactory(ABC):
 
     @classmethod
     @abstractmethod
-    def harvester(cls, settings: AppSettings) -> AbstractHarvester:  # pragma: no cover
+    def harvester(cls) -> AbstractHarvester:  # pragma: no cover
         """Abstract factory main method ro return a concrete harvester instance"""
 
     @classmethod
