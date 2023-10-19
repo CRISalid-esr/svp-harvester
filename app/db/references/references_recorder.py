@@ -1,5 +1,8 @@
+from typing import List
+
 from sqlalchemy import ScalarResult
 
+from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.reference_event_dao import ReferenceEventDAO
 from app.db.models.reference import Reference
@@ -12,27 +15,47 @@ class ReferencesRecorder:
     Class to assist harvester with the recording in database of references logic
     """
 
-    async def register(self, harvesting_id: int, new_ref: Reference) -> ReferenceEvent:
+    async def register(
+        self,
+        harvesting_id: int,
+        new_ref: Reference,
+        existing_references_source_identifiers: List[str],
+        event_types: list[ReferenceEvent.Type] = None,
+    ) -> ReferenceEvent | None:
         """
         Register a new reference in the database
 
         :param harvesting_id: id of the harvesting to which the reference event is linked
         :param new_ref: reference to register
+        :param event_types: list of event types to register
+        :param existing_references_source_identifiers:
+                list to register the source identifiers of the references that still exist,
+                in case we return None, as we may need it to determine
+                which references have been deleted
         :return: the reference event
         """
-
+        event_types = event_types_or_default(event_types)
         event_type = None
         ref = None
         if old_ref := await self.exists(new_ref):
+            existing_references_source_identifiers.append(
+                str(old_ref.source_identifier)
+            )
             if old_ref.hash != new_ref.hash:
+                if ReferenceEvent.Type.UPDATED.value not in event_types:
+                    return None
                 event_type = ReferenceEvent.Type.UPDATED
                 new_ref.version = old_ref.version + 1
                 await self._create_reference(new_ref)
                 ref = new_ref
             else:
+                if ReferenceEvent.Type.UNCHANGED.value not in event_types:
+                    return None
                 event_type = ReferenceEvent.Type.UNCHANGED
                 ref = old_ref
         else:
+            if ReferenceEvent.Type.CREATED.value not in event_types:
+                return None
             event_type = ReferenceEvent.Type.CREATED
             await self._create_reference(new_ref)
             ref = new_ref

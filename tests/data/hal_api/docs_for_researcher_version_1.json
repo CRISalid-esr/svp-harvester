@@ -1,0 +1,137 @@
+{
+  "response": {
+    "numFound": 14,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "1719671",
+        "citationRef_s": "<i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165",
+        "citationFull_s": "Alessandro Buccheri. Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca. <i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165. <a target=\"_blank\" href=\"https://hal.science/hal-01719671\">&#x27E8;hal-01719671&#x27E9;</a>",
+        "it_title_s": [
+          "Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca"
+        ],
+        "en_keyword_s": [
+          "Physis"
+        ],
+        "fr_keyword_s": [
+          "Anthropologie historique",
+          "Nature",
+          "Tragédie grecque antique",
+          "Phusis"
+        ],
+        "en_abstract_s": [
+          "The words φύσις and φύω allow for several translations in modern languages, \"nature\" and \"to be by nature\" being the most common. Assumed modern equivalents of φύσις and φύω seem nevertheless to obliterate most of the Greek notions’ distinctive traits. This paper is aimed at achieving a more \"emic\" understanding of their meaning through the analysis of works of Greek tragedy. I propose a prototypical model for the lexical meaning of φύω and φύσις, with \"vegetal growth\" as its central sense. I consider usages of the terms φύω and φύσις in relation to human beings as evidence for conceptual metaphors that structure in vegetal terms some aspects of Greek speakers’ understanding of human beings. This metaphor endowed humans with traits that they did not \"literally\" possess, participating in the construction of certain ideal models of humanity widespread in ancient Greece."
+        ],
+        "fr_abstract_s": [
+          "Relativement peu attestés auparavant, les termes physis et phyo sont de plus en plus employés dans les textes grecs à partir du milieu du Ve siècle avant notre ère : ils prennent une place considérable notamment dans les tragédies de Sophocle et d’Euripide. Il s’agit de termes fortement polysémiques. Physis est souvent traduit par « nature », « aspect », « stature », « caractère » ; phyo par « être (par sa nature », « naître », « engendrer », « faire pousser ». Néanmoins, les traductions des deux termes semblent effacer les spécificités de ces deux termes, puisqu’elles superposent à physis et à phyo des notions modernes qui ne sont pas leurs équivalents et, notamment, la notion de « nature ». Dans cet article, j’essaie de produire en revanche une lecture émique de l’emploi de ces deux termes au sein du théâtre grec : c’est-à-dire une lecture qui prenne en compte les catégories de la pensée propres aux auteurs du Ve siècle."
+        ],
+        "authIdForm_i": [
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_1004986_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_557826_FacetSep_Université Paris Cité",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_529251_FacetSep_Centro « Antropologia e Mondo Antico »",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_105124_FacetSep_Università degli Studi di Siena = University of Siena"
+        ],
+        "labStructId_i": [
+          1004986,
+          529251
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2012-01-01T00:00:00Z"
+      },
+      {
+        "docid": "2091947",
+        "citationRef_s": "<i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>",
+        "citationFull_s": "Manon Brouillet, Alessandro Buccheri. Agents, intentionnalités et modes d’agir dans l’Antiquité. <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-02091947\">&#x27E8;hal-02091947&#x27E9;</a>",
+        "en_title_s": [
+          "Agents and Agency in Antiquity"
+        ],
+        "fr_title_s": [
+          "Agents, intentionnalités et modes d’agir dans l’Antiquité"
+        ],
+        "authIdForm_i": [
+          31153,
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Manon Brouillet_FacetSep_31153-172318_FacetSep_manon-brouillet",
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_140228_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_300301_FacetSep_Université Paris Diderot - Paris 7",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_140228_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_300301_FacetSep_Université Paris Diderot - Paris 7",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique"
+        ],
+        "labStructId_i": [
+          140228
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2019-01-01T00:00:00Z"
+      },
+      {
+        "docid": "3002970",
+        "citationRef_s": "William M. Short. <i>Embodiment in Latin Semantics</i>, pp.141-176, 2016, <a target=\"_blank\" href=\"https://dx.doi.org/10.1075/slcs.174.06buc\">&#x27E8;10.1075/slcs.174.06buc&#x27E9;</a>",
+        "citationFull_s": "Alessandro Buccheri. The metaphorical structuring of kinship in Latin. William M. Short. <i>Embodiment in Latin Semantics</i>, pp.141-176, 2016, <a target=\"_blank\" href=\"https://dx.doi.org/10.1075/slcs.174.06buc\">&#x27E8;10.1075/slcs.174.06buc&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-03002970\">&#x27E8;hal-03002970&#x27E9;</a>",
+        "en_title_s": [
+          "The metaphorical structuring of kinship in Latin"
+        ],
+        "en_keyword_s": [
+          "Anthropology of ancient Rome",
+          "Conceptual metaphor theory",
+          "Cultural metaphors",
+          "Kinship in ancient Rome",
+          "Kinship terms",
+          "Latin",
+          "Tree diagrams"
+        ],
+        "en_abstract_s": [
+          "In this paper, I analyze how concepts related to the domains of space and plants were used by Latin speakers to deliver their culturally specific understanding of (some aspects of) human kinship, in the light of the theory of conceptual metaphor. I go on to claim that analysis of the metaphorical layer of Latin lexicon of kinship can contribute to its “emic” description in ancient Rome, that is, framing it (as much as possible) in concepts near to the Romans’ own experience. First, I describe the contribution that the domains of space and plants makes to the metaphorical structuring of Roman ideas about kinship. Then, I move on to their interplay and to their interaction with Roman images of time, which appear to be ultimately responsible for some of the seemingly odd features of these metaphors. I conclude by trying to spell out some differences between modern and ancient elaborations of the tree as a cultural image."
+        ],
+        "authIdForm_i": [
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_1004986_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_557826_FacetSep_Université Paris Cité",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_105124_FacetSep_Università degli Studi di Siena = University of Siena"
+        ],
+        "labStructId_i": [
+          1004986
+        ],
+        "docType_s": "COUV",
+        "publicationDate_tdate": "2016-01-01T00:00:00Z"
+      }
+    ]
+  }
+}

@@ -12,9 +12,8 @@ pytestmark = pytest.mark.integration
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
-async def test_fetch_references_async_with_event_types(
+async def test_fetch_references_async_with_event_types_create_retrieval(
     test_client: TestClient,
     person_with_name_and_idref_json,
     async_session: AsyncSession,

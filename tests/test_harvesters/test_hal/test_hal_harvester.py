@@ -8,12 +8,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.config import get_app_settings
 from app.db.models.concept import Concept
 from app.db.models.harvesting import Harvesting
 from app.db.models.label import Label
-from app.db.models.reference_event import ReferenceEvent
 from app.db.models.reference import Reference
+from app.db.models.reference_event import ReferenceEvent
 from app.db.references.references_recorder import ReferencesRecorder
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
@@ -21,12 +20,12 @@ from app.models.people import Person
 
 
 @pytest.fixture(name="hal_api_client_mock")
-def fixture_hal_api_client_mock(hal_api_docs_for_one_researcher: dict):
+def fixture_hal_api_client_mock(hal_api_docs_for_researcher: dict):
     """Retrieval service mock to detect run method calls."""
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
-            hal_api_docs_for_one_researcher
+            hal_api_docs_for_researcher
         )
 
         yield aiohttp_client_session_get
@@ -57,7 +56,7 @@ def fixture_reference_recorder_register_mock():
 def fixture_hal_harvester() -> HalHarvester:
     """Fixture for a HalHarvester instance."""
     converter = HalReferencesConverter()
-    return HalHarvester(settings=get_app_settings(), converter=converter)
+    return HalHarvester(converter=converter)
 
 
 def test_hal_harvester_relevant_for_person_with_idhal_i(
@@ -181,7 +180,7 @@ async def test_hal_harvester_registers_docs_in_db(
     hal_harvester: HalHarvester,
     hal_harvesting_db_model_id_hal_i,
     hal_api_client_mock,
-    hal_api_docs_for_one_researcher: dict,
+    hal_api_docs_for_researcher: dict,
     async_session: AsyncSession,
 ):
     """Test that after harvesting, the references are registered in the database."""
@@ -204,11 +203,11 @@ async def test_hal_harvester_registers_docs_in_db(
     reference_event = results[0][1]
     assert (
         reference.titles[0].value
-        == hal_api_docs_for_one_researcher.get("response")
+        == hal_api_docs_for_researcher.get("response")
         .get("docs")[0]
         .get("en_title_s")[0]
     )
-    assert reference.source_identifier == hal_api_docs_for_one_researcher.get(
+    assert reference.source_identifier == hal_api_docs_for_researcher.get(
         "response"
     ).get("docs")[0].get("docid")
     assert reference_event.type == ReferenceEvent.Type.CREATED.value

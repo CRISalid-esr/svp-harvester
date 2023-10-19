@@ -84,7 +84,7 @@ class RetrievalService:
                 harvester_config["module"], harvester_config["class"]
             )
             self.harvesters |= {
-                f"{harvester_config['name']}": factory_class.harvester(self.settings)
+                f"{harvester_config['name']}": factory_class.harvester()
             }
 
     @staticmethod
@@ -110,6 +110,7 @@ class RetrievalService:
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
             harvester.set_entity_id(self.retrieval.entity_id)
+            harvester.set_event_types(self.retrieval.event_types)
             harvester.set_harvesting_id(harvesting.id)
             task = asyncio.create_task(
                 harvester.run(),
