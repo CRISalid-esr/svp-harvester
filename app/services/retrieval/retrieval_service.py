@@ -17,6 +17,7 @@ from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.models.entities import Entity as PydanticEntity
+from app.models.reference_events import ReferenceEvent
 from app.services.entities.entity_resolution_service import EntityResolutionService
 from app.settings.app_settings import AppSettings
 
@@ -37,7 +38,10 @@ class RetrievalService:
         self.entity: Optional[PydanticEntity] = None
 
     async def register(
-        self, entity: Type[PydanticEntity], nullify: List[str] = None
+        self,
+        entity: Type[PydanticEntity],
+        events: List[ReferenceEvent.Type] = None,
+        nullify: List[str] = None,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
@@ -53,7 +57,7 @@ class RetrievalService:
             async with session.begin():
                 # this will add the new entity to the db if it does not exist
                 self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    existing_entity or new_entity
+                    entity=existing_entity or new_entity, event_types=events or []
                 )
         return self.retrieval
 
@@ -70,11 +74,9 @@ class RetrievalService:
         """
         assert self.retrieval is not None, "Retrieval must be registered before running"
         if in_background:
-            self.background_tasks.add_task(
-                self._launch_harvesters, self.retrieval, result_queue
-            )
+            self.background_tasks.add_task(self._launch_harvesters, result_queue)
         else:
-            await self._launch_harvesters(self.retrieval, result_queue)
+            await self._launch_harvesters(result_queue)
 
     def _build_harvesters(self):
         for harvester_config in self.settings.harvesters:
@@ -82,7 +84,7 @@ class RetrievalService:
                 harvester_config["module"], harvester_config["class"]
             )
             self.harvesters |= {
-                f"{harvester_config['name']}": factory_class.harvester(self.settings)
+                f"{harvester_config['name']}": factory_class.harvester()
             }
 
     @staticmethod
@@ -91,9 +93,7 @@ class RetrievalService:
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
-    async def _launch_harvesters(
-        self, retrieval: Retrieval, result_queue: Queue = None
-    ):
+    async def _launch_harvesters(self, result_queue: Queue = None):
         pending_harvesters = []
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
@@ -103,17 +103,18 @@ class RetrievalService:
             async with async_session() as session:
                 async with session.begin():
                     harvesting = await HarvestingDAO(session).create_harvesting(
-                        retrieval=retrieval,
+                        retrieval=self.retrieval,
                         harvester=harvester_name,
                         state=Harvesting.State.RUNNING,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
             harvester.set_entity_id(self.retrieval.entity_id)
+            harvester.set_event_types(self.retrieval.event_types)
             harvester.set_harvesting_id(harvesting.id)
             task = asyncio.create_task(
                 harvester.run(),
-                name=f"{harvester_name}_harvester_retrieval_{retrieval.id}",
+                name=f"{harvester_name}_harvester_retrieval_{self.retrieval.id}",
             )
             pending_harvesters.append(task)
             harvesting_tasks_index[harvesting.id] = task
@@ -122,5 +123,5 @@ class RetrievalService:
             done_harvesters, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
-            print(f"done : {len(done_harvesters)} for {retrieval.id}")
-            print(f"pending : {len(pending_harvesters)} for {retrieval.id}")
+            print(f"done : {len(done_harvesters)} for {self.retrieval.id}")
+            print(f"pending : {len(pending_harvesters)} for {self.retrieval.id}")

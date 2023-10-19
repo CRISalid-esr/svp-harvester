@@ -34,7 +34,9 @@ async def test_reference_recorder_creates_event_for_new_reference(
         titles=[Title(value="title", language="fr")],
     )
     reference_event: ReferenceEvent = await ReferencesRecorder().register(
-        harvesting_id=harvesting_db_model.id, new_ref=reference
+        harvesting_id=harvesting_db_model.id,
+        new_ref=reference,
+        existing_references_source_identifiers=[],
     )
     assert reference_event is not None
     assert reference_event.reference == reference
@@ -79,7 +81,9 @@ async def test_reference_recorder_creates_event_for_updated_reference(
         titles=[Title(value="changed_title", language="fr")],
     )
     reference_event: ReferenceEvent = await ReferencesRecorder().register(
-        harvesting_id=harvesting_db_model.id, new_ref=other_reference
+        harvesting_id=harvesting_db_model.id,
+        new_ref=other_reference,
+        existing_references_source_identifiers=[],
     )
     assert reference_event is not None
     assert reference_event.reference == other_reference

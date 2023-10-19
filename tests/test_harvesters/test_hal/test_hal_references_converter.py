@@ -5,9 +5,9 @@ from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
 
 @pytest.fixture(name="hal_api_cleaned_response")
-def fixture_hal_api_cleaned_response(hal_api_docs_for_one_researcher):
+def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
     """Return the list of dictionaries references from hal response"""
-    return hal_api_docs_for_one_researcher["response"]["docs"]
+    return hal_api_docs_for_researcher["response"]["docs"]
 
 
 @pytest.mark.asyncio

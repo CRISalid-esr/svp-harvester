@@ -1,0 +1,140 @@
+{
+  "response": {
+    "numFound": 14,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "1719671",
+        "citationRef_s": "<i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165",
+        "citationFull_s": "Alessandro Buccheri. Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca. <i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165. <a target=\"_blank\" href=\"https://hal.science/hal-01719671\">&#x27E8;hal-01719671&#x27E9;</a>",
+        "it_title_s": [
+          "Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca"
+        ],
+        "en_keyword_s": [
+          "Physis"
+        ],
+        "fr_keyword_s": [
+          "Anthropologie historique",
+          "Nature",
+          "Tragédie grecque antique",
+          "Phusis"
+        ],
+        "en_abstract_s": [
+          "The words φύσις and φύω allow for several translations in modern languages, \"nature\" and \"to be by nature\" being the most common. Assumed modern equivalents of φύσις and φύω seem nevertheless to obliterate most of the Greek notions’ distinctive traits. This paper is aimed at achieving a more \"emic\" understanding of their meaning through the analysis of works of Greek tragedy. I propose a prototypical model for the lexical meaning of φύω and φύσις, with \"vegetal growth\" as its central sense. I consider usages of the terms φύω and φύσις in relation to human beings as evidence for conceptual metaphors that structure in vegetal terms some aspects of Greek speakers’ understanding of human beings. This metaphor endowed humans with traits that they did not \"literally\" possess, participating in the construction of certain ideal models of humanity widespread in ancient Greece."
+        ],
+        "fr_abstract_s": [
+          "Relativement peu attestés auparavant, les termes physis et phyo sont de plus en plus employés dans les textes grecs à partir du milieu du Ve siècle avant notre ère : ils prennent une place considérable notamment dans les tragédies de Sophocle et d’Euripide. Il s’agit de termes fortement polysémiques. Physis est souvent traduit par « nature », « aspect », « stature », « caractère » ; phyo par « être (par sa nature », « naître », « engendrer », « faire pousser ». Néanmoins, les traductions des deux termes semblent effacer les spécificités de ces deux termes, puisqu’elles superposent à physis et à phyo des notions modernes qui ne sont pas leurs équivalents et, notamment, la notion de « nature ». Dans cet article, j’essaie de produire en revanche une lecture émique de l’emploi de ces deux termes au sein du théâtre grec : c’est-à-dire une lecture qui prenne en compte les catégories de la pensée propres aux auteurs du Ve siècle."
+        ],
+        "authIdForm_i": [
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_1004986_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_557826_FacetSep_Université Paris Cité",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_529251_FacetSep_Centro « Antropologia e Mondo Antico »",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_105124_FacetSep_Università degli Studi di Siena = University of Siena"
+        ],
+        "labStructId_i": [
+          1004986,
+          529251
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2012-01-01T00:00:00Z"
+      },
+      {
+        "docid": "2091947",
+        "citationRef_s": "MODIFICATION <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>",
+        "citationFull_s": "Manon Brouillet, Alessandro Buccheri. Agents, intentionnalités et modes d’agir dans l’Antiquité. <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-02091947\">&#x27E8;hal-02091947&#x27E9;</a>",
+        "en_title_s": [
+          "Agents and Agency in Antiquity"
+        ],
+        "fr_title_s": [
+          "Agents, intentionnalités et modes d’agir dans l’Antiquité"
+        ],
+        "authIdForm_i": [
+          31153,
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Manon Brouillet_FacetSep_31153-172318_FacetSep_manon-brouillet",
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_140228_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_300301_FacetSep_Université Paris Diderot - Paris 7",
+          "31153-172318_FacetSep_Manon Brouillet_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_140228_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_300301_FacetSep_Université Paris Diderot - Paris 7",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique"
+        ],
+        "labStructId_i": [
+          140228
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2019-01-01T00:00:00Z"
+      },
+      {
+        "docid": "3002983",
+        "citationRef_s": "<i>Cahiers \"Mondes Anciens\" </i>, 2016, 8, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.1671\">&#x27E8;10.4000/mondesanciens.1671&#x27E9;</a>",
+        "citationFull_s": "Alessandro Buccheri. Deiknūnai tēn phūsin : valider l’identité filiale dans le Philoctète de Sophocle. <i>Cahiers \"Mondes Anciens\" </i>, 2016, 8, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.1671\">&#x27E8;10.4000/mondesanciens.1671&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-03002983\">&#x27E8;hal-03002983&#x27E9;</a>",
+        "en_title_s": [
+          "Deiknūnai tēn phūsin: validating filial identity in Sophocles’ Philoctetes"
+        ],
+        "fr_title_s": [
+          "Deiknūnai tēn phūsin : valider l’identité filiale dans le Philoctète de Sophocle"
+        ],
+        "fr_keyword_s": [
+          "Parenté",
+          "Grèce anciene",
+          "Nature",
+          "Phusis",
+          "Sophocle",
+          "Philoctète",
+          "Tragédie"
+        ],
+        "fr_abstract_s": [
+          "Le rapport de Néoptolème au modèle de vertu héroïque incarné par son père Achille est problématisé tout au long du Philoctète de Sophocle, jusqu’au moment où Philoctète affirme, une fois pour toutes : τὴν φύσιν δ' ἔδειξας, que l’on peut traduire provisoirement par « tu as montré ton hérédité morale » – celle d’Achille, bien entendu1. Il s’agira ici d’explorer cet acte de validation de l’identité filiale de Néoptolème accompli par Philoctète, notamment à travers l’étude des modèles culturels qu’il implique. D’abord, nous situerons la séquence qui nous intéresse dans le développement du drame et par rapport aux thèmes qui en modèlent la structure, en particulier le thème du lien entre mots et actes, et celui de la relation de Néoptolème au modèle achiléen. Ensuite, nous analyserons la manière dont le mot φύσις est employé dans la construction de l’opposition entre l’héritage paternel de Néoptolème et les enseignements qu’il reçoit d’Ulysse, opposition qui s’inscrit dans la lignée d’un modèle culturel – dont nous retrouvons les traces dans plusieurs textes anciens – qui présuppose et valorise la ressemblance entre pères et fils. À cette fin, nous étudierons trois scènes centrées autour du débat sur la φύσις de Néoptolème et du vol/restitution de l’arc, qui constituent un parcours culminant dans les vers 1308-1313. En outre, nous analyserons les unités qui composent l’acte de validation – situation, agents, critères – et mettrons en lumière d’un côté le lien qu’il entretient avec le thème récurrent problématisant le rapport entre mots et actes et, de l’autre, le fait qu’il est bâti à partir d’un modèle culturel d’« épreuves de filiation juste » également répandu en Grèce ancienne. Enfin, nous proposerons une analyse sémantique de l’expression τὴνφύσιν δ' ἔδειξας, en argumentant qu’il est nécessaire d’en garder la polysémie, sans imposer au texte une partition entre monstration et démonstration, en d’autres mots, sans réduire le verbe δείκνυμι à la seule expression métaphorique d’un procédé d’ordre intellectuel."
+        ],
+        "authIdForm_i": [
+          39236
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_1004986_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_557826_FacetSep_Université Paris Cité",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_99539_FacetSep_École des hautes études en sciences sociales",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_105124_FacetSep_Università degli Studi di Siena = University of Siena"
+        ],
+        "labStructId_i": [
+          1004986
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2016-01-01T00:00:00Z"
+      }
+    ]
+  }
+}

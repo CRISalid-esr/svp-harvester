@@ -1,3 +1,5 @@
+from enum import Enum
+
 from pydantic import BaseModel, ConfigDict
 
 from app.models.references import Reference
@@ -14,3 +16,11 @@ class ReferenceEvent(BaseModel):
     type: str
 
     reference: Reference
+
+    class Type(str, Enum):
+        """Reference events types"""
+
+        CREATED = "created"
+        UPDATED = "updated"
+        DELETED = "deleted"
+        UNCHANGED = "unchanged"
