@@ -1,24 +1,11 @@
-# French translation of SoVisu+ Harvester.
-# Copyright (C) 2023 Université Paris 1 Panthéon-Sorbonne & Université de
-# Toulon
-# This file is distributed under the same license as the SoVisu+ Harvester
-# project.
-# Joachim Dornbusch <joachim.dornbusch@univ-paris1.fr>, 2023.
-# Léna Bara, <e-bara@gmail.com>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version:  SVP-Harvester\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-19 06:01+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: fr\n"
-"Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: SVP-Harvester\n"
+"Language: fr\n"
 
 #: app/templates/base.html.jinja:10 app/templates/base.html.jinja:17
 msgid "application_name"
@@ -44,9 +31,7 @@ msgstr "Historique des collecte"
 #: app/templates/overview.html.jinja:2 app/templates/overview.html.jinja:3
 #, fuzzy
 msgid "overview_page_overview_page_title"
-msgstr ""
-"Présentation de l'interface d'administration du service de collecte des "
-"références bibliographiques"
+msgstr "Présentation de l'interface d'administration du service de collecte des références bibliographiques"
 
 #: app/templates/retrieve.html.jinja:3 app/templates/retrieve.html.jinja:4
 msgid "retrieve_page_data_retrieval_page_title"
@@ -63,9 +48,7 @@ msgstr "Type d'entité"
 #: app/templates/retrieve.html.jinja:15
 #, fuzzy
 msgid "retrieve_page_entity_type_select_help_text"
-msgstr ""
-"Choisissez le type d'entité pour laquelle vous voulez collecter les "
-"références"
+msgstr "Choisissez le type d'entité pour laquelle vous voulez collecter les références"
 
 #: app/templates/retrieve.html.jinja:22
 #, fuzzy
@@ -87,49 +70,20 @@ msgstr "Institution"
 msgid "retrieve_page_entity_type_select_project_pill"
 msgstr "Projet"
 
-#: app/templates/retrieve.html.jinja:48
+#: app/templates/retrieve.html.jinja:46
 #, fuzzy
-msgid "retrieve_page_history_safe_mode_switch_label"
-msgstr "Préserver l'historique"
+msgid "retrieve_page_self_mode_switch_label"
+msgstr "Mode sûr"
 
-#: app/templates/retrieve.html.jinja:51
+#: app/templates/retrieve.html.jinja:49
 #, fuzzy
-msgid "retrieve_page_history_safe_mode_switch_help_text"
-msgstr ""
-"Ne pas modifier l'historique de collecte. Votre système d'information ne "
-"perdra aucune référence."
+msgid "retrieve_page_safe_mode_switch_help_text"
+msgstr "En mode sûr, vos requêtes n'affectent ni l'historique de collecte ni l'alignement des identifiants. Votre système d'information ne perdra aucune référence."
 
-#: app/templates/retrieve.html.jinja:54 app/templates/retrieve.html.jinja:60
+#: app/templates/retrieve.html.jinja:52
 #, fuzzy
-msgid "retrieve_page_history_safe_mode_switch_aria_label"
-msgstr "Activer/désactiver la préservation de l'historique de collecte"
-
-#: app/templates/retrieve.html.jinja:63
-#, fuzzy
-msgid "retrieve_page_identifiers_safe_mode_switch_label"
-msgstr "Préserver les alignements"
-
-#: app/templates/retrieve.html.jinja:66
-#, fuzzy
-msgid "retrieve_page_identifiers_safe_mode_switch_help_text"
-msgstr ""
-"Ne pas enregistrer les changements d'alignements d'identifiants soumis "
-"depuis cette interface"
-
-#: app/templates/retrieve.html.jinja:90
-#, fuzzy
-msgid "retrieve_page_entity_name_input_label"
-msgstr "Nom de l'entité (optionnel)"
-
-#: app/templates/retrieve.html.jinja:91
-#, fuzzy
-msgid "retrieve_page_entity_name_input_placeholder"
-msgstr "ex.: « Dominique Dupont » ou « UMR 1234 »"
-
-#: app/templates/retrieve.html.jinja:91
-#, fuzzy
-msgid "retrieve_page_entity_name_input_aria_label"
-msgstr "Choisissez la date de publication maximale des références à collecter"
+msgid "retrieve_page_self_mode_switch_aria_label"
+msgstr "Activer/désactiver le mode sûr"
 
 #: app/templates/retrieve.html.jinja:97
 #, fuzzy
@@ -174,9 +128,7 @@ msgstr "Sources de données"
 #: app/templates/retrieve.html.jinja:124
 #, fuzzy
 msgid "retrieve_page_harvester_select_help_text"
-msgstr ""
-"Choisissez les sources de données depuis lesquelles vous voulez collecter"
-" les références"
+msgstr "Choisissez les sources de données depuis lesquelles vous voulez collecter les références"
 
 #: app/templates/retrieve.html.jinja:129
 msgid "Data sources"
@@ -210,9 +162,7 @@ msgstr "Type de référence"
 #: app/templates/retrieve.html.jinja:150
 #, fuzzy
 msgid "retrieve_page_reference_type_select_help_text"
-msgstr ""
-"Choisissez le type de publication pour lequel vous voulez collecter les "
-"références"
+msgstr "Choisissez le type de publication pour lequel vous voulez collecter les références"
 
 #: app/templates/retrieve.html.jinja:156
 #, fuzzy
@@ -247,9 +197,7 @@ msgstr "Intervalle de collecte"
 #: app/templates/retrieve.html.jinja:174
 #, fuzzy
 msgid "retrieve_page_harvesting_range_select_help_text"
-msgstr ""
-"Indiquez les bornes de l'intervalle de collecte : il s'agit des dates de "
-"publication minimales et maximales des références à collecter"
+msgstr "Indiquez les bornes de l'intervalle de collecte : il s'agit des dates de publication minimales et maximales des références à collecter"
 
 #: app/templates/retrieve.html.jinja:181
 #, fuzzy
@@ -299,4 +247,44 @@ msgstr "Avancement de la collecte"
 #, fuzzy
 msgid "retrieve_page_search_result_panel_title"
 msgstr "Références collectées"
+
+#: app/templates/retrieve.html.jinja:48
+#, fuzzy
+msgid "retrieve_page_history_safe_mode_switch_label"
+msgstr "Préserver l'historique"
+
+#: app/templates/retrieve.html.jinja:51
+#, fuzzy
+msgid "retrieve_page_history_safe_mode_switch_help_text"
+msgstr "Ne pas modifier l'historique de collecte. Votre système d'information ne perdra aucune référence."
+
+#: app/templates/retrieve.html.jinja:54 app/templates/retrieve.html.jinja:60
+#, fuzzy
+msgid "retrieve_page_history_safe_mode_switch_aria_label"
+msgstr "Activer/désactiver la préservation de l'historique de collecte"
+
+#: app/templates/retrieve.html.jinja:63
+#, fuzzy
+msgid "retrieve_page_identifiers_safe_mode_switch_label"
+msgstr "Préserver les alignements"
+
+#: app/templates/retrieve.html.jinja:66
+#, fuzzy
+msgid "retrieve_page_identifiers_safe_mode_switch_help_text"
+msgstr "Ne pas enregistrer les changements d'alignements d'identifiants soumis depuis cette interface"
+
+#: app/templates/retrieve.html.jinja:90
+#, fuzzy
+msgid "retrieve_page_entity_name_input_label"
+msgstr "Nom de l'entité (optionnel)"
+
+#: app/templates/retrieve.html.jinja:91
+#, fuzzy
+msgid "retrieve_page_entity_name_input_placeholder"
+msgstr "ex.: « Dominique Dupont » ou « UMR 1234 »"
+
+#: app/templates/retrieve.html.jinja:91
+#, fuzzy
+msgid "retrieve_page_entity_name_input_aria_label"
+msgstr "Choisissez la date de publication maximale des références à collecter"
 
