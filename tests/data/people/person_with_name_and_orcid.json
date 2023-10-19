@@ -1,0 +1,9 @@
+{
+  "name": "John Doe",
+  "identifiers": [
+    {
+      "type": "orcid",
+      "value": "0000-0002-1825-0097"
+    }
+  ]
+}

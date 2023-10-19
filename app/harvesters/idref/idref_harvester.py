@@ -10,9 +10,9 @@ from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.harvesters.idref.data_idref_fr_sparql_client import DataIdrefFrSparqlClient
-from app.harvesters.idref.data_idref_fr_sparql_query_builder import (
-    DataIdrefFrSparqlQueryBuilder as QueryBuilder,
+from app.harvesters.idref.idref_sparql_client import IdrefSparqlClient
+from app.harvesters.idref.idref_sparql_query_builder import (
+    IdrefSparqlQueryBuilder as QueryBuilder,
 )
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (
@@ -48,26 +48,21 @@ class IdrefHarvester(AbstractHarvester):
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
             idref: str = (await self._get_entity()).get_identifier("idref")
+            orcid: str = (await self._get_entity()).get_identifier("orcid")
             assert (
-                idref is not None
-            ), "Idref identifier is required when harvesting publications from data.idref.fr"
-            builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_idref_id(
-                idref
-            )
+                    idref is not None or orcid is not None
+            ), "Idref or Orcid identifier required when harvesting publications from data.idref.fr"
+            if idref is not None:
+                builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_idref_id(
+                    idref
+                )
+            if orcid is not None:
+                builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_orcid(
+                    orcid
+                )
         # pending_queries = []
-        async for doc in DataIdrefFrSparqlClient().fetch_publications(builder.build()):
-            coro = None
-            if doc["secondary_source"] == "IDREF":
-                coro = self._convert_publication_from_idref_endpoint(doc)
-            elif doc["secondary_source"] == "SUDOC":
-                coro = self._query_publication_from_sudoc_endpoint(doc)
-            elif doc["secondary_source"] == "HAL":
-                coro = self._query_publication_from_hal_endpoint(doc)
-            elif doc["secondary_source"] == "SCIENCE_PLUS":
-                coro = self._query_publication_from_science_plus_endpoint(doc)
-            else:
-                print(f"Unknown source {doc['secondary_source']}")
-                continue
+        async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
+            coro = self._secondary_query_process(doc)
             # TODO temporary sequential implementation
             # Sudoc server does not support parallel querying
             #     pending_queries.append(asyncio.create_task(coro))
@@ -85,6 +80,20 @@ class IdrefHarvester(AbstractHarvester):
             pub = await coro
             if pub:
                 yield pub
+
+    def _secondary_query_process(self, doc: dict):
+        coro = None
+        if doc["secondary_source"] == "IDREF":
+            coro = self._convert_publication_from_idref_endpoint(doc)
+        elif doc["secondary_source"] == "SUDOC":
+            coro = self._query_publication_from_sudoc_endpoint(doc)
+        elif doc["secondary_source"] == "HAL":
+            coro = self._query_publication_from_hal_endpoint(doc)
+        elif doc["secondary_source"] == "SCIENCE_PLUS":
+            coro = self._query_publication_from_science_plus_endpoint(doc)
+        else:
+            print(f"Unknown source {doc['secondary_source']}")
+        return coro
 
     async def _query_publication_from_sudoc_endpoint(self, doc: dict) -> RdfResult:
         """
@@ -126,7 +135,7 @@ class IdrefHarvester(AbstractHarvester):
         )
 
     async def _query_publication_from_hal_endpoint(
-        self, doc: dict  # pylint: disable=unused-argument
+            self, doc: dict  # pylint: disable=unused-argument
     ) -> RawResult:
         """
         Query the details of a publication from the HAL API
@@ -137,7 +146,7 @@ class IdrefHarvester(AbstractHarvester):
         return {}
 
     async def _query_publication_from_science_plus_endpoint(
-        self, doc: dict  # pylint: disable=unused-argument
+            self, doc: dict  # pylint: disable=unused-argument
     ) -> RawResult:
         """
         Query the details of a publication from the Science+ API
@@ -166,4 +175,7 @@ class IdrefHarvester(AbstractHarvester):
         )
 
     def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
-        return entity.get_identifier("idref") is not None
+        return (
+                entity.get_identifier("idref") is not None
+                or entity.get_identifier("orcid") is not None
+        )

@@ -20,6 +20,7 @@ class HalHarvester(AbstractHarvester):
         "Person": [
             (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "id_hal_i"),
             (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s"),
+            (HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID, "orcid"),
         ]
     }
 
@@ -66,8 +67,9 @@ class HalHarvester(AbstractHarvester):
 
     def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
-        identifiers = ["id_hal_i", "id_hal_s"]
+        identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
 
         return any(
-            entity.get_identifier(identifier) is not None for identifier in identifiers
+            entity.get_identifier(identifier_type=identifier_type) is not None
+            for identifier_type in identifier_types
         )
