@@ -14,10 +14,11 @@ class ReferenceEventDAO(AbstractDAO):
     """
 
     async def create_reference_event(
-        self,
-        reference: Reference,
-        harvesting_id: int,
-        event_type: ReferenceEvent.Type,
+            self,
+            reference: Reference,
+            harvesting_id: int,
+            event_type: ReferenceEvent.Type,
+            history: bool = True,
     ) -> ReferenceEvent:
         """
         Create a reference event for a reference
@@ -25,16 +26,19 @@ class ReferenceEventDAO(AbstractDAO):
         :param reference: reference to which the event is related
         :param harvesting_id: harvesting id to which the event belongs
         :param event_type: state of the event
+        :param history: if True, the event will be recorded
+               in the history of the harvestings for this entity
         :return: the created reference event
         """
         reference_event = ReferenceEvent(type=event_type.value)
         reference_event.reference = reference
         reference_event.harvesting_id = harvesting_id
+        reference_event.history = history
         self.db_session.add(reference_event)
         return reference_event
 
     async def get_reference_event_by_id(
-        self, reference_event_id: int
+            self, reference_event_id: int
     ) -> ReferenceEvent | None:
         """
         Get a reference event by its id
@@ -45,7 +49,7 @@ class ReferenceEventDAO(AbstractDAO):
         return await self.db_session.get(ReferenceEvent, reference_event_id)
 
     async def get_detailed_reference_event_by_id(
-        self, reference_event_id: int
+            self, reference_event_id: int
     ) -> ReferenceEvent | None:
         """
         Get a reference event by its id with reference, harvesting and entity

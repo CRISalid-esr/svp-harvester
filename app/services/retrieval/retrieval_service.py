@@ -26,9 +26,9 @@ class RetrievalService:
     """Main harvesters orchestration service"""
 
     def __init__(
-        self,
-        settings: Annotated[AppSettings, Depends(get_app_settings)],
-        background_tasks: BackgroundTasks = None,
+            self,
+            settings: Annotated[AppSettings, Depends(get_app_settings)],
+            background_tasks: BackgroundTasks = None,
     ):
         """Init RetrievalService class"""
         self.settings = settings
@@ -36,15 +36,21 @@ class RetrievalService:
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[PydanticEntity] = None
+        self.identifiers_safe_mode = False
+        self.history_safe_mode = False
 
     async def register(
-        self,
-        entity: Type[PydanticEntity],
-        events: List[ReferenceEvent.Type] = None,
-        nullify: List[str] = None,
+            self,
+            entity: Type[PydanticEntity],
+            events: List[ReferenceEvent.Type] = None,
+            nullify: List[str] = None,
+            history_safe_mode: bool = False,
+            identifiers_safe_mode: bool = False,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
+        self.identifiers_safe_mode = identifiers_safe_mode
+        self.history_safe_mode = history_safe_mode
         self._build_harvesters()
         # new entity is not saved to db yet
         new_entity: DbEntity = EntityConverter(entity).to_db_model()
@@ -62,7 +68,7 @@ class RetrievalService:
         return self.retrieval
 
     async def run(
-        self, result_queue: Queue = None, in_background: bool = False
+            self, result_queue: Queue = None, in_background: bool = False
     ) -> None:
         """
         Run the retrieval process by launching the harvesters
@@ -89,7 +95,7 @@ class RetrievalService:
 
     @staticmethod
     def _harvester_factory(
-        harvester_module: str, harvester_class: str
+            harvester_module: str, harvester_class: str
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
@@ -106,6 +112,7 @@ class RetrievalService:
                         retrieval=self.retrieval,
                         harvester=harvester_name,
                         state=Harvesting.State.RUNNING,
+                        history=not self.history_safe_mode,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)

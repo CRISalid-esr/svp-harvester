@@ -20,6 +20,8 @@ class Control {
         const formIdentifiers = event.detail.identifiers;
         const formName = event.detail.name;
         const eventTypes = event.detail.eventTypes;
+        const historySafeMode = event.detail.historySafeMode;
+        const identifiersSafeMode = event.detail.identifiersSafeMode;
         // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
         // remove empty values
         const identifiers = formIdentifiers
@@ -38,7 +40,9 @@ class Control {
         this.client.postRetrieval({
             person: {identifiers: identifiers, name: formName},
             nullify: identifiersToNullify,
-            events: eventTypes
+            events: eventTypes,
+            history_safe_mode: historySafeMode,
+            identifiers_safe_mode: identifiersSafeMode
         })
             .then((response) => {
                 this.retrievalUrl = response.data.retrieval_url;

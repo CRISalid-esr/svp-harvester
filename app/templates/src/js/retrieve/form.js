@@ -19,6 +19,8 @@ class Form {
         this.handleEventTypesSelect();
         this.handleDataSourcesSelect();
         this.handleDatePickers();
+        this.handleIdentifiersSafeModeToggle();
+        this.handleHistorySafeModeToggle();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.updateSubmitButtonState();
@@ -52,6 +54,14 @@ class Form {
         })
     }
 
+    handleIdentifiersSafeModeToggle() {
+        this.identifiersSafeModeToggle = this.formElement.querySelector("#identifiers-safe-mode-toggle");
+    }
+
+    handleHistorySafeModeToggle() {
+        this.historySafeModeToggle = this.formElement.querySelector("#history-safe-mode-toggle");
+    }
+
     addSubmitListener() {
         this.formElement.addEventListener("submit", this.handleSubmit.bind(this));
     }
@@ -60,11 +70,14 @@ class Form {
         event.preventDefault();
         event.stopPropagation();
         const entitySubmitEvent = new CustomEvent("entity_submit",
-            {detail:
+            {
+                detail:
                     {
                         identifiers: this.getIdentifierFieldsContent(true),
                         name: this.formElement.querySelector("#name-field-input").value,
                         eventTypes: this.eventTypeSelect.getValue(),
+                        historySafeMode: this.historySafeModeToggle.checked,
+                        identifiersSafeMode: this.identifiersSafeModeToggle.checked,
                     }
             }
         );

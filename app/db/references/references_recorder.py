@@ -16,11 +16,12 @@ class ReferencesRecorder:
     """
 
     async def register(
-        self,
-        harvesting_id: int,
-        new_ref: Reference,
-        existing_references_source_identifiers: List[str],
-        event_types: list[ReferenceEvent.Type] = None,
+            self,
+            harvesting_id: int,
+            new_ref: Reference,
+            existing_references_source_identifiers: List[str],
+            event_types: list[ReferenceEvent.Type] = None,
+            history: bool = True,
     ) -> ReferenceEvent | None:
         """
         Register a new reference in the database
@@ -32,6 +33,7 @@ class ReferencesRecorder:
                 list to register the source identifiers of the references that still exist,
                 in case we return None, as we may need it to determine
                 which references have been deleted
+        :param history: whether to record the reference event in the harvesting history
         :return: the reference event
         """
         event_types = event_types_or_default(event_types)
@@ -65,6 +67,7 @@ class ReferencesRecorder:
                     harvesting_id=harvesting_id,
                     reference=ref,
                     event_type=event_type,
+                    history=history,
                 )
 
     async def exists(self, new_ref: Reference) -> Reference | None:
@@ -79,13 +82,14 @@ class ReferencesRecorder:
             )
 
     async def register_deletion(
-        self, harvesting_id: int, old_ref: Reference
+            self, harvesting_id: int, old_ref: Reference, history: bool = True
     ) -> ReferenceEvent:
         """
         Register an event for a deleted reference
 
         :param harvesting_id: id of the harvesting during which the deletion occurred
         :param old_ref: the reference that was deleted
+        :param history: whether to record the reference event in the harvesting history
         :return: the reference event related to the deletion
         """
         async with async_session() as session:
@@ -94,10 +98,11 @@ class ReferencesRecorder:
                     harvesting_id=harvesting_id,
                     reference=old_ref,
                     event_type=ReferenceEvent.Type.DELETED,
+                    history=history,
                 )
 
     async def get_previous_references(
-        self, entity_id: int, harvester: str
+            self, entity_id: int, harvester: str
     ) -> ScalarResult[Reference]:
         """
         Get the previously harvested references for an entity
