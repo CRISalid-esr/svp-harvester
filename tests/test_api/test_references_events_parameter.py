@@ -1,4 +1,5 @@
 """Test that references API creates Retrieval in database."""
+from asyncio import sleep
 from unittest import mock
 
 import aiohttp
@@ -71,10 +72,16 @@ async def test_fetch_references_async_with_all_event_types(
         json_response = response.json()
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
-        response = test_client.get(retrieval_url)
-        assert response.status_code == 200
-        json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
+        # while state is not completed, continue querying
+        json_response = None
+        json_response = {}
+        while (
+            not json_response or json_response["harvestings"][0]["state"] != "completed"
+        ):
+            json_response and sleep(0.1)
+            response = test_client.get(retrieval_url)
+            assert response.status_code == 200
+            json_response = response.json()
         assert json_response["harvestings"][0]["harvester"] == "hal"
         assert len(json_response["harvestings"][0]["reference_events"]) == num_results_1
         # all reference events are of type created
@@ -107,14 +114,21 @@ async def test_fetch_references_async_with_all_event_types(
         json_response = response.json()
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
-        response = test_client.get(retrieval_url)
-        assert response.status_code == 200
-        json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
+        # while state is not completed, continue querying
+        json_response = None
+        json_response = {}
+        while (
+            not json_response or json_response["harvestings"][0]["state"] != "completed"
+        ):
+            json_response and sleep(0.1)
+            response = test_client.get(retrieval_url)
+            assert response.status_code == 200
+            json_response = response.json()
         assert json_response["harvestings"][0]["harvester"] == "hal"
         # it has 4 reference events
         assert len(json_response["harvestings"][0]["reference_events"]) == num_results_2
-        # among them, exactly one has the reference with source identifier 1719671 and is unchanged
+        # among them, exactly one has the reference
+        # with source identifier 1-will-not-change and is unchanged
         if "unchanged" in event_types_2:
             assert (
                 len(
@@ -124,13 +138,14 @@ async def test_fetch_references_async_with_all_event_types(
                             "reference_events"
                         ]
                         if reference_event["reference"]["source_identifier"]
-                        == "1719671"
+                        == "1-will-not-change"
                         and reference_event["type"] == "unchanged"
                     ]
                 )
                 == 1
             )
-        # among them, exactly one has the reference with source identifier 3002983 and is created
+        # among them, exactly one has the reference
+        # with source identifier 4-will-appear and is created
         if "created" in event_types_2:
             assert (
                 len(
@@ -140,13 +155,14 @@ async def test_fetch_references_async_with_all_event_types(
                             "reference_events"
                         ]
                         if reference_event["reference"]["source_identifier"]
-                        == "3002983"
+                        == "4-will-appear"
                         and reference_event["type"] == "created"
                     ]
                 )
                 == 1
             )
-        # among them, exactly one has the reference with source identifier 3002970 and is deleted
+        # among them, exactly one has the reference
+        # with source identifier 3-will-disappear and is deleted
         if "deleted" in event_types_2:
             assert (
                 len(
@@ -156,13 +172,14 @@ async def test_fetch_references_async_with_all_event_types(
                             "reference_events"
                         ]
                         if reference_event["reference"]["source_identifier"]
-                        == "3002970"
+                        == "3-will-disappear"
                         and reference_event["type"] == "deleted"
                     ]
                 )
                 == 1
             )
-        # among them, exactly one has the reference with source identifier 2091947 and is updated
+        # among them, exactly one has the reference
+        # with source identifier 2-will-change and is updated
         if "updated" in event_types_2:
             assert (
                 len(
@@ -172,7 +189,7 @@ async def test_fetch_references_async_with_all_event_types(
                             "reference_events"
                         ]
                         if reference_event["reference"]["source_identifier"]
-                        == "2091947"
+                        == "2-will-change"
                         and reference_event["type"] == "updated"
                     ]
                 )

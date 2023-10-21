@@ -1,7 +1,5 @@
 from typing import List
 
-from sqlalchemy import ScalarResult
-
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.reference_event_dao import ReferenceEventDAO
@@ -16,12 +14,12 @@ class ReferencesRecorder:
     """
 
     async def register(
-            self,
-            harvesting_id: int,
-            new_ref: Reference,
-            existing_references_source_identifiers: List[str],
-            event_types: list[ReferenceEvent.Type] = None,
-            history: bool = True,
+        self,
+        harvesting_id: int,
+        new_ref: Reference,
+        existing_references_source_identifiers: List[str],
+        event_types: list[ReferenceEvent.Type] = None,
+        history: bool = True,
     ) -> ReferenceEvent | None:
         """
         Register a new reference in the database
@@ -77,12 +75,17 @@ class ReferencesRecorder:
         :return: the reference if it exists, None otherwise
         """
         async with async_session() as session:
-            return await ReferenceDAO(session).get_last_reference_by_source_identifier(
+            ref: Reference = await ReferenceDAO(
+                session
+            ).get_last_reference_by_source_identifier(
                 new_ref.source_identifier, new_ref.harvester
             )
+            if ref and ref.deleted:
+                return None
+            return ref
 
     async def register_deletion(
-            self, harvesting_id: int, old_ref: Reference, history: bool = True
+        self, harvesting_id: int, old_ref: Reference, history: bool = True
     ) -> ReferenceEvent:
         """
         Register an event for a deleted reference
@@ -94,6 +97,9 @@ class ReferencesRecorder:
         """
         async with async_session() as session:
             async with session.begin():
+                # TODO the listener on the reference event should take care of this
+                if history:
+                    old_ref.deleted = True
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=harvesting_id,
                     reference=old_ref,
@@ -102,8 +108,8 @@ class ReferencesRecorder:
                 )
 
     async def get_previous_references(
-            self, entity_id: int, harvester: str
-    ) -> ScalarResult[Reference]:
+        self, entity_id: int, harvester: str
+    ) -> List[Reference]:
         """
         Get the previously harvested references for an entity
 
@@ -112,9 +118,15 @@ class ReferencesRecorder:
         """
         async with async_session() as session:
             async with session.begin():
-                return await ReferenceDAO(
+                references = await ReferenceDAO(
                     session
                 ).get_references_for_entity_and_harvester(entity_id, harvester)
+                # if references is not epty, exclude the deleted ones
+                return [
+                    ref
+                    for ref in references
+                    if not ref.deleted and ref.source_identifier
+                ]
 
     async def _create_reference(self, new_ref: Reference):
         async with async_session() as session:

@@ -14,9 +14,10 @@ class ReferenceDAO(AbstractDAO):
 
     async def get_references_for_entity_and_harvester(
         self, entity_id: int, harvester: str
-    ) -> ScalarResult:
+    ) -> list[Reference]:
         """
-        Get previously harvested references for an entity
+        Get the versions with the highest version number of all references
+        for a given entity and harvester
 
         :param entity_id: id of the entity
         :param harvester: harvester name of the harvesting
@@ -27,13 +28,33 @@ class ReferenceDAO(AbstractDAO):
             .join(ReferenceEvent)
             .join(Harvesting)
             .join(Retrieval)
-            .where(ReferenceEvent.type != ReferenceEvent.Type.DELETED.value)
             # exclude reference events where history is set to false
-            .where(ReferenceEvent.history.is_(True))
+            .where(
+                ~Reference.reference_events.any()
+                | Reference.reference_events.any(ReferenceEvent.history.is_(True))
+            )
             .where(Retrieval.entity_id == entity_id)
             .where(Harvesting.harvester == harvester)
         )
-        return (await self.db_session.scalars(query)).unique()
+        references = (await self.db_session.execute(query)).unique().scalars().all()
+        return ReferenceDAO._get_latest_references(references)
+
+    @staticmethod
+    def _get_latest_references(references: list[Reference]) -> list[Reference]:
+        """
+        Get the versions with the highest version number of all references
+
+        :param references: list of references
+        :return: list of references
+        """
+        latest_references = {}
+        for ref in references:
+            if (
+                ref.source_identifier not in latest_references
+                or ref.version > latest_references[ref.source_identifier].version
+            ):
+                latest_references[ref.source_identifier] = ref
+        return list(latest_references.values())
 
     async def get_references_by_source_identifier(
         self, source_identifier: str, harvester: str
@@ -67,8 +88,6 @@ class ReferenceDAO(AbstractDAO):
             select(Reference)
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
-            # reference is not flagged as deleted
-            .where(Reference.deleted.is_(False))
             # where there is no reference event
             # or exists at least one reference event with history set to true
             .where(

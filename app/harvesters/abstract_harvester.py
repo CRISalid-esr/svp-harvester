@@ -73,7 +73,7 @@ class AbstractHarvester(ABC):
 
     @abstractmethod
     async def fetch_results(
-            self,
+        self,
     ) -> AsyncGenerator[AbstractHarvesterRawResult, None]:
         """
         Fetch the results from the external API
@@ -101,7 +101,7 @@ class AbstractHarvester(ABC):
                     # TODO log something
                     continue
                 assert (
-                        reference.source_identifier is not None
+                    reference.source_identifier is not None
                 ), "Source identifier should be set on reference"
                 # copy the harvester name from the harvesting to the reference
                 reference.harvester = (await self.get_harvesting()).harvester
@@ -141,9 +141,9 @@ class AbstractHarvester(ABC):
             await self.handle_error(error)
 
     async def _register_deleted_references(
-            self,
-            existing_references_source_identifiers: List[str],
-            previous_references: List[Reference],
+        self,
+        existing_references_source_identifiers: List[str],
+        previous_references: List[Reference],
     ):
         if ReferenceEvent.Type.DELETED.value not in self.event_types:
             return

@@ -30,7 +30,6 @@ def test_create_retrieval_sync_error_with_name_only(test_client: TestClient):
     assert response.status_code == 422
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_fetch_references_async_with_name_and_idref(
     test_client: TestClient,
