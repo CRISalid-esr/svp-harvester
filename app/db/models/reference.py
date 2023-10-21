@@ -16,6 +16,7 @@ class Reference(Base, VersionedRecord):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
+    deleted: Mapped[bool] = mapped_column(nullable=False, index=True, default=False)
 
     # The reference should stay traceable to the harvester that created it
     # even if the harvesting history is cleaned up

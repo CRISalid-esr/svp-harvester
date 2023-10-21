@@ -24,12 +24,12 @@ router = APIRouter()
     name="references:create-retrieval-for-entity-sync",
 )
 async def create_retrieval_sync(
-        retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
-        entity: Person = Depends(build_person_from_fields),
-        nullify: List[str] = None,
-        events: Annotated[
-            List[ReferenceEvent.Type], Depends(event_types_or_default)
-        ] = None,
+    retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
+    entity: Person = Depends(build_person_from_fields),
+    nullify: List[str] = None,
+    events: Annotated[
+        List[ReferenceEvent.Type], Depends(event_types_or_default)
+    ] = None,
 ) -> JSONResponse:
     """
     Fetch references for a person in a synchronous way
@@ -50,15 +50,15 @@ async def create_retrieval_sync(
     name="references:create-retrieval-for-entity-async",
 )
 async def create_retrieval_async(
-        settings: Annotated[AppSettings, Depends(get_app_settings)],
-        retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
-        person: Person | None,
-        history_safe_mode: Annotated[bool, Body()],
-        identifiers_safe_mode: Annotated[bool, Body()],
-        nullify: List[str] = None,
-        events: Annotated[
-            List[ReferenceEvent.Type], Depends(event_types_or_default)
-        ] = None,
+    settings: Annotated[AppSettings, Depends(get_app_settings)],
+    retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
+    person: Person | None,
+    history_safe_mode: Annotated[bool, Body()] = False,
+    identifiers_safe_mode: Annotated[bool, Body()] = False,
+    nullify: List[str] = None,
+    events: Annotated[
+        List[ReferenceEvent.Type], Depends(event_types_or_default)
+    ] = None,
 ) -> JSONResponse:
     """
     Fetch references for a person in an in_background way
@@ -78,7 +78,7 @@ async def create_retrieval_async(
         events=events,
         nullify=nullify,
         history_safe_mode=history_safe_mode,
-        identifiers_safe_mode=identifiers_safe_mode
+        identifiers_safe_mode=identifiers_safe_mode,
     )
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly
@@ -86,8 +86,8 @@ async def create_retrieval_async(
         {
             "retrieval_id": retrieval.id,
             "retrieval_url": f"{settings.api_host}"
-                             f"{settings.api_prefix}/{settings.api_version}"
-                             f"/references/retrieval/{retrieval.id}",
+            f"{settings.api_prefix}/{settings.api_version}"
+            f"/references/retrieval/{retrieval.id}",
         }
     )
 
@@ -98,7 +98,7 @@ async def create_retrieval_async(
     response_model=RetrievalModel,
 )
 async def get_retrieval_result(
-        retrieval_id: int,
+    retrieval_id: int,
 ) -> RetrievalModel:
     """
     Get result of a retrieval in an asynchronous way

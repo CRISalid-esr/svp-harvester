@@ -13,7 +13,7 @@ class ReferenceDAO(AbstractDAO):
     """
 
     async def get_references_for_entity_and_harvester(
-            self, entity_id: int, harvester: str
+        self, entity_id: int, harvester: str
     ) -> ScalarResult:
         """
         Get previously harvested references for an entity
@@ -36,7 +36,7 @@ class ReferenceDAO(AbstractDAO):
         return (await self.db_session.scalars(query)).unique()
 
     async def get_references_by_source_identifier(
-            self, source_identifier: str, harvester: str
+        self, source_identifier: str, harvester: str
     ):
         """
         Get all references by their source_identifier and the harvester they come from
@@ -53,7 +53,7 @@ class ReferenceDAO(AbstractDAO):
         return (await self.db_session.execute(query)).scalars().unique().all()
 
     async def get_last_reference_by_source_identifier(
-            self, source_identifier: str, harvester: str
+        self, source_identifier: str, harvester: str
     ):
         """
         Get the reference with the highest version number
@@ -67,24 +67,13 @@ class ReferenceDAO(AbstractDAO):
             select(Reference)
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
-            # where exists at least one reference event with history set to true
+            # reference is not flagged as deleted
+            .where(Reference.deleted.is_(False))
+            # where there is no reference event
+            # or exists at least one reference event with history set to true
             .where(
-                select(ReferenceEvent)
-                .join(Harvesting)
-                .where(ReferenceEvent.reference_id == Reference.id)
-                .where(ReferenceEvent.history.is_(True))
-                .where(Harvesting.harvester == harvester)
-                .exists()
-            )
-            # where the last reference event is not of "deleted" type
-            .where(
-                select(ReferenceEvent)
-                .where(ReferenceEvent.reference_id == Reference.id)
-                .where(ReferenceEvent.history.is_(True))
-                .order_by(ReferenceEvent.id.desc())
-                .limit(1)
-                .where(ReferenceEvent.type != ReferenceEvent.Type.DELETED.value)
-                .exists()
+                ~Reference.reference_events.any()
+                | Reference.reference_events.any(ReferenceEvent.history.is_(True))
             )
             .order_by(Reference.version.desc())
         )
