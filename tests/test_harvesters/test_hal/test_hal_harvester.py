@@ -47,7 +47,7 @@ def fixture_hal_api_client_mock_same_kw_twice(hal_api_docs_with_same_kw_twice: d
 def fixture_reference_recorder_register_mock():
     """Reference recorder mock to detect register method calls."""
     with mock.patch.object(
-        ReferencesRecorder, "register"
+        ReferencesRecorder, "register_creation"
     ) as reference_recorder_register_mock:
         yield reference_recorder_register_mock
 
@@ -74,12 +74,14 @@ def test_hal_harvester_relevant_for_person_with_idhal_s(
     """Test that the harvester will run if submitted with an IDHAL."""
     assert hal_harvester.is_relevant(person_with_name_and_id_hal_s) is True
 
+
 def test_hal_harvester_relevant_for_person_with_orcid(
     person_with_name_and_orcid: Person,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an ORCID."""
     assert hal_harvester.is_relevant(person_with_name_and_orcid) is True
+
 
 def test_hal_harvester_not_relevant_for_person_with_idref_only(
     person_with_name_and_idref: Person,
