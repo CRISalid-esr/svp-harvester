@@ -1,5 +1,4 @@
 """Test that references API creates Retrieval in database."""
-from asyncio import sleep
 from unittest import mock
 
 import aiohttp
@@ -11,6 +10,7 @@ pytestmark = pytest.mark.integration
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
+@pytest.mark.current
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "event_types_1,event_types_2,num_results_1,num_results_2",
@@ -33,7 +33,7 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
         (["created", "updated", "deleted", "unchanged"], ["deleted"], 3, 1),
     ],
 )
-async def test_fetch_references_async_with_all_event_types(
+async def test_fetch_references_async_with_all_event_types(  # pylint: disable=too-many-arguments
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
     hal_api_docs_for_researcher_version_1,
@@ -55,6 +55,7 @@ async def test_fetch_references_async_with_all_event_types(
     :param hal_api_docs_for_researcher_version_2:
     :return:
     """
+    # 1. First launch a retrieval to create the references in database
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
@@ -72,16 +73,10 @@ async def test_fetch_references_async_with_all_event_types(
         json_response = response.json()
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
-        # while state is not completed, continue querying
-        json_response = None
-        json_response = {}
-        while (
-            not json_response or json_response["harvestings"][0]["state"] != "completed"
-        ):
-            json_response and sleep(0.1)
-            response = test_client.get(retrieval_url)
-            assert response.status_code == 200
-            json_response = response.json()
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
         assert len(json_response["harvestings"][0]["reference_events"]) == num_results_1
         # all reference events are of type created
@@ -97,7 +92,7 @@ async def test_fetch_references_async_with_all_event_types(
                     "reference_events"
                 ]
             )
-    # Now relaunch the same retrieval with a new version of the results
+    # 2. Now relaunch the same retrieval with a new version of the results
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
@@ -116,14 +111,10 @@ async def test_fetch_references_async_with_all_event_types(
         assert retrieval_url is not None
         # while state is not completed, continue querying
         json_response = None
-        json_response = {}
-        while (
-            not json_response or json_response["harvestings"][0]["state"] != "completed"
-        ):
-            json_response and sleep(0.1)
-            response = test_client.get(retrieval_url)
-            assert response.status_code == 200
-            json_response = response.json()
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
         # it has 4 reference events
         assert len(json_response["harvestings"][0]["reference_events"]) == num_results_2

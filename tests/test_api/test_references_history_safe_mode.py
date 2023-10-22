@@ -1,5 +1,4 @@
 """Test that references API creates Retrieval in database."""
-from asyncio import sleep
 from unittest import mock
 
 import aiohttp
@@ -11,13 +10,12 @@ pytestmark = pytest.mark.integration
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "history_safe_mode",
     [True, False],
 )
-async def test_fetch_references_async_with_history_safe_or_unsafe(
+async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
     hal_api_docs_for_researcher_version_1,
@@ -59,15 +57,10 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(
         json_response = response.json()
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
-        # while state is not completed, continue querying
-        json_response = {}
-        while (
-            not json_response or json_response["harvestings"][0]["state"] != "completed"
-        ):
-            json_response and sleep(0.1)
-            response = test_client.get(retrieval_url)
-            assert response.status_code == 200
-            json_response = response.json()
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
         assert len(json_response["harvestings"][0]["reference_events"]) == 3
         # all reference events are of type created
@@ -96,14 +89,10 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
         # while state is not completed, continue querying
-        json_response = {}
-        while (
-            not json_response or json_response["harvestings"][0]["state"] != "completed"
-        ):
-            json_response and sleep(0.1)
-            response = test_client.get(retrieval_url)
-            assert response.status_code == 200
-            json_response = response.json()
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        assert json_response["harvestings"][0]["state"] == "completed"
         # one and only one "deleted" event occured
         # only for reference with source identifier 3-will-disappear
         assert (
@@ -139,14 +128,10 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(
         retrieval_url = json_response["retrieval_url"]
         assert retrieval_url is not None
         # while state is not completed, continue querying
-        json_response = {}
-        while (
-            not json_response or json_response["harvestings"][0]["state"] != "completed"
-        ):
-            json_response and sleep(0.1)
-            response = test_client.get(retrieval_url)
-            assert response.status_code == 200
-            json_response = response.json()
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
         # if history safe mode is False, all reference events are of type unchanged
         if not history_safe_mode:

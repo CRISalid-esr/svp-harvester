@@ -26,9 +26,9 @@ class RetrievalService:
     """Main harvesters orchestration service"""
 
     def __init__(
-            self,
-            settings: Annotated[AppSettings, Depends(get_app_settings)],
-            background_tasks: BackgroundTasks = None,
+        self,
+        settings: Annotated[AppSettings, Depends(get_app_settings)],
+        background_tasks: BackgroundTasks = None,
     ):
         """Init RetrievalService class"""
         self.settings = settings
@@ -40,12 +40,12 @@ class RetrievalService:
         self.history_safe_mode = False
 
     async def register(
-            self,
-            entity: Type[PydanticEntity],
-            events: List[ReferenceEvent.Type] = None,
-            nullify: List[str] = None,
-            history_safe_mode: bool = False,
-            identifiers_safe_mode: bool = False,
+        self,
+        entity: Type[PydanticEntity],
+        events: List[ReferenceEvent.Type] = None,
+        nullify: List[str] = None,
+        history_safe_mode: bool = False,
+        identifiers_safe_mode: bool = False,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
@@ -68,7 +68,7 @@ class RetrievalService:
         return self.retrieval
 
     async def run(
-            self, result_queue: Queue = None, in_background: bool = False
+        self, result_queue: Queue = None, in_background: bool = False
     ) -> None:
         """
         Run the retrieval process by launching the harvesters
@@ -95,7 +95,7 @@ class RetrievalService:
 
     @staticmethod
     def _harvester_factory(
-            harvester_module: str, harvester_class: str
+        harvester_module: str, harvester_class: str
     ) -> AbstractHarvesterFactory:
         return getattr(importlib.import_module(harvester_module), harvester_class)
 
@@ -104,7 +104,6 @@ class RetrievalService:
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
             if not harvester.is_relevant(self.entity):
-                print(f"{harvester_name} will not run for {self.entity}")
                 continue
             async with async_session() as session:
                 async with session.begin():
@@ -127,8 +126,6 @@ class RetrievalService:
             harvesting_tasks_index[harvesting.id] = task
 
         while pending_harvesters:
-            done_harvesters, pending_harvesters = await asyncio.wait(
+            _, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
-            print(f"done : {len(done_harvesters)} for {self.retrieval.id}")
-            print(f"pending : {len(pending_harvesters)} for {self.retrieval.id}")

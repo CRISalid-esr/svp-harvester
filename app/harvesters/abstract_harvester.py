@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
 
+from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.entity import Entity
@@ -87,42 +88,53 @@ class AbstractHarvester(ABC):
         """
         await self._update_harvesting_state(Harvesting.State.RUNNING)
         await self._notify_harvesting_state()
-        previous_references = await ReferencesRecorder().get_previous_references(
-            self.entity_id, (await self.get_harvesting()).harvester
+        references_recorder = ReferencesRecorder(
+            harvesting=(await self.get_harvesting())
         )
-        existing_references_source_identifiers = []
+        previous_references: list[Reference] = (
+            await references_recorder.get_matching_references_before_harvesting(
+                entity_id=self.entity_id
+            )
+            or []
+        )
+        existing_references: list[Reference] = []
         try:
             result: AbstractHarvesterRawResult
             async for result in self.fetch_results():
                 if result is None or result == "end":
                     break
-                reference = await self.converter.convert(result)
-                if reference is None:
-                    # TODO log something
+                new_ref = await self.converter.convert(result)
+                if new_ref is None:
+                    # The converter silently failed to convert the result
+                    # TODO do or log something
                     continue
                 assert (
-                    reference.source_identifier is not None
+                    new_ref.source_identifier is not None
                 ), "Source identifier should be set on reference"
                 # copy the harvester name from the harvesting to the reference
-                reference.harvester = (await self.get_harvesting()).harvester
-                reference_event: ReferenceEvent = await ReferencesRecorder().register(
-                    harvesting_id=(await self.get_harvesting()).id,
-                    new_ref=reference,
-                    event_types=self.event_types,
-                    existing_references_source_identifiers=existing_references_source_identifiers,
-                    history=(await self.get_harvesting()).history,
+                new_ref.harvester = (await self.get_harvesting()).harvester
+                old_ref = await references_recorder.exists(new_ref=new_ref)
+                if old_ref is not None:
+                    existing_references.append(old_ref)
+                reference_event: Optional[
+                    ReferenceEvent
+                ] = await self._handle_converted_result(
+                    new_ref=new_ref,
+                    old_ref=old_ref,
+                    references_recorder=references_recorder,
                 )
-                if reference_event is None:
-                    continue
-                await self._put_in_queue(
-                    {
-                        "type": "ReferenceEvent",
-                        "id": reference_event.id,
-                        "change": reference_event.type,
-                    }
-                )
+                if reference_event is not None:
+                    await self._put_in_queue(
+                        {
+                            "type": "ReferenceEvent",
+                            "id": reference_event.id,
+                            "change": reference_event.type,
+                        }
+                    )
             await self._register_deleted_references(
-                existing_references_source_identifiers, previous_references
+                existing_references=existing_references,
+                previous_references=previous_references,
+                references_recorder=references_recorder,
             )
             await self._update_harvesting_state(Harvesting.State.COMPLETED)
             await self._notify_harvesting_state()
@@ -136,27 +148,67 @@ class AbstractHarvester(ABC):
         # but results may have been delivered before the exception
         # An harvester could decide to handle this exception on a lower level
         # and continue to deliver results
-        # in which case it will not bubble up to this point
         except UnexpectedFormatException as error:
             await self.handle_error(error)
+        # this is for debugging purpose only
+        # as no other exception types are expected during normal execution
+        except Exception as error:
+            raise error
+
+    async def _handle_converted_result(
+        self,
+        new_ref: Reference,
+        old_ref: Reference,
+        references_recorder: ReferencesRecorder,
+    ) -> Optional[ReferenceEvent]:
+        reference_event: Optional[ReferenceEvent] = None
+        if old_ref is not None:
+            if (
+                new_ref.hash != old_ref.hash
+                and ReferenceEvent.Type.UPDATED.value
+                in event_types_or_default(self.event_types)
+            ):
+                reference_event = await references_recorder.register_update(
+                    new_ref=new_ref,
+                    old_ref=old_ref,
+                )
+            if (
+                new_ref.hash == old_ref.hash
+                and ReferenceEvent.Type.UNCHANGED.value
+                in event_types_or_default(self.event_types)
+            ):
+                reference_event = await references_recorder.register_unchanged(
+                    old_ref=old_ref,
+                )
+        if (
+            old_ref is None
+            and ReferenceEvent.Type.CREATED.value
+            in event_types_or_default(self.event_types)
+        ):
+            reference_event = await references_recorder.register_creation(
+                new_ref=new_ref,
+            )
+        return reference_event
 
     async def _register_deleted_references(
         self,
-        existing_references_source_identifiers: List[str],
+        existing_references: List[Reference],
         previous_references: List[Reference],
+        references_recorder: ReferencesRecorder,
     ):
         if ReferenceEvent.Type.DELETED.value not in self.event_types:
             return
+        existing_references_identifiers = list(
+            map(lambda ref: str(ref.source_identifier), existing_references)
+        )
         deleted_references = [
             ref
             for ref in previous_references
-            if str(ref.source_identifier) not in existing_references_source_identifiers
+            if str(ref.source_identifier) not in existing_references_identifiers
         ]
         for reference in deleted_references:
-            reference_event = await ReferencesRecorder().register_deletion(
-                harvesting_id=(await self.get_harvesting()).id,
+            reference_event = await references_recorder.register_deletion(
                 old_ref=reference,
-                history=(await self.get_harvesting()).history,
             )
             await self._put_in_queue(
                 {

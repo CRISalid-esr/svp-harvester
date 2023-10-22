@@ -1,6 +1,6 @@
 from enum import Enum
 
-from sqlalchemy import ForeignKey, event
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -40,10 +40,3 @@ class ReferenceEvent(Base):
         UPDATED = "updated"
         DELETED = "deleted"
         UNCHANGED = "unchanged"
-
-
-@event.listens_for(ReferenceEvent, "before_insert")
-def receive_before_insert(_, __, target):
-    """Set the reference deleted flag to True if the event type is deleted"""
-    if target.type == ReferenceEvent.Type.DELETED.value and target.history:
-        target.reference.deleted = True
