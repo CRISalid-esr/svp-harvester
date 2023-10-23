@@ -5,7 +5,7 @@ from typing import Optional, AsyncGenerator, Type, List
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.entity import Entity
+from app.db.models.entity import Entity as DbEntity
 from app.db.models.harvesting import Harvesting
 from app.db.models.reference_event import ReferenceEvent
 from app.db.references.references_recorder import ReferencesRecorder
@@ -16,7 +16,6 @@ from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpoint
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.models.entities import Entity as PydanticEntity
 from app.models.references import Reference
 
 
@@ -31,7 +30,7 @@ class AbstractHarvester(ABC):
         self.harvesting_id: Optional[int] = None
         self.harvesting: Optional[Harvesting] = None
         self.entity_id: Optional[int] = None
-        self.entity: Optional[Entity] = None
+        self.entity: Optional[DbEntity] = None
         self.event_types: list[ReferenceEvent.Type] = []
 
     def set_result_queue(self, result_queue: Queue):
@@ -67,7 +66,7 @@ class AbstractHarvester(ABC):
         self.event_types = event_types
 
     @abstractmethod
-    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:  # pragma: no cover
+    def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
         """
         Return True if the entity contains the required information for the harvester to do his job
         """
@@ -261,7 +260,7 @@ class AbstractHarvester(ABC):
             return
         await self.result_queue.put(message)
 
-    async def _get_entity(self) -> Entity:
+    async def _get_entity(self) -> DbEntity:
         """
         Retrieve the entity for which to harvest references
         from the database if not already done

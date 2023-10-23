@@ -10,7 +10,6 @@ pytestmark = pytest.mark.integration
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "event_types_1,event_types_2,num_results_1,num_results_2",

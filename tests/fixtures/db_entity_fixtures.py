@@ -16,6 +16,18 @@ def fixture_person_with_name_and_idref_db_model() -> DbPerson:
     )
 
 
+@pytest.fixture(name="person_with_name_and_orcid_db_model")
+def fixture_person_with_name_and_orcid_db_model() -> DbPerson:
+    """
+    Generate a person with first name, last name and ORCID in DB model format
+    :return: person with first name, last name and ORCID  in DB model format
+    """
+    return DbPerson(
+        name="John Doe",
+        identifiers=[DbIdentifier(type="orcid", value="123456789")],
+    )
+
+
 @pytest.fixture(name="person_with_name_and_id_hal_i_db_model")
 def fixture_person_with_name_and_id_hal_i_db_model() -> DbPerson:
     """

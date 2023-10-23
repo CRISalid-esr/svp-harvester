@@ -6,7 +6,7 @@ from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.models.entities import Entity as PydanticEntity
+from app.db.models.entity import Entity as DbEntity
 
 
 class HalHarvester(AbstractHarvester):
@@ -65,7 +65,7 @@ class HalHarvester(AbstractHarvester):
                 formatter_name=HalHarvester.FORMATTER_NAME,
             )
 
-    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
+    def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
         identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
 
