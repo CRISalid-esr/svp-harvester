@@ -56,7 +56,6 @@ def fixture_mock_hal_harvester_is_relevant():
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_retrieval_service_registers_identifiers_matches(
     person_with_name_and_id_hal_s: Person, mock_hal_harvester_is_relevant
 ):
