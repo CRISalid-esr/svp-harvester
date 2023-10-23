@@ -369,3 +369,35 @@ async def test_resolution_updates_person_name(
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
     assert existing_entity.name == "Jane Doe"
+
+
+@pytest.mark.current
+@pytest.mark.asyncio
+async def test_resolution_service_does_not_update_identifiers_in_safe_mode(
+    async_session: AsyncSession,
+):
+    """
+    GIVEN an entity with exists in the database with idref1 and orcid1
+    WHEN we submit a new entity with idref1 and orcid2 in safe mode
+    THEN the returned entity has idref1 and orcid1
+    """
+    entity1 = Person(
+        name="John Doe",
+        identifiers=[
+            Identifier(type="idref", value="1"),
+            Identifier(type="orcid", value="1"),
+        ],
+    )
+    async_session.add(entity1)
+    service = EntityResolutionService(async_session)
+    entity2 = Person(
+        name="Jane Doe",
+        identifiers=[
+            Identifier(type="idref", value="1"),
+            Identifier(type="orcid", value="2"),
+        ],
+    )
+    existing_entity = await service.resolve(entity2, identifiers_safe_mode=True)
+    assert existing_entity is not None
+    assert existing_entity.has_identifier_of_type_and_value("idref", "1")
+    assert existing_entity.has_identifier_of_type_and_value("orcid", "1")
