@@ -6,6 +6,7 @@ from typing import AsyncGenerator, Type
 import uritools
 from rdflib import URIRef
 
+from app.db.models.entity import Entity as DbEntity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -22,7 +23,6 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
 )
-from app.models.entities import Entity as PydanticEntity
 
 
 class IdrefHarvester(AbstractHarvester):
@@ -50,7 +50,7 @@ class IdrefHarvester(AbstractHarvester):
             idref: str = (await self._get_entity()).get_identifier("idref")
             orcid: str = (await self._get_entity()).get_identifier("orcid")
             assert (
-                    idref is not None or orcid is not None
+                idref is not None or orcid is not None
             ), "Idref or Orcid identifier required when harvesting publications from data.idref.fr"
             if idref is not None:
                 builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_idref_id(
@@ -135,7 +135,7 @@ class IdrefHarvester(AbstractHarvester):
         )
 
     async def _query_publication_from_hal_endpoint(
-            self, doc: dict  # pylint: disable=unused-argument
+        self, doc: dict  # pylint: disable=unused-argument
     ) -> RawResult:
         """
         Query the details of a publication from the HAL API
@@ -146,7 +146,7 @@ class IdrefHarvester(AbstractHarvester):
         return {}
 
     async def _query_publication_from_science_plus_endpoint(
-            self, doc: dict  # pylint: disable=unused-argument
+        self, doc: dict  # pylint: disable=unused-argument
     ) -> RawResult:
         """
         Query the details of a publication from the Science+ API
@@ -174,8 +174,8 @@ class IdrefHarvester(AbstractHarvester):
             formatter_name=self.Formatters.SCIENCE_PLUS_RDF.value,
         )
 
-    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
+    def is_relevant(self, entity: Type[DbEntity]) -> bool:
         return (
-                entity.get_identifier("idref") is not None
-                or entity.get_identifier("orcid") is not None
+            entity.get_identifier("idref") is not None
+            or entity.get_identifier("orcid") is not None
         )
