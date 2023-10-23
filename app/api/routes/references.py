@@ -1,7 +1,7 @@
 """ References routes"""
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from starlette.responses import JSONResponse
 
 from app.api.dependencies.event_types import event_types_or_default
@@ -53,6 +53,8 @@ async def create_retrieval_async(
     settings: Annotated[AppSettings, Depends(get_app_settings)],
     retrieval_service: Annotated[RetrievalService, Depends(RetrievalService)],
     person: Person | None,
+    history_safe_mode: Annotated[bool, Body()] = False,
+    identifiers_safe_mode: Annotated[bool, Body()] = False,
     nullify: List[str] = None,
     events: Annotated[
         List[ReferenceEvent.Type], Depends(event_types_or_default)
@@ -66,11 +68,17 @@ async def create_retrieval_async(
     :param person: entity built from fields
     :param nullify: list of identifiers to nullify for the person
     :param events: list of event types to fetch (default : "created", "updated", "deleted")
+    :param history_safe_mode: if True, this retrieval won't affect the harvesting history
+    :param identifiers_safe_mode: if True, this retrieval won't update entity identifiers
     :return: json response
     """
     # TODO none of the entitty identifiers should be listed in nullify
     retrieval = await retrieval_service.register(
-        entity=person, events=events, nullify=nullify
+        entity=person,
+        events=events,
+        nullify=nullify,
+        history_safe_mode=history_safe_mode,
+        identifiers_safe_mode=identifiers_safe_mode,
     )
     await retrieval_service.run(in_background=True)
     # TODO build returned URL properly

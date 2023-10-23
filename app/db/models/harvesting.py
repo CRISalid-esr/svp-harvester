@@ -46,4 +46,7 @@ class Harvesting(Base):
         lazy="joined",
     )
 
+    # boolean field "history"
+    history: Mapped[bool] = mapped_column(nullable=False, index=True, default=True)
+
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)

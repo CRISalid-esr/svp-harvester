@@ -36,15 +36,21 @@ class RetrievalService:
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[PydanticEntity] = None
+        self.identifiers_safe_mode = False
+        self.history_safe_mode = False
 
     async def register(
         self,
         entity: Type[PydanticEntity],
         events: List[ReferenceEvent.Type] = None,
         nullify: List[str] = None,
+        history_safe_mode: bool = False,
+        identifiers_safe_mode: bool = False,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
         self.entity = entity
+        self.identifiers_safe_mode = identifiers_safe_mode
+        self.history_safe_mode = history_safe_mode
         self._build_harvesters()
         # new entity is not saved to db yet
         new_entity: DbEntity = EntityConverter(entity).to_db_model()
@@ -98,7 +104,6 @@ class RetrievalService:
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
             if not harvester.is_relevant(self.entity):
-                print(f"{harvester_name} will not run for {self.entity}")
                 continue
             async with async_session() as session:
                 async with session.begin():
@@ -106,6 +111,7 @@ class RetrievalService:
                         retrieval=self.retrieval,
                         harvester=harvester_name,
                         state=Harvesting.State.RUNNING,
+                        history=not self.history_safe_mode,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
@@ -120,8 +126,6 @@ class RetrievalService:
             harvesting_tasks_index[harvesting.id] = task
 
         while pending_harvesters:
-            done_harvesters, pending_harvesters = await asyncio.wait(
+            _, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
-            print(f"done : {len(done_harvesters)} for {self.retrieval.id}")
-            print(f"pending : {len(pending_harvesters)} for {self.retrieval.id}")

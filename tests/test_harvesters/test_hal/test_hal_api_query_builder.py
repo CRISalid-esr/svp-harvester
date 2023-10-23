@@ -58,7 +58,7 @@ def test_build_query_with_idhal_i(hal_query_builder):
 
     assert result_dict == expected_result
 
-@pytest.mark.current
+
 def test_build_query_with_orcid_id(hal_query_builder):
     """
     GIVEN a HalApiQueryBuilder instance
@@ -79,7 +79,7 @@ def test_build_query_with_orcid_id(hal_query_builder):
     expected_result = {
         "fl": ["field1,field2,field3"],
         "fq": ["docType_s:(ART OR OUV OR COUV)"],
-        "q": [f"authORCIDIdExt_id:\"{orcid}\""],
+        "q": [f'authORCIDIdExt_id:"{orcid}"'],
         "rows": ["1000"],
         "sort": ["test_key_parameter dsc"],
     }

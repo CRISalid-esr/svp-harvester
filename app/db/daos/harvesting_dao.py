@@ -12,7 +12,11 @@ class HarvestingDAO(AbstractDAO):
     """
 
     async def create_harvesting(
-        self, retrieval: DbRetrieval, harvester: str, state: DbHarvesting.State
+            self,
+            retrieval: DbRetrieval,
+            harvester: str,
+            state: DbHarvesting.State,
+            history: bool = True
     ) -> DbHarvesting:
         """
         Create a harvesting for a retrieval
@@ -20,9 +24,10 @@ class HarvestingDAO(AbstractDAO):
         :param state: state of the harvesting
         :param retrieval: retrieval to which the harvesting belongs
         :param harvester: type of harvester (idref, orcid, etc.)
+        :param history: if True, the harvesting will be recorded in the history
         :return:
         """
-        harvesting = DbHarvesting(harvester=harvester, state=state.value)
+        harvesting = DbHarvesting(harvester=harvester, state=state.value, history=history)
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
         return harvesting
@@ -37,7 +42,7 @@ class HarvestingDAO(AbstractDAO):
         return await self.db_session.get(DbHarvesting, harvesting_id)
 
     async def get_harvesting_extended_info_by_id(
-        self, harvesting_id
+            self, harvesting_id
     ) -> DbHarvesting | None:
         """
         Get a harvesting without reference events but with retrieval and associated entity
@@ -53,7 +58,7 @@ class HarvestingDAO(AbstractDAO):
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
     async def update_harvesting_state(
-        self, harvesting_id: int, state: DbHarvesting.State
+            self, harvesting_id: int, state: DbHarvesting.State
     ):
         """
         Update the state of a harvesting

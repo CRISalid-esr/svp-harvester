@@ -1,10 +1,10 @@
-from sqlalchemy import select, ScalarResult
+from sqlalchemy import select, func
 
-from app.db.models.harvesting import Harvesting
-from app.db.models.reference_event import ReferenceEvent
-from app.db.models.reference import Reference
-from app.db.models.retrieval import Retrieval
 from app.db.abstract_dao import AbstractDAO
+from app.db.models.harvesting import Harvesting
+from app.db.models.reference import Reference
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.retrieval import Retrieval
 
 
 class ReferenceDAO(AbstractDAO):
@@ -12,26 +12,44 @@ class ReferenceDAO(AbstractDAO):
     Data access object for references
     """
 
-    async def get_references_for_entity_and_harvester(
-        self, entity_id: int, harvester: str
-    ) -> ScalarResult:
+    async def get_previous_references_for_entity_and_harvester(
+        self,
+        entity_id: int,
+        harvester: str,
+        harvesting_id: int,
+    ) -> list[Reference]:
         """
-        Get previously harvested references for an entity
+        Get the references discovered by the harvesting that occurred before the given harvesting
+        for the given entity and harvester
 
+        :param harvesting_id: id of the current harvesting
         :param entity_id: id of the entity
         :param harvester: harvester name of the harvesting
         :return: list of references
         """
+        # Fin the last completed harvesting id with history set to true
+        # for the given entity and harvester
+        subquery = (
+            select(func.max(Harvesting.id).label("max_harvesting_id"))
+            .join(Retrieval)
+            .where(Retrieval.entity_id == entity_id)
+            .where(Harvesting.harvester == harvester)
+            .where(Harvesting.id != harvesting_id)
+            .where(Harvesting.state == Harvesting.State.COMPLETED.value)
+            .where(Harvesting.history.is_(True))
+        ).subquery()
+        # find all references related to the last harvesting
+        # that are not of "deleted" type
         query = (
             select(Reference)
             .join(ReferenceEvent)
-            .join(Harvesting)
-            .join(Retrieval)
+            .join(
+                subquery, ReferenceEvent.harvesting_id == subquery.c.max_harvesting_id
+            )
             .where(ReferenceEvent.type != ReferenceEvent.Type.DELETED.value)
-            .where(Retrieval.entity_id == entity_id)
-            .where(Harvesting.harvester == harvester)
         )
-        return (await self.db_session.scalars(query)).unique()
+        # return the references
+        return (await self.db_session.execute(query)).unique().scalars().all() or []
 
     async def get_references_by_source_identifier(
         self, source_identifier: str, harvester: str
@@ -65,6 +83,12 @@ class ReferenceDAO(AbstractDAO):
             select(Reference)
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
+            # where there is no reference event
+            # or exists at least one reference event with history set to true
+            .where(
+                ~Reference.reference_events.any()
+                | Reference.reference_events.any(ReferenceEvent.history.is_(True))
+            )
             .order_by(Reference.version.desc())
         )
         return (await self.db_session.execute(query)).scalars().first()
