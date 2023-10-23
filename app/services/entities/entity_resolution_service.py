@@ -18,12 +18,18 @@ class EntityResolutionService:
         self.db_session = db_session
 
     async def resolve(
-        self, entity_to_resolve: Type[DbEntity], nullify: list[str] = None
+        self,
+        entity_to_resolve: Type[DbEntity],
+        nullify: list[str] = None,
+        identifiers_safe_mode: bool = False,
     ):
         """
         Find an entity that has yet been submitted by its identifiers
         and resolve potential identifier conflicts
         :param entity_to_resolve: entity to resolve (non registered to database)
+        :param nullify: list of identifiers to set to null
+        :param identifiers_safe_mode: if True, do not update identifiers nor
+               update identifiers of existing entities
         :return: resolved entity (registered to database if it exists)
         """
         # create a list of existing entities with at least one identifier
@@ -53,7 +59,9 @@ class EntityResolutionService:
         # the elected entity is the first one in the list
         # (the one with the highest priority identifier)
         elected_entity: DbEntity = matching_entities[0]
-
+        # if the safe mode is enabled, don't update the identifiers
+        if identifiers_safe_mode:
+            return elected_entity
         self._remove_nullified_identifiers(elected_entity, nullify)
         # override the name of the elected entity with the name of the entity to resolve
         elected_entity.name = entity_to_resolve.name

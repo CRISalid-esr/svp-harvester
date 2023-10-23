@@ -56,7 +56,9 @@ class RetrievalService:
         async with async_session() as session:
             async with session.begin():
                 existing_entity = await EntityResolutionService(session).resolve(
-                    new_entity, nullify=nullify
+                    new_entity,
+                    nullify=nullify,
+                    identifiers_safe_mode=identifiers_safe_mode,
                 )
         self.entity = existing_entity or new_entity
         async with async_session() as session:
