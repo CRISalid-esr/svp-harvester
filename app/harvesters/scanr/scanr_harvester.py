@@ -2,10 +2,10 @@ import asyncio
 import random
 from typing import AsyncGenerator, Type
 
+from app.db.models.entity import Entity as DbEntity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
-from app.models.entities import Entity as PydanticEntity
 
 
 class ScanrHarvester(AbstractHarvester):
@@ -18,5 +18,5 @@ class ScanrHarvester(AbstractHarvester):
             raise ExternalEndpointFailure("Scanr API is down")
         await asyncio.sleep(random.randint(1, 20) / 10)
 
-    def is_relevant(self, entity: Type[PydanticEntity]) -> bool:
+    def is_relevant(self, entity: Type[DbEntity]) -> bool:
         return False

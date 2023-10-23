@@ -1,4 +1,6 @@
 """Test the references API."""
+from unittest import mock
+
 import pytest
 
 from app.config import get_app_settings
@@ -6,6 +8,7 @@ from app.db.models.retrieval import Retrieval
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
+from app.models.identifiers import Identifier
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 
@@ -43,3 +46,51 @@ async def test_retrieval_service_returns_retrieval_for_person(
     assert retrieval.entity.get_identifier(
         "idref"
     ) == person_with_name_and_idref.get_identifier("idref")
+
+
+@pytest.fixture(name="mock_hal_harvester_is_relevant")
+def fixture_mock_hal_harvester_is_relevant():
+    """Hal harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(HalHarvester, "is_relevant") as mock_is_relevant:
+        yield mock_is_relevant
+
+
+@pytest.mark.asyncio
+@pytest.mark.current
+async def test_retrieval_service_registers_identifiers_matches(
+    person_with_name_and_id_hal_s: Person, mock_hal_harvester_is_relevant
+):
+    """
+    GIVEN a retrieval service to which a person with one identifier has been submitted
+    WHEN registering the same person with only one identifier
+    THEN it launches the retrieval with the two identifiers
+    :param person_with_name_and_id_hal_s:
+    :return:
+    """
+    # add orcid identifier ro person_with_name_and_id_hal_s
+
+    orcid_identifier = Identifier(
+        type="orcid",
+        value="0000-0002-1825-0097",
+    )
+    person_with_name_and_id_hal_s.identifiers.append(orcid_identifier)
+    settings = get_app_settings()
+    service = RetrievalService(settings)
+    await service.register(person_with_name_and_id_hal_s)
+    # remove orcid identifier ro person_with_name_and_id_hal_s
+    person_with_name_and_id_hal_s.identifiers.pop()
+    retrieval: Retrieval = await service.register(person_with_name_and_id_hal_s)
+    assert retrieval.entity.name == person_with_name_and_id_hal_s.name
+    assert retrieval.entity.get_identifier(
+        "idref"
+    ) == person_with_name_and_id_hal_s.get_identifier("idref")
+    assert retrieval.entity.get_identifier("orcid") == orcid_identifier.value
+    assert len(retrieval.entity.identifiers) == 2
+    await service.run()
+    mock_hal_harvester_is_relevant.assert_called_once()
+    hal_harvester_args, _ = mock_hal_harvester_is_relevant.call_args
+    assert len(hal_harvester_args[0].identifiers) == 2
+    assert hal_harvester_args[0].get_identifier(
+        "idref"
+    ) == person_with_name_and_id_hal_s.get_identifier("idref")
+    assert hal_harvester_args[0].get_identifier("orcid") == orcid_identifier.value

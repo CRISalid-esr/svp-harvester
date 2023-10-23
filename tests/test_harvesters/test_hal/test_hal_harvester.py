@@ -16,7 +16,7 @@ from app.db.models.reference_event import ReferenceEvent
 from app.db.references.references_recorder import ReferencesRecorder
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
-from app.models.people import Person
+from app.db.models.person import Person as DbPerson
 
 
 @pytest.fixture(name="hal_api_client_mock")
@@ -60,35 +60,35 @@ def fixture_hal_harvester() -> HalHarvester:
 
 
 def test_hal_harvester_relevant_for_person_with_idhal_i(
-    person_with_name_and_id_hal_i: Person,
+    person_with_name_and_id_hal_i_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an IDHAL."""
-    assert hal_harvester.is_relevant(person_with_name_and_id_hal_i) is True
+    assert hal_harvester.is_relevant(person_with_name_and_id_hal_i_db_model) is True
 
 
 def test_hal_harvester_relevant_for_person_with_idhal_s(
-    person_with_name_and_id_hal_s: Person,
+    person_with_name_and_id_hal_s_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an IDHAL."""
-    assert hal_harvester.is_relevant(person_with_name_and_id_hal_s) is True
+    assert hal_harvester.is_relevant(person_with_name_and_id_hal_s_db_model) is True
 
 
 def test_hal_harvester_relevant_for_person_with_orcid(
-    person_with_name_and_orcid: Person,
+    person_with_name_and_orcid_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will run if submitted with an ORCID."""
-    assert hal_harvester.is_relevant(person_with_name_and_orcid) is True
+    assert hal_harvester.is_relevant(person_with_name_and_orcid_db_model) is True
 
 
 def test_hal_harvester_not_relevant_for_person_with_idref_only(
-    person_with_name_and_idref: Person,
+    person_with_name_and_idref_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
     """Test that the harvester will not run if submitted with only an IDREF."""
-    assert hal_harvester.is_relevant(person_with_name_and_idref) is False
+    assert hal_harvester.is_relevant(person_with_name_and_idref_db_model) is False
 
 
 @pytest.mark.integration

@@ -35,7 +35,7 @@ class RetrievalService:
         self.background_tasks = background_tasks
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
-        self.entity: Optional[PydanticEntity] = None
+        self.entity: Optional[Type[DbEntity]] = None
         self.identifiers_safe_mode = False
         self.history_safe_mode = False
 
@@ -48,7 +48,6 @@ class RetrievalService:
         identifiers_safe_mode: bool = False,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
-        self.entity = entity
         self.identifiers_safe_mode = identifiers_safe_mode
         self.history_safe_mode = history_safe_mode
         self._build_harvesters()
@@ -59,11 +58,12 @@ class RetrievalService:
                 existing_entity = await EntityResolutionService(session).resolve(
                     new_entity, nullify=nullify
                 )
+        self.entity = existing_entity or new_entity
         async with async_session() as session:
             async with session.begin():
                 # this will add the new entity to the db if it does not exist
                 self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    entity=existing_entity or new_entity, event_types=events or []
+                    self.entity, event_types=events or []
                 )
         return self.retrieval
 
