@@ -33,10 +33,10 @@ async def test_reference_recorder_creates_event_for_new_reference(
         hash="hash1",
         titles=[Title(value="title", language="fr")],
     )
-    reference_event: ReferenceEvent = await ReferencesRecorder().register(
-        harvesting_id=harvesting_db_model.id,
+    references_recorder = ReferencesRecorder(harvesting=harvesting_db_model)
+    assert (await references_recorder.exists(reference)) is None
+    reference_event: ReferenceEvent = await references_recorder.register_creation(
         new_ref=reference,
-        existing_references_source_identifiers=[],
     )
     assert reference_event is not None
     assert reference_event.reference == reference
@@ -47,7 +47,8 @@ async def test_reference_recorder_creates_event_for_new_reference(
 
 @pytest.mark.asyncio
 async def test_reference_recorder_creates_event_for_updated_reference(
-    async_session: AsyncSession, harvesting_db_model: Harvesting
+    async_session: AsyncSession,
+    three_completed_harvestings_db_models_for_same_person: list[Harvesting],
 ):
     """
     GIVEN a reference in database with source_identifier and harvester
@@ -59,10 +60,15 @@ async def test_reference_recorder_creates_event_for_updated_reference(
     :param harvesting_db_model:
     :return:
     """
-    # find harvesting_db_model in db
-    async_session.add(harvesting_db_model)
+    (
+        harvesting_1,
+        harvesting_2,
+        harvesting_3,
+    ) = three_completed_harvestings_db_models_for_same_person
+    harvesting_3.status = Harvesting.State.RUNNING
+    async_session.add_all([harvesting_1, harvesting_2, harvesting_3])
     await async_session.commit()
-    harvester = harvesting_db_model.harvester
+    harvester = harvesting_3.harvester  # same harvester for all harvestings
     source_identifier = "source_identifier_1234"
     reference = DbReference(
         source_identifier=source_identifier,
@@ -74,19 +80,21 @@ async def test_reference_recorder_creates_event_for_updated_reference(
     async_session.add(reference)
     await async_session.commit()
     # update reference
-    other_reference = DbReference(
+    new_version_of_reference = DbReference(
         source_identifier=source_identifier,
         harvester=harvester,
         hash="hash2",
         titles=[Title(value="changed_title", language="fr")],
     )
-    reference_event: ReferenceEvent = await ReferencesRecorder().register(
-        harvesting_id=harvesting_db_model.id,
-        new_ref=other_reference,
-        existing_references_source_identifiers=[],
+    references_recorder = ReferencesRecorder(harvesting=harvesting_3)
+    old_reference = await references_recorder.exists(reference)
+    assert old_reference is not None
+    reference_event: ReferenceEvent = await references_recorder.register_update(
+        old_ref=old_reference,
+        new_ref=new_version_of_reference,
     )
     assert reference_event is not None
-    assert reference_event.reference == other_reference
+    assert reference_event.reference == new_version_of_reference
     assert reference_event.reference.version == 1
-    assert reference_event.harvesting_id == harvesting_db_model.id
+    assert reference_event.harvesting_id == harvesting_3.id
     assert reference_event.type == ReferenceEvent.Type.UPDATED.value
