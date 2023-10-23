@@ -24,7 +24,7 @@ async def test_resolution_service_finds_previous_entity(async_session: AsyncSess
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
-    assert existing_entity.name == "John Doe"
+    assert existing_entity.name == "Johnny DoeVariant"
     assert len(existing_entity.identifiers) == 1
     assert existing_entity.identifiers[0].type == "idref"
 
@@ -54,7 +54,7 @@ async def test_resolution_service_updates_previous_entity(async_session: AsyncSe
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
-    assert existing_entity.name == "John Doe"
+    assert existing_entity.name == "Johnny DoeVariant"
     assert len(existing_entity.identifiers) == 2
     assert existing_entity.identifiers[0].type == "idref"
     assert existing_entity.identifiers[1].type == "id_hal_i"
@@ -340,7 +340,6 @@ async def test_resolution_service_removes_nullified_identifiers(
     assert existing_entity.has_identifier_of_type_and_value("idref", "1")
 
 
-@pytest.mark.xfail
 @pytest.mark.asyncio
 async def test_resolution_updates_person_name(
     async_session: AsyncSession,

@@ -55,6 +55,8 @@ class EntityResolutionService:
         elected_entity: DbEntity = matching_entities[0]
 
         self._remove_nullified_identifiers(elected_entity, nullify)
+        # override the name of the elected entity with the name of the entity to resolve
+        elected_entity.name = entity_to_resolve.name
 
         # dont use db entities in loop as some of them will be deleted and the loop will break
         identifiers_type_and_values = [(i.type, i.value) for i in submitted_identifiers]
@@ -68,6 +70,7 @@ class EntityResolutionService:
                 for existing_entity in matching_entities
                 if existing_entity != elected_entity and not existing_entity.identifiers
             ]
+        # TODO dangerous instruction, consider removal
         for entity_to_delete in entities_without_identifiers:
             await entity_dao.delete(entity_to_delete)
         # return the elected entity
