@@ -13,7 +13,19 @@ class Entity(BaseModel):
     Source entity (person, organization, etc.) for which references are retrieved
     """
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True) | {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Foo",
+                    "identifiers": [
+                        {"type": "idref", "value": "123456789"},
+                        {"type": "orcid", "value": "0000-0002-1825-0097"},
+                    ],
+                }
+            ]
+        }
+    }
 
     identifiers: List[Identifier] = []
 

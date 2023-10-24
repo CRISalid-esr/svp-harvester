@@ -3,9 +3,10 @@ import importlib
 from asyncio import Queue
 from typing import Annotated, Optional, List, Type
 
-from fastapi import Depends
+from fastapi import Depends, Body
 from starlette.background import BackgroundTasks
 
+from app.api.dependencies.event_types import event_types_or_default
 from app.config import get_app_settings
 from app.db.conversions import EntityConverter
 from app.db.daos.retrieval_dao import RetrievalDAO
@@ -29,6 +30,12 @@ class RetrievalService:
         self,
         settings: Annotated[AppSettings, Depends(get_app_settings)],
         background_tasks: BackgroundTasks = None,
+        history_safe_mode: Annotated[bool, Body()] = False,
+        identifiers_safe_mode: Annotated[bool, Body()] = False,
+        nullify: List[str] = None,
+        events: Annotated[
+            List[ReferenceEvent.Type], Depends(event_types_or_default)
+        ] = None,
     ):
         """Init RetrievalService class"""
         self.settings = settings
@@ -36,20 +43,16 @@ class RetrievalService:
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[Type[DbEntity]] = None
-        self.identifiers_safe_mode = False
-        self.history_safe_mode = False
+        self.identifiers_safe_mode = identifiers_safe_mode
+        self.history_safe_mode = history_safe_mode
+        self.nullify = nullify
+        self.events = events
 
     async def register(
         self,
         entity: Type[PydanticEntity],
-        events: List[ReferenceEvent.Type] = None,
-        nullify: List[str] = None,
-        history_safe_mode: bool = False,
-        identifiers_safe_mode: bool = False,
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
-        self.identifiers_safe_mode = identifiers_safe_mode
-        self.history_safe_mode = history_safe_mode
         self._build_harvesters()
         # new entity is not saved to db yet
         new_entity: DbEntity = EntityConverter(entity).to_db_model()
@@ -57,15 +60,15 @@ class RetrievalService:
             async with session.begin():
                 existing_entity = await EntityResolutionService(session).resolve(
                     new_entity,
-                    nullify=nullify,
-                    identifiers_safe_mode=identifiers_safe_mode,
+                    nullify=self.nullify,
+                    identifiers_safe_mode=self.identifiers_safe_mode,
                 )
         self.entity = existing_entity or new_entity
         async with async_session() as session:
             async with session.begin():
                 # this will add the new entity to the db if it does not exist
                 self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    self.entity, event_types=events or []
+                    self.entity, event_types=self.events or []
                 )
         return self.retrieval
 

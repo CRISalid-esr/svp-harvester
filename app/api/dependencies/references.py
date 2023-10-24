@@ -1,38 +1,35 @@
 """References dependencies."""
-from typing import Annotated
+from typing import Optional
 
 from fastapi import Depends
+from pydantic import create_model
 
 from app.config import get_app_settings
 from app.models.people import Person
-from app.settings.app_settings import AppSettings
+
+settings = get_app_settings()
+identifier_params = {
+    id_.get("key"): (Optional[str], None) for id_ in settings.identifiers
+}
+
+identifiers_model = create_model("Query", **identifier_params)
 
 
 def build_person_from_fields(
-    settings: Annotated[AppSettings, Depends(get_app_settings)],
-    first_name: str | None = None,
-    last_name: str | None = None,
-    # pylint: disable=unused-argument
-    idref: str | None = None,
-    orcid: str | None = None,
-    id_hal_i: str | None = None,
-    id_hal_s: str | None = None,
+    name: str | None = None,
+    identifiers: identifiers_model = Depends(),
 ) -> Person:
     """
+    Toto
 
-    :param first_name: first name
-    :param last_name: last name
-    :param idref: IdRef identifier
-    :param orcid: ORCID identifier
-    :param id_hal_i: HAL numeric identifier
-    :param id_hal_s: HAL alphabetic identifier
+    :param name: name of the entity
+    :param identifiers: identifiers of the entity
     :return: person
     """
-    parameters = dict(locals())
+    parameters = identifiers.dict()
     return Person.model_validate(
         {
-            "first_name": first_name,
-            "last_name": last_name,
+            "name": name,
             "identifiers": [
                 {
                     "type": identifier.get("key"),
