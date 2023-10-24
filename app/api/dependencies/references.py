@@ -20,7 +20,7 @@ def build_person_from_fields(
     identifiers: identifiers_model = Depends(),
 ) -> Person:
     """
-    Toto
+    Build a person from the provided fields.
 
     :param name: name of the entity
     :param identifiers: identifiers of the entity
