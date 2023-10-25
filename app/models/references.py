@@ -15,6 +15,7 @@ class Reference(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     source_identifier: str
+    harvester: str
 
     id: int
 
