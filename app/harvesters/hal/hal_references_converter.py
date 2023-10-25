@@ -1,6 +1,7 @@
 import re
 from typing import Generator
 
+from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.db.models.subtitle import Subtitle
@@ -30,6 +31,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
             new_ref.subtitles.append(subtitle)
             for subtitle in self._subtitles(json_payload)
         ]
+        [  # pylint: disable=expression-not-assigned
+            new_ref.abstracts.append(abstract)
+            for abstract in self._abstracts(json_payload)
+        ]
         async for subject in self._subjects(json_payload):
             # Concept from hal may be repeated, avoid duplicates
             if subject.id is None or subject.id not in list(
@@ -53,6 +58,12 @@ class HalReferencesConverter(AbstractReferencesConverter):
             r".*_subTitle_s$", raw_data
         ):
             yield Subtitle(value=value, language=language)
+
+    def _abstracts(self, raw_data):
+        for value, language in self._values_from_field_pattern(
+            r".*_abstract_s$", raw_data
+        ):
+            yield Abstract(value=value, language=language)
 
     async def _subjects(self, raw_data):
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
