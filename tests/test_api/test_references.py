@@ -20,14 +20,15 @@ def test_create_retrieval_sync_with_idref(test_client: TestClient):
     assert response.status_code == 200
 
 
-def test_create_retrieval_sync_error_with_name_only(test_client: TestClient):
+@pytest.mark.current
+def test_create_retrieval_sync_valid_with_name_only(test_client: TestClient):
     """
-    Test validation error when calling create_retrieval_sync endpoint with name only.
+    Test validation when calling create_retrieval_sync endpoint with name only.
     :param test_client:
     :return:
     """
     response = test_client.get("/api/v1/references?name=Bourdieu")
-    assert response.status_code == 422
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio

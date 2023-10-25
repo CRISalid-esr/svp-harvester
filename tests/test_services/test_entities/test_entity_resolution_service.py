@@ -371,7 +371,6 @@ async def test_resolution_updates_person_name(
     assert existing_entity.name == "Jane Doe"
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_resolution_service_does_not_update_identifiers_in_safe_mode(
     async_session: AsyncSession,
