@@ -63,6 +63,7 @@ async def test_publish_created_reference(
             "type": "created",
             "reference": {
                 "source_identifier": "123456789",
+                "harvester": "hal",
                 "titles": [{"value": "title", "language": "fr"}],
                 "subtitles": [{"value": "subtitle", "language": "fr"}],
                 "subjects": [
