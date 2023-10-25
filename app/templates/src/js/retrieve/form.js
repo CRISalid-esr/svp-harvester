@@ -41,7 +41,7 @@ class Form {
     }
 
     handleDataSourcesSelect() {
-        this.dataSourcesTypeSelect = new TomSelect("#data-sources-select", {
+        this.harvestersSelect = new TomSelect("#harvesters-select", {
             sortField: {field: "text"},
             plugins: ['checkbox_options', 'remove_button', 'clear_button'],
         });
@@ -76,6 +76,7 @@ class Form {
                         identifiers: this.getIdentifierFieldsContent(true),
                         name: this.formElement.querySelector("#name-field-input").value,
                         eventTypes: this.eventTypeSelect.getValue(),
+                        harvesters: this.harvestersSelect.getValue(),
                         historySafeMode: this.historySafeModeToggle.checked,
                         identifiersSafeMode: this.identifiersSafeModeToggle.checked,
                     }

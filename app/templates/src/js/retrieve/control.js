@@ -22,6 +22,7 @@ class Control {
         const eventTypes = event.detail.eventTypes;
         const historySafeMode = event.detail.historySafeMode;
         const identifiersSafeMode = event.detail.identifiersSafeMode;
+        const harvesters = event.detail.harvesters;
         // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
         // remove empty values
         const identifiers = formIdentifiers
@@ -42,7 +43,8 @@ class Control {
             nullify: identifiersToNullify,
             events: eventTypes,
             history_safe_mode: historySafeMode,
-            identifiers_safe_mode: identifiersSafeMode
+            identifiers_safe_mode: identifiersSafeMode,
+            harvesters: harvesters
         })
             .then((response) => {
                 this.retrievalUrl = response.data.retrieval_url;
