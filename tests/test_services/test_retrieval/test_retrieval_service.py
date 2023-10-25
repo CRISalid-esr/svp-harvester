@@ -27,6 +27,16 @@ def test_retrieval_service_build_harvesters():
     assert isinstance(service.harvesters["scanr"], ScanrHarvester)
 
 
+def test_retrieval_service_with_limited_harvesters():
+    """Test that the retrieval service builds the expected harvesters from the yml settings."""
+    settings = get_app_settings()
+    service = RetrievalService(settings, harvesters=["hal"])
+    service._build_harvesters()  # pylint: disable=protected-access
+    assert len(service.harvesters) == 1
+    assert "hal" in service.harvesters
+    assert isinstance(service.harvesters["hal"], HalHarvester)
+
+
 @pytest.mark.asyncio
 async def test_retrieval_service_returns_retrieval_for_person(
     person_with_name_and_idref: Person,

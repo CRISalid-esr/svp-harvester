@@ -56,6 +56,8 @@ async def create_retrieval_sync(
     - **identifiers_safe_mode**: if True, this retrieval won't update entity identifiers
     - **nullify**: list of identifiers to nullify for the person
                     (in case they've been previously associated)
+    - **harvesters**: list of harvesters to use
+                        (default : None, all eligible harvesters will be used)
     - **events**: list of event types to fetch (default : "created", "updated", "deleted")
     - **name**: name of the entity to fetch references for (optional, for lisibility only)
     - **idref**: idref of the entity

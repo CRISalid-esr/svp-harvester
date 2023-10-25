@@ -14,6 +14,7 @@ def build_retrieval_service_from_fields(
     settings: Annotated[AppSettings, Depends(get_app_settings)],
     history_safe_mode: Annotated[bool, Query()] = False,
     identifiers_safe_mode: Annotated[bool, Query()] = False,
+    harvesters: Annotated[List[str], Query()] = None,
     nullify: Annotated[List[str], Query()] = None,
     events: Annotated[List[ReferenceEvent.Type], Query()] = None,
 ) -> RetrievalService:
@@ -22,6 +23,7 @@ def build_retrieval_service_from_fields(
     :param settings:   app settings
     :param history_safe_mode:  history safe mode
     :param identifiers_safe_mode: identifiers safe mode
+    :param harvesters:   list of harvesters to fetch (default : None, all harvesters)
     :param nullify:   list of identifiers to nullify for the person
     :param events:   list of event types to fetch (default : "created", "updated", "deleted")
     :return:
@@ -32,4 +34,5 @@ def build_retrieval_service_from_fields(
         identifiers_safe_mode=identifiers_safe_mode,
         nullify=nullify,
         events=event_types_or_default(events),
+        harvesters=harvesters,
     )

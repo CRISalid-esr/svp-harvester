@@ -32,7 +32,10 @@ class RetrievalService:
         background_tasks: BackgroundTasks = None,
         history_safe_mode: Annotated[bool, Body()] = False,
         identifiers_safe_mode: Annotated[bool, Body()] = False,
-        nullify: List[str] = None,
+        harvesters: Annotated[
+            List[str], Body(examples=[["hal", "idref", "orcid"]])
+        ] = None,
+        nullify: Annotated[List[str], Body(examples=[["id_hal_s"]])] = None,
         events: Annotated[
             List[ReferenceEvent.Type], Depends(event_types_or_default)
         ] = None,
@@ -40,6 +43,7 @@ class RetrievalService:
         """Init RetrievalService class"""
         self.settings = settings
         self.background_tasks = background_tasks
+        self.harvesters_list: List[str] = harvesters
         self.harvesters: dict[str, AbstractHarvester] = {}
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[Type[DbEntity]] = None
@@ -91,6 +95,11 @@ class RetrievalService:
 
     def _build_harvesters(self):
         for harvester_config in self.settings.harvesters:
+            if (
+                self.harvesters_list is not None
+                and harvester_config["name"] not in self.harvesters_list
+            ):
+                continue
             factory_class = self._harvester_factory(
                 harvester_config["module"], harvester_config["class"]
             )
