@@ -2,6 +2,7 @@ import asyncio
 import json
 
 import aio_pika
+from pydantic import ValidationError
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
 from app.db.models.retrieval import Retrieval
@@ -53,13 +54,37 @@ class AMQPMessageProcessor:
     async def _process_message(self, payload: str, timeout=DEFAULT_RESULT_TIMEOUT):
         json_payload = json.loads(payload)
         if json_payload["type"] == "person":
-            # Create Pydantic object from fields
-            person = Person(**json_payload["fields"])
-            service = RetrievalService(self.settings)
+            try:
+                person = Person(**json_payload["fields"])
+            except ValidationError as validation_error:
+                await self.publisher.publish(
+                    {
+                        "type": "Retrieval",
+                        "error": True,
+                        "message": f"Entity validation error,"
+                        f" retrieval aborted: {validation_error}",
+                        "parameters": json_payload,
+                    }
+                )
+                return
+            service = RetrievalService(
+                self.settings,
+                history_safe_mode=json_payload.get("history_safe_mode"),
+                identifiers_safe_mode=json_payload.get("identifiers_safe_mode"),
+                nullify=json_payload.get("nullify"),
+                harvesters=json_payload.get("harvesters"),
+                events=json_payload.get("events"),
+            )
             # Create a queue to get results back
             retrieval_results_queue = asyncio.Queue(maxsize=self.MAX_EXPECTED_RESULTS)
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)
+            await self.publisher.publish(
+                {
+                    "type": "Retrieval",
+                    "id": retrieval.id,
+                }
+            )
             # Run the retrieval
             run = asyncio.create_task(
                 service.run(result_queue=retrieval_results_queue),
@@ -86,9 +111,36 @@ class AMQPMessageProcessor:
                 print(f"Got result {result} for retrieval: {retrieval.id}")
                 await self.publisher.publish(result)
         except asyncio.TimeoutError:
-            print(f"Timeout while waiting for retrieval {retrieval.id} results ")
+            message = f"Retrieval {retrieval.id} results timeout"
+            print(message)
+            await self.publisher.publish(
+                {
+                    "type": "Retrieval",
+                    "error": True,
+                    "message": message,
+                    "id": retrieval.id,
+                }
+            )
         except KeyboardInterrupt:
-            print(f"Waiting for retrieval {retrieval.id} results interrupted by user")
+            message = f"Retrieval {retrieval.id} results processing has been cancelled"
+            print(message)
+            await self.publisher.publish(
+                {
+                    "type": "Retrieval",
+                    "error": True,
+                    "message": message,
+                    "id": retrieval.id,
+                }
+            )
         except Exception as exception:
-            print(f"Exception {exception} during harvesting result processing")
+            message = f"Exception during retrieval {retrieval.id} results processing: {exception}"
+            print(message)
+            await self.publisher.publish(
+                {
+                    "type": "Retrieval",
+                    "error": True,
+                    "message": message,
+                    "id": retrieval.id,
+                }
+            )
             raise exception
