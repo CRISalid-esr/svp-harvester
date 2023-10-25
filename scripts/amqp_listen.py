@@ -33,7 +33,14 @@ async def main() -> None:
             async for message in queue_iter:
                 async with message.process():
                     parsed_json = ast.literal_eval(message.body.decode("utf-8"))
+                    # print pretty ascii separator with "message received" in the middle
+                    print("".center(80, "*"))
+                    print("".center(80, "="))
+                    print("message received".center(80, "="))
+                    print("".center(80, "="))
                     print(json.dumps(parsed_json, indent=4))
+                    print("".center(80, "="))
+                    print("".center(80, "*"))
 
 
 if __name__ == "__main__":

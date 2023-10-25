@@ -6,8 +6,8 @@ import json
 import aio_pika
 from aio_pika import ExchangeType, DeliveryMode
 
-MIN_AUTHORS = 500
-MAX_AUTHORS = 501
+MIN_AUTHORS = 300
+MAX_AUTHORS = 350
 
 
 async def main() -> None:
