@@ -20,7 +20,6 @@ def test_create_retrieval_sync_with_idref(test_client: TestClient):
     assert response.status_code == 200
 
 
-@pytest.mark.current
 def test_create_retrieval_sync_valid_with_name_only(test_client: TestClient):
     """
     Test validation when calling create_retrieval_sync endpoint with name only.

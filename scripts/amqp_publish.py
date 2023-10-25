@@ -6,8 +6,8 @@ import json
 import aio_pika
 from aio_pika import ExchangeType, DeliveryMode
 
-MIN_AUTHORS = 500
-MAX_AUTHORS = 600
+MIN_AUTHORS = 300
+MAX_AUTHORS = 350
 
 
 async def main() -> None:
@@ -44,6 +44,8 @@ async def main() -> None:
                 idref = idref.replace("https://www.idref.fr/", "").strip("\n")
                 payload = {
                     "type": "person",
+                    "identifiers_safe_mode": False,
+                    "history_safe_mode": True,
                     "fields": {
                         "name": line[0],
                         "identifiers": [
