@@ -5,6 +5,7 @@ from app.amqp.amqp_harvesting_message_factory import AMQPHarvestingMessageFactor
 from app.amqp.amqp_reference_event_message_factory import (
     AMQPReferenceEventMessageFactory,
 )
+from app.amqp.amqp_retrieval_message_factory import AMQPRetrievalMessageFactory
 
 DEFAULT_RESULT_TIMEOUT = 600
 
@@ -33,6 +34,8 @@ class AMQPMessagePublisher:
 
     @staticmethod
     async def _build_message(content) -> tuple[str | None, str | None]:
+        if content.get("type") == "Retrieval":
+            return await AMQPRetrievalMessageFactory(content).build_message()
         if content.get("type") == "Harvesting":
             return await AMQPHarvestingMessageFactory(content).build_message()
         if content.get("type") == "ReferenceEvent":
