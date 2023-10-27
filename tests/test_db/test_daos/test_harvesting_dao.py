@@ -9,38 +9,46 @@ from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
 @pytest.mark.asyncio
-async def test_create_harvesting(async_session: AsyncSession, retrieval_db_model):
+async def test_create_harvesting(
+    async_session: AsyncSession, retrieval_db_model_for_person_with_idref
+):
     """
     Test that we can create a harvesting for a retrieval in the database.
     :param async_session: async session fixture
-    :param retrieval_db_model: retrieval fixture
+    :param retrieval_db_model_for_person_with_idref: retrieval fixture
     :return: None
     """
     dao = HarvestingDAO(async_session)
     await dao.create_harvesting(
-        retrieval_db_model, "idref", state=Harvesting.State.RUNNING
+        retrieval_db_model_for_person_with_idref,
+        "idref",
+        state=Harvesting.State.RUNNING,
     )
     await async_session.commit()
     stmt = (
         select(Harvesting)
         .join(Harvesting.retrieval)
-        .where(DbRetrieval.id == retrieval_db_model.id)
+        .where(DbRetrieval.id == retrieval_db_model_for_person_with_idref.id)
     )
     harvesting_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert harvesting_from_db.harvester == "idref"
 
 
 @pytest.mark.asyncio
-async def test_update_harvesting_state(async_session: AsyncSession, retrieval_db_model):
+async def test_update_harvesting_state(
+    async_session: AsyncSession, retrieval_db_model_for_person_with_idref
+):
     """
     Test that we can create a harvesting for a retrieval in the database.
     :param async_session: async session fixture
-    :param retrieval_db_model: retrieval fixture
+    :param retrieval_db_model_for_person_with_idref: retrieval fixture
     :return: None
     """
     dao = HarvestingDAO(async_session)
     harvesting = await dao.create_harvesting(
-        retrieval_db_model, "idref", state=Harvesting.State.RUNNING
+        retrieval_db_model_for_person_with_idref,
+        "idref",
+        state=Harvesting.State.RUNNING,
     )
     await async_session.commit()
     await dao.update_harvesting_state(harvesting.id, Harvesting.State.COMPLETED)

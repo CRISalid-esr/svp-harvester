@@ -13,6 +13,7 @@ from tests.fixtures.common import *  # pylint: disable=unused-import, wildcard-i
 from tests.fixtures.pydantic_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.hal_api_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import
+from tests.fixtures.idref_sparql_endpoint_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.retrieval_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.harvesting_fixtures import *  # pylint: disable=unused-import, wildcard-import
 from tests.fixtures.reference_fixtures import *  # pylint: disable=unused-import, wildcard-import

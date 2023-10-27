@@ -223,7 +223,6 @@ async def test_hal_harvester_registers_docs_in_db(
 
 @pytest.mark.integration
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_hal_harvester_registers_one_kw_for_two_occurences(
     hal_harvester: HalHarvester,
     hal_harvesting_db_model_id_hal_i,

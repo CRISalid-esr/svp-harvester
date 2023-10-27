@@ -1,0 +1,207 @@
+{
+  "head": {
+    "link": [],
+    "vars": [
+      "pub",
+      "role",
+      "type",
+      "title",
+      "altLabel",
+      "note",
+      "subject_uri",
+      "subject_label"
+    ]
+  },
+  "results": {
+    "distinct": false,
+    "ordered": true,
+    "bindings": [
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://purl.org/vocab/frbr/core#Work"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/027732428/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "G\u00e9opolitique"
+        }
+      },
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://rdaregistry.info/Elements/c/C10001"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/027732428/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "G\u00e9opolitique"
+        }
+      },
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://purl.org/vocab/frbr/core#Work"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/027792102/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Aspect politique"
+        }
+      },
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://rdaregistry.info/Elements/c/C10001"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/027792102/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Aspect politique"
+        }
+      },
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://purl.org/vocab/frbr/core#Work"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/03500407X/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Mondialisation"
+        }
+      },
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.idref.fr/263276112/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/aut"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://rdaregistry.info/Elements/c/C10001"
+        },
+        "title": {
+          "type": "literal",
+          "value": "Ressources mondialis\u00e9es, Essais de g\u00e9ographie politique"
+        },
+        "note": {
+          "type": "literal",
+          "value": "La soci\u00e9t\u00e9 2.0 qui fait l'air du temps mondialis\u00e9 ne se r\u00e9duit pas \u00e0 l'information num\u00e9rique et aux flux immat\u00e9riels."
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/03500407X/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Mondialisation"
+        }
+      }
+    ]
+  }
+}

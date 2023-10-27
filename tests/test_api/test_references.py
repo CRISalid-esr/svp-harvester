@@ -74,19 +74,19 @@ def test_fetch_references_async_with_name_and_unknown_identifier_type(
 
 async def test_get_retrieval_result_response_ok(
     test_client: TestClient,
-    retrieval_db_model,
+    retrieval_db_model_for_person_with_idref,
     async_session: AsyncSession,
 ):
     """
     Test the get_retrieval_result endpoint.
     :param test_client:  test client
-    :param retrieval_db_model:  retrieval from database
+    :param retrieval_db_model_for_person_with_idref:  retrieval from database
     :param async_session: async session
     :return:
     """
-    async_session.add(retrieval_db_model)
+    async_session.add(retrieval_db_model_for_person_with_idref)
     await async_session.commit()
-    db_retrieval_id = retrieval_db_model.id
+    db_retrieval_id = retrieval_db_model_for_person_with_idref.id
     response = test_client.get(
         f"/api/v1/references/retrieval/{db_retrieval_id}",
     )

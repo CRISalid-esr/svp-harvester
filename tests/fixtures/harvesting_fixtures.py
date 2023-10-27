@@ -6,19 +6,19 @@ from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
 
 
-@pytest_asyncio.fixture(name="harvesting_db_model")
-async def fixture_harvesting_db_model(
-    async_session, retrieval_db_model
+@pytest_asyncio.fixture(name="harvesting_db_model_for_person_with_idref")
+async def fixture_harvesting_db_model_for_person_with_idref(
+    async_session, retrieval_db_model_for_person_with_idref
 ) -> DbHarvesting:
     """
     Generate a harvesting with a retrieval in DB model format
 
     :param async_session: async db session
-    :param retrieval_db_model: retrieval in DB model format
+    :param retrieval_db_model_for_person_with_idref: retrieval in DB model format
     :return:  harvesting in DB model format
     """
     return await HarvestingDAO(async_session).create_harvesting(
-        retrieval_db_model, "idref", DbHarvesting.State.RUNNING
+        retrieval_db_model_for_person_with_idref, "idref", DbHarvesting.State.RUNNING
     )
 
 
