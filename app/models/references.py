@@ -2,6 +2,7 @@ from typing import List
 
 from pydantic import BaseModel, ConfigDict
 
+from app.models.abstracts import Abstract
 from app.models.concepts import Concept
 from app.models.subtitles import Subtitle
 from app.models.titles import Title
@@ -21,4 +22,5 @@ class Reference(BaseModel):
 
     titles: List[Title] = []
     subtitles: List[Subtitle] = []
+    abstracts: List[Abstract] = []
     subjects: List[Concept] = []

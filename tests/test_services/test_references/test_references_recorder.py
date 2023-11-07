@@ -11,7 +11,7 @@ from app.db.references.references_recorder import ReferencesRecorder
 
 @pytest.mark.asyncio
 async def test_reference_recorder_creates_event_for_new_reference(
-    async_session: AsyncSession, harvesting_db_model: Harvesting
+    async_session: AsyncSession, harvesting_db_model_for_person_with_idref: Harvesting
 ):
     """
     GIVEN a currently running harvesting
@@ -19,13 +19,13 @@ async def test_reference_recorder_creates_event_for_new_reference(
     THEN a reference event pointing to the new reference is created
 
     :param async_session:
-    :param harvesting_db_model:
+    :param harvesting_db_model_for_person_with_idref:
     :return:
     """
-    # find harvesting_db_model in db
-    async_session.add(harvesting_db_model)
+    # find harvesting_db_model_for_person_with_idref in db
+    async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
-    harvester = harvesting_db_model.harvester
+    harvester = harvesting_db_model_for_person_with_idref.harvester
     source_identifier = "source_identifier_1234"
     reference = DbReference(
         source_identifier=source_identifier,
@@ -33,7 +33,9 @@ async def test_reference_recorder_creates_event_for_new_reference(
         hash="hash1",
         titles=[Title(value="title", language="fr")],
     )
-    references_recorder = ReferencesRecorder(harvesting=harvesting_db_model)
+    references_recorder = ReferencesRecorder(
+        harvesting=harvesting_db_model_for_person_with_idref
+    )
     assert (await references_recorder.exists(reference)) is None
     reference_event: ReferenceEvent = await references_recorder.register_creation(
         new_ref=reference,
@@ -41,7 +43,7 @@ async def test_reference_recorder_creates_event_for_new_reference(
     assert reference_event is not None
     assert reference_event.reference == reference
     assert reference_event.reference.version == 0
-    assert reference_event.harvesting_id == harvesting_db_model.id
+    assert reference_event.harvesting_id == harvesting_db_model_for_person_with_idref.id
     assert reference_event.type == ReferenceEvent.Type.CREATED.value
 
 
@@ -57,7 +59,7 @@ async def test_reference_recorder_creates_event_for_updated_reference(
     THEN a reference event of "updated" type is created and a Reference
         with an incremented version number is created
     :param async_session:
-    :param harvesting_db_model:
+    :param harvesting_db_model_for_person_with_idref:
     :return:
     """
     (

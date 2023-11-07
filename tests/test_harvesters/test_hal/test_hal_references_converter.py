@@ -11,7 +11,7 @@ def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
 
 
 @pytest.mark.asyncio
-async def test_convert(hal_api_cleaned_response):
+async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
     converter_under_tests = HalReferencesConverter()
 
@@ -27,7 +27,7 @@ async def test_convert(hal_api_cleaned_response):
     ]
     expected_subtitles = ["test_placeholder_subtitle"]
     expected_docid = "1387023"
-
+    expected_abstracts = ["This article focuses on Vernant..."]
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -37,6 +37,7 @@ async def test_convert(hal_api_cleaned_response):
 
         test_titles = [title.value for title in test_reference.titles]
         test_subtitles = [subtitles.value for subtitles in test_reference.subtitles]
+        test_abstracts = [abstract.value for abstract in test_reference.abstracts]
         test_subjects = []
         for concept in test_reference.subjects:
             for label in concept.labels:
@@ -45,4 +46,5 @@ async def test_convert(hal_api_cleaned_response):
         assert test_titles == expected_titles
         assert test_subjects == expected_subjects
         assert test_subtitles == expected_subtitles
+        assert test_abstracts == expected_abstracts
         assert test_reference.source_identifier == expected_docid

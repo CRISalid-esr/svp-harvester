@@ -2,6 +2,7 @@ from typing import List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.db.models.abstract import Abstract
 from app.db.models.references_subject import references_subjects_table
 from app.db.models.versioned_record import VersionedRecord
 from app.db.session import Base
@@ -29,6 +30,12 @@ class Reference(Base, VersionedRecord):
     )
     subtitles: Mapped[List["app.db.models.subtitle.Subtitle"]] = relationship(
         "app.db.models.subtitle.Subtitle",
+        back_populates="reference",
+        cascade="all, delete-orphan",
+        lazy="joined",
+    )
+    abstracts: Mapped[List[Abstract]] = relationship(
+        "app.db.models.abstract.Abstract",
         back_populates="reference",
         cascade="all, delete-orphan",
         lazy="joined",

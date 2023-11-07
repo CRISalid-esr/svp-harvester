@@ -13,14 +13,17 @@ async def test_publish_harvesting_status(
     async_session: AsyncSession,
     mocked_message: Mock,
     mocked_exchange: Exchange,
-    harvesting_db_model,
+    harvesting_db_model_for_person_with_idref,
 ):
     """Test that a message is published to the AMQP queue when the publish method is called."""
-    async_session.add(harvesting_db_model)
+    async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
 
     amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
-    received_message_payload = {"type": "Harvesting", "id": harvesting_db_model.id}
+    received_message_payload = {
+        "type": "Harvesting",
+        "id": harvesting_db_model_for_person_with_idref.id,
+    }
     expected_sent_message_payload = {
         "harvester": "idref",
         "state": "running",
@@ -66,6 +69,7 @@ async def test_publish_created_reference(
                 "harvester": "hal",
                 "titles": [{"value": "title", "language": "fr"}],
                 "subtitles": [{"value": "subtitle", "language": "fr"}],
+                "abstracts": [],
                 "subjects": [
                     {
                         "uri": "http://uri",
@@ -97,10 +101,10 @@ async def test_publish_retrieval_error(
     async_session: AsyncSession,
     mocked_message: Mock,
     mocked_exchange: Exchange,
-    harvesting_db_model,
+    harvesting_db_model_for_person_with_idref,
 ):
     """Test that a message is published to the AMQP queue when the publish method is called."""
-    async_session.add(harvesting_db_model)
+    async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
 
     amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
