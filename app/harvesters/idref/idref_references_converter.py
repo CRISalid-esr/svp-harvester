@@ -1,3 +1,4 @@
+from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
@@ -45,6 +46,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             new_ref.titles.append(Title(value=title, language="fr"))
         for subtitle in dict_payload["altLabel"]:
             new_ref.subtitles.append(Subtitle(value=subtitle, language="fr"))
+        for abstract in dict_payload["note"]:
+            new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
         # TODO : handle type
         for subject in dict_payload["subject"].values():
             new_ref.subjects.append(

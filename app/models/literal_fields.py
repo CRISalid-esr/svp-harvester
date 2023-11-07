@@ -11,4 +11,4 @@ class LiteralField(BaseModel):
     id: int
 
     value: str
-    language: str
+    language: str | None

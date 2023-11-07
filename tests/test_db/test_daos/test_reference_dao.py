@@ -13,14 +13,14 @@ from app.db.models.title import Title
 
 @pytest.mark.asyncio
 async def test_get_references_by_source_identifier(
-    async_session: AsyncSession, harvesting_db_model: Harvesting
+    async_session: AsyncSession, harvesting_db_model_for_person_with_idref: Harvesting
 ):
     """
     GIVEN two references in database with the same source identifier and successive version numbers
     WHEN get_references_by_source_identifier is called with the source identifier
     THEN the references are returned
     """
-    harvester = harvesting_db_model.harvester
+    harvester = harvesting_db_model_for_person_with_idref.harvester
     source_identifier = "source_identifier_1234"
     reference1 = DbReference(
         source_identifier=source_identifier,
@@ -49,14 +49,14 @@ async def test_get_references_by_source_identifier(
 
 @pytest.mark.asyncio
 async def test_get_last_reference_by_source_identifier(
-    async_session: AsyncSession, harvesting_db_model
+    async_session: AsyncSession, harvesting_db_model_for_person_with_idref
 ):
     """
     GIVEN two references in database with the same source identifier and successive version numbers
     WHEN get_last_reference_by_source_identifier is called with the source identifier
     THEN the last reference is returned
     """
-    harvester = harvesting_db_model.harvester
+    harvester = harvesting_db_model_for_person_with_idref.harvester
     source_identifier = "source_identifier_1234"
     reference1 = DbReference(
         source_identifier=source_identifier,

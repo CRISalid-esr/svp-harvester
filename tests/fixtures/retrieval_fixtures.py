@@ -6,8 +6,8 @@ from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
-@pytest_asyncio.fixture(name="retrieval_db_model")
-async def fixture_retrieval_db_model(
+@pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_idref")
+async def fixture_retrieval_db_model_for_person_with_idref(
     async_session, person_with_name_and_idref_db_model
 ) -> DbRetrieval:
     """

@@ -42,7 +42,6 @@ async def fixture_message_processor() -> AMQPMessageProcessor:
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_amqp_message_runs_retrieval_service(
     message_processor: AMQPMessageProcessor,
     mock_retrieval_service_init,
@@ -77,7 +76,6 @@ async def test_amqp_message_runs_retrieval_service(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_amqp_message_runs_retrieval_service_with_parameters(
     message_processor: AMQPMessageProcessor,
     mock_retrieval_service_init,

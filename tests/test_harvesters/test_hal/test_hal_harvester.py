@@ -248,13 +248,52 @@ async def test_hal_harvester_registers_one_kw_for_two_occurences(
         .join(Harvesting)
         .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
     )
-    result = (await async_session.execute(stmt)).unique()
+    result = (await async_session.execute(stmt)).unique().scalars()
     results = list(result)
-    first_result_subjects = results[0][0].subjects
-    second_result_subjects = results[1][0].subjects
+    # the result with doc_id 1299757 has only one concept
     assert len(results) == 2
-    assert len(first_result_subjects) == 1
+    first_result = [r for r in results if r.source_identifier == "1299757"][0]
+    second_result = [r for r in results if r.source_identifier == "1416567"][0]
+    assert len(first_result.subjects) == 1
+    assert len(second_result.subjects) == 2
+    assert second_result.subjects[0].labels[0].value == "International trade"
+    assert second_result.subjects[0] == first_result.subjects[0]
+
     # there should be only one concept created for the two occurences of the same keyword
-    assert len(second_result_subjects) == 2
-    assert second_result_subjects[0].labels[0].value == "International trade"
-    assert second_result_subjects[0] == first_result_subjects[0]
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_hal_harvester_registers_abstract(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    hal_api_client_mock,  # pylint: disable=unused-argument
+    async_session: AsyncSession,
+):
+    """
+    GIVEN a hal response with a value in "en_abstract_s" field
+    WHEN the harvester is run
+    THEN the abstract is registered in reference abstracts field with "en" as language
+
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_i:
+    :param hal_api_client_mock:
+    :param async_session:
+    :return:
+    """
+    async_session.add(hal_harvesting_db_model_id_hal_i)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.run()
+    stmt = (
+        select(Reference)
+        .join(ReferenceEvent)
+        .join(Harvesting)
+        .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
+    )
+    result = (await async_session.execute(stmt)).unique().scalar_one_or_none()
+    assert result is not None
+    assert len(result.abstracts) == 1
+    assert result.abstracts[0].value == "This article focuses on Vernant..."
+    assert result.abstracts[0].language == "en"
