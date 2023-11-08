@@ -22,9 +22,17 @@ class SudocReferencesConverter(AbstractReferencesConverter):
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
         new_ref.source_identifier = str(uri)
-        [  # pylint: disable=expression-not-assigned
-            new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
-        ]
+        # [  # pylint: disable=expression-not-assigned
+        #     new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
+        # ]
+        titles = [Title(
+            id=title.id,
+            value=title.value.partition('/')[0].strip(),
+            language=title.language)
+                  for title in self._titles(pub_graph, uri)]
+
+        new_ref.titles.extend(titles)
+
         [  # pylint: disable=expression-not-assigned
             new_ref.abstracts.append(abstract)
             for abstract in self._abstracts(pub_graph, uri)
