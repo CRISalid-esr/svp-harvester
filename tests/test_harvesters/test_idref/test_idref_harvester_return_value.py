@@ -105,8 +105,7 @@ async def test_idref_harvester_finds_sudoc_doc(
     assert len(reference.titles) == 1
     assert (
         reference.titles[0].value
-        == "Agriculture des métropoles  : voie d'avenir ou cache-misère ?  "
-        "/ dossier coordonné par Cécile Faliès et Évelyne Mesclier"
+        == "Agriculture des métropoles  : voie d'avenir ou cache-misère ?"
     )
     assert reference.titles[0].language is None
     expected_french_abstract_beginning = (
