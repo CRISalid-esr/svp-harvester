@@ -3,7 +3,7 @@ import importlib
 from asyncio import Queue
 from typing import Annotated, Optional, List, Type
 
-from fastapi import Depends, Body
+from fastapi import Depends, Body, HTTPException
 from starlette.background import BackgroundTasks
 
 from app.api.dependencies.event_types import event_types_or_default
@@ -57,6 +57,9 @@ class RetrievalService:
         entity: Type[PydanticEntity],
     ) -> Retrieval:
         """Register a new retrieval with the associated entity"""
+
+        self._check_entity_declaration_and_nullification(entity)
+
         self._build_harvesters()
         # new entity is not saved to db yet
         new_entity: DbEntity = EntityConverter(entity).to_db_model()
@@ -143,3 +146,14 @@ class RetrievalService:
             _, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
+
+    def _check_entity_declaration_and_nullification(self, entity):
+        if self.nullify:
+            for nullify_entity in self.nullify:
+                for identifier in entity.identifiers:
+                    if nullify_entity == identifier.type:
+                        raise HTTPException(
+                            status_code=422,
+                            detail=f"Unprocessable Entity: {nullify_entity}"
+                                   f" cannot be declared and nullified at same time"
+                        )

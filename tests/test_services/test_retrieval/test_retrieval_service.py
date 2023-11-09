@@ -1,6 +1,6 @@
 """Test the references API."""
 from unittest import mock
-
+from fastapi import HTTPException
 import pytest
 
 from app.config import get_app_settings
@@ -103,3 +103,26 @@ async def test_retrieval_service_registers_identifiers_matches(
         "idref"
     ) == person_with_name_and_id_hal_s.get_identifier("idref")
     assert hal_harvester_args[0].get_identifier("orcid") == orcid_identifier.value
+
+
+@pytest.mark.asyncio
+async def test_retrieval_service_registers_identifiers_matches_nullify(
+    person_with_name_and_id_hal_s: Person,
+):
+    """
+    GIVEN a retrieval service
+    WHEN registering a person
+    THEN a retrieval is returned with the person as entity
+
+    :param person_with_name_and_id_hal_s:
+    :return:
+    """
+    settings = get_app_settings()
+    service = RetrievalService(settings, nullify=['id_hal_s'])
+
+    with pytest.raises(HTTPException) as exc_info:
+        await service.register(person_with_name_and_id_hal_s)
+
+    assert exc_info.value.status_code == 422
+    assert (exc_info.value.detail ==
+            'Unprocessable Entity: id_hal_s cannot be declared and nullified at same time')
