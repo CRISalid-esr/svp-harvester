@@ -18,8 +18,7 @@ async def test_convert_for_rdf_result(
     """
     converter_under_tests = SudocReferencesConverter()
     expected_french_title = (
-        "Agriculture des métropoles  : voie d'avenir ou cache-misère ?  / "
-        "dossier coordonné par Cécile Faliès et Évelyne Mesclier"
+        "Agriculture des métropoles  : voie d'avenir ou cache-misère ?"
     )
     expected_french_abstract_beginning = (
         "Le présent dossier aborde la participation de cette agriculture urbaine "
