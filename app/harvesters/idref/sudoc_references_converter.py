@@ -10,6 +10,7 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.rdf_harvester_raw_result import (
     RdfHarvesterRawResult as RdfRawResult,
 )
+from app.utilities.string_utilities import remove_after_separator
 
 
 class SudocReferencesConverter(AbstractReferencesConverter):
@@ -27,7 +28,7 @@ class SudocReferencesConverter(AbstractReferencesConverter):
         # ]
         titles = [Title(
             id=title.id,
-            value=title.value.partition('/')[0].strip(),
+            value=remove_after_separator(title.value, "/"),
             language=title.language)
                   for title in self._titles(pub_graph, uri)]
 
