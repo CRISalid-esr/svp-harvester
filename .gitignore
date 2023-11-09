@@ -164,3 +164,6 @@ app/static/js/*
 app/templates/src/js/env.js
 
 docs/source/confluence/conf.py
+
+rabbitmq-data
+rabbitmq-logs
