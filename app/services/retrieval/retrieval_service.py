@@ -149,11 +149,13 @@ class RetrievalService:
 
     def _check_entity_declaration_and_nullification(self, entity):
         if self.nullify:
-            for nullify_entity in self.nullify:
-                for identifier in entity.identifiers:
-                    if nullify_entity == identifier.type:
-                        raise HTTPException(
-                            status_code=422,
-                            detail=f"Unprocessable Entity: {nullify_entity}"
-                                   f" cannot be declared and nullified at same time"
-                        )
+            identifiers_set = set(identifier.type for identifier in entity.identifiers)
+            nullify_set = set(self.nullify)
+            intersection = identifiers_set.intersection(nullify_set)
+            if intersection:
+                conflicting_identifiers = ", ".join(intersection)
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Unprocessable Entity: {conflicting_identifiers}"
+                           f" cannot be declared and nullified at same time"
+                )
