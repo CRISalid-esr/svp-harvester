@@ -37,8 +37,4 @@ class SciencePlusReferencesConverter(AbstractReferencesConverter):
     def _titles(self, pub_graph, uri):
         title: Literal
         for title in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.title):
-            value = title.value
-            language = (
-                title.language or "fr"  # TODO migrate to "default language" in config
-            )
-            yield Title(value=value, language=language)
+            yield Title(value=title.value, language=title.language)
