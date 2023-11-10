@@ -47,7 +47,7 @@ services:
     environment:
       - APP_ENV=DEV
       - API_VERSION=v1
-      - API_HOST=http://your-frontend_url
+      - API_HOST=http://localhost:8000
       - DB_HOST=svph-db
       - DB_PORT=5432
       - DB_NAME=svp_harvester
