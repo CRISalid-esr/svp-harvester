@@ -21,7 +21,7 @@ class SciencePlusReferencesConverter(AbstractReferencesConverter):
         new_ref = Reference()
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
-        new_ref.source_identifier = uri
+        new_ref.source_identifier = str(uri)
         [  # pylint: disable=expression-not-assigned
             new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
         ]
