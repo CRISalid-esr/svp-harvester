@@ -9,7 +9,7 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 
 @pytest.fixture(name="sudoc_rdf_result_for_doc")
 def fixture_sudoc_rdf_result_for_doc(sudoc_rdf_graph_for_doc) -> RdfResult:
-    """Rdf result from sudo wrapped in a RdfHarvesterRawResult"""
+    """Rdf result from sudoc wrapped in a RdfHarvesterRawResult"""
     return RdfResult(
         payload=sudoc_rdf_graph_for_doc,
         source_identifier=URIRef("http://www.sudoc.fr/193726130/id"),
