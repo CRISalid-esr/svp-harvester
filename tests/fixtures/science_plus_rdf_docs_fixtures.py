@@ -9,7 +9,7 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 
 @pytest.fixture(name="science_plus_rdf_result_for_doc")
 def fixture_science_plus_rdf_result_for_doc(science_plus_rdf_graph_for_doc) -> RdfResult:
-    """Rdf result from sudo wrapped in a RdfHarvesterRawResult"""
+    """Rdf result from science plus wrapped in a RdfHarvesterRawResult"""
     return RdfResult(
         payload=science_plus_rdf_graph_for_doc,
         source_identifier=URIRef(
@@ -22,13 +22,13 @@ def fixture_science_plus_rdf_result_for_doc(science_plus_rdf_graph_for_doc) -> R
 
 @pytest.fixture(name="science_plus_rdf_graph_for_doc")
 def fixture_science_plus_rdf_graph_for_doc(_base_path) -> Graph:
-    """Rdf graph from sudoc rdf file"""
+    """Rdf graph from science plus rdf file"""
     return _science_plus_rdf_graph_from_file(_base_path, "science_plus_document")
 
 
 @pytest.fixture(name="science_plus_rdf_xml_for_doc")
 def fixture_science_plus_rdf_xml_for_doc(_base_path) -> str:
-    """Rdf xml from sudoc rdf file"""
+    """Rdf xml from science plus rdf file"""
     return _rdf_xml_file_content(_base_path, "science_plus_document")
 
 
