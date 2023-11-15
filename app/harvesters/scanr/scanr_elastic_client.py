@@ -2,9 +2,12 @@ from typing import Dict
 from elasticsearch import Elasticsearch
 from pydantic_settings import BaseSettings
 
+# from app.settings.app_settings import AppSettings
+
 
 class ScanRElasticClient:
     """Client for ScanR elastic API"""
+    # TODO: enable settings from AppSettings by removin elasticsettings
     class ElasticSettings(BaseSettings):
         """Settings to access ScanR API"""
         ES_HOST: str
@@ -21,6 +24,7 @@ class ScanRElasticClient:
             env_file = "./elastic.env"
             env_file_encoding = 'utf-8'
 
+    # def __init__(self, settings: AppSettings):
     def __init__(self):
         self.settings = self.ElasticSettings()
 
@@ -68,7 +72,7 @@ class ScanRElasticClient:
     def _count_references(self, index):
         count = self.elastic.count(index=index, body=self.query)["count"]
         print(count)
-        if count <= 1:
+        if count >= 1:
             return count
         raise ValueError("No references found with that query")
 
