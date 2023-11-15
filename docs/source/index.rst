@@ -2,6 +2,8 @@
 Welcome to SoVisu+ Harvester's documentation!
 *********************************************
 
+SoVisu+ Harvester is distributed under the terms of the `CeCILL v2.1 license <http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.txt>`_.
+
 =====================
 How to use this guide
 =====================
