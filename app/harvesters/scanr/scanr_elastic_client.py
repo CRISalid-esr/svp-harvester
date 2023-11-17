@@ -1,36 +1,18 @@
-from typing import Dict
-from elasticsearch import Elasticsearch
-from pydantic_settings import BaseSettings
+from typing import Dict, List
+from elasticsearch import AsyncElasticsearch
 
-# from app.settings.app_settings import AppSettings
+from app.config import get_app_settings
 
 
 class ScanRElasticClient:
     """Client for ScanR elastic API"""
-    # TODO: enable settings from AppSettings by removin elasticsettings
-    class ElasticSettings(BaseSettings):
-        """Settings to access ScanR API"""
-        ES_HOST: str
-        ES_PUBLICATIONS_INDEX: str
-        ES_PERSONS_INDEX: str
-        ES_USER: str
-        ES_PASS: str
 
-        class Config:
-            """
-            Configuration for the ElasticSettings.
-            Specifies the environment file and its encoding.
-            """
-            env_file = "./elastic.env"
-            env_file_encoding = 'utf-8'
-
-    # def __init__(self, settings: AppSettings):
     def __init__(self):
-        self.settings = self.ElasticSettings()
+        self.settings = get_app_settings()
 
-        self.elastic = Elasticsearch(
-            [self.settings.ES_HOST],
-            http_auth=(self.settings.ES_USER, self.settings.ES_PASS),
+        self.elastic = AsyncElasticsearch(
+            [self.settings.scanr_es_host],
+            http_auth=(self.settings.scanr_es_user, self.settings.scanr_es_password),
             use_ssl=True,
             verify_certs=True,
             scheme="https",
@@ -47,37 +29,32 @@ class ScanRElasticClient:
         """
         self.query = elastic_query
 
-    def perform_search_persons(self):
+    async def perform_search_persons(self):
         """
         Perform a search request on Scanr Person index and return the results
         :return: the result as list
         """
-        count = self._count_references(index=self.settings.ES_PERSONS_INDEX)
-        request = self.elastic.search(
-            index=self.settings.ES_PERSONS_INDEX, body=self.query, size=count)
-        cleaned_results = self._clean_results(request)
-        return cleaned_results
+        resp = await self.elastic.search(
+            index=self.settings.scanr_es_persons_index, body=self.query)
+        cleaned_results = self._clean_results(resp)
 
-    def perform_search_publications(self):
+        for result in cleaned_results:
+            yield result
+
+    async def perform_search_publications(self):
         """
         Perform a search request on Scanr Publication index and return the results
         :return: the result as list
         """
-        count = self._count_references(index=self.settings.ES_PUBLICATIONS_INDEX)
-        request = self.elastic.search(
-            index=self.settings.ES_PUBLICATIONS_INDEX, body=self.query, size=count)
-        cleaned_results = self._clean_results(request)
-        return cleaned_results
+        resp = await self.elastic.search(
+            index=self.settings.scanr_es_publications_index,
+            body=self.query
+        )
 
-    def _count_references(self, index):
-        count_query = self.query.copy()
-        count_query.pop('_source', None)
-        print(count_query)
-        count = self.elastic.count(index=index, body=count_query)["count"]
-        print(count)
-        if count >= 1:
-            return count
-        raise ValueError("No references found with that query")
+        cleaned_results = self._clean_results(resp)
 
-    def _clean_results(self, results):
+        for result in cleaned_results:
+            yield result
+
+    def _clean_results(self, results: Dict) -> List[Dict]:
         return results["hits"]["hits"]
