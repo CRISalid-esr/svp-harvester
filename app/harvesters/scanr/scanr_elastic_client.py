@@ -70,7 +70,10 @@ class ScanRElasticClient:
         return cleaned_results
 
     def _count_references(self, index):
-        count = self.elastic.count(index=index, body=self.query)["count"]
+        count_query = self.query.copy()
+        count_query.pop('_source', None)
+        print(count_query)
+        count = self.elastic.count(index=index, body=count_query)["count"]
         print(count)
         if count >= 1:
             return count
