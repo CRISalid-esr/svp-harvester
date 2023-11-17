@@ -63,4 +63,4 @@ class AppSettings(BaseSettings):
     scanr_es_publications_index: str = "publications-index-name"
     scanr_es_persons_index: str = "persons-index-name"
     scanr_es_user: str = "johndoe"
-    scanr_es_pass: str = "pass"
+    scanr_es_password: str = "pass"
