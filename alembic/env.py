@@ -9,27 +9,30 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from app.config import get_app_settings
 from app.db.models import (
     concept,
+    contribution,
+    contributor,
     entity,
     harvesting,
     identifier,
     label,
     literal_field,
     person,
+    organization,
     reference_event,
     reference,
     retrieval,
     subtitle,
-    title
+    title,
 )
 from app.db.session import Base
 
 
 def _register_models_for_migrations():
     """
-        This function is used to prevent models from being removed during code reformatting.
-        The models imported are necessary for the SQLAlchemy and Alembic, even though they
-        don't appear to be directly used in the script.
-        """
+    This function is used to prevent models from being removed during code reformatting.
+    The models imported are necessary for the SQLAlchemy and Alembic, even though they
+    don't appear to be directly used in the script.
+    """
     _ = (
         concept,
         entity,
@@ -42,7 +45,7 @@ def _register_models_for_migrations():
         reference,
         retrieval,
         subtitle,
-        title
+        title,
     )
 
 
@@ -61,8 +64,10 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 settings = get_app_settings()
-config.set_main_option("sqlalchemy.url",
-                       f'postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+config.set_main_option(
+    "sqlalchemy.url",
+    f"postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}",
+)
 
 
 # other values from the config, defined by the needs of env.py,
