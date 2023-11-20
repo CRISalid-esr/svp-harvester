@@ -21,10 +21,20 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         :param raw_data: raw data from ScanR
         :return: Reference object
         """
-        json_payload = raw_data.payload
         new_ref = Reference()
 
-        new_ref.titles.append(Title(value=json_payload["_source"]["title"]["default"], language="fr"))
+        json_payload = raw_data.payload
+        print(json_payload)
+
+        title = json_payload["_source"].get("title")
+        if title and "default" in title:
+            new_ref.titles.append(
+                Title(value=title["default"], language="fr"))
+
+        summary = json_payload["_source"].get("summary")
+        if summary and "default" in summary:
+            new_ref.abstracts.append(
+                Abstract(value=summary["default"], language="fr"))
 
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
@@ -33,14 +43,14 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     def _hash_keys(self):
         return [
-        "id",
-        "title",
-        "summary",
-        "type",
-        "productionType",
-        "publicationDate",
-        "domains",
-        "affiliations",
-        "authors",
-        "externalIds"
-    ]
+            "id",
+            "title",
+            "summary",
+            "type",
+            "productionType",
+            "publicationDate",
+            "domains",
+            "affiliations",
+            "authors",
+            "externalIds"
+        ]
