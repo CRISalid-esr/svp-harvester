@@ -1,11 +1,9 @@
 from enum import Enum
 
+
 # TODO: Redo the builder. Create differents type of queries: person queries and publication queries.
 #  1-For publication queries, if idref is given, => do the search.
 #     If not, need to do a person query to get the id, and then be able to perform the publication query.
-#  2-For person queries, if idref is given => concatenate idref + value of idref and search on "id" field.
-#    If orcid given, search on "orcid" field.
-#    Else search on "ExternalIds" field
 
 
 class ScanRApiQueryBuilder:
@@ -32,14 +30,6 @@ class ScanRApiQueryBuilder:
 
         PUBLICATION_AUTHOR = "authors.person"
 
-    class IndexParameters(Enum):
-        """
-        Enum for recognized index in ScanR API
-        """
-
-        PERSONS_INDEX = 'scanr-persons'
-        PUBLICATIONS_INDEX = 'scanr-publications'
-
     PERSON_DEFAULT_FIELDS = [
         "id",
         "externalIds",
@@ -62,9 +52,9 @@ class ScanRApiQueryBuilder:
     ]
 
     def __init__(self):
-        self.index = None
         self.identifier_type = None
         self.identifier_value = None
+        self.scanr_id = None
         self.persons_fields = self.PERSON_DEFAULT_FIELDS
         self.publications_fields = self.PUBLICATIONS_DEFAULT_FIELDS
         self.subject_type: ScanRApiQueryBuilder.SubjectType | None = None
@@ -77,27 +67,10 @@ class ScanRApiQueryBuilder:
         :return: the query builder
         """
         self.subject_type = subject_type
-        return self
 
-    def old_set_query(self,
-                  index: IndexParameters,
-                  identifier_type: QueryParameters, identifier_value):
-        """
-       Set the field name and value representing the entity for which the query is built.
-
-       :param index: the index who will receive the built query
-       :param identifier_type: the name of the field, from the QueryParameters enum
-       :param identifier_value: the value of the field
-       :return: None
-       """
-        # Check if the index who will receive the query is known
-        assert index in self.IndexParameters, "That index is not referenced in ScanR API"
-
-        # check that identifier_type is a valid QueryParameters
-        assert identifier_type in self.QueryParameters, "Invalid identifier type"
-        self.identifier_type = identifier_type
-        self.identifier_value = identifier_value
-        self.index = index
+    def _set_scanr_id(self):
+        if self.identifier_type == self.QueryParameters.AUTH_IDREF:
+            self.scanr_id = self.identifier_type.value + self.identifier_value
 
     def set_query(self,
                   identifier_type: QueryParameters, identifier_value):
@@ -115,24 +88,8 @@ class ScanRApiQueryBuilder:
         self.identifier_type = identifier_type
         self.identifier_value = identifier_value
 
-    def temp_idref_build(self):
-        """
-                Main building method, return a query DSL for the elastic ScanR API
-                :return: a query dict
-                """
-        self.query["_source"] = self.PUBLICATIONS_DEFAULT_FIELDS
-        person_value = self.identifier_type.value + self.identifier_value
-        query_param = {
-            "bool": {
-                "must": [
-                    {"term": {"authors.person": person_value}},
-                ]
-            }
-        }
+        self._set_scanr_id()
 
-        self.query["query"] = query_param
-
-        return self.query
     def build(self) -> dict:
         """
         Main building method, return a query DSL for the elastic ScanR API
@@ -140,7 +97,8 @@ class ScanRApiQueryBuilder:
         """
         self._source_param()
         self._query_param()
-
+        self._sort_param()
+        print(self.query)
         return self.query
 
     def _query_param(self):
@@ -148,8 +106,34 @@ class ScanRApiQueryBuilder:
                 self.identifier_type is not None and self.identifier_value is not None
         ), "Set the query parameters before building the query."
 
-        query_param = {}
-        if self.index == self.IndexParameters.PERSONS_INDEX:
+        if self.subject_type == self.SubjectType.PERSON:
+            query_param = self._person_queries()
+
+        elif self.subject_type == self.SubjectType.PUBLICATION:
+            query_param = self._publication_queries()
+        else:
+            raise NotImplementedError()
+
+        self.query["query"] = query_param
+
+    def _person_queries(self):
+        if self.scanr_id:
+            query_param = {
+                "bool": {
+                    "must": [
+                        {"term": {"id": self.scanr_id}},
+                    ]
+                }
+            }
+        elif self.identifier_type == self.QueryParameters.AUTH_ORCID:
+            query_param = {
+                "bool": {
+                    "must": [
+                        {"term": {self.identifier_type.value: self.identifier_value}},
+                    ]
+                }
+            }
+        else:
             query_param = {
                 "bool": {
                     "must": [
@@ -159,22 +143,34 @@ class ScanRApiQueryBuilder:
                 }
             }
 
-        if self.index == self.IndexParameters.PUBLICATIONS_INDEX:
+        return query_param
+
+    def _publication_queries(self):
+        if self.scanr_id:
             query_param = {
                 "bool": {
                     "must": [
-                        {"term": {self.identifier_type.value: self.identifier_value}},
+                        {"term": {"authors.person": self.scanr_id}},
                     ]
                 }
             }
-
-        self.query["query"] = query_param
+        else:
+            raise NotImplementedError()
+        return query_param
 
     def _source_param(self):
         returned_fields = []
-        if self.index == self.IndexParameters.PERSONS_INDEX:
+        if self.subject_type == self.SubjectType.PERSON:
             returned_fields = self.PERSON_DEFAULT_FIELDS
-        if self.index == self.IndexParameters.PUBLICATIONS_INDEX:
+        if self.subject_type == self.SubjectType.PUBLICATION:
             returned_fields = self.PUBLICATIONS_DEFAULT_FIELDS
 
         self.query["_source"] = returned_fields
+
+    def _sort_param(self):
+        sort = {
+            "publicationDate": {
+                "order": "desc"
+            }
+        }
+        self.query["sort"] = sort

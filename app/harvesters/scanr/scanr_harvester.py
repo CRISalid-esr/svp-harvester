@@ -17,7 +17,8 @@ class ScanrHarvester(AbstractHarvester):
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
             (QueryBuilder.QueryParameters.AUTH_IDREF, "idref"),
-            # (QueryBuilder.QueryParameters.AUTH_ORCID, "orcid"),
+            (QueryBuilder.QueryParameters.AUTH_ORCID, "orcid"),
+            (QueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal"),
         ]
     }
 
@@ -49,11 +50,14 @@ class ScanrHarvester(AbstractHarvester):
             await self._get_entity_class_name()
         )
 
+        builder.set_subject_type(builder.SubjectType.PUBLICATION)
+
         builder.set_query(
             identifier_type=identifier_type,
             identifier_value=identifier_value
         )
-        harvest.set_query(elastic_query=builder.temp_idref_build())
+
+        harvest.set_query(elastic_query=builder.build())
         async for doc in harvest.perform_search_publications():
             yield RawResult(
                 payload=doc,
@@ -61,9 +65,11 @@ class ScanrHarvester(AbstractHarvester):
                 formatter_name=ScanrHarvester.FORMATTER_NAME,
             )
 
+
+
     def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
-        identifier_types = ["idref"]
+        identifier_types = ["idref", "orcid"]
 
         return any(
             entity.get_identifier(identifier_type=identifier_type) is not None

@@ -29,13 +29,22 @@ class ScanRElasticClient:
         """
         self.query = elastic_query
 
+    # TODO: normalize perform_search to only keep one search and not one per index
     async def perform_search_persons(self):
         """
         Perform a search request on Scanr Person index and return the results
         :return: the result as list
         """
+        target_index = self.settings.scanr_es_persons_index
+
+        number_of_references = await self._count_references(target_index)
+
         resp = await self.elastic.search(
-            index=self.settings.scanr_es_persons_index, body=self.query)
+            index=target_index,
+            body=self.query,
+            size=number_of_references
+        )
+
         cleaned_results = self._clean_results(resp)
 
         for result in cleaned_results:
@@ -46,15 +55,32 @@ class ScanRElasticClient:
         Perform a search request on Scanr Publication index and return the results
         :return: the result as list
         """
+        target_index = self.settings.scanr_es_publications_index
+
+        number_of_references = await self._count_references(target_index)
+
         resp = await self.elastic.search(
-            index=self.settings.scanr_es_publications_index,
-            body=self.query
+            index=target_index,
+            body=self.query,
+            size=number_of_references
         )
 
         cleaned_results = self._clean_results(resp)
 
         for result in cleaned_results:
             yield result
+
+    async def _count_references(self, index):
+        count_query = self.query.copy()
+        count_query.pop('_source', None)
+        count_query.pop('sort', None)
+
+        response = await self.elastic.count(index=index, body=count_query)
+        count = response["count"]
+        print(count)
+        if count >= 1:
+            return count
+        raise ValueError("No references found with that query")
 
     def _clean_results(self, results: Dict) -> List[Dict]:
         return results["hits"]["hits"]
