@@ -2,6 +2,7 @@ from typing import Dict, List
 from elasticsearch import AsyncElasticsearch
 
 from app.config import get_app_settings
+from app.harvesters.exceptions.unexpected_format_exception import UnexpectedFormatException
 
 
 class ScanRElasticClient:
@@ -83,4 +84,9 @@ class ScanRElasticClient:
         raise ValueError("No references found with that query")
 
     def _clean_results(self, results: Dict) -> List[Dict]:
-        return results["hits"]["hits"]
+        try:
+            return results.get("hits", {}).get("hits", [])
+        except AttributeError as exc:
+            raise UnexpectedFormatException(
+                "Expected a dictionary with potentially nested 'hits' keys, but got something else."
+            ) from exc
