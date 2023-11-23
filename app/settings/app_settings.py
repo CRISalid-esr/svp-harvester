@@ -60,7 +60,5 @@ class AppSettings(BaseSettings):
     db_port: int = 5432
 
     scanr_es_host: str = "https://host_name.com/"
-    scanr_es_publications_index: str = "publications-index-name"
-    scanr_es_persons_index: str = "persons-index-name"
     scanr_es_user: str = "johndoe"
     scanr_es_password: str = "pass"
