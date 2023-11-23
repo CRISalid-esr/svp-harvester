@@ -78,3 +78,7 @@ class ScanRElasticClient:
             raise UnexpectedFormatException(
                 "Expected a dictionary with potentially nested 'hits' keys, but got something else."
             ) from exc
+
+    async def close(self):
+        """ Closes the Elasticsearch connection. """
+        await self.elastic.close()

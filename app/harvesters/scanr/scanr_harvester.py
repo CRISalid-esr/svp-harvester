@@ -43,33 +43,37 @@ class ScanrHarvester(AbstractHarvester):
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
 
-        builder = QueryBuilder()
         harvest = ScanRElasticClient()
 
-        identifier_type, identifier_value = await self._get_scanr_query_parameters(
-            await self._get_entity_class_name()
-        )
+        try:
+            builder = QueryBuilder()
 
-        if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
-            # If we want the publications tied to an entity,
-            # but we don't know the main id used by scanr,
-            # we need to get it first by doing a search in the corresponding indice.
-            print("Condition met, doing something...")
-
-        builder.set_subject_type(builder.SubjectType.PUBLICATION)
-
-        builder.set_query(
-            identifier_type=identifier_type,
-            identifier_value=identifier_value
-        )
-
-        harvest.set_query(elastic_query=builder.build())
-        async for doc in harvest.perform_search(harvest.Indexes.PUBLICATIONS):
-            yield RawResult(
-                payload=doc,
-                source_identifier=doc.get("id"),
-                formatter_name=ScanrHarvester.FORMATTER_NAME,
+            identifier_type, identifier_value = await self._get_scanr_query_parameters(
+                await self._get_entity_class_name()
             )
+
+            if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
+                # If we want the publications tied to an entity,
+                # but we don't know the main id used by scanr,
+                # we need to get it first by doing a search in the corresponding indice.
+                print("Condition met, doing something...")
+
+            builder.set_subject_type(builder.SubjectType.PUBLICATION)
+
+            builder.set_query(
+                identifier_type=identifier_type,
+                identifier_value=identifier_value
+            )
+
+            harvest.set_query(elastic_query=builder.build())
+            async for doc in harvest.perform_search(harvest.Indexes.PUBLICATIONS):
+                yield RawResult(
+                    payload=doc,
+                    source_identifier=doc.get("id"),
+                    formatter_name=ScanrHarvester.FORMATTER_NAME,
+                )
+        finally:
+            await harvest.close()
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
