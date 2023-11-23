@@ -1,4 +1,5 @@
 from typing import Dict, List
+from enum import Enum
 from elasticsearch import AsyncElasticsearch
 
 from app.config import get_app_settings
@@ -7,6 +8,13 @@ from app.harvesters.exceptions.unexpected_format_exception import UnexpectedForm
 
 class ScanRElasticClient:
     """Client for ScanR elastic API"""
+
+    class Indexes(Enum):
+        """
+        Indexes available for search with ScanR API
+        """
+        PERSONS = "scanr-persons-staging"
+        PUBLICATIONS = "scanr-publications-staging"
 
     def __init__(self):
         self.settings = get_app_settings()
@@ -30,33 +38,13 @@ class ScanRElasticClient:
         """
         self.query = elastic_query
 
-    # TODO: normalize perform_search to only keep one search and not one per index
-    async def perform_search_persons(self):
+    async def perform_search(self, selected_index: Indexes):
         """
-        Perform a search request on Scanr Person index and return the results
+        Perform a search request on Scanr index and return the results
         :return: the result as list
         """
-        target_index = self.settings.scanr_es_persons_index
-
-        number_of_references = await self._count_references(target_index)
-
-        resp = await self.elastic.search(
-            index=target_index,
-            body=self.query,
-            size=number_of_references
-        )
-
-        cleaned_results = self._clean_results(resp)
-
-        for result in cleaned_results:
-            yield result
-
-    async def perform_search_publications(self):
-        """
-        Perform a search request on Scanr Publication index and return the results
-        :return: the result as list
-        """
-        target_index = self.settings.scanr_es_publications_index
+        assert selected_index in self.Indexes, "Selected index is unavailable"
+        target_index = selected_index.value
 
         number_of_references = await self._count_references(target_index)
 

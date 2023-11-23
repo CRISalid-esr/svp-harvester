@@ -35,7 +35,7 @@ class ScanrHarvester(AbstractHarvester):
         for scanr_query_parameter, identifier_key in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_value is not None:
-                return scanr_query_parameter, identifier_value
+                return scanr_query_parameter, str(identifier_value)
 
         assert (
             False
@@ -50,6 +50,12 @@ class ScanrHarvester(AbstractHarvester):
             await self._get_entity_class_name()
         )
 
+        if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
+            # If we want the publications tied to an entity,
+            # but we don't know the main id used by scanr,
+            # we need to get it first by doing a search in the corresponding indice.
+            print("Condition met, doing something...")
+
         builder.set_subject_type(builder.SubjectType.PUBLICATION)
 
         builder.set_query(
@@ -58,14 +64,12 @@ class ScanrHarvester(AbstractHarvester):
         )
 
         harvest.set_query(elastic_query=builder.build())
-        async for doc in harvest.perform_search_publications():
+        async for doc in harvest.perform_search(harvest.Indexes.PUBLICATIONS):
             yield RawResult(
                 payload=doc,
                 source_identifier=doc.get("id"),
                 formatter_name=ScanrHarvester.FORMATTER_NAME,
             )
-
-
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
