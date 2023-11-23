@@ -24,17 +24,18 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         new_ref = Reference()
 
         json_payload = raw_data.payload
-        print(json_payload)
 
         title = json_payload["_source"].get("title")
-        if title and "default" in title:
-            new_ref.titles.append(
-                Title(value=title["default"], language="fr"))
+        if title:
+            new_ref.titles.extend(
+                [Title(value=value, language=None if key == "default" else key) for key, value in
+                 title.items()])
 
         summary = json_payload["_source"].get("summary")
-        if summary and "default" in summary:
-            new_ref.abstracts.append(
-                Abstract(value=summary["default"], language="fr"))
+        if summary:
+            new_ref.abstracts.extend(
+                [Abstract(value=value, language=None if key == "default" else key) for key, value in
+                 summary.items()])
 
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
