@@ -1,11 +1,6 @@
 from enum import Enum
 
 
-# TODO: Redo the builder. Create differents type of queries: person queries and publication queries.
-#  1-For publication queries, if idref is given, => do the search.
-#     If not, need to do a person query to get the id, and then be able to perform the publication query.
-
-
 class ScanRApiQueryBuilder:
     """
     This class provides an abstratction tu build a query for the ScanR elastic API
@@ -98,7 +93,7 @@ class ScanRApiQueryBuilder:
         self._source_param()
         self._query_param()
         self._sort_param()
-        print(self.query)
+
         return self.query
 
     def _query_param(self):
