@@ -39,7 +39,7 @@ class ScanrHarvester(AbstractHarvester):
 
         assert (
             False
-        ), "Unable to run hal harvester for a person without idref or orcid"
+        ), "Unable to run hal harvester for a person without idref"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
 
@@ -77,7 +77,7 @@ class ScanrHarvester(AbstractHarvester):
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""
-        identifier_types = ["idref", "orcid"]
+        identifier_types = ["idref"]
 
         return any(
             entity.get_identifier(identifier_type=identifier_type) is not None
