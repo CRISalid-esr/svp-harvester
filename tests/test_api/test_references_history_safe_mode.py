@@ -24,7 +24,7 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
 ):
     """
     Test one post request with history safe mode set to False followed by two others,
-    with history safe mode set to True or Flase by parametrization.
+    with history safe mode set to True or False by parametrization.
     The last two requests return an identical new version of the results.
     With history safe mode set to False, the last request only returns "unchanged" reference events.
     With history safe mode set to True, the last request returns all types of reference events.
