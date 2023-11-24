@@ -8,6 +8,7 @@ from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
+from app.db.models.reference import Reference
 
 
 class RetrievalDAO(AbstractDAO):
@@ -52,6 +53,7 @@ class RetrievalDAO(AbstractDAO):
                 joinedload(Retrieval.harvestings)
                 .joinedload(Harvesting.reference_events)
                 .joinedload(ReferenceEvent.reference)
+                .joinedload(Reference.contributions)
             )
             .where(Retrieval.id == retrieval_id)
         )
