@@ -12,7 +12,7 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 @pytest.mark.parametrize(
     "requested_harvesters, number_of_harvesters",
     [
-        (None, 3),
+        (None, 2),
         ([], 0),
         (["hal"], 1),
         (["hal", "idref"], 2),
