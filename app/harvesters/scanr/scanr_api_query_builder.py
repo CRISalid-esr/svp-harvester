@@ -23,8 +23,6 @@ class ScanRApiQueryBuilder:
         AUTH_ORCID = "orcid"
         AUTH_ID_HAL_S = "id_hal"
 
-        PUBLICATION_AUTHOR = "authors.person"
-
     PERSON_DEFAULT_FIELDS = [
         "id",
         "externalIds",
