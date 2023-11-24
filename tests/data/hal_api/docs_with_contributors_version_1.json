@@ -1,0 +1,138 @@
+{
+  "response": {
+    "numFound": 14,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "1-will-gain-second-contributor",
+        "en_title_s": [
+          "Will gain a contributor in the next version"
+        ],
+        "en_abstract_s": [
+          "This article will gain a contributor in the next version"
+        ],
+        "authQuality_s": [
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri"
+        ],
+        "authIdHasStructure_fs": [
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_1004986_FacetSep_Anthropologie et Histoire des Mondes Antiques",
+          "39236-169647_FacetSep_Alessandro Buccheri_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne"
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2012-01-01T00:00:00Z"
+      },
+      {
+        "docid": "2-will-loose-a-contributor",
+        "en_title_s": [
+          "Will loose a contributor in the next version"
+        ],
+        "en_abstract_s": [
+          "This article will loose a contributor in the next version"
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri",
+          "Alex Terieur_FacetSep_11111-222222_FacetSep_alex-terieur"
+        ]
+      },
+      {
+        "docid": "3-will-have-a-contributor-keeping-his-id-but-changing-his-name",
+        "en_title_s": [
+          "Will have a contributor keeping his id but changing his name"
+        ],
+        "en_abstract_s": [
+          "This article will have a contributor keeping his id but changing his name"
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri",
+          "Alex Terieur_FacetSep_11111-222222_FacetSep_alex-terieur"
+        ]
+      },
+      {
+        "docid": "4-will-have-a-contributor-keeping-his-name-but-changing-his-id",
+        "en_title_s": [
+          "Will have a contributor keeping his name but changing his id"
+        ],
+        "en_abstract_s": [
+          "This article will have a contributor keeping his name but changing his id"
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alessandro Buccheri_FacetSep_39236-169647_FacetSep_alessandro-buccheri",
+          "Alex Terieur_FacetSep_11111-222222_FacetSep_alex-terieur"
+        ]
+      },
+      {
+        "docid": "5-has-a-contributor-with-name-only-will-change-his-name",
+        "en_title_s": [
+          "Has a contributor with name only will that will change his name"
+        ],
+        "en_abstract_s": [
+          "This article has a contributor with name only which will change his name"
+        ],
+        "authQuality_s": [
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Arnaud Dupont_FacetSep_153764-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "153764-0_FacetSep_Arnaud Dupont_JoinSep_93591_FacetSep_Université Pierre et Marie Curie - Paris 6"
+        ]
+      },
+      {
+        "docid": "5-has-a-contributor-with-name-only-will-gain-an-id",
+        "en_title_s": [
+          "Has a contributor with name only will that will gain an id"
+        ],
+        "en_abstract_s": [
+          "This article has a contributor with name only which will gain an id"
+        ],
+        "authQuality_s": [
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Arnaud Dupont_FacetSep_153764-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "153764-0_FacetSep_Arnaud Dupont_JoinSep_93591_FacetSep_Université Pierre et Marie Curie - Paris 6"
+        ]
+      },
+      {
+        "docid": "6-has-the-same-contributor-with-two-different-roles",
+        "en_title_s": [
+          "Has the same contributor with two different roles"
+        ],
+        "en_abstract_s": [
+          "This article has the same contributor with two different roles"
+        ],
+        "authQuality_s": [
+          "aut",
+          "scientific_editor"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Arnaud Dupont_FacetSep_153764-0_FacetSep_",
+          "Arnaud Dupont_FacetSep_153764-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "153764-0_FacetSep_Arnaud Dupont_JoinSep_93591_FacetSep_Université Pierre et Marie Curie - Paris 6",
+          "153764-0_FacetSep_Arnaud Dupont_JoinSep_93591_FacetSep_Université Pierre et Marie Curie - Paris 6"
+        ]
+      }
+    ]
+  }
+}

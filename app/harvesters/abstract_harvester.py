@@ -103,10 +103,6 @@ class AbstractHarvester(ABC):
                 if result is None or result == "end":
                     break
                 new_ref = await self.converter.convert(result)
-                if new_ref is None:
-                    # The converter silently failed to convert the result
-                    # TODO do or log something
-                    continue
                 assert (
                     new_ref.source_identifier is not None
                 ), "Source identifier should be set on reference"
@@ -151,8 +147,8 @@ class AbstractHarvester(ABC):
             await self.handle_error(error)
         # this is for debugging purpose only
         # as no other exception types are expected during normal execution
-        except Exception as error:
-            raise error
+        # except Exception as error:
+        #     raise error
 
     async def _handle_converted_result(
         self,

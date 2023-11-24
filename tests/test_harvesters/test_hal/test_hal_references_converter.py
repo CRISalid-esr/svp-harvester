@@ -16,7 +16,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     converter_under_tests = HalReferencesConverter()
 
     expected_titles = [
-        "Where does « Axial breakthrough » take place? In the past, or in present narratives of the past?"  # pylint: disable=line-too-long
+        "Where does « Axial breakthrough » take place? "
+        "In the past, or in present narratives of the past?"
     ]
     expected_subjects = [
         "Antiquity",
@@ -28,6 +29,11 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_subtitles = ["test_placeholder_subtitle"]
     expected_docid = "1387023"
     expected_abstracts = ["This article focuses on Vernant..."]
+    expected_contributors_number = 1
+    expected_contributor_role = "aut"
+    expected_contributor_name = "Violaine Sebillotte Cuchet"
+    expected_contributor_source = "hal"
+    expected_contributor_source_identifier = "10227"
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -48,3 +54,17 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
         assert test_subtitles == expected_subtitles
         assert test_abstracts == expected_abstracts
         assert test_reference.source_identifier == expected_docid
+        assert len(test_reference.contributions) == expected_contributors_number
+        assert test_reference.contributions[0].role == expected_contributor_role
+        assert (
+            test_reference.contributions[0].contributor.name
+            == expected_contributor_name
+        )
+        assert (
+            test_reference.contributions[0].contributor.source
+            == expected_contributor_source
+        )
+        assert (
+            test_reference.contributions[0].contributor.source_identifier
+            == expected_contributor_source_identifier
+        )

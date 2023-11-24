@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.entity import Entity
@@ -58,9 +59,16 @@ class ReferenceEventDAO(AbstractDAO):
         """
         stmt = (
             select(ReferenceEvent, Entity)
-            .join(ReferenceEvent.harvesting)
-            .join(Harvesting.retrieval)
-            .join(Retrieval.entity)
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(
+                    Reference.contributions, innerjoin=False
+                )
+            )
+            .options(
+                joinedload(ReferenceEvent.harvesting)
+                .joinedload(Harvesting.retrieval)
+                .joinedload(Retrieval.entity)
+            )
             .where(ReferenceEvent.id == reference_event_id)
         )
         return (await self.db_session.execute(stmt)).unique().first()
