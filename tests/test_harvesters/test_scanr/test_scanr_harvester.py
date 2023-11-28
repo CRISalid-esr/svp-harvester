@@ -1,37 +1,13 @@
 from unittest import mock
-
+from elasticsearch import AsyncElasticsearch
 import pytest
 from fastapi.testclient import TestClient
 
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
-from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
 from app.models.people import Person
 
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
-
-
-class MockScanRElasticClient(ScanRElasticClient):
-    """
-    Mock the elastic Client from Scanr harvester
-    """
-    mock_response = None
-
-    def __init__(self):
-        self.query = None
-
-    async def perform_search(self, selected_index: ScanRElasticClient.Indexes):
-        assert selected_index in self.Indexes, "Selected index is unavailable"
-
-        resp = self.mock_response
-
-        cleaned_results = self._clean_results(resp)
-
-        for result in cleaned_results:
-            yield result
-
-    async def close(self):
-        pass
 
 
 def test_scanr_harvester_relevant_with_idref(person_with_name_and_idref: Person):
@@ -55,11 +31,12 @@ async def test_fetch_references_async(
     """
     Test a post request with history safe mode set to False.
     """
-    MockScanRElasticClient.mock_response = scanr_api_docs_from_publication
 
-    with mock.patch('app.harvesters.scanr.scanr_harvester.ScanRElasticClient',
-                    new=MockScanRElasticClient):
-
+    with (mock.patch.object(AsyncElasticsearch, 'count',
+                            new=mock.AsyncMock(return_value={"count": 1})),
+          mock.patch.object(AsyncElasticsearch, 'search',
+                            new=mock.AsyncMock(return_value=scanr_api_docs_from_publication)
+                            )):
         response = test_client.post(
             REFERENCES_RETRIEVAL_API_PATH,
             json={
