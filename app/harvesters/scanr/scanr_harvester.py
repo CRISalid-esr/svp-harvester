@@ -43,9 +43,8 @@ class ScanrHarvester(AbstractHarvester):
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
 
-        harvest = ScanRElasticClient()
+        async with ScanRElasticClient() as client:
 
-        try:
             builder = QueryBuilder()
 
             identifier_type, identifier_value = await self._get_scanr_query_parameters(
@@ -65,15 +64,13 @@ class ScanrHarvester(AbstractHarvester):
                 identifier_value=identifier_value
             )
 
-            harvest.set_query(elastic_query=builder.build())
-            async for doc in harvest.perform_search(harvest.Indexes.PUBLICATIONS):
+            client.set_query(elastic_query=builder.build())
+            async for doc in client.perform_search(client.Indexes.PUBLICATIONS):
                 yield RawResult(
                     payload=doc,
                     source_identifier=doc.get("_id"),
                     formatter_name=ScanrHarvester.FORMATTER_NAME,
                 )
-        finally:
-            await harvest.close()
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:
         """Check if one of the given identifiers is relevant for the harvester"""

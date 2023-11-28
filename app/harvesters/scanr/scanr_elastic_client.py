@@ -18,7 +18,9 @@ class ScanRElasticClient:
 
     def __init__(self):
         self.settings = get_app_settings()
+        self.query = None
 
+    async def __aenter__(self):
         self.elastic = AsyncElasticsearch(
             [self.settings.scanr_es_host],
             http_auth=(self.settings.scanr_es_user, self.settings.scanr_es_password),
@@ -26,8 +28,11 @@ class ScanRElasticClient:
             verify_certs=True,
             scheme="https",
         )
+        return self
 
-        self.query = None
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.elastic.close()
+        self.elastic = None
 
     def set_query(self, elastic_query: Dict[str, any]):
         """
@@ -59,6 +64,8 @@ class ScanRElasticClient:
         for result in cleaned_results:
             yield result
 
+    # TODO: Delete _count and replace with a pagination system:
+    #  If number in result in first search != to number of doc founds, do another research
     async def _count_references(self, index):
         count_query = self.query.copy()
         count_query.pop('_source', None)
@@ -78,7 +85,3 @@ class ScanRElasticClient:
             raise UnexpectedFormatException(
                 "Expected a dictionary with potentially nested 'hits' keys, but got something else."
             ) from exc
-
-    async def close(self):
-        """ Closes the Elasticsearch connection. """
-        await self.elastic.close()
