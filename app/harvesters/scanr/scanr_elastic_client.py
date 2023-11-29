@@ -43,40 +43,46 @@ class ScanRElasticClient:
         """
         self.query = elastic_query
 
-    async def perform_search(self, selected_index: Indexes):
+    async def perform_search(self, selected_index: Indexes, base_size: int = 200):
         """
         Perform a search request on Scanr index and return the results
         :return: the result as list
         """
+        async def search_and_yeld(offset):
+            nonlocal total_search_hits
+
+            resp = await self.elastic.search(
+                index=target_index,
+                body=self.query,
+                size=base_size,
+                from_=offset
+            )
+
+            cleaned_results = self._clean_results(resp)  # clean the results
+
+            total = resp.get("hits", {}).get("total", {}).get("value", 0)
+            if total > total_search_hits:
+                total_search_hits = total
+
+            for result in cleaned_results:
+                yield result
+
         assert selected_index in self.Indexes, "Selected index is unavailable"
         target_index = selected_index.value
 
-        number_of_references = await self._count_references(target_index)
+        assert self.query, "Set a query before performing a search"
 
-        resp = await self.elastic.search(
-            index=target_index,
-            body=self.query,
-            size=number_of_references
-        )
+        total_search_hits = 0
+        result_yielded = 0
 
-        cleaned_results = self._clean_results(resp)
-
-        for result in cleaned_results:
+        async for result in search_and_yeld(result_yielded):
+            result_yielded += 1
             yield result
 
-    # TODO: Delete _count and replace with a pagination system:
-    #  If number in result in first search != to number of doc founds, do another research
-    async def _count_references(self, index):
-        count_query = self.query.copy()
-        count_query.pop('_source', None)
-        count_query.pop('sort', None)
-
-        response = await self.elastic.count(index=index, body=count_query)
-        count = response["count"]
-        print(count)
-        if count >= 1:
-            return count
-        raise ValueError("No references found with that query")
+        while result_yielded < total_search_hits:
+            async for result in search_and_yeld(result_yielded):
+                result_yielded += 1
+                yield result
 
     def _clean_results(self, results: Dict) -> List[Dict]:
         try:

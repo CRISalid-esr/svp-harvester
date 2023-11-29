@@ -32,9 +32,7 @@ async def test_fetch_references_async(
     Test a post request with history safe mode set to False.
     """
 
-    with (mock.patch.object(AsyncElasticsearch, 'count',
-                            new=mock.AsyncMock(return_value={"count": 1})),
-          mock.patch.object(AsyncElasticsearch, 'search',
+    with (mock.patch.object(AsyncElasticsearch, 'search',
                             new=mock.AsyncMock(return_value=scanr_api_docs_from_publication)
                             )):
         response = test_client.post(
