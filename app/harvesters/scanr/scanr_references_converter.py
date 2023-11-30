@@ -39,7 +39,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
-        new_ref.source_identifier = json_payload["_source"]["id"]
+        new_ref.source_identifier = json_payload["_source"].get("id")
         return new_ref
 
     def _hash_keys(self):
