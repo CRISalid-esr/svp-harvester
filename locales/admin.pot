@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-19 06:01+0200\n"
+"POT-Creation-Date: 2023-11-30 12:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: app/templates/base.html.jinja:10 app/templates/base.html.jinja:17
+#: app/templates/base.html.jinja:10
+msgid ""
+"\n"
+"      application_name"
+msgstr ""
+
+#: app/templates/base.html.jinja:18
 msgid "application_name"
 msgstr ""
 
-#: app/templates/base.html.jinja:47
+#: app/templates/base.html.jinja:50
 msgid "main_menu_overview_entry"
 msgstr ""
 
-#: app/templates/base.html.jinja:53
+#: app/templates/base.html.jinja:56
 msgid "main_menu_data_retrieval_entry"
 msgstr ""
 
-#: app/templates/base.html.jinja:59
+#: app/templates/base.html.jinja:63
 msgid "main_menu_history_entry"
+msgstr ""
+
+#: app/templates/base.html.jinja:70
+msgid "main_menu_settings_entry"
 msgstr ""
 
 #: app/templates/history.html.jinja:5 app/templates/history.html.jinja:6
