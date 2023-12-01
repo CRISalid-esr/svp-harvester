@@ -3,7 +3,9 @@ from enum import Enum
 from elasticsearch import AsyncElasticsearch
 
 from app.config import get_app_settings
-from app.harvesters.exceptions.unexpected_format_exception import UnexpectedFormatException
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 
 
 class ScanRElasticClient:
@@ -13,12 +15,14 @@ class ScanRElasticClient:
         """
         Indexes available for search with ScanR API
         """
+
         PERSONS = "scanr-persons-staging"
         PUBLICATIONS = "scanr-publications-staging"
 
     def __init__(self):
         self.settings = get_app_settings()
         self.query = None
+        self.elastic = None
 
     async def __aenter__(self):
         self.elastic = AsyncElasticsearch(
@@ -48,14 +52,12 @@ class ScanRElasticClient:
         Perform a search request on Scanr index and return the results
         :return: the result as list
         """
-        async def search_and_yeld(offset):
+
+        async def search_and_yield(offset):
             nonlocal total_search_hits
 
             resp = await self.elastic.search(
-                index=target_index,
-                body=self.query,
-                size=base_size,
-                from_=offset
+                index=target_index, body=self.query, size=base_size, from_=offset
             )
 
             cleaned_results = self._clean_results(resp)  # clean the results
@@ -75,12 +77,12 @@ class ScanRElasticClient:
         total_search_hits = 0
         result_yielded = 0
 
-        async for result in search_and_yeld(result_yielded):
+        async for result in search_and_yield(result_yielded):
             result_yielded += 1
             yield result
 
         while result_yielded < total_search_hits:
-            async for result in search_and_yeld(result_yielded):
+            async for result in search_and_yield(result_yielded):
                 result_yielded += 1
                 yield result
 
