@@ -166,7 +166,7 @@ class Form {
         const addIdentifierControlContent = this.getIdentifierFieldContent(this.addIdentifierControlElement, true);
         if (addIdentifierControlContent.identifierType) {
             this.addIdentifierInputField.removeAttribute("disabled");
-            this.addIdentifierInputField.placeholder = this.env.IDENTIFIERS[addIdentifierControlContent.identifierType].placeholder;
+            this.addIdentifierInputField.placeholder = this.env.identifiers[addIdentifierControlContent.identifierType].placeholder;
         } else {
             this.addIdentifierInputField.setAttribute("disabled", true);
             this.addIdentifierInputField.placeholder = "";
@@ -203,7 +203,7 @@ class Form {
     }
 
     addIdentifierField(content) {
-        content = {...content, identifierLabel: this.env.IDENTIFIERS[content.identifierType].label};
+        content = {...content, identifierLabel: this.env.identifiers[content.identifierType].label};
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
@@ -228,7 +228,7 @@ class Form {
 
     remainingIdentifiers() {
         const remainingIdentifiers = {};
-        for (const identifier of Object.entries(this.env.IDENTIFIERS)) {
+        for (const identifier of Object.entries(this.env.identifiers)) {
             if (!this.getIdentifierFieldsContent().find((identifierFieldContent) => identifierFieldContent.identifierType === identifier[0])) {
                 remainingIdentifiers[identifier[0]] = identifier[1];
             }
@@ -250,7 +250,7 @@ class Form {
         if (identifierElementContent.identifierValue === IDENTIFIER_NULL_VALUE) {
             return true;
         }
-        return new RegExp(this.env.IDENTIFIERS[identifierElementContent.identifierType].format).test(identifierElementContent.identifierValue);
+        return new RegExp(this.env.identifiers[identifierElementContent.identifierType].format).test(identifierElementContent.identifierValue);
     }
 }
 
