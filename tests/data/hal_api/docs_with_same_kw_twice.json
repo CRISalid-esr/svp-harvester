@@ -23,6 +23,12 @@
           1139367,
           1145946
         ],
+        "authQuality_s": [
+          "aut",
+          "aut",
+          "aut",
+          "aut"
+        ],
         "authFullNameFormIDPersonIDIDHal_fs": [
           "Lionel Fontagné_FacetSep_6574-6113_FacetSep_lionelfontagne",
           "Gianluca Orefice_FacetSep_951488-0_FacetSep_",
@@ -73,6 +79,11 @@
           6574,
           629095,
           395289
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut",
+          "aut"
         ],
         "authFullNameFormIDPersonIDIDHal_fs": [
           "Lionel Fontagné_FacetSep_6574-6113_FacetSep_lionelfontagne",
