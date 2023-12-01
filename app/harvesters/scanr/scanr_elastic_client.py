@@ -1,8 +1,10 @@
 from typing import Dict, List
 from enum import Enum
 from elasticsearch import AsyncElasticsearch
+from elasticsearch.exceptions import AuthenticationException, ElasticsearchException
 
 from app.config import get_app_settings
+from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
@@ -55,10 +57,16 @@ class ScanRElasticClient:
 
         async def search_and_yield(offset):
             nonlocal total_search_hits
-
-            resp = await self.elastic.search(
-                index=target_index, body=self.query, size=base_size, from_=offset
-            )
+            try:
+                resp = await self.elastic.search(
+                    index=target_index, body=self.query, size=base_size, from_=offset
+                )
+            except AuthenticationException as exc:
+                raise ExternalEndpointFailure(
+                    "Invalid credentials for ScanR API"
+                ) from exc
+            except ElasticsearchException as exc:
+                raise ExternalEndpointFailure("Unable to connect to ScanR API") from exc
 
             cleaned_results = self._clean_results(resp)  # clean the results
 
