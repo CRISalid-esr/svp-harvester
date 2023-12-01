@@ -1,0 +1,430 @@
+{
+  "_index": "scanr-persons-20230912",
+  "_type": "_doc",
+  "_id": "FLvvYYsBDrvxWiacUmYV",
+  "_score": 14.310059,
+  "_source": {
+    "id": "idref122796527",
+    "coContributors": [
+      {
+        "person": "idref132138123",
+        "fullName": "Sandrine Wolff"
+      },
+      {
+        "person": "idref035485833",
+        "fullName": "Manuel Durand-Barthez"
+      },
+      {
+        "person": "idref057460477",
+        "fullName": "Nathalie Pinède"
+      },
+      {
+        "person": "idref189013559",
+        "fullName": "Véronique Lespinet-Najib"
+      },
+      {
+        "person": "idref123902266",
+        "fullName": "Benoît Le Blanc"
+      },
+      {
+        "person": "idref034105700",
+        "fullName": "Luc Quoniam"
+      },
+      {
+        "person": "idref253134064",
+        "fullName": "Nezha Cherrabi"
+      },
+      {
+        "person": "idref238542513",
+        "fullName": "Jessica Dematraz"
+      },
+      {
+        "person": "idref092248438",
+        "fullName": "Daphné Duvernay"
+      },
+      {
+        "person": "idref060850728",
+        "fullName": "Michel Durampart"
+      },
+      {
+        "person": "idref112112501",
+        "fullName": "Hervé Glotin"
+      },
+      {
+        "person": "idref192217011",
+        "fullName": "Christelle Martin Lacroux"
+      },
+      {
+        "person": "idref073666041",
+        "fullName": "H. Kromm"
+      },
+      {
+        "person": "idref057460485",
+        "fullName": "Lise Vieira"
+      },
+      {
+        "person": "idref153284927",
+        "fullName": "Emmanuel Marty"
+      },
+      {
+        "person": "idref172733073",
+        "fullName": "Brahim Khalil Rebai"
+      },
+      {
+        "person": "idref113338023",
+        "fullName": "Gregory Zacharewicz"
+      },
+      {
+        "person": "idref061104221",
+        "fullName": "Thècle Alix"
+      },
+      {
+        "person": "idref181152479",
+        "fullName": "Amandine Lebourgeois"
+      },
+      {
+        "person": "idref034869417",
+        "fullName": "Jean-Max Noyer"
+      },
+      {
+        "person": "idref093548974",
+        "fullName": "Eric Watelain"
+      },
+      {
+        "person": "idref244392625",
+        "fullName": "Julie Larribaut"
+      },
+      {
+        "person": "idref149815255",
+        "fullName": "Arnaud Faupin"
+      },
+      {
+        "person": "idref093966350",
+        "fullName": "Fabrice Vercruyssen"
+      },
+      {
+        "person": "idref157618900",
+        "fullName": "Mathieu Gruet"
+      },
+      {
+        "person": "idref234813547",
+        "fullName": "Robin Souron"
+      },
+      {
+        "person": "idref132850583",
+        "fullName": "Pascale Duché"
+      },
+      {
+        "person": "idref101312733",
+        "fullName": "Irène Margaritis"
+      },
+      {
+        "person": "idref143288644",
+        "fullName": "Emmanuel Mulin"
+      },
+      {
+        "person": "idref187109273",
+        "fullName": "M Carayol"
+      },
+      {
+        "person": "idref254955886",
+        "fullName": "Clara Galliano"
+      },
+      {
+        "person": "idref113296282",
+        "fullName": "Eric Boutin"
+      },
+      {
+        "person": "idref18246508X",
+        "fullName": "Stéphane Amato"
+      },
+      {
+        "person": "idref069818967",
+        "fullName": "Gabriel Gallezot"
+      },
+      {
+        "person": "idref182222918",
+        "fullName": "Jean-Charles Lamirel"
+      },
+      {
+        "person": "idref191798649",
+        "fullName": "Abdelkader Baaziz"
+      },
+      {
+        "person": "idref13740641X",
+        "fullName": "Maud Pélissier"
+      },
+      {
+        "person": "idref069357056",
+        "fullName": "Roland Ducasse"
+      }
+    ],
+    "publications": [
+      {
+        "publication": "nnt2018aixm0716",
+        "role": "directeurthese"
+      },
+      {
+        "publication": "nnt2018aixm0716",
+        "role": "membrejury"
+      },
+      {
+        "publication": "nnt2017aixm0081",
+        "role": "membrejury"
+      },
+      {
+        "publication": "nnt2015aixm5900",
+        "role": "membrejury"
+      }
+    ],
+    "domains": [
+      {
+        "label": {
+          "default": "patent"
+        },
+        "code": "Q253623",
+        "type": "wikidata",
+        "count": 9
+      },
+      {
+        "label": {
+          "default": "Science ouverte"
+        },
+        "type": "keyword",
+        "count": 8
+      },
+      {
+        "label": {
+          "default": "site web"
+        },
+        "code": "Q35127",
+        "type": "wikidata",
+        "count": 8
+      },
+      {
+        "label": {
+          "default": "hypertexte"
+        },
+        "code": "Q93241",
+        "type": "wikidata",
+        "count": 7
+      },
+      {
+        "label": {
+          "default": "Bibliométrie"
+        },
+        "type": "keyword",
+        "count": 7
+      }
+    ],
+    "affiliations": [
+      {
+        "structure": {
+          "id": "200815499S",
+          "kind": [
+            "Structure de recherche"
+          ],
+          "label": {
+            "fr": "Institut Méditerranéen des Sciences de l'Information et de la Communication",
+            "default": "Institut Méditerranéen des Sciences de l'Information et de la Communication"
+          },
+          "acronym": {
+            "fr": "IMSIC",
+            "default": "IMSIC"
+          },
+          "address": [
+            {
+              "main": false,
+              "address": "21 Rue Virgile Marron",
+              "gps": {
+                "lat": 43.292078,
+                "lon": 5.390533
+              },
+              "postcode": "13005",
+              "city": "Marseille",
+              "citycode": "13205",
+              "urbanUnitCode": "UU00759",
+              "urbanUnitLabel": "Marseille - Aix-en-Provence",
+              "localisationSuggestions": [
+                "Provence-Alpes-Côte d'Azur",
+                "Marseille - Aix-en-Provence (agglomération)",
+                "Marseille  5e",
+                "Aix-Marseille (académie)",
+                "Bouches-du-Rhône (13)"
+              ],
+              "country": "France",
+              "provider": "adresse.data.gouv.fr",
+              "score": 0.7115363636363631
+            },
+            {
+              "main": true,
+              "address": "70 Avenue Roger Devoucoux",
+              "gps": {
+                "lat": 43.121287,
+                "lon": 5.940132
+              },
+              "postcode": "83100",
+              "city": "Toulon",
+              "citycode": "83137",
+              "urbanUnitCode": "UU00757",
+              "urbanUnitLabel": "Toulon",
+              "localisationSuggestions": [
+                "Provence-Alpes-Côte d'Azur",
+                "Toulon (agglomération)",
+                "Toulon",
+                "Nice (académie)",
+                "Var (83)"
+              ],
+              "country": "France",
+              "provider": "adresse.data.gouv.fr",
+              "score": 0.328240559440559
+            }
+          ]
+        },
+        "sources": [
+          {
+            "id": "halhal-03975668",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-03974218",
+            "year": "2021"
+          },
+          {
+            "id": "halhal-04141467",
+            "year": "2023"
+          },
+          {
+            "id": "halhal-03544829",
+            "year": "2018"
+          },
+          {
+            "id": "halhal-02064190",
+            "year": "2018"
+          },
+          {
+            "id": "halhal-03175258",
+            "year": "2019"
+          },
+          {
+            "id": "halhal-03861913",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-02092346",
+            "year": "2021"
+          },
+          {
+            "id": "doi10.4000/rfsic.12365",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-03861872",
+            "year": "2018"
+          },
+          {
+            "id": "doi10.4000/revuehn.3014",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-03975747",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-04103412",
+            "year": "2022"
+          },
+          {
+            "id": "doi10.5281/zenodo.7963149",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-02120465",
+            "year": "2018"
+          },
+          {
+            "id": "halhal-03276179",
+            "year": "2021"
+          },
+          {
+            "id": "halhal-03580857",
+            "year": "2021"
+          },
+          {
+            "id": "halhal-03580563",
+            "year": "2021"
+          },
+          {
+            "id": "halhal-03580847",
+            "year": "2021"
+          },
+          {
+            "id": "halhal-02643329",
+            "year": "2019"
+          },
+          {
+            "id": "halhal-04119719",
+            "year": "2023"
+          },
+          {
+            "id": "halhal-02867494",
+            "year": "2020"
+          },
+          {
+            "id": "halhal-03974284",
+            "year": "2022"
+          },
+          {
+            "id": "halhal-03243902",
+            "year": "2021"
+          },
+          {
+            "id": "doi10.1109/educon.2018.8363100",
+            "year": "2018"
+          },
+          {
+            "id": "doi10.47909/ijsmc.02",
+            "year": "2020"
+          },
+          {
+            "id": "doi10.5902/1983465928836",
+            "year": "2020"
+          },
+          {
+            "id": "doi10.5585/rgss.v7i1.393",
+            "year": "2018"
+          },
+          {
+            "id": "halhal-02289068",
+            "year": "2019"
+          },
+          {
+            "id": "halhal-02966758",
+            "year": "2020"
+          }
+        ],
+        "endDate": "2023-12-31T00:00:00",
+        "startDate": "2018-01-01T00:00:00"
+      }
+    ],
+    "externalIds": [
+      {
+        "type": "idref",
+        "id": "122796527"
+      },
+      {
+        "type": "orcid",
+        "id": "0000-0003-2071-6594"
+      },
+      {
+        "type": "id_hal",
+        "id": "david-reymond"
+      }
+    ],
+    "orcid": "0000-0003-2071-6594",
+    "firstName": "David",
+    "lastName": "Reymond",
+    "fullName": "David Reymond",
+    "gender": "M"
+  }
+}
