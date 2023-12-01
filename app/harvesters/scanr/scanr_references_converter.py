@@ -1,13 +1,10 @@
+from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
-from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
+from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.db.models.abstract import Abstract
-from app.db.models.reference import Reference
-from app.db.models.title import Title
-from app.db.models.subtitle import Subtitle
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
@@ -28,14 +25,20 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         title = json_payload["_source"].get("title")
         if title:
             new_ref.titles.extend(
-                [Title(value=value, language=None if key == "default" else key) for key, value in
-                 title.items()])
+                [
+                    Title(value=value, language=None if key == "default" else key)
+                    for key, value in title.items()
+                ]
+            )
 
         summary = json_payload["_source"].get("summary")
         if summary:
             new_ref.abstracts.extend(
-                [Abstract(value=value, language=None if key == "default" else key) for key, value in
-                 summary.items()])
+                [
+                    Abstract(value=value, language=None if key == "default" else key)
+                    for key, value in summary.items()
+                ]
+            )
 
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
@@ -53,5 +56,5 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             "domains",
             "affiliations",
             "authors",
-            "externalIds"
+            "externalIds",
         ]
