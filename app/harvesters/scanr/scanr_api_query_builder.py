@@ -23,13 +23,7 @@ class ScanRApiQueryBuilder:
         AUTH_ORCID = "orcid"
         AUTH_ID_HAL_S = "id_hal"
 
-    PERSON_DEFAULT_FIELDS = [
-        "id",
-        "externalIds",
-        "domains",
-        "affiliations",
-        "fullName"
-    ]
+    PERSON_DEFAULT_FIELDS = ["id", "externalIds", "domains", "affiliations", "fullName"]
 
     PUBLICATIONS_DEFAULT_FIELDS = [
         "id",
@@ -41,7 +35,7 @@ class ScanRApiQueryBuilder:
         "domains",
         "affiliations",
         "authors",
-        "externalIds"
+        "externalIds",
     ]
 
     def __init__(self):
@@ -65,15 +59,14 @@ class ScanRApiQueryBuilder:
         if self.identifier_type == self.QueryParameters.AUTH_IDREF:
             self.scanr_id = self.identifier_type.value + self.identifier_value
 
-    def set_query(self,
-                  identifier_type: QueryParameters, identifier_value):
+    def set_query(self, identifier_type: QueryParameters, identifier_value):
         """
-       Set the field name and value representing the entity for which the query is built.
+        Set the field name and value representing the entity for which the query is built.
 
-       :param identifier_type: the name of the field, from the QueryParameters enum
-       :param identifier_value: the value of the field
-       :return: None
-       """
+        :param identifier_type: the name of the field, from the QueryParameters enum
+        :param identifier_value: the value of the field
+        :return: None
+        """
         # Check if the index who will receive the query is known
 
         # check that identifier_type is a valid QueryParameters
@@ -96,7 +89,7 @@ class ScanRApiQueryBuilder:
 
     def _query_param(self):
         assert (
-                self.identifier_type is not None and self.identifier_value is not None
+            self.identifier_type is not None and self.identifier_value is not None
         ), "Set the query parameters before building the query."
 
         if self.subject_type == self.SubjectType.PERSON:
@@ -130,8 +123,12 @@ class ScanRApiQueryBuilder:
             query_param = {
                 "bool": {
                     "must": [
-                        {"term": {"externalIds.type.keyword": self.identifier_type.value}},
-                        {"term": {"externalIds.id.keyword": self.identifier_value}}
+                        {
+                            "term": {
+                                "externalIds.type.keyword": self.identifier_type.value
+                            }
+                        },
+                        {"term": {"externalIds.id.keyword": self.identifier_value}},
                     ]
                 }
             }
@@ -161,9 +158,5 @@ class ScanRApiQueryBuilder:
         self.query["_source"] = returned_fields
 
     def _sort_param(self):
-        sort = {
-            "publicationDate": {
-                "order": "desc"
-            }
-        }
+        sort = {"publicationDate": {"order": "desc"}}
         self.query["sort"] = sort
