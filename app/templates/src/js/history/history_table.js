@@ -1,5 +1,6 @@
 import DataTable from 'datatables.net-dt';
 
+// TODO: Complete HistoryTable, check references_table as base
 class HistoryTable{
     constructor(env, rootElement) {
         this.env = env;
