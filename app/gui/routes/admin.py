@@ -37,6 +37,17 @@ async def get_history(request: Request):
     )
 
 
+@router.get("/settings")
+async def get_history(request: Request):
+    """Return the history page in the admin gui"""
+    return get_templating_engine(
+        I18N_DOMAIN, get_request_locale(request)
+    ).TemplateResponse(
+        "base.html.jinja",
+        {"request": request, "page": "settings", "locale": get_request_locale(request)},
+    )
+
+
 @router.get("/list_endpoints/")
 def list_endpoints(request: Request):  # pragma: no cover
     """Convenience function to list all endpoints"""

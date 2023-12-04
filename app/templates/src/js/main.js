@@ -9,6 +9,7 @@ import 'bootstrap5-toggle/js/bootstrap5-toggle.ecmas.min'
 import env from "./env"
 import Client from "./common/client"
 import RetrievePage from "./retrieve/retrieve_page"
+import HistoryPage from "./history/history_page"
 
 const enableTooltips = function () {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -19,14 +20,19 @@ const enableTooltips = function () {
 const init = function () {
     enableTooltips();
     const pageIdentifier = document.getElementById("page-identifier").value;
+    let client; // Declare client here
     switch (pageIdentifier) {
         case "overview":
             break;
         case "retrieve":
-            const client = new Client(env);
+            client = new Client(env);
             new RetrievePage(env, client, document.getElementById("retrieve-page-content"));
             break;
         case "history":
+            client = new Client(env)
+            new HistoryPage(env, client, document.getElementById("history-page-content"))
+            break;
+        case "settings":
             break;
     }
 
