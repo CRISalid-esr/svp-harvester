@@ -62,6 +62,9 @@ services:
       - AMQP_PORT=5672
       - AMQP_USER=svp_harvester
       - AMQP_PASSWORD=svp_harvester
+      - SCANR_ES_HOST="https://host_name.com/"
+      - SCANR_ES_USER="johndoe"
+      - SCANR_ES_PASSWORD="pass"
     depends_on:
       svp-rabbitmq:
         condition: service_healthy

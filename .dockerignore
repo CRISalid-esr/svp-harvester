@@ -7,6 +7,7 @@
 .test.env
 coverage
 docker-compose.yml
+docker-compose.yml.dist
 docs/source
 app/static
 app/templates/node_modules
