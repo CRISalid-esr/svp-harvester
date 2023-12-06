@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 from aiormq import AMQPConnectionError
 from fastapi import FastAPI
@@ -38,12 +39,9 @@ class SvpHarvester(FastAPI):
         self.include_router(gui_router)
 
         logger.add(
-            "logs/info_{time}.log",
+            sys.stderr,
             format="Log : [{extra[log_id]}]:{time} - {level} - {message}",
             level=settings.loguru_level,
-            enqueue=True,
-            rotation="1 week",
-            compression="zip",
         )
 
         self.add_exception_handler(ValidationError, http422_error_handler)
