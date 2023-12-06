@@ -14,6 +14,32 @@ class TestAppSettings(AppSettings):
     Settings for test environment
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.harvesters_settings_file: str = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "..",
+            "..",
+            "tests",
+            "harvesters-tests.yml",
+        )
+        try:
+            self.harvesters = AppSettings.lst_from_yml(self.harvesters_settings_file)
+        except FileNotFoundError:
+            print(f">>FileNotFoundError: {self.harvesters_settings_file}")
+
+        self.identifiers_settings_file: str = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "..",
+            "..",
+            "tests",
+            "identifiers-tests.yml",
+        )
+        try:
+            self.identifiers = AppSettings.lst_from_yml(self.identifiers_settings_file)
+        except FileNotFoundError:
+            print(f">>FileNotFoundError: {self.identifiers_settings_file}")
+
     debug: bool = True
 
     logging_level: int = logging.DEBUG
@@ -21,23 +47,3 @@ class TestAppSettings(AppSettings):
     loguru_level: str = "DEBUG"
 
     model_config = SettingsConfigDict(env_file=".test.env", extra="ignore")
-
-    harvesters_settings_file: str = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        "..",
-        "..",
-        "tests",
-        "harvesters-tests.yml",
-    )
-
-    harvesters: list[dict] = AppSettings.lst_from_yml(harvesters_settings_file)
-
-    identifiers_settings_file: str = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)),
-        "..",
-        "..",
-        "tests",
-        "identifiers-tests.yml",
-    )
-
-    identifiers: list[dict] = AppSettings.lst_from_yml(identifiers_settings_file)

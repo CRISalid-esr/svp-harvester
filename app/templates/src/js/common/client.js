@@ -16,7 +16,7 @@ class Client {
     }
 
     apiUrl() {
-        return this.env.SVP_HARVESTER_API_HOST + ":" + this.env.SVP_HARVESTER_API_PORT + this.env.SVP_HARVESTER_API_PATH;
+        return this.env.apiHost + this.env.apiPath;
     }
 }
 

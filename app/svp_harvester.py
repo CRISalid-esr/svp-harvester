@@ -1,5 +1,6 @@
 import asyncio
 
+from aiormq import AMQPConnectionError
 from fastapi import FastAPI
 from loguru import logger
 from pydantic import ValidationError
@@ -46,15 +47,25 @@ class SvpHarvester(FastAPI):
         )
 
         self.add_exception_handler(ValidationError, http422_error_handler)
-
-        self.add_event_handler("startup", self.open_rabbitmq_connexion)
-        self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
+        if settings.amqp_enabled:
+            self.add_event_handler("startup", self.open_rabbitmq_connexion)
+            self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
 
     async def open_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Init AMQP connexion at boot time"""
-        print("Enabling RabbitMQ connexion")
-        self.amqp_interface = AMQPInterface(get_app_settings())
-        asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
+        try:
+            print("Enabling RabbitMQ connexion")
+            self.amqp_interface = AMQPInterface(get_app_settings())
+            asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
+            print("RabbitMQ connexion has been enabled")
+        except AMQPConnectionError as error:
+            raise RuntimeError(
+                "Cannot connect to RabbitMQ, please check your configuration"
+            ) from error
+        except Exception as error:
+            raise RuntimeError(
+                "Cannot enable RabbitMQ connexion, please check your configuration"
+            ) from error
 
     async def close_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Handle last tasks before shutdown"""
