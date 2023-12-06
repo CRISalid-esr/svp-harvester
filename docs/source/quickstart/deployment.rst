@@ -73,6 +73,8 @@ This file will deploy the following containers:
 - rabbitmq message broker
 - svp-harvester application (API + interactive documentation + GUI)
 
+Rename :code:`docker-compose.yml.dist` to :code:`docker-compose.yml` and adapt all environment variables to your needs.
+
 If you need to build the docker image manually (see above steps 2-4), you will need to modify the docker-compose.yml file :
 
 - replace the image name by the one you built
@@ -85,7 +87,6 @@ If you need to build the docker image manually (see above steps 2-4), you will n
 
 5. Start the containers
 
-Adapt all environment variables to your needs.
 Run the following command from the directory containing the docker-compose.yml file:
 
 .. code-block:: bash

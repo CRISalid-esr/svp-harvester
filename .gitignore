@@ -168,3 +168,5 @@ docs/source/confluence/conf.py
 rabbitmq-data
 rabbitmq-logs
 postgres-data
+
+docker-compose.yml
