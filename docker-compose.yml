@@ -16,10 +16,10 @@ services:
     networks:
       - svp-network
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 1s
+      timeout: 3s
+      retries: 30
   svph-db:
     image: postgres:16
     container_name: svph-db
@@ -41,16 +41,17 @@ services:
       retries: 10
   svphweb:
     image: sovisuplus/svp-harvester:latest
-#   build:
-#     context: .
-#     dockerfile: Dockerfile
+    #   build:
+    #     context: .
+    #     dockerfile: Dockerfile
     container_name: svph-web
     ports:
       - 8000:8000
     environment:
       - APP_ENV=DEV
-      - API_VERSION=v1
       - API_HOST=http://localhost:8000
+      - API_PREFIX=/api
+      - API_VERSION=v1
       - DB_HOST=svph-db
       - DB_PORT=5432
       - DB_NAME=svp_harvester
@@ -62,8 +63,10 @@ services:
       - AMQP_USER=svp_harvester
       - AMQP_PASSWORD=svp_harvester
     depends_on:
-      - svp-rabbitmq
-      - svph-db
+      svp-rabbitmq:
+        condition: service_healthy
+      svph-db:
+        condition: service_healthy
     networks:
       - svph-network
       - svp-network

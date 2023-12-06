@@ -1,3 +1,10 @@
+FROM node:18-alpine
+WORKDIR /app
+
+COPY app/templates .
+
+RUN npm install && npm run build
+
 FROM python:3.10
 
 WORKDIR /code
@@ -9,14 +16,7 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY ./docs/build /code/docs/build
-COPY ./img /code/img
-COPY ./alembic /code/alembic
-COPY ./alembic.ini /code/
-COPY ./app /code/app
-COPY ./locales /code/locales
-
-COPY ./harvesters.yml /code/
-COPY ./identifiers.yml /code/
+COPY . .
+COPY --from=0 /static app/static
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
