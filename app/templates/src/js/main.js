@@ -29,8 +29,8 @@ const init = function () {
             new RetrievePage(env, client, document.getElementById("retrieve-page-content"));
             break;
         case "history":
-            client = new Client(env)
-            new HistoryPage(env, client, document.getElementById("history-page-content"))
+            // client = new Client(env)
+            // new HistoryPage(env, client, document.getElementById("history-page-content"))
             break;
         case "settings":
             break;
