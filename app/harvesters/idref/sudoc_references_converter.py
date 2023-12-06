@@ -10,6 +10,7 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.rdf_harvester_raw_result import (
     RdfHarvesterRawResult as RdfRawResult,
 )
+from app.utilities.string_utilities import remove_after_separator
 
 
 class SudocReferencesConverter(AbstractReferencesConverter):
@@ -22,9 +23,17 @@ class SudocReferencesConverter(AbstractReferencesConverter):
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
         new_ref.source_identifier = str(uri)
-        [  # pylint: disable=expression-not-assigned
-            new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
-        ]
+        # [  # pylint: disable=expression-not-assigned
+        #     new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
+        # ]
+        titles = [Title(
+            id=title.id,
+            value=remove_after_separator(title.value, "/"),
+            language=title.language)
+                  for title in self._titles(pub_graph, uri)]
+
+        new_ref.titles.extend(titles)
+
         [  # pylint: disable=expression-not-assigned
             new_ref.abstracts.append(abstract)
             for abstract in self._abstracts(pub_graph, uri)

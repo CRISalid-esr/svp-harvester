@@ -2,4 +2,4 @@
 disable=missing-module-docstring,
         too-few-public-methods
 
-ignore-patterns=alembic/versions/*
+ignore-paths=.*alembic/versions/.*$
