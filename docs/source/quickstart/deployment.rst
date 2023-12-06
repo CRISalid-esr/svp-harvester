@@ -2,13 +2,13 @@ Quick start : deployment
 ------------------------
 
 ################
-Docker image (pre-build)
+Docker image
 ################
 
-At the time of writing, svp-harvester docker image should only be rebuilt if you want to adapt
-some hard-coded parameters in javascript environment variables or in order to customize the look and feel.
-Note that in case your are not planning to use the GUI, or if you are planning to use it on localhost (for testing purpose),
-you can use the pre-build docker image from docker hub and skip the following 1-4 steps.
+At the time of writing, svp-harvester docker image should only be rebuilt if you want to
+modify the translation files, adapt some hard-coded parameters in javascript environment variables
+or in order to customize the look and feel.
+If you just want to deploy the application, you can use the pre-build docker image from docker hub and skip the following 2-4 steps.
 
 1. Clone the repository
 
@@ -27,8 +27,8 @@ these parameters client side, you can uncomment them and set them to the desired
 
 .. code-block:: javascript
 
-    //apiHost: "http://localhost",
-    //apiPath: "/api/v1",
+    // apiHost: "http://localhost",
+    // apiPath: "/api/v1",
 
 The remaining parameters are related to the list of identifiers types that are available from the collection test form.
 
@@ -67,5 +67,27 @@ From repository root directory:
 Docker compose
 ################
 
+If you want to deploy the application using docker compose, you can use the provided docker-compose.yml file.
+This file will deploy the following containers:
+- postgresql database
+- rabbitmq message broker
+- svp-harvester application (API + interactive documentation + GUI)
 
+If you need to build the docker image manually (see above steps 2-4), you will need to modify the docker-compose.yml file :
 
+- replace the image name by the one you built
+- or uncomment the build section and comment out the image section
+  svphweb:
+    #image: sovisuplus/svp-harvester:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+5. Start the containers
+
+Adapt all environment variables to your needs.
+Run the following command from the directory containing the docker-compose.yml file:
+
+.. code-block:: bash
+
+    docker-compose up -d
