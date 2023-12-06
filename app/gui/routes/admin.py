@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 
+from app.config import get_app_settings
 from app.gui.routes.templating import get_templating_engine
 from app.i18n.get_request_locale import get_request_locale
 
@@ -8,12 +9,38 @@ I18N_DOMAIN = "admin"
 router = APIRouter()
 
 
+def with_api_informations():
+    """
+    Function to add api informations to the response for the admin gui
+    API information will be printed in hidden inputs in the html
+    where they are available for the javascript code
+    to make api calls from the gui
+
+    :return: dict containing api informations
+    """
+    return {
+        "api_host": get_app_settings().api_host,
+        "api_path": f"{get_app_settings().api_prefix}/{get_app_settings().api_version}",
+    }
+
+
+def with_locale(request: Request):
+    """
+    Function to add locale to the response for the admin gui
+    :param request: request object
+    :return: dict containing locale
+    """
+    return {"locale": get_request_locale(request)}
+
+
 @router.get("")
 async def overview(request: Request):
     """Return the overview page in the admin gui"""
     return get_templating_engine("admin", get_request_locale(request)).TemplateResponse(
         "overview.html.jinja",
-        {"request": request, "page": "overview", "locale": get_request_locale(request)},
+        {"request": request, "page": "overview"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
@@ -22,7 +49,9 @@ async def get_retrieve(request: Request):
     """Return the retrieve page in the admin gui"""
     return get_templating_engine("admin", get_request_locale(request)).TemplateResponse(
         "retrieve.html.jinja",
-        {"request": request, "page": "retrieve", "locale": get_request_locale(request)},
+        {"request": request, "page": "retrieve"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
@@ -33,7 +62,9 @@ async def get_history(request: Request):
         I18N_DOMAIN, get_request_locale(request)
     ).TemplateResponse(
         "history.html.jinja",
-        {"request": request, "page": "history", "locale": get_request_locale(request)},
+        {"request": request, "page": "history"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
