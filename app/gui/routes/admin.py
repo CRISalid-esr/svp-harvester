@@ -16,7 +16,7 @@ def with_api_informations():
     where they are available for the javascript code
     to make api calls from the gui
 
-    :return: decorated function
+    :return: dict containing api informations
     """
     return {
         "api_host": get_app_settings().api_host,
@@ -27,8 +27,8 @@ def with_api_informations():
 def with_locale(request: Request):
     """
     Function to add locale to the response for the admin gui
-
-    :return: decorated function
+    :param request: request object
+    :return: dict containing locale
     """
     return {"locale": get_request_locale(request)}
 
