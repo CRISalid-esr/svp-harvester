@@ -8,18 +8,18 @@
     <!-- Display tabs -->
     <ul class="nav nav-pills mb-3">
         <li class="nav-item">
-            <a class="nav-link {% if subpage == 'collect_history' %} active {% endif %}" href="/admin/history/collect?locale={{ locale }}">Collect History</a>
+            <a class="nav-link {% if subpage == 'collection_history' %} active {% endif %}" href="/admin/history/collection?locale={{ locale }}">{% trans %}history_page_collection_history_link{% endtrans %}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if subpage == 'publication_history' %} active {% endif %}" href="/admin/history/publication?locale={{ locale }}">Publication History</a>
+            <a class="nav-link {% if subpage == 'publication_history' %} active {% endif %}" href="/admin/history/publication?locale={{ locale }}">{% trans %}history_page_publication_history_link{% endtrans %}</a>
         </li>
     </ul>
 
     <!-- Display appropriate content -->
-    {% if subpage == 'collect_history' %}
-        {% include 'history_collect.html.jinja' %}
+    {% if subpage == 'collection_history' %}
+        {% include 'collection_history.html.jinja' %}
     {% elif subpage == 'publication_history' %}
-        {% include 'history_publication.html.jinja' %}
+        {% include 'publication_history.html.jinja' %}
     {% endif %}
 
 {% endblock %}
