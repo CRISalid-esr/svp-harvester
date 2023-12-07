@@ -4,6 +4,7 @@ import DateRangePicker from 'vanillajs-datepicker/DateRangePicker';
 import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
+import EventTypeSelector from "../common/event_type_selector";
 
 
 const IDENTIFIER_NULL_VALUE = "null";
@@ -34,10 +35,7 @@ class Form {
     }
 
     handleEventTypesSelect() {
-        this.eventTypeSelect = new TomSelect("#event-type-select", {
-            sortField: {field: "text"},
-            plugins: ['checkbox_options', 'remove_button', 'clear_button'],
-        });
+        this.eventTypeSelect = new EventTypeSelector("#event-type-select");
     }
 
     handleDataSourcesSelect() {
