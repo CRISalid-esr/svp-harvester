@@ -30,7 +30,8 @@ const init = function () {
             break;
         case "history":
             client = new Client(env)
-            new HistoryPage(env, client, document.getElementById("history-page-content"))
+            const subpage = document.getElementById("subpage-identifier").value;
+            new HistoryPage(env, client, document.getElementById("history-page-content",), subpage)
             break;
         case "settings":
             break;

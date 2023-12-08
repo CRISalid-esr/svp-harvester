@@ -1,10 +1,8 @@
 {% extends "./base.html.jinja" %}
-{#  faire  le tempating de base du mockup figma #}
 
 {% block head_title %}{% trans %}history_page_title{% endtrans %}{% endblock %}
 {% block first_section_title %}{% trans %}history_page_title{% endtrans %}{% endblock %}
 {% block first_section_content %}
-
     <!-- Display tabs -->
     <ul class="nav nav-pills mb-3">
         <li class="nav-item">
@@ -16,6 +14,7 @@
     </ul>
 
     <!-- Display appropriate content -->
+    <input type="hidden" id="subpage-identifier" value="{{ subpage }}">
     {% if subpage == 'collection_history' %}
         {% include 'collection_history.html.jinja' %}
     {% elif subpage == 'publication_history' %}

@@ -3,9 +3,9 @@ import HistoryTable from "./history_table";
 import Control from "./control";
 
 class HistoryPage {
-    constructor(env,client, rootElement) {
+    constructor(env,client, rootElement, subpage) {
         const form = new HistoryForm(env, rootElement)
-        const historyTable = new HistoryTable(env, rootElement);
+        const historyTable = new HistoryTable(env, rootElement, subpage);
         new Control(env, form, historyTable, rootElement, client);
     }
 }
