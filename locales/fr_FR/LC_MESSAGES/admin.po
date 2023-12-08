@@ -215,7 +215,7 @@ msgstr ""
 #: app/templates/publication_history.html.jinja:147
 #, fuzzy
 msgid "harvesting_range_start_input_label"
-msgstr "Choisissez la date de publication minimale des références à collecter"
+msgstr "Depuis :"
 
 #: app/templates/collection_history.html.jinja:143
 #: app/templates/publication_history.html.jinja:150
@@ -256,11 +256,11 @@ msgstr "Date de publication maximale"
 #: app/templates/publication_history.html.jinja:166
 #, fuzzy
 msgid "history_page_launch_retrieval_history_button_label"
-msgstr "Lancer la collecte"
+msgstr "Rechercher"
 
 #: app/templates/collection_history.html.jinja:166
 msgid "hide_empty_collect_results"
-msgstr ""
+msgstr "Masquer les collectes sans résultat"
 
 #: app/templates/collection_history.html.jinja:176
 #: app/templates/publication_history.html.jinja:176
@@ -274,11 +274,11 @@ msgstr ""
 
 #: app/templates/history.html.jinja:11
 msgid "history_page_collection_history_link"
-msgstr ""
+msgstr "Historique des collectes"
 
 #: app/templates/history.html.jinja:14
 msgid "history_page_publication_history_link"
-msgstr ""
+msgstr "Historique des publications collectées"
 
 #: app/templates/overview.html.jinja:2 app/templates/overview.html.jinja:3
 #, fuzzy
@@ -288,11 +288,6 @@ msgstr ""
 "références bibliographiques"
 
 #: app/templates/publication_history.html.jinja:7
-msgid ""
-"\n"
-"              history_publication_searchbar_label"
-msgstr ""
-
 #: app/templates/publication_history.html.jinja:10
 msgid "history_publication_searchbar_label"
 msgstr ""

@@ -249,9 +249,7 @@ msgid "overview_page_overview_page_title"
 msgstr ""
 
 #: app/templates/publication_history.html.jinja:7
-msgid ""
-"\n"
-"              history_publication_searchbar_label"
+msgid "history_publication_searchbar_label"
 msgstr ""
 
 #: app/templates/publication_history.html.jinja:10
