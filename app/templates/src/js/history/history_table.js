@@ -1,6 +1,7 @@
 import DataTable from 'datatables.net-dt';
 
 // TODO: Complete HistoryTable, check references_table as base
+// TODO: Add condition to show datatable depending the subpage shown
 class HistoryTable{
     constructor(env, rootElement) {
         this.env = env;
