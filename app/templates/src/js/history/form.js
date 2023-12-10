@@ -1,4 +1,4 @@
-import EventTypeSelector from "../common/event_type_selector";
+import TextFieldSelector from "../common/text_field_selector";
 import TomSelect from "tom-select";
 import DateRangePicker from "vanillajs-datepicker/DateRangePicker";
 
@@ -12,14 +12,11 @@ class HistoryForm {
     }
 
     handleEventTypesSelect() {
-        this.eventTypeSelect = new EventTypeSelector("#event-type-select");
+        this.eventTypeSelect = new TextFieldSelector("#event-type-select");
     }
 
     handleDataSourcesSelect() {
-        this.harvestersSelect = new TomSelect("#harvesters-select", {
-            sortField: {field: "text"},
-            plugins: ['checkbox_options', 'remove_button', 'clear_button'],
-        });
+        this.harvestersSelect = new TextFieldSelector("#harvesters-select");
     }
 
     handleDatePickers() {

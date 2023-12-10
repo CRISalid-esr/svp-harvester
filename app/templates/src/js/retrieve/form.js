@@ -4,7 +4,7 @@ import DateRangePicker from 'vanillajs-datepicker/DateRangePicker';
 import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
-import EventTypeSelector from "../common/event_type_selector";
+import TextFieldSelector from "../common/text_field_selector";
 
 
 const IDENTIFIER_NULL_VALUE = "null";
@@ -28,21 +28,15 @@ class Form {
     }
 
     handleReferenceTypesSelect() {
-        this.referenceTypeSelect = new TomSelect("#reference-type-select", {
-            sortField: {field: "text"},
-            plugins: ['checkbox_options', 'dropdown_input', 'remove_button', 'clear_button'],
-        });
+        this.referenceTypeSelect = new TextFieldSelector("#reference-type-select", ['dropdown_input']);
     }
 
     handleEventTypesSelect() {
-        this.eventTypeSelect = new EventTypeSelector("#event-type-select");
+        this.eventTypeSelect = new TextFieldSelector("#event-type-select");
     }
 
     handleDataSourcesSelect() {
-        this.harvestersSelect = new TomSelect("#harvesters-select", {
-            sortField: {field: "text"},
-            plugins: ['checkbox_options', 'remove_button', 'clear_button'],
-        });
+        this.harvestersSelect = new TextFieldSelector("#harvesters-select");
     }
 
     handleDatePickers() {
@@ -188,7 +182,10 @@ class Form {
         //if identifier value il an empty or blank string, return the explicit "null" value
         // user are allowed to clear an identifier value this way
         if (identifierValue.match(/^\s*$/)) {
-            return {identifierType: identifierType, identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""};
+            return {
+                identifierType: identifierType,
+                identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""
+            };
         }
         return {identifierType: identifierType, identifierValue: identifierValue};
     }
