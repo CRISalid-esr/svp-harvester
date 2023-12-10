@@ -31,7 +31,7 @@ msgstr "Collecte de données"
 
 #: app/templates/base.html.jinja:67
 msgid "main_menu_history_entry"
-msgstr "Historique des collectes"
+msgstr "Historique"
 
 #: app/templates/base.html.jinja:74
 #, fuzzy
@@ -270,7 +270,7 @@ msgstr "Références collectées"
 
 #: app/templates/history.html.jinja:4 app/templates/history.html.jinja:5
 msgid "history_page_title"
-msgstr ""
+msgstr "Historique"
 
 #: app/templates/history.html.jinja:11
 msgid "history_page_collection_history_link"
