@@ -238,7 +238,7 @@ msgid "history_page_launch_retrieval_history_button_label"
 msgstr ""
 
 #: app/templates/collection_history.html.jinja:166
-msgid "hide_empty_collect_results"
+msgid "hide_empty_collection_results"
 msgstr ""
 
 #: app/templates/collection_history.html.jinja:176
