@@ -3,14 +3,10 @@ import TomSelect from "tom-select";
 class TextFieldSelector {
 
     constructor(rootElementSelector, plugins = []) {
-        this.defaultPlugins = ['checkbox_options', 'remove_button', 'clear_button']
-        this.allowedPlugins = ['dropdown_input'].concat(this.defaultPlugins);
+        const defaultPlugins = ['checkbox_options', 'remove_button', 'clear_button']
 
-        // Filter the 'plugins' passed in to remove any plugins not part of 'allowedPlugins'
-        const validPlugins = plugins.filter(plugin => this.allowedPlugins.includes(plugin))
-
-        // Combine and deduplicate plugins from default and provided lists.
-        const allPlugins = [...new Set([...this.defaultPlugins, ...validPlugins])];
+        // Combine default plugins and provided plugins, removing any duplicates.
+        const allPlugins = [...new Set([...defaultPlugins, ...plugins])];
 
         this.selector = new TomSelect(rootElementSelector, {
             sortField: {field: "text"},

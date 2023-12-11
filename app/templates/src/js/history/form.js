@@ -32,10 +32,10 @@ class HistoryForm {
     }
 
     addSubmitListener() {
-        this.formElement.addEventListener("submit", this.handleSubmit.bind(this));
+        this.formElement.addEventListener("submit", this.search_Submit.bind(this));
     }
 
-    handleSubmit(event){
+    search_Submit(event){
         event.preventDefault();
         event.stopPropagation();
         const entitySubmitEvent = new CustomEvent("entity_submit",
