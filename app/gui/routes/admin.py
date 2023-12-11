@@ -1,12 +1,37 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
 
+from app.config import get_app_settings
 from app.gui.routes.templating import get_templating_engine
 from app.i18n.get_request_locale import get_request_locale
 
 I18N_DOMAIN = "admin"
 HISTORY_SUBPAGES = ["collection", "publication"]  # Update this list as you add subpages
 router = APIRouter()
+
+
+def with_api_informations():
+    """
+    Function to add api informations to the response for the admin gui
+    API information will be printed in hidden inputs in the html
+    where they are available for the javascript code
+    to make api calls from the gui
+
+    :return: dict containing api informations
+    """
+    return {
+        "api_host": get_app_settings().api_host,
+        "api_path": f"{get_app_settings().api_prefix}/{get_app_settings().api_version}",
+    }
+
+
+def with_locale(request: Request):
+    """
+    Function to add locale to the response for the admin gui
+    :param request: request object
+    :return: dict containing locale
+    """
+    return {"locale": get_request_locale(request)}
 
 
 @router.get("")
@@ -16,7 +41,9 @@ async def overview(request: Request):
         I18N_DOMAIN, get_request_locale(request)
     ).TemplateResponse(
         "overview.html.jinja",
-        {"request": request, "page": "overview", "locale": get_request_locale(request)},
+        {"request": request, "page": "overview"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
@@ -27,7 +54,9 @@ async def get_retrieve(request: Request):
         I18N_DOMAIN, get_request_locale(request)
     ).TemplateResponse(
         "retrieve.html.jinja",
-        {"request": request, "page": "retrieve", "locale": get_request_locale(request)},
+        {"request": request, "page": "retrieve"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
@@ -44,8 +73,9 @@ async def get_history(request: Request, subpage: str):
             "request": request,
             "page": "history",
             "subpage": f"{subpage}_history",
-            "locale": get_request_locale(request),
-        },
+        }
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 
@@ -69,7 +99,9 @@ async def get_settings(request: Request):
         I18N_DOMAIN, get_request_locale(request)
     ).TemplateResponse(
         "base.html.jinja",
-        {"request": request, "page": "settings", "locale": get_request_locale(request)},
+        {"request": request, "page": "settings"}
+        | with_locale(request)
+        | with_api_informations(),
     )
 
 

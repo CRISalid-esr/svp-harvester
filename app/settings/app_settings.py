@@ -41,6 +41,8 @@ class AppSettings(BaseSettings):
     api_prefix: str = "/api"
     api_version: str = "v0"
 
+    amqp_enabled: bool = True
+
     amqp_user: str = "guest"
     amqp_password: str = "guest"
     amqp_host: str = "127.0.0.1"
@@ -58,3 +60,7 @@ class AppSettings(BaseSettings):
     db_password: str = "secret"
     db_host: str = "localhost"
     db_port: int = 5432
+
+    scanr_es_host: str = "https://host_name.com/"
+    scanr_es_user: str = "johndoe"
+    scanr_es_password: str = "pass"

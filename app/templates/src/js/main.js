@@ -21,15 +21,19 @@ const init = function () {
     enableTooltips();
     const pageIdentifier = document.getElementById("page-identifier").value;
     let client; // Declare client here
+    const apiInformations = {
+        apiHost: env.apiHost || document.getElementById("api-host")?.value,
+        apiPath: env.apiPath || document.getElementById("api-path")?.value,
+    }
     switch (pageIdentifier) {
         case "overview":
             break;
         case "retrieve":
-            client = new Client(env);
+            client = new Client({...env, ...apiInformations});
             new RetrievePage(env, client, document.getElementById("retrieve-page-content"));
             break;
         case "history":
-            client = new Client(env)
+            client = new Client({...env, ...apiInformations});
             const subpage = document.getElementById("subpage-identifier").value;
             new HistoryPage(env, client, document.getElementById("history-page-content",), subpage)
             break;

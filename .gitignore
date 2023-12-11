@@ -165,6 +165,8 @@ app/templates/src/js/env.js
 
 docs/source/confluence/conf.py
 
-rabbitmq-logs
 rabbitmq-data
+rabbitmq-logs
 postgres-data
+
+docker-compose.yml
