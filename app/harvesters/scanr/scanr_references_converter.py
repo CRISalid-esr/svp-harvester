@@ -24,26 +24,32 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         title = json_payload["_source"].get("title")
         if title:
-            new_ref.titles.extend(
-                [
-                    Title(value=value, language=None if key == "default" else key)
-                    for key, value in title.items()
-                ]
-            )
+            new_ref.titles.extend(self._remove_duplicates_from_language_data(title, Title))
 
         summary = json_payload["_source"].get("summary")
         if summary:
-            new_ref.abstracts.extend(
-                [
-                    Abstract(value=value, language=None if key == "default" else key)
-                    for key, value in summary.items()
-                ]
-            )
+            new_ref.abstracts.extend(self._remove_duplicates_from_language_data(summary, Abstract))
 
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
         new_ref.source_identifier = json_payload["_source"].get("id")
         return new_ref
+
+    def _remove_duplicates_from_language_data(self, language_data: dict, model_class):
+
+        processed_items = [
+            model_class(value=value, language=key)
+            for key, value in language_data.items() if key != "default"
+        ]
+
+        default_item = language_data.get("default")
+
+        if default_item:
+
+            if not any(item for item in processed_items if item.value == default_item):
+                processed_items.append(model_class(value=default_item, language=None))
+
+        return processed_items
 
     def _hash_keys(self):
         return [
