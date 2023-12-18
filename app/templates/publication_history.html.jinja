@@ -139,7 +139,7 @@
             data-bs-toggle="tooltip"
             data-bs-title="{% trans %}history_page_harvesting_range_select_help_text{% endtrans %}"
         ></i></h2>
-        <span></span>
+
         <div class="row">
           <div id="date-range-picker-container" class="d-flex col-md-8 col-12">
             <div>
@@ -160,10 +160,15 @@
                      placeholder="{% trans %}harvesting_range_end_input_placeholder{% endtrans %}">
             </div>
           </div>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end col-md-4 col-12">
-            <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i
-                class="bi bi-search"></i>
-              {% trans %}history_page_launch_retrieval_history_button_label{% endtrans %}</button>
+          <div class="col-md-4 col-12 d-md-flex justify-content-md-end">
+            <div class="row align-items-end">
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary" id="run-retrieval-btn"><i
+                    class="bi bi-search"></i>
+                  {% trans %}retrieve_page_launch_retrieval_button_label{% endtrans %}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -19,7 +19,6 @@ class Form {
         this.handleReferenceTypesSelect();
         this.handleEventTypesSelect();
         this.handleDataSourcesSelect();
-        this.handleDatePickers();
         this.handleIdentifiersSafeModeToggle();
         this.handleHistorySafeModeToggle();
         this.renewAddIdentifierControl();
@@ -37,13 +36,6 @@ class Form {
 
     handleDataSourcesSelect() {
         this.harvestersSelect = new TextFieldSelector("#harvesters-select");
-    }
-
-    handleDatePickers() {
-        this.dateRangePicker = new DateRangePicker(this.formElement.querySelector("#date-range-picker-container"), {
-            buttonClass: 'btn',
-            clearButton: 'true',
-        })
     }
 
     handleIdentifiersSafeModeToggle() {
