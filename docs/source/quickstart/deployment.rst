@@ -80,7 +80,7 @@ If you need to build the docker image manually (see above steps 2-4), you will n
 - replace the image name by the one you built
 - or uncomment the build section and comment out the image section
   svphweb:
-    #image: sovisuplus/svp-harvester:latest
+    #image: crisalidesr/svp-harvester:latest
     build:
       context: .
       dockerfile: Dockerfile

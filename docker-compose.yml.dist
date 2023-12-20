@@ -40,7 +40,7 @@ services:
       timeout: 5s
       retries: 10
   svphweb:
-    image: sovisuplus/svp-harvester:latest
+    image: crisalidesr/svp-harvester:latest
     #   build:
     #     context: .
     #     dockerfile: Dockerfile
