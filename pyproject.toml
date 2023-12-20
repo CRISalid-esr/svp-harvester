@@ -5,7 +5,7 @@ description = ""
 authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
 license = "Cecill"
 readme = "README.md"
-repository = "https://github.com/jdp1ps/svp-harvester"
+repository = "https://github.com/CRISalid-esr/svp-harvester"
 documentation = ""
 packages = [{ include = "svp_harvester" }]
 

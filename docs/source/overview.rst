@@ -8,7 +8,7 @@ It is intended to provide a unified interface to the various scholarly publicati
 Project repository and live demo 📺
 -----------------------------------
 .. |ico1| image:: https://img.shields.io/badge/GitHub--repository-svp--harvester-blue?style=flat-square&logo=github
-    :target: https://github.com/jdp1ps/svp-harvester#readme
+    :target: https://github.com/CRISalid-esr/svp-harvester#readme
     :alt: GitHub repository
 |ico1| Source code is available on Github
 
@@ -33,7 +33,7 @@ Overall operating mode
 
 The **SoVisu+ Harvester** is designed to receive requests containing a list of :doc:`identifiers<reference/identifiers>` for a so-called :doc:`"research entity"<reference/entities>` (which can be an author, research structure, research institution or research project) and to return a list of bibliographic references encoded with a :doc:`common model<reference/model>` that are associated with the research entity.
 
-.. image:: https://raw.githubusercontent.com/jdp1ps/svp-harvester/dev-main/img/svp-harvester-overall-behavior.png
+.. image:: https://raw.githubusercontent.com/CRISalid-esr/svp-harvester/dev-main/img/svp-harvester-overall-behavior.png
   :width: 1000
   :alt: **SoVisu+ Harvester** operating mode
 
