@@ -14,7 +14,7 @@ If you just want to deploy the application, you can use the pre-build docker ima
 
 ..  code-block:: bash
 
-    git clone https://github.com/jdp1ps/svp-harvester.git
+    git clone https://github.com/CRISalid-esr/svp-harvester.git
 
 
 2. Customize js environment variables
