@@ -1,3 +1,4 @@
+import asyncio
 import re
 import urllib
 from enum import Enum
@@ -33,6 +34,7 @@ class IdrefHarvester(AbstractHarvester):
     SUDOC_URL_SUFFIX = "http://www.sudoc.fr/"
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
+    MAX_SUDOC_PARALLELISM = 3
 
     class Formatters(Enum):
         """
@@ -60,26 +62,34 @@ class IdrefHarvester(AbstractHarvester):
                 builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_orcid(
                     orcid
                 )
-        # pending_queries = []
+        pending_queries = set()
+        num_sudoc_waiting_queries = 0
         async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
             coro = self._secondary_query_process(doc)
-            # TODO temporary sequential implementation
-            # Sudoc server does not support parallel querying
-            #     pending_queries.append(asyncio.create_task(coro))
-            # while pending_queries:
-            #     done_queries, pending_queries = await asyncio.wait(
-            #         pending_queries, return_when=asyncio.FIRST_COMPLETED
-            #     )
-            #     done_queries
-            #     for query in done_queries:
-            #         pub = await query
-            #         if pub:
-            #             yield pub
-            if not coro:
-                continue
-            pub = await coro
-            if pub:
-                yield pub
+            # TODO temporary semi-sequential implementation
+            # Sudoc server does not support parallel querying beyond 5 parallel requests
+            pending_queries.add(asyncio.create_task(coro))
+            if doc["secondary_source"] == "SUDOC":
+                num_sudoc_waiting_queries += 1
+            if num_sudoc_waiting_queries >= self.MAX_SUDOC_PARALLELISM:
+                num_sudoc_waiting_queries = 0
+                while pending_queries:
+                    done_queries, pending_queries = await asyncio.wait(
+                        pending_queries, return_when=asyncio.ALL_COMPLETED
+                    )
+                for query in done_queries:
+                    pub = await query
+                    if pub:
+                        yield pub
+        # process remaining queries
+        while pending_queries:
+            done_queries, pending_queries = await asyncio.wait(
+                pending_queries, return_when=asyncio.FIRST_COMPLETED
+            )
+            for query in done_queries:
+                pub = await query
+                if pub:
+                    yield pub
 
     def _secondary_query_process(self, doc: dict):
         coro = None
