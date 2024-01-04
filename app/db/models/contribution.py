@@ -34,6 +34,7 @@ class Contribution(Base):
         AUTHOR_OF_INTRODUCTION = "Author Of Introduction"
         SPEAKER = "Speaker"
         OTHER = "Other"
+        UNKNOWN = "Unknown"
 
     __tablename__ = "contributions"
 

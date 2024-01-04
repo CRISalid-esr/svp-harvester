@@ -34,9 +34,9 @@ class HalQualitiesConverter:
         :param quality: hal role value
         :return: loc role value
         """
-
         if quality in HalQualitiesConverter.ROLES_MAPPING:
             contribution_role = HalQualitiesConverter.ROLES_MAPPING[quality]
-            return contribution_role.value
+        else:
+            contribution_role = Contribution.Role.UNKNOWN
 
-        return f"Hal role {quality} not recognized"
+        return contribution_role.value
