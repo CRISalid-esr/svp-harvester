@@ -20,11 +20,21 @@ class Contribution(Base):
         """
 
         AUTHOR = "Author"
+        CORRESPONDENT_AUTHOR = "Correspondent Author"
         CONTRIBUTOR = "Contributor"
+        ANNOTATOR = "Annotator"
+        COMPILER = "Compiler"
         COMPOSER = "Composer"
         EDITOR = "Editor"
+        SCIENTIFIC_EDITOR = "Scientific Editor"
         ILLUSTRATOR = "Illustrator"
         TRANSLATOR = "Translator"
+        INTERVIEWEE = "Interviewee"
+        INTERVIEWER = "Interviewer"
+        AUTHOR_OF_INTRODUCTION = "Author Of Introduction"
+        SPEAKER = "Speaker"
+        OTHER = "Other"
+        UNKNOWN = "Unknown"
 
     __tablename__ = "contributions"
 
