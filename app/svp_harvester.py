@@ -40,7 +40,7 @@ class SvpHarvester(FastAPI):
 
         logger.add(
             sys.stderr,
-            format="Log : [{extra[log_id]}]:{time} - {level} - {message}",
+            format="Log : {time} - {level} - {message}",
             level=settings.loguru_level,
         )
 
