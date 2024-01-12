@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
 
+from loguru import logger
+
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
@@ -147,8 +149,9 @@ class AbstractHarvester(ABC):
             await self.handle_error(error)
         # this is for debugging purpose only
         # as no other exception types are expected during normal execution
-        # except Exception as error:
-        #     raise error
+        except Exception as error:
+            logger.info(f"Harvester error : {str(error)}")
+            raise error
 
     async def _handle_converted_result(
         self,
