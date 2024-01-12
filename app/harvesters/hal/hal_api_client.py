@@ -23,7 +23,8 @@ class HalApiClient:
         """
         try:
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None)
+                connector=aiohttp.TCPConnector(limit=None),
+                trust_env=True,
             ) as session:
                 async with session.get(f"{self.HAL_API_URL}/?{query_string}") as resp:
                     logger.info(f"HAL API request : {self.HAL_API_URL}/?{query_string}")

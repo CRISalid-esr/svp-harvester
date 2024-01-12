@@ -19,7 +19,7 @@ class RdfResolver:
         """
         try:
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None)
+                connector=aiohttp.TCPConnector(limit=None), trust_env=True
             ) as session:
                 async with session.get(document_uri) as resp:
                     if resp.status == 200:
