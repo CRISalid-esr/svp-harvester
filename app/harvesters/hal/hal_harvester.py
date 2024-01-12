@@ -41,7 +41,7 @@ class HalHarvester(AbstractHarvester):
 
         assert (
             False
-        ), "Unable to run hal harvester for a person without id_hal_i or id_hal_s"
+        ), "Unable to run hal harvester for a person without id_hal_i, id_hal_s or ORCID"
 
     async def fetch_results(self) -> AsyncGenerator[JsonRawResult, None]:
         """
