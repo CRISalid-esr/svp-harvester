@@ -1,5 +1,7 @@
 from typing import AsyncGenerator, Type
 
+from loguru import logger
+
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
 from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
@@ -58,6 +60,7 @@ class HalHarvester(AbstractHarvester):
             identifier_type=identifier_type,
             identifier_value=identifier_value,
         )
+        logger.info(f"HAL query: {builder.build()}")
         async for doc in HalApiClient().fetch(builder.build()):
             yield JsonRawResult(
                 payload=doc,

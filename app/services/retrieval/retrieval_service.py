@@ -4,6 +4,7 @@ from asyncio import Queue
 from typing import Annotated, Optional, List, Type
 
 from fastapi import Depends, Body, HTTPException
+from loguru import logger
 from starlette.background import BackgroundTasks
 
 from app.api.dependencies.event_types import event_types_or_default
@@ -98,6 +99,10 @@ class RetrievalService:
 
     def _build_harvesters(self):
         for harvester_config in self.settings.harvesters:
+            logger.info(
+                f"Loading harvester {harvester_config['name']} "
+                f"from {harvester_config['module']}.{harvester_config['class']}"
+            )
             if (
                 self.harvesters_list is not None
                 and harvester_config["name"] not in self.harvesters_list
@@ -157,5 +162,5 @@ class RetrievalService:
                 raise HTTPException(
                     status_code=422,
                     detail=f"Unprocessable Entity: {conflicting_identifiers}"
-                           f" cannot be declared and nullified at same time"
+                    f" cannot be declared and nullified at same time",
                 )
