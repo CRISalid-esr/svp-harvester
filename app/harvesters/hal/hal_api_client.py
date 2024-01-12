@@ -26,10 +26,8 @@ class HalApiClient:
                 connector=aiohttp.TCPConnector(limit=None)
             ) as session:
                 async with session.get(f"{self.HAL_API_URL}/?{query_string}") as resp:
-                    logger.error(
-                        f"HAL API request : {self.HAL_API_URL}/?{query_string}"
-                    )
-                    logger.error(f"HAL API response : {resp}")
+                    logger.info(f"HAL API request : {self.HAL_API_URL}/?{query_string}")
+                    logger.info(f"HAL API response : {resp}")
                     if resp.status == 200:
                         json_response = await resp.json()
                         # Hal API doesn't provide information about the error in the response body
