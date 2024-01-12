@@ -1,6 +1,7 @@
 from typing import Generator
 
 import aiohttp
+from loguru import logger
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -25,6 +26,10 @@ class HalApiClient:
                 connector=aiohttp.TCPConnector(limit=None)
             ) as session:
                 async with session.get(f"{self.HAL_API_URL}/?{query_string}") as resp:
+                    logger.error(
+                        f"HAL API request : {self.HAL_API_URL}/?{query_string}"
+                    )
+                    logger.error(f"HAL API response : {resp}")
                     if resp.status == 200:
                         json_response = await resp.json()
                         # Hal API doesn't provide information about the error in the response body
