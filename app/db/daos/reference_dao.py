@@ -32,11 +32,11 @@ class ReferenceDAO(AbstractDAO):
         subquery = (
             select(func.max(Harvesting.id).label("max_harvesting_id"))
             .join(Retrieval)
+            .where(Harvesting.history.is_(True))
             .where(Retrieval.entity_id == entity_id)
             .where(Harvesting.harvester == harvester)
             .where(Harvesting.id != harvesting_id)
             .where(Harvesting.state == Harvesting.State.COMPLETED.value)
-            .where(Harvesting.history.is_(True))
         ).subquery()
         # find all references related to the last harvesting
         # that are not of "deleted" type
