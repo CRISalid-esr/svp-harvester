@@ -20,8 +20,6 @@ from app.db.models import (
     retrieval,
     subtitle,
     title,
-    document_type,
-    harvesting_error,
 )
 from app.db.session import Base
 
@@ -45,8 +43,6 @@ def _register_models_for_migrations():
         retrieval,
         subtitle,
         title,
-        document_type,
-        harvesting_error,
     )
 
 
@@ -65,6 +61,20 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 settings = get_app_settings()
+config.set_main_option(
+    "sqlalchemy.url",
+    f"postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}",
+)
+    title,
+    document_type,
+    harvesting_error,
+    This function is used to prevent models from being removed during code reformatting.
+    The models imported are necessary for the SQLAlchemy and Alembic, even though they
+    don't appear to be directly used in the script.
+    """
+        title,
+        document_type,
+        harvesting_error,
 config.set_main_option(
     "sqlalchemy.url",
     f"postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}",
