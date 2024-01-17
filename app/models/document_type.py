@@ -12,4 +12,4 @@ class DocumentType(BaseModel):
 
     code: str
 
-    label: str
+    label: str | None
