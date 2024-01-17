@@ -10,6 +10,6 @@ class DocumentType(BaseModel):
 
     id: int
 
-    code: str
+    uri: str
 
     label: str | None
