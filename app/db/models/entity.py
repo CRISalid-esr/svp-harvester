@@ -12,7 +12,7 @@ class Entity(Base):
 
     __tablename__ = "entities"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     type: Mapped[str]
     name: Mapped[str] = mapped_column(nullable=True)
 

@@ -18,5 +18,5 @@ class LiteralField(Base):
     }
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    value: Mapped[str] = mapped_column(nullable=False)
+    value: Mapped[str] = mapped_column(nullable=False, index=True)
     language: Mapped[str] = mapped_column(nullable=True, index=True)
