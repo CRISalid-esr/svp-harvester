@@ -19,17 +19,18 @@ from app.db.models import (
     reference,
     retrieval,
     subtitle,
-    title
+    title,
+    document_type,
 )
 from app.db.session import Base
 
 
 def _register_models_for_migrations():
     """
-        This function is used to prevent models from being removed during code reformatting.
-        The models imported are necessary for the SQLAlchemy and Alembic, even though they
-        don't appear to be directly used in the script.
-        """
+    This function is used to prevent models from being removed during code reformatting.
+    The models imported are necessary for the SQLAlchemy and Alembic, even though they
+    don't appear to be directly used in the script.
+    """
     _ = (
         concept,
         entity,
@@ -42,7 +43,8 @@ def _register_models_for_migrations():
         reference,
         retrieval,
         subtitle,
-        title
+        title,
+        document_type,
     )
 
 
@@ -61,8 +63,10 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 settings = get_app_settings()
-config.set_main_option("sqlalchemy.url",
-                       f'postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+config.set_main_option(
+    "sqlalchemy.url",
+    f"postgresql+asyncpg://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}",
+)
 
 
 # other values from the config, defined by the needs of env.py,

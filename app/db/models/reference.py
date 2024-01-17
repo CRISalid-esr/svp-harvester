@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.abstract import Abstract
 from app.db.models.references_subject import references_subjects_table
+from app.db.models.references_document_type import references_document_type_table
 from app.db.models.versioned_record import VersionedRecord
 from app.db.session import Base
 
@@ -13,6 +14,7 @@ from app.db.models.contributor import Contributor  # pylint: disable=unused-impo
 from app.db.models.organization import Organization  # pylint: disable=unused-import
 from app.db.models.title import Title  # pylint: disable=unused-import
 from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
+from app.db.models.document_type import DocumentType  # pylint: disable=unused-import
 
 
 class Reference(Base, VersionedRecord):
@@ -51,6 +53,14 @@ class Reference(Base, VersionedRecord):
     subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
         "app.db.models.concept.Concept",
         secondary=references_subjects_table,
+        lazy="joined",
+    )
+
+    document_type: Mapped[
+        List["app.db.models.document_type.DocumentType"]
+    ] = relationship(
+        "app.db.models.document_type.DocumentType",
+        secondary=references_document_type_table,
         lazy="joined",
     )
 
