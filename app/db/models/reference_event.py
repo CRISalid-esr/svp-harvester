@@ -13,7 +13,7 @@ class ReferenceEvent(Base):
 
     __tablename__ = "reference_events"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)
 
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))

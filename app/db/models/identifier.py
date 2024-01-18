@@ -12,7 +12,7 @@ class Identifier(Base):
 
     __tablename__ = "identifiers"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)
     value: Mapped[str] = mapped_column(nullable=False, index=True)
     entity_id: Mapped[int] = mapped_column(ForeignKey("entities.id"))

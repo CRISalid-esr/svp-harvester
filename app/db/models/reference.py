@@ -22,7 +22,7 @@ class Reference(Base, VersionedRecord):
 
     __tablename__ = "references"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
 
     # The reference should stay traceable to the harvester that created it

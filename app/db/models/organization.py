@@ -13,7 +13,7 @@ class Organization(Base):
 
     __tablename__ = "organizations"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
     name: Mapped[str] = mapped_column(nullable=False)
