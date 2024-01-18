@@ -22,6 +22,8 @@ class ScanrHarvester(AbstractHarvester):
         ]
     }
 
+    identifier_types = ["idref"]
+
     async def _get_scanr_query_parameters(self, entity_class: str):
         """
         Set the query parameters for an entity
@@ -71,12 +73,3 @@ class ScanrHarvester(AbstractHarvester):
                     source_identifier=doc.get("_id"),
                     formatter_name=ScanrHarvester.FORMATTER_NAME,
                 )
-
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:
-        """Check if one of the given identifiers is relevant for the harvester"""
-        identifier_types = ["idref"]
-
-        return any(
-            entity.get_identifier(identifier_type=identifier_type) is not None
-            for identifier_type in identifier_types
-        )

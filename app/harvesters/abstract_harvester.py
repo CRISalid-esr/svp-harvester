@@ -24,6 +24,8 @@ class AbstractHarvester(ABC):
     Abstract mother class for harvesters
     """
 
+    identifier_types: list[str] = []
+
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
         self.result_queue: Optional[Queue] = None
@@ -65,15 +67,18 @@ class AbstractHarvester(ABC):
         """
         self.event_types = event_types
 
-    @abstractmethod
     def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
         """
         Return True if the entity contains the required information for the harvester to do his job
         """
+        return any(
+            entity.get_identifier(identifier_type=identifier_type) is not None
+            for identifier_type in self.identifier_types
+        )
 
     @abstractmethod
     async def fetch_results(
-        self,
+            self,
     ) -> AsyncGenerator[AbstractHarvesterRawResult, None]:
         """
         Fetch the results from the external API
@@ -91,10 +96,10 @@ class AbstractHarvester(ABC):
             harvesting=(await self.get_harvesting())
         )
         previous_references: list[Reference] = (
-            await references_recorder.get_matching_references_before_harvesting(
-                entity_id=self.entity_id
-            )
-            or []
+                await references_recorder.get_matching_references_before_harvesting(
+                    entity_id=self.entity_id
+                )
+                or []
         )
         existing_references: list[Reference] = []
         try:
@@ -104,7 +109,7 @@ class AbstractHarvester(ABC):
                     break
                 new_ref = await self.converter.convert(result)
                 assert (
-                    new_ref.source_identifier is not None
+                        new_ref.source_identifier is not None
                 ), "Source identifier should be set on reference"
                 # copy the harvester name from the harvesting to the reference
                 new_ref.harvester = (await self.get_harvesting()).harvester
@@ -151,34 +156,34 @@ class AbstractHarvester(ABC):
         #     raise error
 
     async def _handle_converted_result(
-        self,
-        new_ref: Reference,
-        old_ref: Reference,
-        references_recorder: ReferencesRecorder,
+            self,
+            new_ref: Reference,
+            old_ref: Reference,
+            references_recorder: ReferencesRecorder,
     ) -> Optional[ReferenceEvent]:
         reference_event: Optional[ReferenceEvent] = None
         if old_ref is not None:
             if (
-                new_ref.hash != old_ref.hash
-                and ReferenceEvent.Type.UPDATED.value
-                in event_types_or_default(self.event_types)
+                    new_ref.hash != old_ref.hash
+                    and ReferenceEvent.Type.UPDATED.value
+                    in event_types_or_default(self.event_types)
             ):
                 reference_event = await references_recorder.register_update(
                     new_ref=new_ref,
                     old_ref=old_ref,
                 )
             if (
-                new_ref.hash == old_ref.hash
-                and ReferenceEvent.Type.UNCHANGED.value
-                in event_types_or_default(self.event_types)
+                    new_ref.hash == old_ref.hash
+                    and ReferenceEvent.Type.UNCHANGED.value
+                    in event_types_or_default(self.event_types)
             ):
                 reference_event = await references_recorder.register_unchanged(
                     old_ref=old_ref,
                 )
         if (
-            old_ref is None
-            and ReferenceEvent.Type.CREATED.value
-            in event_types_or_default(self.event_types)
+                old_ref is None
+                and ReferenceEvent.Type.CREATED.value
+                in event_types_or_default(self.event_types)
         ):
             reference_event = await references_recorder.register_creation(
                 new_ref=new_ref,
@@ -186,10 +191,10 @@ class AbstractHarvester(ABC):
         return reference_event
 
     async def _register_deleted_references(
-        self,
-        existing_references: List[Reference],
-        previous_references: List[Reference],
-        references_recorder: ReferencesRecorder,
+            self,
+            existing_references: List[Reference],
+            previous_references: List[Reference],
+            references_recorder: ReferencesRecorder,
     ):
         if ReferenceEvent.Type.DELETED.value not in self.event_types:
             return

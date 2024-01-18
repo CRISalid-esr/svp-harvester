@@ -24,6 +24,8 @@ class HalHarvester(AbstractHarvester):
         ]
     }
 
+    identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
+
     async def _get_hal_query_parameters(self, entity_class: str):
         """
         Set the query parameters for an entity
@@ -64,12 +66,3 @@ class HalHarvester(AbstractHarvester):
                 source_identifier=doc.get("docid"),
                 formatter_name=HalHarvester.FORMATTER_NAME,
             )
-
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:
-        """Check if one of the given identifiers is relevant for the harvester"""
-        identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
-
-        return any(
-            entity.get_identifier(identifier_type=identifier_type) is not None
-            for identifier_type in identifier_types
-        )

@@ -36,6 +36,8 @@ class IdrefHarvester(AbstractHarvester):
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
     MAX_SUDOC_PARALLELISM = 3
 
+    identifier_types = ["idref", "orcid"]
+
     class Formatters(Enum):
         """
         Source identifiers for idref, including secondary sources
@@ -182,10 +184,4 @@ class IdrefHarvester(AbstractHarvester):
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.SCIENCE_PLUS_RDF.value,
-        )
-
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:
-        return (
-            entity.get_identifier("idref") is not None
-            or entity.get_identifier("orcid") is not None
         )
