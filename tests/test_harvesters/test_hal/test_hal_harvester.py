@@ -13,6 +13,7 @@ from app.db.models.harvesting import Harvesting
 from app.db.models.label import Label
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
+from app.db.models.document_type import DocumentType
 from app.db.references.references_recorder import ReferencesRecorder
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
@@ -297,3 +298,25 @@ async def test_hal_harvester_registers_abstract(
     assert len(result.abstracts) == 1
     assert result.abstracts[0].value == "This article focuses on Vernant..."
     assert result.abstracts[0].language == "en"
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_hal_harvester_register_document_type_in_db(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    hal_api_client_mock,
+    async_session: AsyncSession,
+):
+    """Test that after harvesting, the document type are registered in the database."""
+    async_session.add(hal_harvesting_db_model_id_hal_i)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.run()
+    hal_api_client_mock.assert_called_once()
+    stmt = select(DocumentType.uri)
+    result = await async_session.execute(stmt)
+    results = list(result)
+    print(results)
+    assert len(results) == 1
