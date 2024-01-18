@@ -318,5 +318,4 @@ async def test_hal_harvester_register_document_type_in_db(
     stmt = select(DocumentType.uri)
     result = await async_session.execute(stmt)
     results = list(result)
-    print(results)
     assert len(results) == 1
