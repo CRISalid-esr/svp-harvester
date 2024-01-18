@@ -1,3 +1,4 @@
+from loguru import logger
 from app.db.models.contribution import Contribution
 
 
@@ -37,6 +38,7 @@ class HalQualitiesConverter:
         if quality in HalQualitiesConverter.ROLES_MAPPING:
             contribution_role = HalQualitiesConverter.ROLES_MAPPING[quality]
         else:
+            logger.warning(f"Unknown hal quality: {quality}")
             contribution_role = Contribution.Role.UNKNOWN
 
         return contribution_role.value

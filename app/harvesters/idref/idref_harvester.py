@@ -3,6 +3,7 @@ import re
 import urllib
 from enum import Enum
 from typing import AsyncGenerator, Type
+from loguru import logger
 
 import uritools
 from rdflib import URIRef
@@ -102,7 +103,7 @@ class IdrefHarvester(AbstractHarvester):
         elif doc["secondary_source"] == "SCIENCE_PLUS":
             coro = self._query_publication_from_science_plus_endpoint(doc)
         else:
-            print(f"Unknown source {doc['secondary_source']}")
+            logger.info(f"Unknown source {doc['secondary_source']}")
         return coro
 
     async def _query_publication_from_sudoc_endpoint(self, doc: dict) -> RdfResult:

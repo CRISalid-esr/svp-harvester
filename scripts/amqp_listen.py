@@ -6,6 +6,7 @@ import json
 
 import aio_pika
 from aio_pika import ExchangeType
+from loguru import logger
 
 
 async def main() -> None:
@@ -34,13 +35,13 @@ async def main() -> None:
                 async with message.process():
                     parsed_json = ast.literal_eval(message.body.decode("utf-8"))
                     # print pretty ascii separator with "message received" in the middle
-                    print("".center(80, "*"))
-                    print("".center(80, "="))
-                    print("message received".center(80, "="))
-                    print("".center(80, "="))
-                    print(json.dumps(parsed_json, indent=4))
-                    print("".center(80, "="))
-                    print("".center(80, "*"))
+                    logger.info("".center(80, "*"))
+                    logger.info("".center(80, "="))
+                    logger.info("message received".center(80, "="))
+                    logger.info("".center(80, "="))
+                    logger.info(json.dumps(parsed_json, indent=4))
+                    logger.info("".center(80, "="))
+                    logger.info("".center(80, "*"))
 
 
 if __name__ == "__main__":
