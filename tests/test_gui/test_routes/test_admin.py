@@ -9,7 +9,6 @@ def test_admin_page(test_client: TestClient):
     assert response.status_code == 200
 
 
-@pytest.mark.current
 @pytest.mark.parametrize(
     "page",
     [
