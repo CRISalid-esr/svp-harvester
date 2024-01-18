@@ -14,10 +14,10 @@ class Contributor(Base):
 
     __tablename__ = "contributors"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=True, index=True)
-    name: Mapped[str] = mapped_column(nullable=False)
+    name: Mapped[str] = mapped_column(nullable=False, index=True)
 
     contributions: Mapped[
         List["app.db.models.contribution.Contribution"]

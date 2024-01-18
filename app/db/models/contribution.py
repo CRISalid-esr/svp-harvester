@@ -38,7 +38,7 @@ class Contribution(Base):
 
     __tablename__ = "contributions"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
     rank: Mapped[int] = mapped_column(nullable=True)
 

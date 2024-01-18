@@ -26,7 +26,7 @@ class Harvesting(Base):
         FAILED = "failed"
 
     # pylint: disable=C0103
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
     retrieval_id: Mapped[int] = mapped_column(ForeignKey("retrievals.id"))
     retrieval: Mapped["app.db.models.retrieval.Retrieval"] = relationship(

@@ -14,7 +14,7 @@ class Retrieval(Base):
 
     __tablename__ = "retrievals"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     harvestings: Mapped[List["app.db.models.harvesting.Harvesting"]] = relationship(
         "app.db.models.harvesting.Harvesting",
         back_populates="retrieval",

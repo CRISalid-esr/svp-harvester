@@ -12,7 +12,7 @@ class Concept(Base):
 
     __tablename__ = "concepts"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
     uri: Mapped[str] = mapped_column(nullable=True, index=False, unique=True)
 
