@@ -6,6 +6,7 @@ from loguru import logger
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
+from app.db.daos.harvesting_error_dao import HarvestingErrorDAO
 from app.db.models.entity import Entity as DbEntity
 from app.db.models.harvesting import Harvesting
 from app.db.models.reference_event import ReferenceEvent
@@ -235,6 +236,13 @@ class AbstractHarvester(ABC):
                     self.harvesting_id, state
                 )
 
+    async def _add_error_to_harvesting(self, error: Exception):
+        async with async_session() as session:
+            async with session.begin():
+                await HarvestingErrorDAO(session).add_harvesting_error(
+                    self.harvesting_id, error
+                )
+
     async def handle_error(self, error: Exception) -> None:
         """
         Persist and notify an error occurred during the harvesting
@@ -244,6 +252,7 @@ class AbstractHarvester(ABC):
         logger.error(error)
         # TODO add informations about the error to the harvesting
         await self._update_harvesting_state(Harvesting.State.FAILED)
+        await self._add_error_to_harvesting(error)
         await self._put_in_queue(
             {
                 "type": "Harvesting",
