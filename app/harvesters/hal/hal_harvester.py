@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator
 
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
@@ -6,7 +6,6 @@ from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.db.models.entity import Entity as DbEntity
 
 
 class HalHarvester(AbstractHarvester):
@@ -23,6 +22,8 @@ class HalHarvester(AbstractHarvester):
             (HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID, "orcid"),
         ]
     }
+
+    supported_identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
@@ -64,12 +65,3 @@ class HalHarvester(AbstractHarvester):
                 source_identifier=doc.get("docid"),
                 formatter_name=HalHarvester.FORMATTER_NAME,
             )
-
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:
-        """Check if one of the given identifiers is relevant for the harvester"""
-        identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
-
-        return any(
-            entity.get_identifier(identifier_type=identifier_type) is not None
-            for identifier_type in identifier_types
-        )
