@@ -76,6 +76,7 @@ async def test_publish_created_reference(
                         "labels": [{"value": "label", "language": "fr"}],
                     }
                 ],
+                "document_type": [],
                 "contributions": [],
             },
         },

@@ -2,8 +2,10 @@ import hashlib
 from abc import ABC, abstractmethod
 
 from app.db.daos.concept_dao import ConceptDAO
+from app.db.daos.document_type_dao import DocumentTypeDAO
 from app.db.models.concept import Concept
 from app.db.models.label import Label
+from app.db.models.document_type import DocumentType
 
 from app.db.models.reference import Reference
 from app.db.session import async_session
@@ -58,3 +60,10 @@ class AbstractReferencesConverter(ABC):
             concept = Concept(uri=uri)
             concept.labels.append(Label(value=value, language=language))
         return concept
+
+    async def _get_or_create_document_type_by_uri(self, uri: str, label: str | None):
+        async with async_session() as session:
+            document_type = await DocumentTypeDAO(session).get_document_type_by_uri(uri)
+        if document_type is None:
+            document_type = DocumentType(uri=uri, label=label)
+        return document_type

@@ -13,6 +13,7 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
+from app.harvesters.hal.hal_document_type_converter import HalDocumentTypeConverter
 from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
@@ -43,6 +44,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             new_ref.abstracts.append(abstract)
             for abstract in self._abstracts(json_payload)
         ]
+        new_ref.document_type.append(await self._document_type(json_payload))
         async for subject in self._subjects(json_payload):
             # Concept from hal may be repeated, avoid duplicates
             if subject.id is None or subject.id not in list(
@@ -133,6 +135,11 @@ class HalReferencesConverter(AbstractReferencesConverter):
                     role=HalQualitiesConverter.convert(quality=quality),
                     rank=rank,
                 )
+
+    async def _document_type(self, raw_data):
+        code_document_type = raw_data.get("docType_s", None)
+        uri, label = HalDocumentTypeConverter.convert(code=code_document_type)
+        return await self._get_or_create_document_type_by_uri(uri, label)
 
     def _update_contributor_name(self, db_contributor: Contributor, name: str):
         """
