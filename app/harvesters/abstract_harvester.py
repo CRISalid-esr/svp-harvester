@@ -24,7 +24,7 @@ class AbstractHarvester(ABC):
     Abstract mother class for harvesters
     """
 
-    identifier_types: list[str] = []
+    supported_identifier_types: list[str] = []
 
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
@@ -73,7 +73,7 @@ class AbstractHarvester(ABC):
         """
         return any(
             entity.get_identifier(identifier_type=identifier_type) is not None
-            for identifier_type in self.identifier_types
+            for identifier_type in self.supported_identifier_types
         )
 
     @abstractmethod

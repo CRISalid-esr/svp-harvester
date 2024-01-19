@@ -36,7 +36,7 @@ class IdrefHarvester(AbstractHarvester):
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
     MAX_SUDOC_PARALLELISM = 3
 
-    identifier_types = ["idref", "orcid"]
+    supported_identifier_types = ["idref", "orcid"]
 
     class Formatters(Enum):
         """

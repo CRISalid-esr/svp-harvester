@@ -24,7 +24,7 @@ class HalHarvester(AbstractHarvester):
         ]
     }
 
-    identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
+    supported_identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
