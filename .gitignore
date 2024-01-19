@@ -157,6 +157,9 @@ cython_debug/
 .idea/
 .run/
 
+# Visual Studio Code
+.vscode/
+
 app/templates/node_modules
 /logs
 
