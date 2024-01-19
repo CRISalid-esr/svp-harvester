@@ -8,7 +8,6 @@ from loguru import logger
 import uritools
 from rdflib import URIRef
 
-from app.db.models.entity import Entity as DbEntity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -36,6 +35,8 @@ class IdrefHarvester(AbstractHarvester):
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
     MAX_SUDOC_PARALLELISM = 3
+
+    supported_identifier_types = ["idref", "orcid"]
 
     class Formatters(Enum):
         """
@@ -183,10 +184,4 @@ class IdrefHarvester(AbstractHarvester):
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.SCIENCE_PLUS_RDF.value,
-        )
-
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:
-        return (
-            entity.get_identifier("idref") is not None
-            or entity.get_identifier("orcid") is not None
         )

@@ -25,6 +25,8 @@ class AbstractHarvester(ABC):
     Abstract mother class for harvesters
     """
 
+    supported_identifier_types: list[str] = []
+
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
         self.result_queue: Optional[Queue] = None
@@ -66,11 +68,14 @@ class AbstractHarvester(ABC):
         """
         self.event_types = event_types
 
-    @abstractmethod
     def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
         """
         Return True if the entity contains the required information for the harvester to do his job
         """
+        return any(
+            entity.get_identifier(identifier_type=identifier_type) is not None
+            for identifier_type in self.supported_identifier_types
+        )
 
     @abstractmethod
     async def fetch_results(
