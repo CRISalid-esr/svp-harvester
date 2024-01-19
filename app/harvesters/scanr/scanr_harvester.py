@@ -1,10 +1,10 @@
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator
 
-from app.db.models.entity import Entity as DbEntity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
-
-from app.harvesters.scanr.scanr_api_query_builder import ScanRApiQueryBuilder as QueryBuilder
+from app.harvesters.scanr.scanr_api_query_builder import (
+    ScanRApiQueryBuilder as QueryBuilder,
+)
 from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
 
 
@@ -12,6 +12,7 @@ class ScanrHarvester(AbstractHarvester):
     """
     Harvester for Scanr API
     """
+
     FORMATTER_NAME = "SCANR"
 
     IDENTIFIERS_BY_ENTITIES = {
@@ -39,14 +40,10 @@ class ScanrHarvester(AbstractHarvester):
             if identifier_value is not None:
                 return scanr_query_parameter, str(identifier_value)
 
-        assert (
-            False
-        ), "Unable to run hal harvester for a person without idref"
+        assert False, "Unable to run hal harvester for a person without idref"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
-
         async with ScanRElasticClient() as client:
-
             builder = QueryBuilder()
 
             identifier_type, identifier_value = await self._get_scanr_query_parameters(
@@ -65,8 +62,7 @@ class ScanrHarvester(AbstractHarvester):
             builder.set_subject_type(builder.SubjectType.PUBLICATION)
 
             builder.set_query(
-                identifier_type=identifier_type,
-                identifier_value=identifier_value
+                identifier_type=identifier_type, identifier_value=identifier_value
             )
 
             client.set_query(elastic_query=builder.build())

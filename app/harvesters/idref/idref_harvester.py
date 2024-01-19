@@ -2,12 +2,11 @@ import asyncio
 import re
 import urllib
 from enum import Enum
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator
 
 import uritools
 from rdflib import URIRef
 
-from app.db.models.entity import Entity as DbEntity
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,

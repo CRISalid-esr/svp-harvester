@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator
 
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
@@ -6,7 +6,6 @@ from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.db.models.entity import Entity as DbEntity
 
 
 class HalHarvester(AbstractHarvester):
