@@ -1,4 +1,6 @@
 import asyncio
+from copy import deepcopy
+import sys
 
 from aiormq import AMQPConnectionError
 from fastapi import FastAPI
@@ -41,11 +43,9 @@ class SvpHarvester(FastAPI):
         logger.remove()
         logger.add(
             settings.logger_sink,
-            # format="Log : {time} - {level} - {message}",
             level=settings.loguru_level,
-            # rotation="100 MB",
+            **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
         )
-
         self.add_exception_handler(ValidationError, http422_error_handler)
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
