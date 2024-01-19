@@ -21,6 +21,7 @@ from app.db.models import (
     subtitle,
     title,
     document_type,
+    harvesting_error,
 )
 from app.db.session import Base
 
@@ -45,6 +46,7 @@ def _register_models_for_migrations():
         subtitle,
         title,
         document_type,
+        harvesting_error,
     )
 
 

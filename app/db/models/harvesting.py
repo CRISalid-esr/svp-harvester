@@ -9,6 +9,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
 
+from app.db.models.harvesting_error import HarvestingError
+
 
 @dataclass_json
 @dataclass
@@ -50,3 +52,9 @@ class Harvesting(Base):
     history: Mapped[bool] = mapped_column(nullable=False, index=True, default=True)
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
+
+    error: Mapped["app.db.models.harvesting_error.HarvestingError"] = relationship(
+        "app.db.models.harvesting_error.HarvestingError",
+        cascade="all, delete-orphan",
+        lazy="joined",
+    )
