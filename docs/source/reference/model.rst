@@ -12,6 +12,7 @@ by the `ABES Science Plus model <https://documentation.abes.fr/aidescienceplusab
 
 For more information about modeling choices and mapping with source formats,
 please refer to the `Modeling working group reports <https://www.esup-portail.org/wiki/pages/viewpage.action?pageId=1352335371>`_.
+
 Database Model
 --------------
 
