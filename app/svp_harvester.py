@@ -1,4 +1,5 @@
 import asyncio
+from copy import deepcopy
 import sys
 
 from aiormq import AMQPConnectionError
@@ -38,24 +39,27 @@ class SvpHarvester(FastAPI):
 
         self.include_router(gui_router)
 
+        # Remove default logger and add custom logger
+        logger.remove()
         logger.add(
-            sys.stderr,
-            format="Log : [{extra[log_id]}]:{time} - {level} - {message}",
+            settings.logger_sink,
             level=settings.loguru_level,
+            **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
         )
-
         self.add_exception_handler(ValidationError, http422_error_handler)
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
 
+    @logger.catch
     async def open_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Init AMQP connexion at boot time"""
         try:
-            print("Enabling RabbitMQ connexion")
+            logger.info("Enabling RabbitMQ connexion")
             self.amqp_interface = AMQPInterface(get_app_settings())
             asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
-            print("RabbitMQ connexion has been enabled")
+            logger.info("RabbitMQ connexion has been enabled")
+            # raise RuntimeError("test")
         except AMQPConnectionError as error:
             raise RuntimeError(
                 "Cannot connect to RabbitMQ, please check your configuration"
@@ -67,6 +71,6 @@ class SvpHarvester(FastAPI):
 
     async def close_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Handle last tasks before shutdown"""
-        print("Shutting down RabbitMQ connexion")
+        logger.info("Closing RabbitMQ connexion")
         await self.amqp_interface.stop_listening()
-        print("RabbitMQ connexion has been closed")
+        logger.info("RabbitMQ connexion has been closed")

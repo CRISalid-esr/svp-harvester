@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
+from loguru import logger
 
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
@@ -240,6 +241,7 @@ class AbstractHarvester(ABC):
         :param error: The error object
         :return: None
         """
+        logger.error(error)
         # TODO add informations about the error to the harvesting
         await self._update_harvesting_state(Harvesting.State.FAILED)
         await self._put_in_queue(

@@ -12,7 +12,7 @@ def test_known_hal_document_type():
     assert convert == ("http://purl.org/spar/fabio/ConferencePaper", "Conference Paper")
 
 
-def test_uknown_hal_document_type():
+def test_uknown_hal_document_type(caplog):
     """
     GIVEN an unknown HAL document type
     WHEN the document type converter is called
@@ -21,3 +21,4 @@ def test_uknown_hal_document_type():
     document_type = "UKNOWN"
     convert = HalDocumentTypeConverter.convert(code=document_type)
     assert convert == ("Unknown", "Unknown")
+    assert f"Unknown HAL document type code: {document_type}" in caplog.text

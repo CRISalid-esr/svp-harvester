@@ -1,3 +1,6 @@
+from loguru import logger
+
+
 class HalDocumentTypeConverter:
     """
     Use mapping table ton convert hal document type values to loc document type values
@@ -67,6 +70,9 @@ class HalDocumentTypeConverter:
         Given a HAL document type code, return the corresponding uri and label
         """
         if code not in HalDocumentTypeConverter.CODES_MAPPING:
+            logger.warning(
+                f"Unknown HAL document type code: {code}",
+            )
             return HalDocumentTypeConverter.UKNOWN_CODE
 
         return HalDocumentTypeConverter.CODES_MAPPING[code]
