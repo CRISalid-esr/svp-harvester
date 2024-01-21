@@ -2,6 +2,8 @@
 Settings for development environment
 """
 import logging
+import sys
+from typing import ClassVar, TextIO
 
 from pydantic_settings import SettingsConfigDict
 
@@ -18,5 +20,7 @@ class DevAppSettings(AppSettings):
     logging_level: int = logging.DEBUG
 
     loguru_level: str = "DEBUG"
+
+    logger_sink: ClassVar[str | TextIO] = sys.stderr
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")

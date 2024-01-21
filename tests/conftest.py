@@ -65,23 +65,3 @@ async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
         await test_connexion.run_sync(Base.metadata.drop_all)
 
     await engine.dispose()
-
-
-@pytest.fixture(autouse=True)
-def caplog(caplog: LogCaptureFixture):  # pylint: disable=redefined-outer-name
-    """
-    Make pytest work with loguru. See:
-    https://loguru.readthedocs.io/en/stable/resources/migration.html#making-things-work-with-pytest-and-caplog
-
-    :param caplog: pytest fixture
-    :return: loguru compatible caplog
-    """
-    handler_id = logger.add(
-        caplog.handler,
-        format="{message}",
-        level=0,
-        filter=lambda record: record["level"].no >= caplog.handler.level,
-        enqueue=True,
-    )
-    yield caplog
-    logger.remove(handler_id)

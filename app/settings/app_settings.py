@@ -2,6 +2,7 @@
 App settings base class
 """
 import os
+from typing import ClassVar, TextIO
 
 import yaml
 from pydantic_settings import BaseSettings
@@ -36,6 +37,7 @@ class AppSettings(BaseSettings):
 
     app_env: AppEnvTypes = AppEnvTypes.PROD
     debug: bool = False
+    logger_sink: ClassVar[str | TextIO] = "logs/app.log"
 
     api_host: str = "http://localhost:8000"
     api_prefix: str = "/api"
