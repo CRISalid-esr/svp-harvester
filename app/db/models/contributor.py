@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import String
+from sqlalchemy import String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -32,3 +32,6 @@ class Contributor(Base):
     name_variants: Mapped[List[str]] = mapped_column(
         ARRAY(String), nullable=False, default=[]
     )
+
+
+__table_args__ = (UniqueConstraint("source", "source_identifier"),)
