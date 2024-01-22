@@ -48,6 +48,14 @@ class HarvestingDashboard {
         }
         const popoverTriggerList = this.widgetContainerElement.querySelectorAll('[data-bs-toggle="popover"]')
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        // Listen for click events to close popovers
+        document.addEventListener('click', (event) => {
+            if (event.target.dataset.bsToggle !== 'popover') {
+                popoverList.forEach(popover => {
+                    popover.hide();
+                });
+            }
+        });
 
     }
 }
