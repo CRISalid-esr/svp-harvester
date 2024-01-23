@@ -33,12 +33,11 @@ def get_unique_values(selected_field: str = "authors.role", size: int = 100):
     # Access the aggregation results
     aggregation_results = response["aggregations"]["unique_values"]["buckets"]
     print(f"Number of unique occurrences: {len(aggregation_results)}")
-    print(aggregation_results)
     keys = [bucket["key"] for bucket in aggregation_results]
-    print(keys)
+    print(sorted(keys))
 
 
 if __name__ == "__main__":
     get_unique_values()
-    get_unique_values(selected_field="type")
-    get_unique_values(selected_field="productionType")
+    # get_unique_values(selected_field="type")
+    # get_unique_values(selected_field="productionType")
