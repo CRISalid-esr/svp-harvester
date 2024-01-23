@@ -19,6 +19,7 @@ class IdrefSparqlClient:
         HAL = "HAL"
         SUDOC = "SUDOC"
         SCIENCE_PLUS = "SCIENCE_PLUS"
+        OPEN_EDITION = "OPEN_EDITION"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
