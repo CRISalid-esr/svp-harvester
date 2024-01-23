@@ -35,4 +35,5 @@ To find out details about harvesters that are already implemented, see their res
    harvesters/overview
    harvesters/hal
    harvesters/idref
+   harvesters/scanr
 

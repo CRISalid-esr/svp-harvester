@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harvesters : overview &mdash; SoVisu+ Harvester V0.1 documentation</title>
+    <title>Harvesters: Overview &mdash; SoVisu+ Harvester V0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
@@ -51,7 +51,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/entities.html">Reference : entity resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html">Reference : identifiers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Harvesters : overview</a></li>
+    <li class="toctree-l1 current"><a class="current reference internal" href="#">Harvesters:
+        Overview</a>
+        <ul>
+            <li class="toctree-l2"><a class="reference internal" href="#triggering-of-harvesters">Triggering
+                of harvesters</a></li>
+        </ul>
+    </li>
 <li class="toctree-l1"><a class="reference internal" href="hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="idref.html">Harvesters : Idref</a></li>
 </ul>
@@ -70,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Harvesters : overview</li>
+      <li class="breadcrumb-item active">Harvesters: Overview</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/harvesters/overview.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,7 +87,43 @@
            <div itemprop="articleBody">
              
   <section id="harvesters-overview">
-<h1>Harvesters : overview<a class="headerlink" href="#harvesters-overview" title="Link to this heading"></a></h1>
+      <h1>Harvesters: Overview<a class="headerlink" href="#harvesters-overview"
+                                 title="Link to this heading"></a></h1>
+      <p>Harvesters constitute a modular system of components, each designed to retrieve data from
+          diverse sources and convert it into a standardized format based on the <a
+                  class="reference external"
+                  href="https://documentation.abes.fr/aidescienceplusabes/index.html#ModeleGeneral">SciencePlus
+              data model</a>.
+          The system is designed to be extensible, allowing for the addition of new harvesters as
+          needed.</p>
+      <p>Each harvester comprises two key components:</p>
+      <ol class="arabic simple">
+          <li><p><strong>Data Fetcher or Client:</strong> This component is responsible for
+              retrieving data from a specified source, such as a JSON API, SRU endpoint, SPARQL
+              endpoint, etc.</p></li>
+          <li><p><strong>Converter:</strong> This component is tasked with converting the data into
+              the target format.</p></li>
+      </ol>
+      <p>The list of active harvesters is defined in a configuration file
+          (<cite>harvesters.yml</cite>), which is loaded during the system startup. Each harvester
+          is associated with a factory class that inherits from
+          <cite>AbstractHarvesterFactory</cite>, which is responsible for creating the harvester’s
+          data fetcher and converter components.</p>
+      <p>All harvesters are built on the asyncio framework to enable the parallel execution of
+          multiple harvesters, which is essential for the system’s performance.</p>
+      <section id="triggering-of-harvesters">
+          <h2>Triggering of harvesters<a class="headerlink" href="#triggering-of-harvesters"
+                                         title="Link to this heading"></a></h2>
+          <p>When an entity’s identifiers are received, each harvester self-decides whether it is
+              relevant for the provided identifiers. If so, it is triggered to retrieve the entity’s
+              data.</p>
+          <p>But an harvester may be disabled :</p>
+          <ul class="simple">
+              <li><p>globally, through the <cite>harvesters.yml</cite> configuration file</p></li>
+              <li><p>on a per-request basis, through the <cite>harvesters</cite> parameter of the
+                  <cite>references</cite> endpoint</p></li>
+          </ul>
+      </section>
 </section>
 
 
