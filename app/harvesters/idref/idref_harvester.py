@@ -13,7 +13,7 @@ from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.harvesters.idref.OpenEditionIdrefSparqlClient import OpenEditionSparqlClient
+from app.harvesters.idref.open_edition_sparql_client import OpenEditionSparqlClient
 from app.harvesters.idref.idref_sparql_client import IdrefSparqlClient
 from app.harvesters.idref.idref_sparql_query_builder import (
     IdrefSparqlQueryBuilder as QueryBuilder,
