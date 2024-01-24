@@ -34,7 +34,7 @@ class IdrefHarvester(AbstractHarvester):
     """
 
     SUDOC_URL_SUFFIX = "http://www.sudoc.fr/"
-    OPEN_EDITION_SUFFIX = "http://journals.openedition.org/"
+    OPEN_EDITION_SUFFIX = re.compile(r"https?://journals\.openedition\.org/")
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
     MAX_SUDOC_PARALLELISM = 3
@@ -129,12 +129,11 @@ class IdrefHarvester(AbstractHarvester):
         """
 
         uri: str | None = doc.get("uri", "")
-        logger.warning(f"OpenEdition URI: {uri}")
         if (uri is None) or not uritools.isuri(uri):
             raise UnexpectedFormatException(
                 f"Invalid OpenEdition URI from Idref SPARQL endpoint: {uri}"
             )
-        assert uri.startswith(self.OPEN_EDITION_SUFFIX), "Invalid OpenEdition Id"
+        assert self.OPEN_EDITION_SUFFIX.match(uri), f"Invalid OpenEdition Id {uri}"
         client = OpenEditionResolver()
         pub = await client.fetch(uri)
         return RdfResult(
