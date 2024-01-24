@@ -48,7 +48,6 @@ async def test_concept_factory_idref_concept_id(mock_idref_concept_solver_solve)
 # if we call the concept factory with a concept number and specifying the idref source,
 # then the idref solver is called
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_idref_concept_number(mock_idref_concept_solver_solve):
     """
     GIVEN a concept factory
@@ -65,7 +64,6 @@ async def test_concept_factory_idref_concept_number(mock_idref_concept_solver_so
 # if we call the concept factory with a concept number and specifying the wikidata source,
 # then the wikidata solver is called
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_wikidata_concept_number(
     mock_wikidata_concept_solver_solve,
 ):
@@ -84,7 +82,6 @@ async def test_concept_factory_wikidata_concept_number(
 # if we call the concept factory with a concept id beginning with http://www.wikidata.org,
 # without specifying a source,  then the wikidata solver is called
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_wikidata_concept_id(mock_wikidata_concept_solver_solve):
     """
     GIVEN a concept factory
@@ -100,7 +97,6 @@ async def test_concept_factory_wikidata_concept_id(mock_wikidata_concept_solver_
 
 # if we call the concept factory with a fake concept id, UnknownAuthorityException is raised
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_unknown_authority_exception():
     """
     GIVEN a concept factory
