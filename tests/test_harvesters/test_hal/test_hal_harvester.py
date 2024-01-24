@@ -28,7 +28,6 @@ def fixture_hal_api_client_mock(hal_api_docs_for_researcher: dict):
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
             hal_api_docs_for_researcher
         )
-
         yield aiohttp_client_session_get
 
 
@@ -161,7 +160,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
     Then Hal API client is called with a query with id_hal_i as search criteria
 
     :param hal_harvester:
-    :param hal_harvesting_db_model_id_hal_s:
+    :param hal_harvesting_db_model_id_hal_i_s:
     :param hal_api_client_mock:
     :param async_session:
     :return:
