@@ -3,6 +3,7 @@ import stringToHTML from "../utils";
 import harvesting_progress_widget from "./templates/harvesting_progress_widget";
 import current_entity_card_identifier from "./templates/current_entity_card_identifier";
 import current_entity_card_name from "./templates/current_entity_card_name";
+import * as bootstrap from 'bootstrap'
 
 class HarvestingDashboard {
     constructor(env, rootElement) {
@@ -16,15 +17,15 @@ class HarvestingDashboard {
         this.entityAttributesContainerElement.innerHTML = "";
 
         if (entity.name?.length > 0) {
-            const nameElement = stringToHTML(ejs.render(current_entity_card_name, { name: entity.name}));
-                        this.entityAttributesContainerElement.appendChild(nameElement);
+            const nameElement = stringToHTML(ejs.render(current_entity_card_name, { name: entity.name }));
+            this.entityAttributesContainerElement.appendChild(nameElement);
         }
 
         if (entity.identifiers?.length > 0) {
             for (const identifier of entity.identifiers) {
-                        const identifierElement = stringToHTML(ejs.render(current_entity_card_identifier, identifier));
-                        this.entityAttributesContainerElement.appendChild(identifierElement);
-                    }
+                const identifierElement = stringToHTML(ejs.render(current_entity_card_identifier, identifier));
+                this.entityAttributesContainerElement.appendChild(identifierElement);
+            }
         }
 
     }
@@ -45,6 +46,17 @@ class HarvestingDashboard {
             const widgetElement = stringToHTML(ejs.render(harvesting_progress_widget, harvesting));
             this.widgetContainerElement.appendChild(widgetElement);
         }
+        const popoverTriggerList = this.widgetContainerElement.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        // Listen for click events to close popovers
+        document.addEventListener('click', (event) => {
+            if (event.target.dataset.bsToggle !== 'popover') {
+                popoverList.forEach(popover => {
+                    popover.hide();
+                });
+            }
+        });
+
     }
 }
 

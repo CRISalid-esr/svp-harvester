@@ -7,7 +7,7 @@ const harvesting_progress_widget = `<li class="list-group-item">
                                  <% } else if(state=="completed") { %>  
                                     <i class="bi bi-check-circle float-end"></i>
                                 <% } else if(state=="failed") { %>
-                                    <i class="bi bi-x-circle float-end"></i>
+                                    <i tabindex=0 class="bi bi-x-circle float-end" data-bs-toggle="popover" data-bs-title="<%= error.name %>" data-bs-content="<%= error.message %>" data-bs-trigger="focus"></i>
                                 <% } %>                            
                             </div>
                         </li>`
