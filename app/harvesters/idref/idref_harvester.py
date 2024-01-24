@@ -13,7 +13,6 @@ from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.harvesters.idref.open_edition_sparql_client import OpenEditionSparqlClient
 from app.harvesters.idref.idref_sparql_client import IdrefSparqlClient
 from app.harvesters.idref.idref_sparql_query_builder import (
     IdrefSparqlQueryBuilder as QueryBuilder,
@@ -73,7 +72,7 @@ class IdrefHarvester(AbstractHarvester):
         num_sudoc_waiting_queries = 0
 
         tasks_gen = stream.combine.merge(
-            OpenEditionSparqlClient().fetch_uri_publications(
+            IdrefSparqlClient().fetch_uri_publications_open_edition(
                 builder.build_person_openedition_query()
             ),
             IdrefSparqlClient().fetch_publications(builder.build()),
@@ -130,7 +129,8 @@ class IdrefHarvester(AbstractHarvester):
         """
 
         uri: str | None = doc.get("uri", "")
-        if not uritools.isuri(uri):
+        logger.warning(f"OpenEdition URI: {uri}")
+        if (uri is None) or not uritools.isuri(uri):
             raise UnexpectedFormatException(
                 f"Invalid OpenEdition URI from Idref SPARQL endpoint: {uri}"
             )
