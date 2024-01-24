@@ -37,12 +37,27 @@ def fixture_idref_sparql_endpoint_client_mock_with_sudoc_pub(
         yield aiosparql_client_query
 
 
+@pytest.fixture(
+    name="idref_harvester_query_publication_from_openedition_endpoint_empty"
+)
+def fixture_idref_harvester_query_publication_from_openedition_endpoint_empty():
+    """
+    Mock the OpenEdition API response with no publications
+    """
+    with mock.patch.object(
+        IdrefHarvester, "_query_publication_from_openedition_endpoint"
+    ) as _query_publication_from_openedition_endpoint:
+        _query_publication_from_openedition_endpoint.return_value = {}
+        yield _query_publication_from_openedition_endpoint
+
+
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_idref_harvester_finds_doc(
     harvesting_db_model_for_person_with_idref,
     reference_recorder_register_mock,
     idref_sparql_endpoint_client_mock_with_idref_pubs,
+    idref_harvester_query_publication_from_openedition_endpoint_empty,  # pylint: disable=unused-argument
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
@@ -54,7 +69,7 @@ async def test_idref_harvester_finds_doc(
         harvesting_db_model_for_person_with_idref.retrieval.entity_id
     )
     await harvester.run()
-    idref_sparql_endpoint_client_mock_with_idref_pubs.assert_called_once()
+    idref_sparql_endpoint_client_mock_with_idref_pubs.assert_called()
     reference_recorder_register_mock.assert_called_once()
     _, arg = reference_recorder_register_mock.call_args
     reference: Reference = arg["new_ref"]
@@ -87,6 +102,7 @@ async def test_idref_harvester_finds_sudoc_doc(
     harvesting_db_model_for_person_with_idref,
     reference_recorder_register_mock,
     idref_sparql_endpoint_client_mock_with_sudoc_pub,
+    idref_harvester_query_publication_from_openedition_endpoint_empty,  # pylint: disable=unused-argument
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
@@ -98,7 +114,7 @@ async def test_idref_harvester_finds_sudoc_doc(
         harvesting_db_model_for_person_with_idref.retrieval.entity_id
     )
     await harvester.run()
-    idref_sparql_endpoint_client_mock_with_sudoc_pub.assert_called_once()
+    idref_sparql_endpoint_client_mock_with_sudoc_pub.assert_called()
     reference_recorder_register_mock.assert_called_once()
     _, arg = reference_recorder_register_mock.call_args
     reference: Reference = arg["new_ref"]
