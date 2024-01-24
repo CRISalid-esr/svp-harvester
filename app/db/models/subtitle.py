@@ -1,24 +1,17 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, relationship
 
-from app.db.models.literal_field import LiteralField
+from app.db.models.reference_literal_field import ReferenceLiteralField
 
 
-class Subtitle(LiteralField):
+class Subtitle(ReferenceLiteralField):
     """
     Model for persistence of subtitles
     """
-
-    __tablename__ = "subtitles"
-
-    id: Mapped[int] = mapped_column(ForeignKey("literal_fields.id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": "subtitle",
     }
 
-    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
     reference: Mapped["app.db.models.reference.Reference"] = relationship(
-        "app.db.models.reference.Reference",
-        back_populates="subtitles", lazy="raise"
+        "app.db.models.reference.Reference", back_populates="subtitles", lazy="raise"
     )

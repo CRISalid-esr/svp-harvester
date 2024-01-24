@@ -3,7 +3,6 @@ import pytest
 from app.harvesters.idref.sudoc_references_converter import SudocReferencesConverter
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_convert_for_rdf_result(
     sudoc_rdf_result_for_doc,

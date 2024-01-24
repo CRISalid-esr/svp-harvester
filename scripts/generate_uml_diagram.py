@@ -11,7 +11,7 @@ from app.db.models import (
     harvesting,
     identifier,
     label,
-    literal_field,
+    reference_literal_field,
     organization,
     person,
     reference,

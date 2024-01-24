@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict
 
 class LiteralField(BaseModel):
     """
-    Pydantic model matching LiteralField sql_alchemy model
+    Pydantic model matching ReferenceLiteralField sql_alchemy model
     """
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+          xmlns:bio="http://purl.org/vocab/bio/0.1/"
+          xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/"
+          xmlns:dbpedia-owl="http://dbpedia.org/ontology/"
+          xmlns:dbpprop="http://dbpedia.org/property/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dcterms="http://purl.org/dc/terms/"
+          xmlns:fb="http://rdf.freebase.com/ns/"
+          xmlns:foaf="http://xmlns.com/foaf/0.1/"
+          xmlns:frbr="http://purl.org/vocab/frbr/core#"
+          xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+          xmlns:owl="http://www.w3.org/2002/07/owl#"
+          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+          xmlns:schema="http://schema.org/"
+          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+          xmlns:sudoc="http://www.idref.fr/ns/"><!--
+            Data provider : ABES
+            Stable URL
+            RDF modelization to be enriched and amended
+            Contact : idref at abes dot org
+        -->
+   <bibo:Document rdf:about="http://www.idref.fr/082303363">
+      <foaf:primaryTopic rdf:resource="http://www.idref.fr/082303363/id"/>
+      <dcterms:identifier>082303363</dcterms:identifier>
+      <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"/>
+      <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-11-25</dcterms:created>
+      <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-06-16T19:09:39</dcterms:modified>
+      <skos:editorialNote>Trésor de la langue française</skos:editorialNote>
+      <skos:editorialNote>Petit Larousse 2010</skos:editorialNote>
+      <skos:editorialNote>La véritable histoire de la bouillabaisse : révélations, anecdotes et recettes / R. Monetti, 2013</skos:editorialNote>
+   </bibo:Document>
+   <skos:Concept rdf:about="http://www.idref.fr/082303363/id">
+      <bnf-onto:FRBNF rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">14584676</bnf-onto:FRBNF>
+      <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb145846763"/>
+      <skos:inScheme rdf:resource="http://data.bnf.fr/vocabulary/scheme"/>
+      <skos:prefLabel xml:lang="fr">Bouillabaisse</skos:prefLabel>
+      <skos:altLabel>Bouillabaisse -- Recettes</skos:altLabel>
+      <skos:altLabel>Bouillabaisses</skos:altLabel>
+      <skos:broader>
+         <skos:Concept rdf:about="http://www.idref.fr/027652572/id">
+            <skos:label xml:lang="fr">Cuisine (poisson)</skos:label>
+         </skos:Concept>
+      </skos:broader>
+      <skos:broader>
+         <skos:Concept rdf:about="http://www.idref.fr/027680185/id">
+            <skos:label xml:lang="fr">Soupes</skos:label>
+         </skos:Concept>
+      </skos:broader>
+      <skos:notation>640</skos:notation>
+   </skos:Concept>
+   <bibo:Document rdf:about="https://www.sudoc.fr/083980210/id">
+      <dcterms:subject rdf:resource="http://www.idref.fr/082303363/id"/>
+      <dcterms:bibliographicCitation>La bouillabaisse  = = Lou Bouil-Abaïsso : un plat, un emblème, un art de vivre  / Brigitte Poli &amp; Dominique Samanni / Avignon : Beneze</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://calames.abes.fr/pub/ms/Calames-2022321031361249">
+      <dcterms:bibliographicCitation>[MMSH-PH-6957]  [F4571] Rencontre avec le président et deux membres du cercle Saint-Pierre à Auriol au sujet de l’histoire et la vie des cercles de leur village  (1986 (ca)) / Durée :  53 min</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://calames.abes.fr/pub/ms/Calames-2023092616451066224">
+      <dcterms:bibliographicCitation>[MMSH-PH-3424]  [D3116] Deux pêcheurs témoignent à propos des techniques de pêche aux alentours de Six-Fours-les-Plages dans le Var en 1978 ( 1978-02-10) /  Durée : 1h 35min</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://calames.abes.fr/pub/ms/Calames-2023101115314154321">
+      <dcterms:bibliographicCitation>[MMSH-PH-1689]  [D1758-D1759] Un trémailleur de Carro parle de son métier ( 1981) /  Durée : 2h 31min</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://calames.abes.fr/pub/ms/Calames-2023101115314154329">
+      <dcterms:bibliographicCitation>[MMSH-PH-1697]  [D1771-D1772-D1773] À Carro, un ancien pêcheur né en 1885 parle de la pêche au thon ( 1981) /  Durée : 3h</dcterms:bibliographicCitation>
+   </bibo:Document>
+</rdf:RDF>

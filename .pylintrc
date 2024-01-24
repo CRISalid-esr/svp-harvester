@@ -3,3 +3,5 @@ disable=missing-module-docstring,
         too-few-public-methods
 
 ignore-paths=.*alembic/versions/.*$
+
+init-hook='import sys; sys.path.append(".")'
