@@ -1,6 +1,7 @@
 from typing import List
 
 from pydantic import BaseModel, ConfigDict
+from app.models.harvesting_error import HarvestingError
 
 from app.models.reference_events import ReferenceEvent
 
@@ -17,3 +18,4 @@ class Harvesting(BaseModel):
     state: str
 
     reference_events: List[ReferenceEvent] = []
+    error: HarvestingError | None
