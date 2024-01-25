@@ -32,7 +32,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         language = json_payload.get("language", None)
         new_ref.titles.append(self._title(json_payload, language))
-        new_ref.abstracts.append(self._abstract(json_payload, language))
+        abstract = self._abstract(json_payload, language)
+        if abstract is not None:
+            new_ref.abstracts.append(abstract)
         new_ref.document_type.append(await self._document_type(json_payload))
 
         async for contribution in self._contributions(json_payload):
@@ -66,9 +68,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         )
 
     def _abstract(self, json_payload, language: str):
-        value = " ".join(
-            self._value_from_key(json_payload, "abstract_inverted_index").keys()
-        )
+        abstract = self._value_from_key(json_payload, "abstract")
+        if abstract is None:
+            return None
+        value = " ".join(abstract.keys())
         return Abstract(value=value, language=language)
 
     async def _document_type(self, json_payload):

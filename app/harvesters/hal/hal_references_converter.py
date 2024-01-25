@@ -138,7 +138,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
     async def _document_type(self, raw_data):
         code_document_type = raw_data.get("docType_s", None)
-        uri, label = HalDocumentTypeConverter.convert(code=code_document_type)
+        uri, label = HalDocumentTypeConverter().convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
     def _update_contributor_name(self, db_contributor: Contributor, name: str):
