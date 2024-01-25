@@ -56,34 +56,45 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         return new_ref
 
     async def _contributions(self, contributions) -> AsyncGenerator[Contribution, None]:
-        if len(contributions) > 1:
-            # TODO : Add a method to handle contributor with multiple roles
-            contributors_cache = {}
+        contributors_cache = {}
+
         async with async_session() as session:
             for rank, contribution in enumerate(contributions):
                 role = contribution.get("role")
                 name = contribution.get("fullName")
                 identifier = contribution.get("person")
 
-                if identifier is not None:
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_identifier(
-                        source="scanr", source_identifier=identifier
-                    )
-                else:
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_name(source="scanr", name=name)
+                # Create a key for the cache
+                contributor_key = (identifier, name)
 
+                # Try to find the contributor in the cache first
+                db_contributor = contributors_cache.get(contributor_key)
+
+                # If not in cache, try to find it in the database
                 if db_contributor is None:
-                    db_contributor = Contributor(
-                        source="scanr",
-                        source_identifier=identifier,
-                        name=name,
-                    )
-                else:
-                    self._update_contributor_name(db_contributor, name)
+                    if identifier is not None:
+                        db_contributor = await ContributorDAO(
+                            session
+                        ).get_by_source_and_identifier(
+                            source="scanr", source_identifier=identifier
+                        )
+                    else:
+                        db_contributor = await ContributorDAO(
+                            session
+                        ).get_by_source_and_name(source="scanr", name=name)
+
+                    # If not in database, create a new contributor
+                    if db_contributor is None:
+                        db_contributor = Contributor(
+                            source="scanr",
+                            source_identifier=identifier,
+                            name=name,
+                        )
+                    else:
+                        self._update_contributor_name(db_contributor, name)
+
+                    # Add the contributor to the cache
+                    contributors_cache[contributor_key] = db_contributor
 
                 yield Contribution(
                     contributor=db_contributor,
