@@ -7,7 +7,7 @@ from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.db.models.contribution import Contribution
 from app.db.session import async_session
-from app.harvesters.scanr.scanr_qualities_converter import ScanrQualitiesConverter
+from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
@@ -87,7 +87,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
                 yield Contribution(
                     contributor=db_contributor,
-                    role=ScanrQualitiesConverter.convert(role=role),
+                    role=ScanrRolesConverter.convert(role=role),
                     rank=rank,
                 )
 

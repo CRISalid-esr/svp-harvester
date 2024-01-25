@@ -1,7 +1,7 @@
 from app.db.models.contribution import Contribution
 
 
-class ScanrQualitiesConverter:
+class ScanrRolesConverter:
     """
     Use mapping table to convert scanr role values to loc roles values
     """
@@ -69,8 +69,8 @@ class ScanrQualitiesConverter:
         :param role: scanr role value
         :return: loc role value
         """
-        if role in ScanrQualitiesConverter.ROLES_MAPPING:
-            contribution_role = ScanrQualitiesConverter.ROLES_MAPPING[role]
+        if role in ScanrRolesConverter.ROLES_MAPPING:
+            contribution_role = ScanrRolesConverter.ROLES_MAPPING[role]
         else:
             contribution_role = Contribution.Role.UNKNOWN
 
