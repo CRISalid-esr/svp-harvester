@@ -63,14 +63,14 @@ class ScanrQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert scanr role value to loc role value
-        :param quality: scanr role value
+        :param role: scanr role value
         :return: loc role value
         """
-        if quality in ScanrQualitiesConverter.ROLES_MAPPING:
-            contribution_role = ScanrQualitiesConverter.ROLES_MAPPING[quality]
+        if role in ScanrQualitiesConverter.ROLES_MAPPING:
+            contribution_role = ScanrQualitiesConverter.ROLES_MAPPING[role]
         else:
             contribution_role = Contribution.Role.UNKNOWN
 
