@@ -33,5 +33,4 @@ class Contributor(Base):
         ARRAY(String), nullable=False, default=[]
     )
 
-
-__table_args__ = (UniqueConstraint("source", "source_identifier"),)
+    __table_args__ = (UniqueConstraint("source", "source_identifier"),)
