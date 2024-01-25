@@ -56,38 +56,30 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         return new_ref
 
     async def _contributions(self, contributions) -> AsyncGenerator[Contribution, None]:
+        if len(contributions) > 1:
+            # TODO : Add a method to handle contributor with multiple roles
+            contributors_cache = {}
         async with async_session() as session:
             for rank, contribution in enumerate(contributions):
-                quality = contribution.get("role")
+                role = contribution.get("role")
                 name = contribution.get("fullName")
-                contributor = contribution.get("person")
+                identifier = contribution.get("person")
 
-                ids = None
-                if contributor is not None:
-                    if not re.match(
-                        r"idref\d+", contributor
-                    ):  # TODO: number of digits in IDREF? 9?
-                        raise UnexpectedFormatException(
-                            f"Unexpected format for contributor {contributor}"
-                        )
-                    ids = contributor.replace("idref", "")
-                    # TODO: Should we use contributor_id or contributor?
-                    #  We use Idref for the search but Scanr use a variation "idref1234" as identifier
-
+                if identifier is not None:
                     db_contributor = await ContributorDAO(
                         session
                     ).get_by_source_and_identifier(
-                        source="idref", source_identifier=ids
+                        source="scanr", source_identifier=identifier
                     )
                 else:
                     db_contributor = await ContributorDAO(
                         session
-                    ).get_by_source_and_name(source="idref", name=name)
+                    ).get_by_source_and_name(source="scanr", name=name)
 
                 if db_contributor is None:
                     db_contributor = Contributor(
-                        source="idref",
-                        source_identifier=ids,
+                        source="scanr",
+                        source_identifier=identifier,
                         name=name,
                     )
                 else:
@@ -95,7 +87,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
                 yield Contribution(
                     contributor=db_contributor,
-                    role=ScanrQualitiesConverter.convert(quality=quality),
+                    role=ScanrQualitiesConverter.convert(role=role),
                     rank=rank,
                 )
 
