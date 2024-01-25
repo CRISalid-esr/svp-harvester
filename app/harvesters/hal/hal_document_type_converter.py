@@ -62,7 +62,7 @@ class HalDocumentTypeConverter:
         "REPORT_RETABINT": (f"{RDF_COAR}c_93fc", "Report"),
     }
 
-    UKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unkown", "Unknown")
+    UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
 
     @staticmethod
     def convert(code: str) -> tuple[str, str]:
@@ -73,6 +73,6 @@ class HalDocumentTypeConverter:
             logger.warning(
                 f"Unknown HAL document type code: {code}",
             )
-            return HalDocumentTypeConverter.UKNOWN_CODE
+            return HalDocumentTypeConverter.UNKNOWN_CODE
 
         return HalDocumentTypeConverter.CODES_MAPPING[code]
