@@ -3,17 +3,57 @@ from unittest import mock
 import aiohttp
 import pytest
 
+from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 
 
-@pytest.fixture(name="idref_http_client_mock")
-def fixture_idref_http_client_mock(idref_rdf_raw_result_for_concept: str):
+@pytest.fixture(name="idref_concept_http_client_mock")
+def fixture_idref_concept_http_client_mock(idref_rdf_raw_result_for_concept: str):
     """Retrieval service mock to detect run method calls."""
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.text.return_value = (
             idref_rdf_raw_result_for_concept
+        )
+        yield aiohttp_client_session_get
+
+
+@pytest.fixture(name="idref_multilang_concept_http_client_mock")
+def fixture_idref_multilang_concept_http_client_mock(
+    idref_rdf_raw_result_for_multilang_labels_concept: str,
+):
+    """Retrieval service mock to detect run method calls."""
+    with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
+        aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
+        aiohttp_client_session_get.return_value.__aenter__.return_value.text.return_value = (
+            idref_rdf_raw_result_for_multilang_labels_concept
+        )
+        yield aiohttp_client_session_get
+
+
+@pytest.fixture(name="idref_nolang_concept_http_client_mock")
+def fixture_idref_nolang_concept_http_client_mock(
+    idref_rdf_raw_result_for_no_lang_labels_concept: str,
+):
+    """Retrieval service mock to detect run method calls."""
+    with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
+        aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
+        aiohttp_client_session_get.return_value.__aenter__.return_value.text.return_value = (
+            idref_rdf_raw_result_for_no_lang_labels_concept
+        )
+        yield aiohttp_client_session_get
+
+
+@pytest.fixture(name="idref_non_preferred_lang_concept_http_client_mock")
+def fixture_idref_non_preferred_lang_concept_http_client_mock(
+    idref_rdf_raw_result_for_non_preferred_lang_labels_concept: str,
+):
+    """Retrieval service mock to detect run method calls."""
+    with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
+        aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
+        aiohttp_client_session_get.return_value.__aenter__.return_value.text.return_value = (
+            idref_rdf_raw_result_for_non_preferred_lang_labels_concept
         )
         yield aiohttp_client_session_get
 
@@ -28,6 +68,12 @@ async def test_idref_conscept_solver_calls_url_from_uri():
     """
     concept_id = "https://www.idref.fr/082303363/id"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
+        mock_get.return_value.__aenter__.return_value.status = 200
+        mock_get.return_value.__aenter__.return_value.text.return_value = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+            "</rdf:RDF>"
+        )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
@@ -42,6 +88,12 @@ async def test_idref_conscept_solver_calls_url_from_numeric_id():
     """
     concept_id = "082303363"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
+        mock_get.return_value.__aenter__.return_value.status = 200
+        mock_get.return_value.__aenter__.return_value.text.return_value = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+            "</rdf:RDF>"
+        )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
@@ -67,8 +119,7 @@ async def test_idref_conscept_solver_raises_value_error_with_fantasy_string():
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
-async def test_idref_concept_solver_returns_db_concept(idref_http_client_mock):
+async def test_idref_concept_solver_returns_db_concept(idref_concept_http_client_mock):
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id "082303363"
@@ -77,7 +128,9 @@ async def test_idref_concept_solver_returns_db_concept(idref_http_client_mock):
     """
     concept_id = "082303363"
     result = await IdRefConceptSolver().solve(concept_id=concept_id)
-    idref_http_client_mock.assert_called_once_with("https://www.idref.fr/082303363.rdf")
+    idref_concept_http_client_mock.assert_called_once_with(
+        "https://www.idref.fr/082303363.rdf"
+    )
     assert result is not None
     assert isinstance(result, DbConcept)
     assert result.uri == "http://www.idref.fr/082303363/id"
@@ -85,4 +138,209 @@ async def test_idref_concept_solver_returns_db_concept(idref_http_client_mock):
         label.value
         for label in result.labels
         if label.language == "fr" and label.preferred
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.current
+async def test_idref_concept_solver_returns_concepts_in_preferred_language(
+    idref_multilang_concept_http_client_mock,
+):
+    """
+    GIVEN an idref concept solver and "fr", "en" as preferred languages
+    WHEN calling it with the concept id "123456789" which has labels in several languages
+    THEN the retured DbConcept has only labels in the preferred languages
+    :return:
+    """
+    assert get_app_settings().concept_languages == ["fr", "en"]
+    concept_id = "123456789"
+    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    idref_multilang_concept_http_client_mock.assert_called_once_with(
+        "https://www.idref.fr/123456789.rdf"
+    )
+    assert len(result.labels) == 5
+    # 3 preflabels, one in french, one in english, one in unspecified language
+    assert len([label for label in result.labels if label.preferred]) == 3
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "fr" and label.preferred
+            ]
+        )
+        == 1
+    )
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "en" and label.preferred
+            ]
+        )
+        == 1
+    )
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and label.preferred
+            ]
+        )
+        == 1
+    )
+    assert "French pref label" in [
+        label.value
+        for label in result.labels
+        if label.language == "fr" and label.preferred
+    ]
+    assert "English preferred label" in [
+        label.value
+        for label in result.labels
+        if label.language == "en" and label.preferred
+    ]
+    assert "Unspecified language preferred label" in [
+        label.value
+        for label in result.labels
+        if label.language is None and label.preferred
+    ]
+    # 2 altlabels, one in english, one in unspecified language
+    assert len([label for label in result.labels if not label.preferred]) == 2
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "en" and not label.preferred
+            ]
+        )
+        == 1
+    )
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and not label.preferred
+            ]
+        )
+        == 1
+    )
+    assert "English alternative label" in [
+        label.value
+        for label in result.labels
+        if label.language == "en" and not label.preferred
+    ]
+    assert "Unspecified language alternative label" in [
+        label.value
+        for label in result.labels
+        if label.language is None and not label.preferred
+    ]
+
+
+@pytest.mark.asyncio
+async def test_idref_concept_solver_returns_concepts_without_language(
+    idref_nolang_concept_http_client_mock,
+):
+    """
+    GIVEN an idref concept solver and "fr", "en" as preferred languages
+    WHEN calling it with the concept id "123456789" which has labels without languages
+    THEN the retured DbConcept has labels without languages
+    :return:
+    """
+    assert get_app_settings().concept_languages == ["fr", "en"]
+    concept_id = "123456789"
+    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    idref_nolang_concept_http_client_mock.assert_called_once_with(
+        "https://www.idref.fr/123456789.rdf"
+    )
+    assert len(result.labels) == 2
+    assert len([label for label in result.labels if label.preferred]) == 1
+    assert len([label for label in result.labels if not label.preferred]) == 1
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and label.preferred
+            ]
+        )
+        == 1
+    )
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and not label.preferred
+            ]
+        )
+        == 1
+    )
+    assert "Unspecified language preferred label" in [
+        label.value
+        for label in result.labels
+        if label.language is None and label.preferred
+    ]
+    assert "Unspecified language alternative label" in [
+        label.value
+        for label in result.labels
+        if label.language is None and not label.preferred
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.current
+async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
+    idref_non_preferred_lang_concept_http_client_mock,
+):
+    """
+    GIVEN an idref concept solver and "fr", "en" as preferred languages
+    WHEN calling it with the concept id "123456789"
+        which has only labels in languages that are not preferred
+    THEN the retured DbConcept has 1 altlabel and 1 preflabel in any of the non preferred languages
+    :return:
+    """
+    assert get_app_settings().concept_languages == ["fr", "en"]
+    concept_id = "123456789"
+    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    idref_non_preferred_lang_concept_http_client_mock.assert_called_once_with(
+        "https://www.idref.fr/123456789.rdf"
+    )
+    assert len(result.labels) == 2
+    assert len([label for label in result.labels if label.preferred]) == 1
+    assert len([label for label in result.labels if not label.preferred]) == 1
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is not None and label.preferred
+            ]
+        )
+        == 1
+    )
+    assert (
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is not None and not label.preferred
+            ]
+        )
+        == 1
+    )
+    assert result.labels[0].value in [
+        "Русская предпочтительная метка",
+        "Etiqueta preferida en español",
+        "中文首选标签",
+        "Türkçe tercih edilen etiket",
+    ]
+    assert result.labels[1].value in [
+        "Русская альтернативная метка",
+        "Etiqueta alternativa en español",
+        "中文替代标签",
+        "Türkçe alternatif etiket",
     ]
