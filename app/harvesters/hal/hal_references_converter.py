@@ -90,7 +90,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         ):
             raise UnexpectedFormatException(
                 "Number of qualities and contributors "
-                f"is not the same for docid: {raw_data['docid']}"
+                f"is not the same for halId_s: {raw_data['halId_s']}"
             )
 
         async with async_session() as session:

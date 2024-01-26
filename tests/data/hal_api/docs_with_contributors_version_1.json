@@ -6,6 +6,7 @@
     "docs": [
       {
         "docid": "1-will-gain-second-contributor",
+        "halId_s": "1-will-gain-second-contributor",
         "en_title_s": [
           "Will gain a contributor in the next version"
         ],
@@ -27,6 +28,7 @@
       },
       {
         "docid": "2-will-loose-a-contributor",
+        "halId_s": "2-will-loose-a-contributor",
         "en_title_s": [
           "Will loose a contributor in the next version"
         ],
@@ -44,6 +46,7 @@
       },
       {
         "docid": "3-will-have-a-contributor-keeping-his-id-but-changing-his-name",
+        "halId_s": "3-will-have-a-contributor-keeping-his-id-but-changing-his-name",
         "en_title_s": [
           "Will have a contributor keeping his id but changing his name"
         ],
@@ -61,6 +64,7 @@
       },
       {
         "docid": "4-will-have-a-contributor-keeping-his-name-but-changing-his-id",
+        "halId_s": "4-will-have-a-contributor-keeping-his-name-but-changing-his-id",
         "en_title_s": [
           "Will have a contributor keeping his name but changing his id"
         ],
@@ -78,6 +82,7 @@
       },
       {
         "docid": "5-has-a-contributor-with-name-only-will-change-his-name",
+        "halId_s": "5-has-a-contributor-with-name-only-will-change-his-name",
         "en_title_s": [
           "Has a contributor with name only will that will change his name"
         ],
@@ -96,6 +101,7 @@
       },
       {
         "docid": "5-has-a-contributor-with-name-only-will-gain-an-id",
+        "halId_s": "5-has-a-contributor-with-name-only-will-gain-an-id",
         "en_title_s": [
           "Has a contributor with name only will that will gain an id"
         ],
@@ -114,6 +120,7 @@
       },
       {
         "docid": "6-has-the-same-contributor-with-two-different-roles",
+        "halId_s": "6-has-the-same-contributor-with-two-different-roles",
         "en_title_s": [
           "Has the same contributor with two different roles"
         ],

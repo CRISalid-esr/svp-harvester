@@ -62,6 +62,6 @@ class HalHarvester(AbstractHarvester):
         async for doc in HalApiClient().fetch(builder.build()):
             yield JsonRawResult(
                 payload=doc,
-                source_identifier=doc.get("docid"),
+                source_identifier=doc.get("halId_s"),
                 formatter_name=HalHarvester.FORMATTER_NAME,
             )
