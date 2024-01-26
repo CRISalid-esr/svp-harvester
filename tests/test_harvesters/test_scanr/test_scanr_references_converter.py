@@ -1,7 +1,7 @@
 import pytest
 
-from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
 @pytest.fixture(name="scanr_api_publication_cleaned_response")
@@ -104,9 +104,8 @@ async def test_same_contributor_with_different_roles(
     scanr_api_publication_for_author_dupe_cleaned_response,
 ):
     """
-    Test that the converter will return a contributor with multiple roles
+    Test that the converter will return contributors with multiple roles
     """
-    # TODO: update the test so the db work with it.
 
     converter_under_tests = ScanrReferencesConverter()
 
@@ -116,6 +115,29 @@ async def test_same_contributor_with_different_roles(
         )
 
         test_reference = await converter_under_tests.convert(result)
+        # Create a dictionary to count the occurrences of each contributor source_identifier
+        contributor_roles = {}
 
+        # Iterate over the contributions
+        for contribution in test_reference.contributions:
+            # Get the contributor source_identifier and role
+            contributor_source_identifier = contribution.contributor.source_identifier
+            role = contribution.role
+
+            # If the contributor source_identifier is not in the dictionary, add it with a set containing the role
+            if contributor_source_identifier not in contributor_roles:
+                contributor_roles[contributor_source_identifier] = {role}
+            # If the contributor source_identifier is already in the dictionary, add the role to the set
+            else:
+                contributor_roles[contributor_source_identifier].add(role)
+
+        # Assert that the number of roles for the contributor source_identifier of interest is equal to the expected number of roles
+        assert len(contributor_roles["idref122796527"]) == 2
+        assert len(contributor_roles["idref034869417"]) == 2
+        assert len(contributor_roles["idref132138123"]) == 2
+        assert len(contributor_roles["idref135685141"]) == 2
+        assert len(contributor_roles["idref243745753"]) == 1
+        assert len(contributor_roles["idref061235563"]) == 1
+        assert len(contributor_roles["idref034105700"]) == 1
         # Check that the returned Reference object has the correct properties
         assert len(test_reference.contributions) == 11
