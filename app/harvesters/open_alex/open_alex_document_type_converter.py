@@ -12,6 +12,19 @@ class OpenAlexDocumentTypeConverter(AbstractDocumentTypeConverter):
 
     # TODO COMPLETE MAPPING TABLE
     TYPES_MAPPING = {
-        "article": ("Article", "Article"),
-        "erratum": ("Erratum", "Erratum"),
+        "article": ("Article URI", "Article"),
+        "book-chapter": ("Book chapter URI", "Book chapter"),
+        "dissertation": ("Dissertation URI", "Dissertation"),
+        "book": ("Book URI", "Book"),
+        "dataset": ("Dataset URI", "Dataset"),
+        "paratext": ("Paratext URI", "Paratext"),
+        "other": ("Other URI", "Other"),
+        "reference-entry": ("Reference entry URI", "Reference entry"),
+        "report": ("Report URI", "Report"),
+        "peer-review": ("Peer review URI", "Peer review"),
+        "standard": ("Standard URI", "Standard"),
+        "editorial": ("Editorial URI", "Editorial"),
+        "erratum": ("Erratum URI", "Erratum"),
+        "grant": ("Grant URI", "Grant"),
+        "letter": ("Letter URI", "Letter"),
     }

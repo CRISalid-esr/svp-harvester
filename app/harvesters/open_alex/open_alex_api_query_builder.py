@@ -1,8 +1,6 @@
 from enum import Enum
 from urllib.parse import urlencode
 
-from loguru import logger
-
 
 class OpenAlexQueryBuilder:
     """
@@ -51,7 +49,6 @@ class OpenAlexQueryBuilder:
         """
 
         params = self._query_param()
-        logger.debug(f"params: {params}")
         return urlencode(params)
 
     def _query_param(self):

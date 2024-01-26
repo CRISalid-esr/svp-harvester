@@ -1,7 +1,6 @@
 from typing import Generator
 
 import aiohttp
-from loguru import logger
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -27,9 +26,6 @@ class OpenAlexClient:
                 connector=aiohttp.TCPConnector(limit=None)
             ) as session:
                 async with session.get(f"{self.OPEN_ALEX_URL}?{query_string}") as resp:
-                    logger.debug(
-                        f"Fetching OpenAlex results for query {self.OPEN_ALEX_URL}?{query_string}"
-                    )
                     if resp.status == 200:
                         json_response = await resp.json()
                         if "results" not in json_response.keys():
