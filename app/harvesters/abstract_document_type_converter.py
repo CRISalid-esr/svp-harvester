@@ -2,6 +2,8 @@ from abc import ABC
 
 from loguru import logger
 
+UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
+
 
 class AbstractDocumentTypeConverter(ABC):
     """
@@ -11,8 +13,6 @@ class AbstractDocumentTypeConverter(ABC):
     HARVESTER: str
 
     TYPES_MAPPING: dict[str, tuple[str, str]]
-
-    UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
 
     def __init__(self) -> None:
         self.harvester = self.HARVESTER
@@ -24,5 +24,5 @@ class AbstractDocumentTypeConverter(ABC):
         """
         if document_type not in self.types_mapping:
             logger.warning(f"Unknown {self.harvester} document type: {document_type}")
-            return AbstractDocumentTypeConverter.UNKNOWN_CODE
+            return UNKNOWN_CODE
         return self.types_mapping[document_type]
