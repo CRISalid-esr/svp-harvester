@@ -37,6 +37,11 @@ class OpenAlexClient:
                                 f"Unexpected format in OpenAlex response: {json_response} "
                                 f"for request : {query_string}"
                             )
+                        if "error" in json_response.keys():
+                            raise ExternalEndpointFailure(
+                                f"Error from OpenAlex API for request : {query_string} "
+                                f"with error {json_response['error']}"
+                            )
                         for doc in json_response["results"]:
                             yield doc
                     else:
