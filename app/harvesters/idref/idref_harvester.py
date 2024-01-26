@@ -3,7 +3,6 @@ import re
 import urllib
 from enum import Enum
 from typing import AsyncGenerator
-from aiostream import stream
 from loguru import logger
 
 import uritools
@@ -71,14 +70,7 @@ class IdrefHarvester(AbstractHarvester):
         pending_queries = set()
         num_sudoc_waiting_queries = 0
 
-        tasks_gen = stream.combine.merge(
-            IdrefSparqlClient().fetch_uri_publications_open_edition(
-                builder.build_person_openedition_query()
-            ),
-            IdrefSparqlClient().fetch_publications(builder.build()),
-        )
-
-        async for doc in tasks_gen:
+        async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
             coro = self._secondary_query_process(doc)
             # TODO temporary semi-sequential implementation
             # Sudoc server does not support parallel querying beyond 5 parallel requests

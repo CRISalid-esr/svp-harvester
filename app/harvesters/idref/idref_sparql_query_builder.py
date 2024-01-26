@@ -116,25 +116,6 @@ class IdrefSparqlQueryBuilder:
             "LIMIT 10000"
         )
 
-    def build_person_openedition_query(self) -> str:
-        """
-        Query to retrieve uri publication from Subject on OpenEdition
-        """
-        return (
-            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n"
-            "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
-            "PREFIX dcterms: <http://purl.org/dc/terms/> \n"
-            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-            "select DISTINCT ?uri, ?citation, ?datePub \n"
-            "where { \n"
-            f"?uri marcrel:aut <{self.subject_uri}>. \n"
-            "?uri dcterms:bibliographicCitation ?citation. \n"
-            "OPTIONAL {?uri dc:date ?datePub.} \n"
-            "FILTER (regex(?uri, 'openedition' )) \n"
-            "} \n"
-            "ORDER by ?datePub"
-        )
-
     def _build_publication_query(self) -> str:
         return (
             "select distinct ?prop ?val "  # caution: trailing space is important

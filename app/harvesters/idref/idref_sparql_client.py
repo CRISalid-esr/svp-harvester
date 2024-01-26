@@ -29,7 +29,6 @@ class IdrefSparqlClient:
     DATA_SOURCES_PREFIXES = {
         DataSources.IDREF: [
             "http://www.idref.fr/",
-            "http://journals.openedition.org/",
         ],
         DataSources.HAL: [
             "https://hal.archives-ouvertes.fr/",
@@ -39,6 +38,9 @@ class IdrefSparqlClient:
         ],
         DataSources.SCIENCE_PLUS: [
             "http://hub.abes.fr/",
+        ],
+        DataSources.OPEN_EDITION: [
+            "http://journals.openedition.org/",
         ],
     }
 
@@ -124,30 +126,6 @@ class IdrefSparqlClient:
         except Exception as error:
             raise ExternalEndpointFailure(
                 f"Error while fetching Idref sparql endpoint for query : {query} with error {error}"
-            ) from error
-        finally:
-            await client.close()
-
-    async def fetch_uri_publications_open_edition(
-        self, query: str
-    ) -> AsyncGenerator[dict, None]:
-        """
-        Fetch the uri publications from Open Edition for a
-        given author from the Idref sparql endpoint
-        """
-        client: SPARQLClient = self._get_client()
-        try:
-            response = await client.query(query)
-            for result in response.get("results", {}).get("bindings", []):
-                yield {
-                    "uri": result.get("uri", {}).get("value"),
-                    "citation": result.get("citation", {}),
-                    "datePub": result.get("datePub", {}),
-                    "secondary_source": "OPEN_EDITION",
-                }
-        except Exception as error:
-            raise ExternalEndpointFailure(
-                f"Failed to fetch uris from data.idref.fr: {error}"
             ) from error
         finally:
             await client.close()
