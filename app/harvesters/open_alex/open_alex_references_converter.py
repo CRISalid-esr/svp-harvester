@@ -68,7 +68,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         )
 
     def _abstract(self, json_payload, language: str):
-        abstract = self._value_from_key(json_payload, "abstract")
+        abstract = self._value_from_key(json_payload, "abstract_inverted_index")
         if abstract is None:
             return None
         value = " ".join(abstract.keys())
