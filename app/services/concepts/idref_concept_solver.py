@@ -49,29 +49,31 @@ class IdRefConceptSolver(ConceptSolver):
         labels: list[rdflib.term.Literal],
         preferred: bool = True,
     ):
-        # If there is only one label, add it
-        # If there are several labels, and one one them
-        # is in self.settings.concept_languages or has no language,
-        # add only labels whose language is in self.settings.concept_languages
-        # and labels whithout language
-        # If there are several labels, and none of them
-        # is in self.settings.concept_languages or has no language,
-        # add the first one in any language
+        def interesting_labels(label):
+            return (
+                label.language in self.settings.concept_languages
+                or label.language is None
+            )
+
         if len(labels) == 0:
             return
-        if len(labels) == 1:
-            self._add_label(concept, labels[0], preferred)
+        # If there is only one preflabel, add it
+        # If there are several preflabels, and one one them
+        # is in self.settings.concept_languages or has no language,
+        # add only preflabels whose language is in self.settings.concept_languages
+        # and preflabels whithout language
+        # If there are several preflabels, and none of them
+        # is in self.settings.concept_languages or has no language,
+        # add the first one in any language
+        if preferred:
+            preferred_labels = [label for label in labels if interesting_labels(label)]
+            for label in preferred_labels or [labels[0]]:
+                self._add_label(concept, label, preferred)
+        # Add all altlabels whose language is in self.settings.concept_languages
+        # and altlabels whithout language
         else:
-            labels_to_add = []
-            for label in labels:
-                if (
-                    label.language is None
-                    or label.language in self.settings.concept_languages
-                ):
-                    labels_to_add.append(label)
-            if len(labels_to_add) == 0:
-                labels_to_add.append(labels[0])
-            for label in labels_to_add:
+            alt_labels = [label for label in labels if interesting_labels(label)]
+            for label in alt_labels:
                 self._add_label(concept, label, preferred)
 
     def _add_label(self, concept, label, preferred):
