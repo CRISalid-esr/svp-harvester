@@ -19,6 +19,7 @@ class IdrefSparqlClient:
         HAL = "HAL"
         SUDOC = "SUDOC"
         SCIENCE_PLUS = "SCIENCE_PLUS"
+        OPEN_EDITION = "OPEN_EDITION"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
@@ -28,7 +29,6 @@ class IdrefSparqlClient:
     DATA_SOURCES_PREFIXES = {
         DataSources.IDREF: [
             "http://www.idref.fr/",
-            "http://journals.openedition.org/",
         ],
         DataSources.HAL: [
             "https://hal.archives-ouvertes.fr/",
@@ -38,6 +38,9 @@ class IdrefSparqlClient:
         ],
         DataSources.SCIENCE_PLUS: [
             "http://hub.abes.fr/",
+        ],
+        DataSources.OPEN_EDITION: [
+            "http://journals.openedition.org/",
         ],
     }
 
