@@ -18,6 +18,8 @@ class ScanRElasticClient:
         Indexes available for search with ScanR API
         """
 
+        # TODO: Update the indexes with the production ones
+
         PERSONS = "scanr-persons-staging"
         PUBLICATIONS = "scanr-publications-staging"
 
