@@ -49,14 +49,13 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         for abstract in dict_payload["note"]:
             new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
         # TODO : handle type
-        for subject in dict_payload["subject"].values():
-            new_ref.subjects.append(
-                await self._get_or_create_concept_by_uri(
-                    uri=subject.get("uri"),
-                    value=subject.get("label"),
-                    language="fr",
-                )
-            )
+        concept_informations = [
+            {"uri": subject.get("uri"), "label": subject.get("label"), "language": "fr"}
+            for subject in dict_payload["subject"].values()
+        ]
+        new_ref.subjects.extend(
+            await self._get_or_create_concepts_by_uri(concept_informations)
+        )
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
         return new_ref
