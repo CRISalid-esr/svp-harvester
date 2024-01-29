@@ -8,6 +8,9 @@ from app.db.models.title import Title
 from app.db.models.contribution import Contribution
 from app.db.session import async_session
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
+from app.harvesters.scanr.scanr_document_type_converter import (
+    ScanrDocumentTypeConverter,
+)
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
@@ -44,6 +47,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             new_ref.abstracts.extend(
                 self._remove_duplicates_from_language_data(summary, Abstract)
             )
+
+        code_document_type = json_payload["_source"].get("type")
+        if code_document_type:
+            new_ref.document_type.append(await self._document_type(code_document_type))
 
         contributions = json_payload["_source"].get("authors")
         if contributions:
@@ -134,6 +141,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 processed_items.append(model_class(value=default_item, language=None))
 
         return processed_items
+
+    def _document_type(self, code_document_type: str):
+        uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
+        return self._get_or_create_document_type_by_uri(uri, label)
 
     def _hash_keys(self):
         return [
