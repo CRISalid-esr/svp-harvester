@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.abstracts import Abstract
 from app.models.concepts import Concept
@@ -20,7 +20,7 @@ class Reference(BaseModel):
     source_identifier: str
     harvester: str
 
-    id: int
+    id: int = Field(exclude=True)
 
     titles: List[Title] = []
     subtitles: List[Subtitle] = []

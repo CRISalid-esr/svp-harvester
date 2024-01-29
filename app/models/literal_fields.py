@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class LiteralField(BaseModel):
@@ -8,7 +8,7 @@ class LiteralField(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    id: int = Field(exclude=True)
 
     value: str
     language: str | None

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.contributor import Contributor
 
@@ -10,9 +10,9 @@ class Contribution(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    id: int = Field(exclude=True)
 
-    rank: int | None
+    rank: int | None  # TODO: does it need to be excluded?
 
     contributor: Contributor
 

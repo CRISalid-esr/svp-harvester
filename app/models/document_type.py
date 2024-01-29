@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DocumentType(BaseModel):
@@ -8,7 +8,7 @@ class DocumentType(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    id: int = Field(exclude=True)
 
     uri: str
 
