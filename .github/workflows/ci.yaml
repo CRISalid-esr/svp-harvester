@@ -14,6 +14,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: svp_harvester_test
+          POSTGRES_PASSWORD: svp_harvester_test
+          POSTGRES_DB: svp_harvester_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v3
 
@@ -29,7 +40,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest
+        APP_ENV=TEST DB_NAME="svp_harvester_test" DB_USER="svp_harvester_test" DB_PASSWORD="svp_harvester_test" pytest
 
     - name: Lint with Pylint
       run: |
