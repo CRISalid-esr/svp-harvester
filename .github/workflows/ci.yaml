@@ -38,7 +38,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          APP_ENV=TEST DB_NAME="svp_harvester_test" DB_USER="svp_harvester_test" DB_PASSWORD="svp_harvester_test" pytest
+          APP_ENV=TEST pytest
 
   lint:
     
