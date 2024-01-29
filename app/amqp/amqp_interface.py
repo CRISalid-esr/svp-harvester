@@ -28,12 +28,15 @@ class AMQPInterface:
         self.inner_tasks_queue: asyncio.Queue | None = None
         self.message_processing_workers: list[asyncio.Task] | None = None
 
-    async def listen(self):
-        """Listen to AMQP queue"""
+    async def connect(self):
+        """Connect to AMQP queue"""
         await self._connect()
         await self._declare_exchange()
         await self._attach_message_processing_workers()
         await self._bind_queue()
+
+    async def listen(self):
+        """Listen to AMQP queue"""
         await self._listen_to_messages()
 
     async def stop_listening(self) -> None:

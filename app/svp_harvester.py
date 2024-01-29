@@ -1,5 +1,4 @@
 import asyncio
-from copy import deepcopy
 import sys
 
 from aiormq import AMQPConnectionError
@@ -57,17 +56,19 @@ class SvpHarvester(FastAPI):
         try:
             logger.info("Enabling RabbitMQ connexion")
             self.amqp_interface = AMQPInterface(get_app_settings())
+            await self.amqp_interface.connect()
             asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
             logger.info("RabbitMQ connexion has been enabled")
-            # raise RuntimeError("test")
         except AMQPConnectionError as error:
-            raise RuntimeError(
-                "Cannot connect to RabbitMQ, please check your configuration"
-            ) from error
+            logger.error(
+                f"Cannot connect to RabbitMQ : AMQPConnectionError, will retry in 1 second : "
+                f"{error}"
+            )
+            await asyncio.sleep(1)
+            await self.open_rabbitmq_connexion()
         except Exception as error:
-            raise RuntimeError(
-                "Cannot enable RabbitMQ connexion, please check your configuration"
-            ) from error
+            logger.error("Cannot connect to RabbitMQ : Unknown error, will not retry")
+            raise error
 
     async def close_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Handle last tasks before shutdown"""
