@@ -20,8 +20,8 @@ class ScanRElasticClient:
 
         # TODO: Update the indexes with the production ones
 
-        PERSONS = "scanr-persons-staging"
-        PUBLICATIONS = "scanr-publications-staging"
+        PERSONS = "scanr-persons"
+        PUBLICATIONS = "scanr-publications"
 
     def __init__(self):
         self.settings = get_app_settings()
