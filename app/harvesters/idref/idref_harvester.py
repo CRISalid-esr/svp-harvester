@@ -36,6 +36,7 @@ class IdrefHarvester(AbstractHarvester):
     OPEN_EDITION_SUFFIX = re.compile(r"https?://journals\.openedition\.org/")
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
+    PERSEE_URL_SUFFIX = "http://data.persee.fr/"
     MAX_SUDOC_PARALLELISM = 3
 
     supported_identifier_types = ["idref", "orcid"]
@@ -50,6 +51,7 @@ class IdrefHarvester(AbstractHarvester):
         HAL_JSON = "HAL_JSON"
         IDREF_SPARQL = "IDREF_SPARQL"
         OPEN_EDITION = "OPEN_EDITION"
+        PERSEE_RDF = "PERSEE_RDF"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         builder = QueryBuilder()
@@ -109,9 +111,31 @@ class IdrefHarvester(AbstractHarvester):
             coro = self._query_publication_from_science_plus_endpoint(doc)
         elif doc["secondary_source"] == "OPEN_EDITION":
             coro = self._query_publication_from_openedition_endpoint(doc)
+        elif doc["secondary_source"] == "PERSEE":
+            coro = self._query_publication_from_persee_endpoint(doc)
         else:
             logger.info(f"Unknown source {doc['secondary_source']}")
         return coro
+
+    async def _query_publication_from_persee_endpoint(self, doc: dict) -> RdfResult:
+        uri: str | None = doc.get("uri", "")
+        if not uritools.isuri(uri):
+            raise UnexpectedFormatException(
+                f"Invalid Persee URI from Idref SPARQL endpoint: {uri}"
+            )
+        assert uri.startswith(self.PERSEE_URL_SUFFIX), "Invalid Persee Id"
+        assert uri.endswith("#Web"), "Provided Persee URI should end with #Web"
+
+        document_uri = re.sub(r"#Web$", "", uri)
+        document_uri = re.sub(r"^http://", "https://", document_uri)
+        client = RdfResolver()
+        pub = await client.fetch(document_uri, output_format="xml")
+        a = RdfResult(
+            payload=pub,
+            source_identifier=URIRef(uri),
+            formatter_name=self.Formatters.PERSEE_RDF.value,
+        )
+        return a
 
     async def _query_publication_from_openedition_endpoint(self, doc: dict):
         """
