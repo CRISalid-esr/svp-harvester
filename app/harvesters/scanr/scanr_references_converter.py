@@ -48,9 +48,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 self._remove_duplicates_from_language_data(summary, Abstract)
             )
 
-        code_document_type = json_payload["_source"].get("type")
-        if code_document_type:
-            new_ref.document_type.append(await self._document_type(code_document_type))
+        document_type_code = json_payload["_source"].get("type")
+        if document_type_code:
+            new_ref.document_type.append(await self._document_type(document_type_code))
 
         contributions = json_payload["_source"].get("authors")
         if contributions:
