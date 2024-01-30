@@ -30,6 +30,7 @@ class HalApiQueryBuilder:
 
     DEFAULT_FIELDS = [
         "docid",
+        "halId_s",
         "*_title_s",
         "*_subTitle_s",
         "*_abstract_s",
@@ -45,7 +46,7 @@ class HalApiQueryBuilder:
         "labStructId_i",
     ]
 
-    DEFAULT_SORT_PARAMETER = "docid"
+    DEFAULT_SORT_PARAMETER = "halId_s"
     DEFAULT_SORT_DIRECTION = "asc"
     DEFAULT_ROWS = 1000
 

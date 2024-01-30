@@ -45,6 +45,10 @@ async def test_convert(scanr_api_publication_cleaned_response):
         "en": "The goal of this work is to propose new methods that provide both a high security"
         " and a high energy efficiency[...]",
     }
+    expected_document_type = {
+        "uri": "http://purl.org/ontology/bibo/Thesis",
+        "label": "Thesis",
+    }
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -61,6 +65,8 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_reference.source_identifier == expected_identifier
         assert test_titles == expected_titles
         assert test_abstracts == expected_abstracts
+        assert test_reference.document_type[0].uri == expected_document_type["uri"]
+        assert test_reference.document_type[0].label == expected_document_type["label"]
 
 
 async def test_convert_with_default_dupe(

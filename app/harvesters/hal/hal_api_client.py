@@ -42,11 +42,11 @@ class HalApiClient:
                             )
                         for doc in json_response["response"]["docs"]:
                             # Raise unexpected format exception if the docid is missing
-                            if doc.get("docid") is None:
+                            if doc.get("halId_s") is None:
                                 # TODO dont stop the loop.
                                 #  replace with an error log triggering a notification
                                 raise UnexpectedFormatException(
-                                    f"Missing docid in HAL response: {doc}"
+                                    f"Missing halId_s in HAL response: {doc}"
                                 )
                             yield doc
                     else:
