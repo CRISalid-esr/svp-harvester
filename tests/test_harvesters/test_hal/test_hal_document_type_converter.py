@@ -20,5 +20,5 @@ def test_uknown_hal_document_type(caplog):
     """
     document_type = "UKNOWN"
     convert = HalDocumentTypeConverter.convert(code=document_type)
-    assert convert == ("Unknown", "Unknown")
+    assert convert == ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
     assert f"Unknown HAL document type code: {document_type}" in caplog.text
