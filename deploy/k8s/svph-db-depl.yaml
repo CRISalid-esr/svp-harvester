@@ -31,7 +31,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - pg_isready  -d svp_harvester -U svp_harvester
+                - pg_isready  -d $POSTGRES_DB -h localhost -U $POSTGRES_USER
             failureThreshold: 10
             periodSeconds: 1
             timeoutSeconds: 5
