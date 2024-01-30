@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: svph-api
+  name: svph-api
+spec:
+  ports:
+    - name: "api-web-port"
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: svph-api
+status:
+  loadBalancer: { }
