@@ -7,3 +7,6 @@
 - name: hal
   module: app.harvesters.hal.hal_harvester_factory
   class: HalHarvesterFactory
+- name: openalex
+  module: app.harvesters.open_alex.open_alex_harvester_factory
+  class: OpenAlexHarvesterFactory
