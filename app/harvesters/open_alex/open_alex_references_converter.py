@@ -64,7 +64,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
     def _title(self, json_payload, language: str):
         return Title(
-            value=self._value_from_key(json_payload, "title"), language=language
+            value=self._value_from_key(json_payload, "title", ""), language=language
         )
 
     def _abstract(self, json_payload, language: str):
@@ -119,7 +119,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 )
 
     def _value_from_key(self, json_payload, key: str, default=None):
-        return json_payload.get(key, default)
+        value = json_payload.get(key, default)
+        return value if value is not None else default
 
     def _hash_keys(self) -> list[str]:
         return [
