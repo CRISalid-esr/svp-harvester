@@ -19,7 +19,9 @@ def fixture_idref_http_client_mock(idref_rdf_raw_result_for_concept: str):
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_calls_url_from_uri():
+async def test_idref_concept_solver_calls_url_from_uri(
+    idref_rdf_raw_result_for_concept: str,
+):
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id https://www.idref.fr/082303363/id
@@ -28,12 +30,18 @@ async def test_idref_conscept_solver_calls_url_from_uri():
     """
     concept_id = "https://www.idref.fr/082303363/id"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
+        mock_get.return_value.__aenter__.return_value.status = 200
+        mock_get.return_value.__aenter__.return_value.text.return_value = (
+            idref_rdf_raw_result_for_concept
+        )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_calls_url_from_numeric_id():
+async def test_idref_conscept_solver_calls_url_from_numeric_id(
+    idref_rdf_raw_result_for_concept: str,
+):
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id "082303363"
@@ -42,6 +50,10 @@ async def test_idref_conscept_solver_calls_url_from_numeric_id():
     """
     concept_id = "082303363"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
+        mock_get.return_value.__aenter__.return_value.status = 200
+        mock_get.return_value.__aenter__.return_value.text.return_value = (
+            idref_rdf_raw_result_for_concept
+        )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
