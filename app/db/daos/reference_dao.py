@@ -30,6 +30,7 @@ class ReferenceDAO(AbstractDAO):
         # Fin the last completed harvesting id with history set to true
         # for the given entity and harvester
         subquery = (
+            # pylint: disable=not-callable
             select(func.max(Harvesting.id).label("max_harvesting_id"))
             .join(Retrieval)
             .where(Harvesting.history.is_(True))
@@ -65,6 +66,7 @@ class ReferenceDAO(AbstractDAO):
             select(Reference)
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
+            .order_by(Reference.version.asc())
         )
         return (await self.db_session.execute(query)).scalars().unique().all()
 
