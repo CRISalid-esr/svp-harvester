@@ -9,13 +9,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
 
-from app.db.models.harvesting_error import HarvestingError
-
 
 @dataclass_json
 @dataclass
 class Harvesting(Base):
     """Model for persistence of harvestings"""
+
+    # pylint: disable=too-many-instance-attributes
 
     __tablename__ = "harvestings"
 

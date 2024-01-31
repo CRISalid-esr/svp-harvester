@@ -113,7 +113,6 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                         )
                     contributors_cache[contributor_key] = db_contributor
 
-                # TODO Rank and role? Open Alex give author position (first, middle, last)
                 yield Contribution(
                     contributor=db_contributor,
                 )

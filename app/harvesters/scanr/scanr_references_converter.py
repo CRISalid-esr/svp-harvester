@@ -1,24 +1,20 @@
-import re
 from typing import AsyncGenerator
 
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.models.abstract import Abstract
+from app.db.models.contribution import Contribution
+from app.db.models.contributor import Contributor
 from app.db.models.reference import Reference
 from app.db.models.title import Title
-from app.db.models.contribution import Contribution
 from app.db.session import async_session
-from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
-from app.harvesters.scanr.scanr_document_type_converter import (
-    ScanrDocumentTypeConverter,
-)
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.harvesters.exceptions.unexpected_format_exception import (
-    UnexpectedFormatException,
+from app.harvesters.scanr.scanr_document_type_converter import (
+    ScanrDocumentTypeConverter,
 )
-from app.db.models.contributor import Contributor
+from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
@@ -109,24 +105,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     rank=rank,
                 )
 
-    def _update_contributor_name(self, db_contributor: Contributor, name: str):
-        """
-        Updates the name of the contributor if it is different from the one in the database
-        and stores the old name in the name_variants field
-
-        :param db_contributor:
-        :param name: new name received from hal
-        :return: None
-        """
-        if db_contributor.name == name:
-            return
-        if db_contributor.name not in db_contributor.name_variants:
-            # with append method sqlalchemy would not detect the change
-            db_contributor.name_variants = db_contributor.name_variants + [
-                db_contributor.name
-            ]
-        db_contributor.name = name
-
     def _remove_duplicates_from_language_data(self, language_data: dict, model_class):
         processed_items = [
             model_class(value=value, language=key)
@@ -147,6 +125,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         return self._get_or_create_document_type_by_uri(uri, label)
 
     def _hash_keys(self):
+        # This listing is independant of PUBLICATIONS_DEFAULT_FIELDS
+        # in ScanRApiQueryBuilder
+        # pylint: disable=duplicate-code
         return [
             "id",
             "title",

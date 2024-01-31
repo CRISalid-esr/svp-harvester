@@ -7,7 +7,6 @@ class OpenEditionQualitiesConverter:
     Use mapping table to convert open edition role values to loc roles values
     """
 
-    # TODO Mapping table to complete with contributor and creator.
     ROLES_MAPPING = {
         "contributor": Contribution.Role.CONTRIBUTOR,
         "creator": Contribution.Role.AUTHOR,
