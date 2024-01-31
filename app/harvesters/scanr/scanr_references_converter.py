@@ -143,6 +143,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         return self._get_or_create_document_type_by_uri(uri, label)
 
     def _hash_keys(self):
+        # This listing is independant of PUBLICATIONS_DEFAULT_FIELDS
+        # in ScanRApiQueryBuilder
+        # pylint: disable=duplicate-code
         return [
             "id",
             "title",
