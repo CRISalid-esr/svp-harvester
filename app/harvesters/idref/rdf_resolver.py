@@ -1,14 +1,17 @@
-import aiohttp
 from rdflib import Graph
+from rdflib.exceptions import ParserError
 
-from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
+from app.harvesters.idref.resolver_http_client import ResolverHTTPClient
 
 
 class RdfResolver:
     """Async client for HAL API"""
 
     def __init__(self):
-        self.connector = aiohttp.TCPConnector(limit=0)
+        self.http_client = ResolverHTTPClient()
 
     async def fetch(self, document_uri: str, output_format: str = "xml") -> Graph:
         """
@@ -17,24 +20,11 @@ class RdfResolver:
         :param document_uri: the document URI for which to fetch the RDF
         :return: A generator of results
         """
+        response_text = await self.http_client.get(document_uri)
         try:
-            async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=0)
-            ) as session:
-                async with session.get(document_uri) as resp:
-                    if resp.status == 200:
-                        response_text = await resp.text()
-                        graph = Graph().parse(data=response_text, format=output_format)
-                        return graph
-                    raise ExternalEndpointFailure(
-                        f"Error code while resolving URI : {document_uri} "
-                        f"with code {resp.status}"
-                    )
-        except aiohttp.ClientConnectorError as error:
-            raise ExternalEndpointFailure(
-                f"Cant resolve URI : {document_uri} with error {error}"
-            ) from error
-        except Exception as error:
-            raise ExternalEndpointFailure(
-                f"Error while resolving URI : {document_uri} with error {error}"
+            graph = Graph().parse(data=response_text, format=output_format)
+            return graph
+        except ParserError as error:
+            raise UnexpectedFormatException(
+                f"Error while parsing the RDF from {document_uri} : {response_text}"
             ) from error
