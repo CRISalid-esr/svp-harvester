@@ -39,10 +39,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         new_ref.source_identifier = raw_data.source_identifier
         try:
             root: ElementTree = self._get_root_data(raw_data.payload)
-        except AttributeError as e:
+        except AttributeError as error:
             raise UnexpectedFormatException(
                 f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
-            ) from e
+            ) from error
         new_ref.titles.append(self._title(root))
 
         for abstract in self._abstracts(root):
@@ -134,7 +134,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             yield Abstract(value=value, language=language)
 
     async def _subjects(self, root: ElementTree):
-        # TODO : handle subject WITH URI ?
         subjects = self._get_terms(root, "subject")
         language = self._language(root)
         for subject in subjects:

@@ -10,7 +10,6 @@ class OpenAlexDocumentTypeConverter(AbstractDocumentTypeConverter):
 
     HARVESTER = "OPEN_ALEX"
 
-    # TODO COMPLETE MAPPING TABLE
     TYPES_MAPPING = {
         "article": ("Article URI", "Article"),
         "book-chapter": ("Book chapter URI", "Book chapter"),

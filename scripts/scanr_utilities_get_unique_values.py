@@ -18,6 +18,13 @@ except ElasticsearchException as e:
 
 
 def get_unique_values(selected_field: str = "authors.role", size: int = 100):
+    """
+    Get the unique values for a given field in the ScanR index
+
+    :param selected_field:
+    :param size:
+    :return:
+    """
     aggregation_query = {
         "size": 0,
         "aggs": {
@@ -38,6 +45,4 @@ def get_unique_values(selected_field: str = "authors.role", size: int = 100):
 
 
 if __name__ == "__main__":
-    get_unique_values()
-    # get_unique_values(selected_field="type")
-    # get_unique_values(selected_field="productionType")
+    get_unique_values(selected_field="productionType")
