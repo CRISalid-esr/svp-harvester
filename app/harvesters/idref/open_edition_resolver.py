@@ -10,7 +10,11 @@ class OpenEditionResolver:
     Async client for Open Edition API
     """
 
-    BASE_URL = "http://oai.openedition.org/?verb=GetRecord&identifier=oai:revues.org:{}/{}&metadataPrefix=qdc"
+    BASE_URL = (
+        "http://oai.openedition.org/?verb=GetRecord"
+        "&identifier=oai:revues.org:{}/{}"
+        "&metadataPrefix=qdc"
+    )
 
     def __init__(self):
         self.connector = aiohttp.TCPConnector(limit=None)
