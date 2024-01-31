@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
 from app.db.models.concept import Concept
+from app.db.models.contributor import Contributor
 from app.db.models.label import Label
 from app.db.models.document_type import DocumentType
 
@@ -67,3 +68,21 @@ class AbstractReferencesConverter(ABC):
         if document_type is None:
             document_type = DocumentType(uri=uri, label=label)
         return document_type
+
+    def _update_contributor_name(self, db_contributor: Contributor, name: str):
+        """
+        Updates the name of the contributor if it is different from the one in the database
+        and stores the old name in the name_variants field
+
+        :param db_contributor:
+        :param name: new name received from hal
+        :return: None
+        """
+        if db_contributor.name == name:
+            return
+        if db_contributor.name not in db_contributor.name_variants:
+            # with append method sqlalchemy would not detect the change
+            db_contributor.name_variants = db_contributor.name_variants + [
+                db_contributor.name
+            ]
+        db_contributor.name = name

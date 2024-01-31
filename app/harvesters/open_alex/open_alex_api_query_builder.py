@@ -40,7 +40,6 @@ class OpenAlexQueryBuilder:
         assert identifier_type in self.QueryParameters, "Invalid identifier type"
         self.identifier_type = identifier_type
         self.identifier_value = identifier_value
-        # TODO DOC TYPES AND SORT ?
 
     def build(self) -> str:
         """
@@ -57,8 +56,7 @@ class OpenAlexQueryBuilder:
         ), "Set the query parameters before building the query."
         if self.subject_type == self.SubjectType.PERSON:
             return self._person_queries()
-        else:
-            raise NotImplementedError()
+        raise NotImplementedError()
 
     def _person_queries(self):
         return {
