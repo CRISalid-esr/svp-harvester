@@ -7,6 +7,7 @@ from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
+from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -40,6 +41,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             return await self._convert_from_idref(raw_data)
         if raw_data.formatter_name == IdrefHarvester.Formatters.OPEN_EDITION.value:
             return await OpenEditionReferencesConverter().convert(raw_data)
+        if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
+            return await PerseeReferencesConverter().convert(raw_data)
         return None
 
     async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference:
