@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 
 class ScanRApiQueryBuilder:
@@ -57,11 +58,26 @@ class ScanRApiQueryBuilder:
         """
         self.subject_type = subject_type
 
-    def _set_scanr_id(self):
-        if self.identifier_type == self.QueryParameters.AUTH_IDREF:
-            self.scanr_id = self.identifier_type.value + self.identifier_value
+    # # TODO: Move that function in scanr_harvester get_scanr_query_parameters?
+    # def _set_scanr_id(self):
+    #     if self.identifier_type == self.QueryParameters.AUTH_IDREF:
+    #         self.scanr_id = self.identifier_type.value + self.identifier_value
 
-    def set_query(self, identifier_type: QueryParameters, identifier_value):
+    def set_publication_query(self, scanr_id: str):
+        """
+        Set the field name and value representing the entity for which the query is built.
+
+        :param scanr_id: The Scanr id of an entity in a publication
+        """
+        # Check if the index who will receive the query is known
+
+        # check that identifier_type is a valid QueryParameters
+        pattern = r"^idref\d+$"
+        assert re.match(pattern, scanr_id), "Invalid identifier type"
+        self.scanr_id = scanr_id
+        self.subject_type = self.SubjectType.PUBLICATION
+
+    def set_person_query(self, identifier_type: QueryParameters, identifier_value):
         """
         Set the field name and value representing the entity for which the query is built.
 
@@ -69,14 +85,12 @@ class ScanRApiQueryBuilder:
         :param identifier_value: the value of the field
         :return: None
         """
-        # Check if the index who will receive the query is known
 
         # check that identifier_type is a valid QueryParameters
         assert identifier_type in self.QueryParameters, "Invalid identifier type"
         self.identifier_type = identifier_type
         self.identifier_value = identifier_value
-
-        self._set_scanr_id()
+        self.subject_type = self.SubjectType.PERSON
 
     def build(self) -> dict:
         """
@@ -90,14 +104,16 @@ class ScanRApiQueryBuilder:
         return self.query
 
     def _query_param(self):
-        assert (
-            self.identifier_type is not None and self.identifier_value is not None
-        ), "Set the query parameters before building the query."
-
         if self.subject_type == self.SubjectType.PERSON:
+            assert (
+                self.identifier_type is not None and self.identifier_value is not None
+            ), "Set the query parameters before building the query."
             query_param = self._person_queries()
 
         elif self.subject_type == self.SubjectType.PUBLICATION:
+            assert (
+                self.scanr_id is not None
+            ), "Set the query parameters before building the query."
             query_param = self._publication_queries()
         else:
             raise NotImplementedError()
@@ -113,14 +129,14 @@ class ScanRApiQueryBuilder:
                     ]
                 }
             }
-        elif self.identifier_type == self.QueryParameters.AUTH_ORCID:
-            query_param = {
-                "bool": {
-                    "must": [
-                        {"term": {self.identifier_type.value: self.identifier_value}},
-                    ]
-                }
-            }
+        # elif self.identifier_type == self.QueryParameters.AUTH_ORCID:
+        #     query_param = {
+        #         "bool": {
+        #             "must": [
+        #                 {"term": {self.identifier_type.value: self.identifier_value}},
+        #             ]
+        #         }
+        #     }
         else:
             query_param = {
                 "bool": {

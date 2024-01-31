@@ -25,7 +25,7 @@ class ScanrHarvester(AbstractHarvester):
         ]
     }
 
-    supported_identifier_types = ["idref"]
+    supported_identifier_types = ["idref", "orcid", "id_hal_s"]
 
     async def _get_scanr_query_parameters(self, entity_class: str):
         """
@@ -37,10 +37,21 @@ class ScanrHarvester(AbstractHarvester):
         # List convenient query parameters for this entity class
         # and choose the first one for which value is provided
 
+        # TODO: if scanr_query_parameter have idref tuple:
+        #  return scanr_query_parameter, str(identifier_value)
+        #  else:
+        #  make a search in scanr api publication index
+        #  with the other accepted ids to get the unique scanrid (based on idref)
         for scanr_query_parameter, identifier_key in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
-            if identifier_value is not None:
-                return scanr_query_parameter, str(identifier_value)
+            if identifier_key == "idref" and identifier_value is not None:
+                scanr_id = identifier_key + str(identifier_value)
+                return scanr_id
+            elif identifier_key != "idref" and identifier_value is not None:
+                scanr_id = await self._get_entity_scanr_id(
+                    scanr_query_parameter, identifier_value
+                )
+                return scanr_id
 
         assert False, "Unable to run hal harvester for a person without idref"
 
@@ -48,21 +59,19 @@ class ScanrHarvester(AbstractHarvester):
         async with ScanRElasticClient() as client:
             builder = QueryBuilder()
 
-            identifier_type, identifier_value = await self._get_scanr_query_parameters(
+            scanr_id = await self._get_scanr_query_parameters(
                 await self._get_entity_class_name()
             )
 
-            if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
-                logger.warning(
-                    "For now, Scanr harvester only supports idref identifiers, "
-                    f"{identifier_type} provided"
-                )
+            # if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
+            #     logger.warning(
+            #         "For now, Scanr harvester only supports idref identifiers, "
+            #         f"{identifier_type} provided"
+            #     )
 
-            builder.set_subject_type(builder.SubjectType.PUBLICATION)
+            # builder.set_subject_type(builder.SubjectType.PUBLICATION)
 
-            builder.set_query(
-                identifier_type=identifier_type, identifier_value=identifier_value
-            )
+            builder.set_publication_query(scanr_id=scanr_id)
 
             client.set_query(elastic_query=builder.build())
             async for doc in client.perform_search(client.Indexes.PUBLICATIONS):
@@ -71,3 +80,12 @@ class ScanrHarvester(AbstractHarvester):
                     source_identifier=doc.get("_id"),
                     formatter_name=ScanrHarvester.FORMATTER_NAME,
                 )
+
+    async def _get_entity_scanr_id(self, identifier_type: str, identifier_value: str):
+        async with ScanRElasticClient() as client:
+            builder = QueryBuilder()
+            builder.set_person_query(identifier_type, identifier_value)
+
+            client.set_query(elastic_query=builder.build())
+            async for doc in client.perform_search(client.Indexes.PUBLICATIONS):
+                return doc.get("_id")
