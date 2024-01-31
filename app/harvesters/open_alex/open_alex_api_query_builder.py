@@ -56,8 +56,7 @@ class OpenAlexQueryBuilder:
         ), "Set the query parameters before building the query."
         if self.subject_type == self.SubjectType.PERSON:
             return self._person_queries()
-        else:
-            raise NotImplementedError()
+        raise NotImplementedError()
 
     def _person_queries(self):
         return {
