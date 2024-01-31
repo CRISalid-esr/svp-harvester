@@ -131,12 +131,11 @@ class IdrefHarvester(AbstractHarvester):
         document_uri = re.sub(r"^http://", "https://", document_uri)
         client = RdfResolver()
         pub = await client.fetch(document_uri, output_format="xml")
-        a = RdfResult(
+        return RdfResult(
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.PERSEE_RDF.value,
         )
-        return a
 
     async def _query_publication_from_openedition_endpoint(self, doc: dict):
         """

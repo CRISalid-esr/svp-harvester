@@ -28,12 +28,9 @@ class PerseeReferencesConverter(AbstractReferencesConverter):
         uri = raw_data.source_identifier
         new_ref.source_identifier = uri
 
-        new_ref.titles = [
-            Title(value=title.value, language=title.language)
-            for title in self._titles(pub_graph, uri)
-        ]
+        new_ref.titles = list(self._titles(pub_graph, uri))
 
-        new_ref.abstracts = [abstract for abstract in self._abstracts(pub_graph, uri)]
+        new_ref.abstracts = list(self._abstracts(pub_graph, uri))
 
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
@@ -103,12 +100,12 @@ class PerseeReferencesConverter(AbstractReferencesConverter):
     def _titles(self, pub_graph, uri):
         title: Literal
         for title in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.title):
-            lan = title.language
+            lng = title.language
             if not title.language:
-                for lan in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.language):
-                    lan = lan.value
+                for lng in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.language):
+                    lng = lng.value
                     break
-            yield Title(value=title.value, language=lan)
+            yield Title(value=title.value, language=lng)
 
     def _abstracts(self, pub_graph, uri):
         abstract: Literal
