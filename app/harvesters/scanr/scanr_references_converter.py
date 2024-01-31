@@ -1,24 +1,20 @@
-import re
 from typing import AsyncGenerator
 
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.models.abstract import Abstract
+from app.db.models.contribution import Contribution
+from app.db.models.contributor import Contributor
 from app.db.models.reference import Reference
 from app.db.models.title import Title
-from app.db.models.contribution import Contribution
 from app.db.session import async_session
-from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
-from app.harvesters.scanr.scanr_document_type_converter import (
-    ScanrDocumentTypeConverter,
-)
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.harvesters.exceptions.unexpected_format_exception import (
-    UnexpectedFormatException,
+from app.harvesters.scanr.scanr_document_type_converter import (
+    ScanrDocumentTypeConverter,
 )
-from app.db.models.contributor import Contributor
+from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
