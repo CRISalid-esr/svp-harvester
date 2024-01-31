@@ -8,7 +8,7 @@ class RdfResolver:
     """Async client for HAL API"""
 
     def __init__(self):
-        self.connector = aiohttp.TCPConnector(limit=None)
+        self.connector = aiohttp.TCPConnector(limit=0)
 
     async def fetch(self, document_uri: str, output_format: str = "xml") -> Graph:
         """
@@ -19,7 +19,7 @@ class RdfResolver:
         """
         try:
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None)
+                connector=aiohttp.TCPConnector(limit=0)
             ) as session:
                 async with session.get(document_uri) as resp:
                     if resp.status == 200:
