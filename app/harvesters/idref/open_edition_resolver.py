@@ -17,7 +17,7 @@ class OpenEditionResolver:
     )
 
     def __init__(self):
-        self.connector = aiohttp.TCPConnector(limit=None)
+        self.connector = aiohttp.TCPConnector(limit=0)
 
     def parse_uri(self, uri: str) -> (str, str):
         """
@@ -43,7 +43,7 @@ class OpenEditionResolver:
         document_url = self.create_uri(records, identifier)
         try:
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None)
+                connector=aiohttp.TCPConnector(limit=0)
             ) as session:
                 async with session.get(document_url) as resp:
                     if resp.status == 200:
