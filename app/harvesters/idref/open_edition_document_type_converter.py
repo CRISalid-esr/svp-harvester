@@ -6,7 +6,6 @@ class OpenEditionDocumentTypeConverter:
     Use mapping table to convert Open Edition document type to loc document type values
     """
 
-    # TODO Mapping table to complete with uri and label
     CODES_MAPPING = {"article": ("Article_uri", "Article")}
 
     UKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unkown", "Uknown")
