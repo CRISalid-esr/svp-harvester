@@ -1,36 +1,30 @@
-import hashlib
 from typing import AsyncGenerator
 from rdflib import DCTERMS, FOAF, RDF, Graph, Literal, Namespace, URIRef
 import rdflib
 from app.db.daos.contributor_dao import ContributorDAO
-from app.db.models.abstract import Abstract
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
 from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.db.session import async_session
-from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.idref.abes_rdf_references_converter import (
+    AbesRDFReferencesConverter,
+)
 from app.harvesters.idref.persee_qualities_converter import PerseeQualitiesConverter
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 
 
-class PerseeReferencesConverter(AbstractReferencesConverter):
+class PerseeReferencesConverter(AbesRDFReferencesConverter):
     """
     Converts raw data from Persee to a normalised Reference object
     """
 
     async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference:
-        new_ref = Reference()
+        new_ref = await super().convert(raw_data)
         pub_graph: Graph = raw_data.payload
-
         uri = raw_data.source_identifier
-        new_ref.source_identifier = uri
-
-        new_ref.titles = list(self._titles(pub_graph, uri))
-
-        new_ref.abstracts = list(self._abstracts(pub_graph, uri))
 
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
@@ -38,7 +32,6 @@ class PerseeReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._contributions(pub_graph):
             new_ref.contributions.append(contribution)
 
-        new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
         return new_ref
 
     async def _contributions(
@@ -106,15 +99,3 @@ class PerseeReferencesConverter(AbstractReferencesConverter):
                     lng = lng.value
                     break
             yield Title(value=title.value, language=lng)
-
-    def _abstracts(self, pub_graph, uri):
-        abstract: Literal
-        for abstract in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.abstract):
-            yield Abstract(value=abstract.value, language=abstract.language)
-
-    def _hash_from_rdf_graph(self, pub_graph: Graph, uri: str) -> str:
-        graph_as_dict = {
-            str(p): str(o)
-            for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))
-        }
-        return hashlib.sha256(str(graph_as_dict).encode()).hexdigest()
