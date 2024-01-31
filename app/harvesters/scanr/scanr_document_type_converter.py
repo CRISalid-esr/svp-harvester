@@ -10,7 +10,6 @@ class ScanrDocumentTypeConverter:
     RDF_SPAR = "http://purl.org/spar/fabio/"
     RDF_COAR = "http://purl.org/coar/resource_type"
 
-    # TODO: update thesis when the mapping is confirmed
     CODES_MAPPING = {
         "book": (f"{RDF_BIBO}Book", "Book"),
         "book-chapter": (f"{RDF_BIBO}Chapter", "Chapter"),
