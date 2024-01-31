@@ -1,5 +1,6 @@
-from typing import Dict, List
 from enum import Enum
+from typing import Dict, List
+
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.exceptions import AuthenticationException, ElasticsearchException
 
@@ -58,8 +59,15 @@ class ScanRElasticClient:
         async def search_and_yield(offset):
             nonlocal total_search_hits
             try:
+                # pylint: disable=unexpected-keyword-arg
                 resp = await self.elastic.search(
-                    index=target_index, body=self.query, size=base_size, from_=offset
+                    # "size" belongs to method parameters
+                    # https://elasticsearch-py.readthedocs.io/en/v8.12.0/api/elasticsearch.html
+                    # "from" is listed in documentation but appears as "from_" in library code
+                    index=target_index,
+                    body=self.query,
+                    size=base_size,
+                    from_=offset,
                 )
             except AuthenticationException as exc:
                 raise ExternalEndpointFailure(
