@@ -1,16 +1,20 @@
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Text, ForeignKey
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
-from app.db.models.reference_literal_field import ReferenceLiteralField
+from app.db.session import Base
 
 
-class Abstract(ReferenceLiteralField):
+class Abstract(Base):
     """
     Model for persistence of titles
     """
 
-    __mapper_args__ = {
-        "polymorphic_identity": "abstract",
-    }
+    __tablename__ = "abstracts"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    value: Mapped[str] = mapped_column(Text, nullable=False, index=True)
+    language: Mapped[str] = mapped_column(nullable=True, index=True)
+    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
 
     reference: Mapped["app.db.models.reference.Reference"] = relationship(
         "app.db.models.reference.Reference", back_populates="abstracts", lazy="raise"
