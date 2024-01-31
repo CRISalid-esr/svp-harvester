@@ -8,6 +8,7 @@ from app.db.models.retrieval import Retrieval
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
+from app.harvesters.open_alex.open_alex_harvester import OpenAlexHarvester
 from app.models.identifiers import Identifier
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
@@ -18,13 +19,15 @@ def test_retrieval_service_build_harvesters():
     settings = get_app_settings()
     service = RetrievalService(settings)
     service._build_harvesters()  # pylint: disable=protected-access
-    assert len(service.harvesters) == 3
+    assert len(service.harvesters) == 4
     assert "hal" in service.harvesters
     assert "idref" in service.harvesters
     assert "scanr" in service.harvesters
+    assert "openalex" in service.harvesters
     assert isinstance(service.harvesters["hal"], HalHarvester)
     assert isinstance(service.harvesters["idref"], IdrefHarvester)
     assert isinstance(service.harvesters["scanr"], ScanrHarvester)
+    assert isinstance(service.harvesters["openalex"], OpenAlexHarvester)
 
 
 def test_retrieval_service_with_limited_harvesters():
@@ -118,11 +121,13 @@ async def test_retrieval_service_registers_identifiers_matches_nullify(
     :return:
     """
     settings = get_app_settings()
-    service = RetrievalService(settings, nullify=['id_hal_s'])
+    service = RetrievalService(settings, nullify=["id_hal_s"])
 
     with pytest.raises(HTTPException) as exc_info:
         await service.register(person_with_name_and_id_hal_s)
 
     assert exc_info.value.status_code == 422
-    assert (exc_info.value.detail ==
-            'Unprocessable Entity: id_hal_s cannot be declared and nullified at same time')
+    assert (
+        exc_info.value.detail
+        == "Unprocessable Entity: id_hal_s cannot be declared and nullified at same time"
+    )

@@ -6,6 +6,7 @@
     "docs": [
       {
         "docid": "1-will-not-change",
+        "halId_s": "1-will-not-change",
         "citationRef_s": "<i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165",
         "citationFull_s": "Alessandro Buccheri. Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca. <i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165. <a target=\"_blank\" href=\"https://hal.science/hal-01-will-not-change\">&#x27E8;hal-01-will-not-change&#x27E9;</a>",
         "it_title_s": [
@@ -55,6 +56,7 @@
       },
       {
         "docid": "2-will-change",
+        "halId_s": "2-will-change",
         "citationRef_s": "MODIFICATION <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>",
         "citationFull_s": "Manon Brouillet, Alessandro Buccheri. Agents, intentionnalités et modes d’agir dans l’Antiquité. <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-02-will-change\">&#x27E8;hal-02-will-change&#x27E9;</a>",
         "en_title_s": [
@@ -99,6 +101,7 @@
       },
       {
         "docid": "4-will-appear",
+        "halId_s": "4-will-appear",
         "citationRef_s": "<i>Cahiers \"Mondes Anciens\" </i>, 2016, 8, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.1671\">&#x27E8;10.4000/mondesanciens.1671&#x27E9;</a>",
         "citationFull_s": "Alessandro Buccheri. Deiknūnai tēn phūsin : valider l’identité filiale dans le Philoctète de Sophocle. <i>Cahiers \"Mondes Anciens\" </i>, 2016, 8, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.1671\">&#x27E8;10.4000/mondesanciens.1671&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-04-will-appear\">&#x27E8;hal-04-will-appear&#x27E9;</a>",
         "en_title_s": [
