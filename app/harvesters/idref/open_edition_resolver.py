@@ -1,8 +1,10 @@
-from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
-import aiohttp
+from urllib.parse import urlparse
 
-from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
+from app.harvesters.idref.resolver_http_client import ResolverHTTPClient
 
 
 class OpenEditionResolver:
@@ -17,7 +19,7 @@ class OpenEditionResolver:
     )
 
     def __init__(self):
-        self.connector = aiohttp.TCPConnector(limit=0)
+        self.http_client = ResolverHTTPClient()
 
     def parse_uri(self, uri: str) -> (str, str):
         """
@@ -41,24 +43,11 @@ class OpenEditionResolver:
         """
         records, identifier = self.parse_uri(document_uri)
         document_url = self.create_uri(records, identifier)
+        response_text = await self.http_client.get(document_url)
         try:
-            async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=0)
-            ) as session:
-                async with session.get(document_url) as resp:
-                    if resp.status == 200:
-                        response_text = await resp.text()
-                        root = ET.fromstring(response_text.strip())
-                        return root
-                    raise ExternalEndpointFailure(
-                        f"Error code while resolving URI : {document_uri} "
-                        f"with code {resp.status}"
-                    )
-        except aiohttp.ClientConnectorError as error:
-            raise ExternalEndpointFailure(
-                f"Cant resolve URI : {document_uri} with error {error}"
+            root = ET.fromstring(response_text.strip())
+        except ET.ParseError as error:
+            raise UnexpectedFormatException(
+                f"Error while parsing the XML from {document_url} : {response_text}"
             ) from error
-        except Exception as error:
-            raise ExternalEndpointFailure(
-                f"Error while resolving URI : {document_uri} with error {error}"
-            ) from error
+        return root
