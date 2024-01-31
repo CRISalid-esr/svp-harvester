@@ -35,7 +35,7 @@ class OpenEditionResolver:
         """
         return self.BASE_URL.format(records, identifier)
 
-    async def fetch(self, document_uri: str) -> str:
+    async def fetch(self, document_uri: str) -> ET.Element:
         """
         Get the record XML from OAI Open Edition
         """
