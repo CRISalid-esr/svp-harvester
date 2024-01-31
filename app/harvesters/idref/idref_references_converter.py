@@ -56,7 +56,6 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             new_ref.subtitles.append(Subtitle(value=subtitle, language="fr"))
         for abstract in dict_payload["note"]:
             new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
-        # TODO : handle type
         for subject in dict_payload["subject"].values():
             new_ref.subjects.append(
                 await self._get_or_create_concept_by_uri(

@@ -74,8 +74,9 @@ class IdrefHarvester(AbstractHarvester):
 
         async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
             coro = self._secondary_query_process(doc)
-            # TODO temporary semi-sequential implementation
+            # Temporary semi-sequential implementation
             # Sudoc server does not support parallel querying beyond 5 parallel requests
+            # See issue #251
             pending_queries.add(asyncio.create_task(coro))
             if doc["secondary_source"] == "SUDOC":
                 num_sudoc_waiting_queries += 1

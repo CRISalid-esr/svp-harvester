@@ -70,7 +70,6 @@ async def create_retrieval_sync(
     :param entity: entity built from fields
     :return: Retrieval representation with harvestings and results
     """
-    # TODO none of the entity identifiers should be listed in nullify
     retrieval = await retrieval_service.register(entity)
     await retrieval_service.run(in_background=False)
     redirect_url = URL(
@@ -98,12 +97,10 @@ async def create_retrieval_async(
     :param person: entity built from fields
     :return: json response
     """
-    # TODO none of the entitty identifiers should be listed in nullify
     retrieval = await retrieval_service.register(
         entity=person,
     )
     await retrieval_service.run(in_background=True)
-    # TODO build returned URL properly
     return JSONResponse(
         {
             "retrieval_id": retrieval.id,

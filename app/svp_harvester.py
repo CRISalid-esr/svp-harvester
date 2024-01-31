@@ -1,5 +1,4 @@
 import asyncio
-from copy import deepcopy
 import sys
 
 from aiormq import AMQPConnectionError
@@ -59,7 +58,6 @@ class SvpHarvester(FastAPI):
             self.amqp_interface = AMQPInterface(get_app_settings())
             asyncio.create_task(self.amqp_interface.listen(), name="amqp_listener")
             logger.info("RabbitMQ connexion has been enabled")
-            # raise RuntimeError("test")
         except AMQPConnectionError as error:
             raise RuntimeError(
                 "Cannot connect to RabbitMQ, please check your configuration"
