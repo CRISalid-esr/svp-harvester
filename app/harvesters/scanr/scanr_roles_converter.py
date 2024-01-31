@@ -6,8 +6,6 @@ class ScanrRolesConverter:
     Use mapping table to convert scanr role values to loc roles values
     """
 
-    # TODO: Edit ROLES_MAPPING to replace the UNKNOWN values when the mapping is complete
-
     ROLES_MAPPING = {
         "ann": Contribution.Role.ANNOTATOR,
         "architecture": Contribution.Role.ARCHITECT,
