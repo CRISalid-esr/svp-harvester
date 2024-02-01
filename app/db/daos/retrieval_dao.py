@@ -1,8 +1,7 @@
 import datetime
-import time
 from typing import List
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -82,25 +81,36 @@ class RetrievalDAO(AbstractDAO):
 
         :return: Retrieval history
         """
+        event_types.append("None")
+
         stmt = (
             select(
                 Retrieval.id,
                 (Entity.name).label("entity_name"),
-                (Identifier.type).label("identifier_type"),
-                (Identifier.value).label("identifier_value"),
+                (
+                    func.array_agg(func.distinct(Identifier.type, Identifier.value))
+                ).label("identifier_type"),
                 (func.array_agg(ReferenceEvent.type.distinct())).label(
                     "reference_event"
                 ),
                 (func.count(ReferenceEvent.id.distinct())).label("event_count"),
                 (func.array_agg(DocumentType.label.distinct())).label("document_type"),
+                (
+                    func.array_agg(
+                        func.distinct(
+                            Harvesting.harvester,
+                            Harvesting.state,
+                        )
+                    )
+                ).label("harvesting_state"),
             )
             .join(Harvesting, onclause=Retrieval.id == Harvesting.retrieval_id)
             .join(Entity, onclause=Retrieval.entity_id == Entity.id)
             .join(Identifier, onclause=Entity.id == Identifier.entity_id)
-            .join(
+            .outerjoin(
                 ReferenceEvent, onclause=Harvesting.id == ReferenceEvent.harvesting_id
             )
-            .join(Reference, onclause=ReferenceEvent.reference_id == Reference.id)
+            .outerjoin(Reference, onclause=ReferenceEvent.reference_id == Reference.id)
             .outerjoin(
                 references_document_type_table,
                 onclause=Reference.id == references_document_type_table.c.reference_id,
@@ -111,13 +121,15 @@ class RetrievalDAO(AbstractDAO):
                 == references_document_type_table.c.document_type_id,
             )
             .filter(
-                ReferenceEvent.type.in_(event_types),
+                # Add None in case of no event so we can still see the harvesting failed
+                or_(ReferenceEvent.type.in_(event_types), ReferenceEvent.type == None),
                 Identifier.type.not_in(nullify),
             )
-            .group_by(Retrieval.id, Entity.name, Identifier.type, Identifier.value)
+            .group_by(Retrieval.id, Entity.name)
         )
 
         # TODO SEE Date ?
+        # TODO Filter ID_ENTITY for each type
         if name:
             stmt = stmt.where(Entity.name == name)
         if date_start:

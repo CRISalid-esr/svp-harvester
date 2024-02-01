@@ -1,5 +1,5 @@
 import datetime
-from typing import Annotated, List
+from typing import Annotated, List, Tuple
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from app.db.daos.retrieval_dao import RetrievalDAO
@@ -15,9 +15,9 @@ router = APIRouter()
 class RetrievalHistory(BaseModel):
     id: int
     entity_name: str
-    identifier_type: str
-    identifier_value: str
-    reference_event: List[str]
+    identifier_type: List[Tuple[str, str]]
+    harvesting_state: List[Tuple[str, str]]
+    reference_event: List[str | None]
     event_count: int
     document_type: List[str | None]
 
