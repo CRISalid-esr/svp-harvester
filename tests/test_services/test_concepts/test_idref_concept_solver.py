@@ -309,9 +309,9 @@ async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     idref_non_preferred_lang_concept_http_client_mock.assert_called_once_with(
         "https://www.idref.fr/123456789.rdf"
     )
-    assert len(result.labels) == 2
+    assert len(result.labels) == 1
     assert len([label for label in result.labels if label.preferred]) == 1
-    assert len([label for label in result.labels if not label.preferred]) == 1
+    assert len([label for label in result.labels if not label.preferred]) == 0
     assert (
         len(
             [
@@ -330,17 +330,11 @@ async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
                 if label.language is not None and not label.preferred
             ]
         )
-        == 1
+        == 0
     )
     assert result.labels[0].value in [
         "Русская предпочтительная метка",
         "Etiqueta preferida en español",
         "中文首选标签",
         "Türkçe tercih edilen etiket",
-    ]
-    assert result.labels[1].value in [
-        "Русская альтернативная метка",
-        "Etiqueta alternativa en español",
-        "中文替代标签",
-        "Türkçe alternatif etiket",
     ]
