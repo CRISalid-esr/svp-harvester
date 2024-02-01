@@ -1,7 +1,12 @@
+import datetime
+from typing import List
 from sqlalchemy import select, func
+from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
+from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
+from app.db.models.identifier import Identifier
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
@@ -94,3 +99,44 @@ class ReferenceDAO(AbstractDAO):
             .order_by(Reference.version.desc())
         )
         return (await self.db_session.execute(query)).scalars().first()
+
+    async def get_references_by_params(
+        self,
+        name: str,
+        event_types: List[ReferenceEvent.Type],
+        nullify: List[str],
+        date_start: datetime.date,
+        date_end: datetime.date,
+    ) -> List[Reference]:
+        """
+        Get references by parameters
+        :param name: name of the entity
+        :param event_types: list of event types to fetch
+        :param nullify: list of source to nullify
+        :param date_start: date interval start
+        :param date_end: date interval end
+
+        :return: References
+        """
+        query = (
+            select(Reference)
+            .join(ReferenceEvent, onclause=Reference.id == ReferenceEvent.reference_id)
+            .join(Harvesting, onclause=ReferenceEvent.harvesting_id == Harvesting.id)
+            .join(Retrieval, onclause=Harvesting.retrieval_id == Retrieval.id)
+            .join(Entity, onclause=Retrieval.entity_id == Entity.id)
+            .join(Identifier, onclause=Entity.id == Identifier.entity_id)
+            .options(joinedload(Reference.contributions))
+            .filter(
+                ReferenceEvent.type.in_(event_types),
+                Identifier.type.not_in(nullify),
+            )
+        )
+
+        if name:
+            query = query.where(Entity.name == name)
+        if date_start:
+            query = query.where(Harvesting.timestamp >= date_start)
+        if date_end:
+            query = query.where(Harvesting.timestamp <= date_end)
+
+        return (await self.db_session.execute(query)).unique().scalars().all()
