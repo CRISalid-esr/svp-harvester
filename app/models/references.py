@@ -20,8 +20,6 @@ class Reference(BaseModel):
     source_identifier: str
     harvester: str
 
-    id: int
-
     titles: List[Title] = []
     subtitles: List[Subtitle] = []
     abstracts: List[Abstract] = []

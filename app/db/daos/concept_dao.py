@@ -36,3 +36,13 @@ class ConceptDAO(AbstractDAO):
         """
         query = select(Concept).where(Concept.uri == uri)
         return await self.db_session.scalar(query)
+
+    async def get_concepts_by_uri(self, uris: list[str]) -> list[Concept]:
+        """
+        Get a list of concepts by their uris
+
+        :param uris: uris of the concepts
+        :return: the list of concepts
+        """
+        query = select(Concept).where(Concept.uri.in_(uris))
+        return (await self.db_session.execute(query)).unique().scalars().all()

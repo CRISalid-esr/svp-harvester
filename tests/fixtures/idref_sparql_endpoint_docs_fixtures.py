@@ -16,6 +16,20 @@ def fixture_idref_sparql_endpoint_results_with_idref_pubs(_base_path) -> dict:
     )
 
 
+@pytest.fixture(name="idref_sparql_endpoint_results_with_test_concept")
+def fixture_idref_sparql_endpoint_results_with_test_concept(_base_path) -> dict:
+    """
+    Generate an Idref Sparql endpoint response with an Idref publications in JSON format
+    containing a test concept allowed for Idref concept solver tests
+
+    :param _base_path: test data directory base
+    :return: Idref Sparql endpoint response for one researcher in JSON format
+    """
+    return _idref_sparql_endpoint_json_results_from_file(
+        _base_path, "idref_result_with_test_concept"
+    )
+
+
 @pytest.fixture(name="idref_sparql_endpoint_results_with_sudoc_pub")
 def fixture_idref_sparql_endpoint_results_with_sudoc_pub(_base_path) -> dict:
     """

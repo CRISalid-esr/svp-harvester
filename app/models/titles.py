@@ -1,9 +1,9 @@
 from pydantic import ConfigDict
 
-from app.models.literal_fields import LiteralField
+from app.models.literal_fields import ReferenceLiteralField
 
 
-class Title(LiteralField):
+class Title(ReferenceLiteralField):
     """
     Pydantic model matching Title sql_alchemy model
     """

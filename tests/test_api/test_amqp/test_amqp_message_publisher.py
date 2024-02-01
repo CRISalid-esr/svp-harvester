@@ -74,7 +74,8 @@ async def test_publish_created_reference(
                 "subjects": [
                     {
                         "uri": "http://uri",
-                        "labels": [{"value": "label", "language": "fr"}],
+                        "pref_labels": [{"value": "label", "language": "fr"}],
+                        "alt_labels": [],
                     }
                 ],
                 "document_type": [],

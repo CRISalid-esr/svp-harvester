@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from app.db.models.concept import Concept as DbConcept
@@ -38,7 +39,10 @@ class ConceptFactory:
         # create a solver adapted to the source
         solver: ConceptSolver = ConceptFactory._create_solver(concept_source)
         # solve the concept
-        return await solver.solve(concept_id)
+        concept = await solver.solve(concept_id)
+        concept.dereferenced = True
+        concept.last_dereferencing_date_time = datetime.now()
+        return concept
 
     @classmethod
     def _create_solver(cls, concept_source) -> ConceptSolver:
