@@ -68,20 +68,10 @@ class EntityResolutionService:
 
         # dont use db entities in loop as some of them will be deleted and the loop will break
         identifiers_type_and_values = [(i.type, i.value) for i in submitted_identifiers]
-        entities_without_identifiers = []
         for identifier_type, identifier_value in identifiers_type_and_values:
             await entity_dao.take_or_create_identifier(
                 elected_entity, identifier_type, identifier_value
             )
-            entities_without_identifiers = [
-                existing_entity
-                for existing_entity in matching_entities
-                if existing_entity != elected_entity and not existing_entity.identifiers
-            ]
-        # TODO dangerous instruction, consider removal
-        for entity_to_delete in entities_without_identifiers:
-            await entity_dao.delete(entity_to_delete)
-        # return the elected entity
         return elected_entity
 
     @staticmethod

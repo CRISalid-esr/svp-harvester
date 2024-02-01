@@ -3,7 +3,6 @@ from unittest import mock
 from fastapi import HTTPException
 import pytest
 
-from app.config import get_app_settings
 from app.db.models.retrieval import Retrieval
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.idref.idref_harvester import IdrefHarvester
@@ -16,8 +15,7 @@ from app.services.retrieval.retrieval_service import RetrievalService
 
 def test_retrieval_service_build_harvesters():
     """Test that the retrieval service builds the expected harvesters from the yml settings."""
-    settings = get_app_settings()
-    service = RetrievalService(settings)
+    service = RetrievalService()
     service._build_harvesters()  # pylint: disable=protected-access
     assert len(service.harvesters) == 4
     assert "hal" in service.harvesters
@@ -32,8 +30,7 @@ def test_retrieval_service_build_harvesters():
 
 def test_retrieval_service_with_limited_harvesters():
     """Test that the retrieval service builds the expected harvesters from the yml settings."""
-    settings = get_app_settings()
-    service = RetrievalService(settings, harvesters=["hal"])
+    service = RetrievalService(harvesters=["hal"])
     service._build_harvesters()  # pylint: disable=protected-access
     assert len(service.harvesters) == 1
     assert "hal" in service.harvesters
@@ -52,8 +49,7 @@ async def test_retrieval_service_returns_retrieval_for_person(
     :param person_with_name_and_idref:
     :return:
     """
-    settings = get_app_settings()
-    service = RetrievalService(settings)
+    service = RetrievalService()
     retrieval: Retrieval = await service.register(person_with_name_and_idref)
     assert retrieval.entity.name == person_with_name_and_idref.name
     assert retrieval.entity.get_identifier(
@@ -86,8 +82,7 @@ async def test_retrieval_service_registers_identifiers_matches(
         value="0000-0002-1825-0097",
     )
     person_with_name_and_id_hal_s.identifiers.append(orcid_identifier)
-    settings = get_app_settings()
-    service = RetrievalService(settings)
+    service = RetrievalService()
     await service.register(person_with_name_and_id_hal_s)
     # remove orcid identifier ro person_with_name_and_id_hal_s
     person_with_name_and_id_hal_s.identifiers.pop()
@@ -120,8 +115,7 @@ async def test_retrieval_service_registers_identifiers_matches_nullify(
     :param person_with_name_and_id_hal_s:
     :return:
     """
-    settings = get_app_settings()
-    service = RetrievalService(settings, nullify=["id_hal_s"])
+    service = RetrievalService(nullify=["id_hal_s"])
 
     with pytest.raises(HTTPException) as exc_info:
         await service.register(person_with_name_and_id_hal_s)
