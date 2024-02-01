@@ -14,6 +14,7 @@ from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.open_alex.open_alex_document_type_converter import (
     OpenAlexDocumentTypeConverter,
 )
+from app.services.concepts.concept_factory import ConceptFactory
 
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
@@ -58,7 +59,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             if concept_key in concept_cache:
                 yield concept_cache[concept_key]
                 continue
-            concept_db = await self._get_or_create_concept_by_uri(uri, label, language)
+            concept_db = await self._get_or_create_concept_by_uri(
+                uri, label, language, ConceptFactory.ConceptSources.WIKIDATA
+            )
             concept_cache[concept_key] = concept_db
             yield concept_db
 

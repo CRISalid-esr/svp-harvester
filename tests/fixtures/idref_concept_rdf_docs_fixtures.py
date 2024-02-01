@@ -13,6 +13,42 @@ def fixture_idref_rdf_raw_result_for_concept(_base_path) -> str:
     return _idref_concepts_raw_rdf_from_file(_base_path, "idref_concept")
 
 
+@pytest.fixture(name="idref_rdf_raw_result_for_multilang_labels_concept")
+def fixture_idref_rdf_raw_result_for_multilang_labels_concept(_base_path) -> str:
+    """
+    Fixture for the result of an idref concept with multilanguage labels as raw xml string
+    :param _base_path:  test data directory base path
+    :return: raw xml string
+    """
+    return _idref_concepts_raw_rdf_from_file(
+        _base_path, "multilang_labels_idref_concept"
+    )
+
+
+@pytest.fixture(name="idref_rdf_raw_result_for_no_lang_labels_concept")
+def fixture_idref_rdf_raw_result_for_no_lang_labels_concept(_base_path) -> str:
+    """
+    Fixture for the result of an idref concept with no language labels as raw xml string
+    :param _base_path:  test data directory base path
+    :return: raw xml string
+    """
+    return _idref_concepts_raw_rdf_from_file(_base_path, "no_lang_labels_idref_concept")
+
+
+@pytest.fixture(name="idref_rdf_raw_result_for_non_preferred_lang_labels_concept")
+def fixture_idref_rdf_raw_result_for_non_preferred_lang_labels_concept(
+    _base_path,
+) -> str:
+    """
+    Fixture for the result of an idref concept with no language labels as raw xml string
+    :param _base_path:  test data directory base path
+    :return: raw xml string
+    """
+    return _idref_concepts_raw_rdf_from_file(
+        _base_path, "non_preferred_lang_labels_idref_concept"
+    )
+
+
 def _idref_concepts_raw_rdf_from_file(base_path, file_name) -> str:
     file_path = f"data/idref_concepts_rdf/{file_name}.rdf"
     return _rdf_xml_file_content(base_path, file_path)

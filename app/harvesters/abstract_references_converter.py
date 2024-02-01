@@ -1,5 +1,7 @@
+import asyncio
 import hashlib
 from abc import ABC, abstractmethod
+from typing import List, Dict
 
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
@@ -11,6 +13,8 @@ from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
+from app.services.concepts.concept_factory import ConceptFactory
+from app.services.concepts.dereferencing_error import DereferencingError
 
 
 class AbstractReferencesConverter(ABC):
@@ -54,13 +58,65 @@ class AbstractReferencesConverter(ABC):
             concept.labels.append(Label(value=value, language=language))
         return concept
 
-    async def _get_or_create_concept_by_uri(self, uri: str, value: str, language: str):
+    async def _get_or_create_concept_by_uri(
+        self,
+        uri: str,
+        value: str,
+        language: str,
+        concept_source: ConceptFactory.ConceptSources | None = None,
+    ):
+        # Look for the concept in the database
         async with async_session() as session:
             concept = await ConceptDAO(session).get_concept_by_uri(uri)
+        # If the concept is not in the database, try to create it by dereferencing the uri
         if concept is None:
-            concept = Concept(uri=uri)
-            concept.labels.append(Label(value=value, language=language))
+            try:
+                concept = await ConceptFactory.solve(
+                    concept_id=uri, concept_source=concept_source
+                )
+            # If the dereferencing fails, create a concept with the uri and the label
+            except DereferencingError:
+                concept = Concept(uri=uri)
+                concept.labels.append(Label(value=value, language=language))
         return concept
+
+    async def _get_or_create_concepts_by_uri(
+        self,
+        concept_informations: List[
+            Dict[str, str | ConceptFactory.ConceptSources | None]
+        ],
+    ):
+        db_concepts = []
+        # get all the concepts from the database in one query
+        async with async_session() as session:
+            db_concepts = await ConceptDAO(session).get_concepts_by_uri(
+                [
+                    concept_information["uri"]
+                    for concept_information in concept_informations
+                ]
+            )
+        concepts_dereferencing_coroutines = []
+        # for each concept information, check if the concept is in the db_concepts list
+        # if not, create a coroutine to dereference the concept
+        for concept_information in concept_informations:
+            if not any(
+                concept.uri == concept_information["uri"] for concept in db_concepts
+            ):
+                concepts_dereferencing_coroutines.append(
+                    self._get_or_create_concept_by_uri(
+                        concept_information["uri"],
+                        concept_information.get("label", None),
+                        concept_information.get("language", None),
+                        concept_information.get("concept_source", None),
+                    )
+                )
+        # wait for all the coroutines to finish
+        concepts_dereferencing_results = await asyncio.gather(
+            *concepts_dereferencing_coroutines
+        )
+        # add the dereferenced concepts to the db_concepts list
+        db_concepts.extend(concepts_dereferencing_results)
+        return db_concepts
 
     async def _get_or_create_document_type_by_uri(self, uri: str, label: str | None):
         async with async_session() as session:

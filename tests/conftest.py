@@ -1,14 +1,17 @@
 import asyncio
 from os import environ
 from typing import AsyncGenerator
+from unittest import mock
 
-from _pytest.logging import LogCaptureFixture
 from fastapi import FastAPI
-from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
+from app.db.models.concept import Concept as DbConcept
+from app.db.session import engine, Base
+from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from tests.fixtures.common import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.pydantic_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
@@ -26,7 +29,6 @@ from tests.fixtures.open_edition_doc_fixtures import *  # pylint: disable=unused
 from tests.fixtures.open_alex_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 
-from app.db.session import engine, Base
 
 environ["APP_ENV"] = "TEST"
 
@@ -69,3 +71,49 @@ async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
         await test_connexion.run_sync(Base.metadata.drop_all)
 
     await engine.dispose()
+
+
+def fake_idref_concept_solver(concept_id: str):
+    """
+    Fake idref concept solver for tests
+    Raises DereferencingError except for a specific concept id
+
+    :param concept_id: concept id to solve
+    :return: fake concept
+    """
+    if concept_id == "http://www.idref.fr/allowed_concept_for_tests/id":
+        return DbConcept(
+            uri="http://www.idref.fr/allowed_concept_for_tests/id",
+            labels=[
+                Label(
+                    value="Idref concept allowed for test",
+                    language="en",
+                    preferred=True,
+                ),
+                Label(
+                    value="Concept Idref autorisé pour les tests",
+                    language="fr",
+                    preferred=True,
+                ),
+                Label(
+                    value="Idref concept you can use for tests",
+                    language="en",
+                    preferred=False,
+                ),
+                Label(
+                    value="Concept Idref que vous pouvez utiliser pour les tests",
+                    language="fr",
+                    preferred=False,
+                ),
+            ],
+        )
+
+    raise DereferencingError("Idref concept dereferencing not allowed during tests")
+
+
+@pytest.fixture(name="mock_idref_concept_solver", autouse=True)
+def fixture_mock_idref_concept_solver():
+    """Hal harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(IdRefConceptSolver, "solve") as mock_solve:
+        mock_solve.side_effect = fake_idref_concept_solver
+        yield mock_solve

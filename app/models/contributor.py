@@ -8,8 +8,6 @@ class Contributor(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-
     source: str
 
     source_identifier: str | None

@@ -14,6 +14,7 @@ class Retrieval(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
     harvestings: List[Harvesting] = []
 
     entity: Entity | None = None

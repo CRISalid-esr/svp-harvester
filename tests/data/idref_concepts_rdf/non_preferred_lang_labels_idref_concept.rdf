@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+         xmlns:dcterms="http://purl.org/dc/terms/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+    <bibo:Document rdf:about="http://www.idref.fr/123456789">
+        <dcterms:identifier>123456789</dcterms:identifier>
+    </bibo:Document>
+    <skos:Concept rdf:about="http://www.idref.fr/123456789/id">
+        <skos:prefLabel xml:lang="ru">Русская предпочтительная метка</skos:prefLabel>
+        <skos:prefLabel xml:lang="es">Etiqueta preferida en español</skos:prefLabel>
+        <skos:prefLabel xml:lang="zh">中文首选标签</skos:prefLabel>
+        <skos:prefLabel xml:lang="tr">Türkçe tercih edilen etiket</skos:prefLabel>
+        <skos:altLabel xml:lang="ru">Русская альтернативная метка</skos:altLabel>
+        <skos:altLabel xml:lang="es">Etiqueta alternativa en español</skos:altLabel>
+        <skos:altLabel xml:lang="zh">中文替代标签</skos:altLabel>
+        <skos:altLabel xml:lang="tr">Türkçe alternatif etiket</skos:altLabel>
+    </skos:Concept>
+</rdf:RDF>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+         xmlns:dcterms="http://purl.org/dc/terms/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+>
+    <bibo:Document rdf:about="http://www.idref.fr/123456789">
+        <dcterms:identifier>123456789</dcterms:identifier>
+    </bibo:Document>
+    <skos:Concept rdf:about="http://www.idref.fr/123456789/id">
+        <skos:prefLabel>Unspecified language preferred label</skos:prefLabel>
+        <skos:altLabel>Unspecified language alternative label</skos:altLabel>
+    </skos:Concept>
+</rdf:RDF>
