@@ -118,13 +118,13 @@ async def test_get_retrieval_result_with_subjects_without_uri(
     assert (
         json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
             0
-        ]["labels"][0]["value"]
+        ]["pref_labels"][0]["value"]
         == "label"
     )
     assert (
         json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
             0
-        ]["labels"][0]["language"]
+        ]["pref_labels"][0]["language"]
         == "fr"
     )
 
