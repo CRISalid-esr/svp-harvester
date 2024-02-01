@@ -50,9 +50,9 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             results = pub_graph.query(query)
             for role, person in results:
                 role = role.split("/")[-1]
-                g = await RdfResolver().fetch(person)
+                graph = await RdfResolver().fetch(person)
                 contributor_name = None
-                for name in g.objects(person, FOAF.name):
+                for name in graph.objects(person, FOAF.name):
                     contributor_name = name
                 db_contributor = await ContributorDAO(
                     session
