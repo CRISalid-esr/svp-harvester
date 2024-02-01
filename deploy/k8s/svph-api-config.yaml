@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: svph-api-config
+  labels:
+    app: svph-api
+data:
+  AMQP_ENABLED: 'true'
+  AMQP_HOST: 'svp-rabbit'
+  AMQP_PORT: '5672'
+  API_HOST: 'http://192.168.59.101'
+  API_PREFIX: '/api'
+  API_VERSION: 'v1'
+  APP_ENV: 'DEV'
+  DB_HOST: 'svph-db'
+  DB_PORT: '5432'
+

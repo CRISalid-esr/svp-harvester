@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svph-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svph-db
+  template:
+    metadata:
+      labels:
+        app: svph-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgresadmin
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: svph-db-secret
+                  key: admin_db_password
+            - name: POSTGRES_DB
+              value: postgresdb
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready  -d $POSTGRES_DB -h localhost -U $POSTGRES_USER
+            failureThreshold: 10
+            periodSeconds: 1
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+            - mountPath: /docker-entrypoint-initdb.d/svph-user-db.sql
+              name: svph-db-creation
+              readOnly: true
+      volumes:
+        - name: svph-db-creation
+          hostPath:
+            path: /home/docker/svph-user-db.sql
+            type: File
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: svph-db-pvc
+
