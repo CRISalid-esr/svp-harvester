@@ -41,7 +41,7 @@ class ScanrHarvester(AbstractHarvester):
                 # create a scanr id from idref
                 scanr_id = identifier_key + str(identifier_value)
                 return scanr_id
-            elif identifier_value is not None:
+            if identifier_value is not None:
                 # Search for scanr id from other identifiers on Scanr API Person index
                 scanr_id = await self._get_entity_scanr_id(
                     scanr_query_parameter, identifier_value
