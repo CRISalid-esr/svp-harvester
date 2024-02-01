@@ -1,6 +1,7 @@
-from typing import Generator
+from typing import AsyncGenerator
 
 import aiohttp
+from loguru import logger
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -13,7 +14,7 @@ class HalApiClient:
 
     HAL_API_URL = "https://api.archives-ouvertes.fr/search"
 
-    async def fetch(self, query_string: str) -> Generator[dict, None, None]:
+    async def fetch(self, query_string: str) -> AsyncGenerator[dict, None]:
         """
         Fetch the results from the HAL API
 
@@ -22,7 +23,7 @@ class HalApiClient:
         """
         try:
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None)
+                connector=aiohttp.TCPConnector(limit=0)
             ) as session:
                 async with session.get(f"{self.HAL_API_URL}/?{query_string}") as resp:
                     if resp.status == 200:
@@ -41,13 +42,9 @@ class HalApiClient:
                                 f"for request : {query_string}"
                             )
                         for doc in json_response["response"]["docs"]:
-                            # Raise unexpected format exception if the docid is missing
-                            if doc.get("docid") is None:
-                                # TODO dont stop the loop.
-                                #  replace with an error log triggering a notification
-                                raise UnexpectedFormatException(
-                                    f"Missing docid in HAL response: {doc}"
-                                )
+                            if doc.get("halId_s") is None:
+                                logger.error(f"Missing halId_s in HAL response: {doc}")
+                                continue
                             yield doc
                     else:
                         raise ExternalEndpointFailure(

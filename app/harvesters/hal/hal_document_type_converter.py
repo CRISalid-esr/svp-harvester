@@ -1,7 +1,9 @@
-from loguru import logger
+from app.harvesters.abstract_document_type_converter import (
+    AbstractDocumentTypeConverter,
+)
 
 
-class HalDocumentTypeConverter:
+class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
     """
     Use mapping table ton convert hal document type values to loc document type values
     """
@@ -10,7 +12,9 @@ class HalDocumentTypeConverter:
     RDF_SPAR = "http://purl.org/spar/fabio/"
     RDF_COAR = "http://purl.org/coar/resource_type"
 
-    CODES_MAPPING = {
+    HARVESTER = "HAL"
+
+    TYPES_MAPPING = {
         "ART": (f"{RDF_BIBO}Article", "Article"),
         "COMM": (f"{RDF_SPAR}ConferencePaper", "Conference Paper"),
         "COUV": (f"{RDF_BIBO}Chapter", "Chapter"),
@@ -61,18 +65,3 @@ class HalDocumentTypeConverter:
         "REPORT_COOR": (f"{RDF_COAR}c_93fc", "Report"),
         "REPORT_RETABINT": (f"{RDF_COAR}c_93fc", "Report"),
     }
-
-    UKNOWN_CODE = ("Unknown", "Unknown")
-
-    @staticmethod
-    def convert(code: str) -> tuple[str, str]:
-        """
-        Given a HAL document type code, return the corresponding uri and label
-        """
-        if code not in HalDocumentTypeConverter.CODES_MAPPING:
-            logger.warning(
-                f"Unknown HAL document type code: {code}",
-            )
-            return HalDocumentTypeConverter.UKNOWN_CODE
-
-        return HalDocumentTypeConverter.CODES_MAPPING[code]

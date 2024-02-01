@@ -42,7 +42,7 @@ def fixture_idref_sparql_endpoint_client_mock_with_sudoc_pub(
 async def test_idref_harvester_finds_doc(
     harvesting_db_model_for_person_with_idref,
     reference_recorder_register_mock,
-    idref_sparql_endpoint_client_mock_with_idref_pubs,
+    idref_sparql_endpoint_client_mock_with_idref_pubs,  # pylint: disable=unused-argument
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
@@ -86,7 +86,7 @@ async def test_idref_harvester_finds_doc(
 async def test_idref_harvester_finds_sudoc_doc(
     harvesting_db_model_for_person_with_idref,
     reference_recorder_register_mock,
-    idref_sparql_endpoint_client_mock_with_sudoc_pub,
+    idref_sparql_endpoint_client_mock_with_sudoc_pub,  # pylint: disable=unused-argument
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""

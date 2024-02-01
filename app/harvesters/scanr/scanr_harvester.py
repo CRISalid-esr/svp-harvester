@@ -1,5 +1,7 @@
 from typing import AsyncGenerator
 
+from loguru import logger
+
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
 from app.harvesters.scanr.scanr_api_query_builder import (
@@ -51,13 +53,10 @@ class ScanrHarvester(AbstractHarvester):
             )
 
             if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
-                # If we want the publications tied to an entity,
-                # but we don't know the main id used by scanr,
-                # we need to get it first by doing a search in the corresponding indice.
-
-                # TODO: If id is not idref, make a search with the other accepted ids
-                #  to get the unique scanrid (based on idref)
-                print("Condition met, doing something...")
+                logger.warning(
+                    "For now, Scanr harvester only supports idref identifiers, "
+                    f"{identifier_type} provided"
+                )
 
             builder.set_subject_type(builder.SubjectType.PUBLICATION)
 

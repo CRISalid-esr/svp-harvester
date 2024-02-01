@@ -2,7 +2,7 @@ import asyncio
 import re
 import urllib
 from enum import Enum
-from typing import AsyncGenerator, Type
+from typing import AsyncGenerator
 from loguru import logger
 
 import uritools
@@ -16,6 +16,7 @@ from app.harvesters.idref.idref_sparql_client import IdrefSparqlClient
 from app.harvesters.idref.idref_sparql_query_builder import (
     IdrefSparqlQueryBuilder as QueryBuilder,
 )
+from app.harvesters.idref.open_edition_resolver import OpenEditionResolver
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (
     AbstractHarvesterRawResult as RawResult,
@@ -32,8 +33,10 @@ class IdrefHarvester(AbstractHarvester):
     """
 
     SUDOC_URL_SUFFIX = "http://www.sudoc.fr/"
+    OPEN_EDITION_SUFFIX = re.compile(r"https?://journals\.openedition\.org/")
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
+    PERSEE_URL_SUFFIX = "http://data.persee.fr/"
     MAX_SUDOC_PARALLELISM = 3
 
     supported_identifier_types = ["idref", "orcid"]
@@ -47,6 +50,8 @@ class IdrefHarvester(AbstractHarvester):
         SCIENCE_PLUS_RDF = "SCIENCE_PLUS_RDF"
         HAL_JSON = "HAL_JSON"
         IDREF_SPARQL = "IDREF_SPARQL"
+        OPEN_EDITION = "OPEN_EDITION"
+        PERSEE_RDF = "PERSEE_RDF"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         builder = QueryBuilder()
@@ -66,10 +71,12 @@ class IdrefHarvester(AbstractHarvester):
                 )
         pending_queries = set()
         num_sudoc_waiting_queries = 0
+
         async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
             coro = self._secondary_query_process(doc)
-            # TODO temporary semi-sequential implementation
+            # Temporary semi-sequential implementation
             # Sudoc server does not support parallel querying beyond 5 parallel requests
+            # See issue #251
             pending_queries.add(asyncio.create_task(coro))
             if doc["secondary_source"] == "SUDOC":
                 num_sudoc_waiting_queries += 1
@@ -103,9 +110,53 @@ class IdrefHarvester(AbstractHarvester):
             coro = self._query_publication_from_hal_endpoint(doc)
         elif doc["secondary_source"] == "SCIENCE_PLUS":
             coro = self._query_publication_from_science_plus_endpoint(doc)
+        elif doc["secondary_source"] == "OPEN_EDITION":
+            coro = self._query_publication_from_openedition_endpoint(doc)
+        elif doc["secondary_source"] == "PERSEE":
+            coro = self._query_publication_from_persee_endpoint(doc)
         else:
             logger.info(f"Unknown source {doc['secondary_source']}")
         return coro
+
+    async def _query_publication_from_persee_endpoint(self, doc: dict) -> RdfResult:
+        uri: str | None = doc.get("uri", "")
+        if not uritools.isuri(uri):
+            raise UnexpectedFormatException(
+                f"Invalid Persee URI from Idref SPARQL endpoint: {uri}"
+            )
+        assert uri.startswith(self.PERSEE_URL_SUFFIX), "Invalid Persee Id"
+        assert uri.endswith("#Web"), "Provided Persee URI should end with #Web"
+
+        document_uri = re.sub(r"#Web$", "", uri)
+        document_uri = re.sub(r"^http://", "https://", document_uri)
+        client = RdfResolver()
+        pub = await client.fetch(document_uri, output_format="xml")
+        return RdfResult(
+            payload=pub,
+            source_identifier=URIRef(uri),
+            formatter_name=self.Formatters.PERSEE_RDF.value,
+        )
+
+    async def _query_publication_from_openedition_endpoint(self, doc: dict):
+        """
+        Query the publications from the OpenEdition API
+        :param doc: the publication doc as result of the SPARQL query to data.idref.fr with the uri
+        :return: the publication details
+        """
+
+        uri: str | None = doc.get("uri", "")
+        if (uri is None) or not uritools.isuri(uri):
+            raise UnexpectedFormatException(
+                f"Invalid OpenEdition URI from Idref SPARQL endpoint: {uri}"
+            )
+        assert self.OPEN_EDITION_SUFFIX.match(uri), f"Invalid OpenEdition Id {uri}"
+        client = OpenEditionResolver()
+        pub = await client.fetch(uri)
+        return RdfResult(
+            payload=pub,
+            source_identifier=URIRef(uri),
+            formatter_name=self.Formatters.OPEN_EDITION.value,
+        )
 
     async def _query_publication_from_sudoc_endpoint(self, doc: dict) -> RdfResult:
         """

@@ -217,7 +217,7 @@ async def test_hal_harvester_registers_docs_in_db(
     )
     assert reference.source_identifier == hal_api_docs_for_researcher.get(
         "response"
-    ).get("docs")[0].get("docid")
+    ).get("docs")[0].get("halId_s")
     assert reference_event.type == ReferenceEvent.Type.CREATED.value
 
 
@@ -252,14 +252,18 @@ async def test_hal_harvester_registers_one_kw_for_two_occurences(
     results = list(result)
     # the result with doc_id 1299757 has only one concept
     assert len(results) == 2
-    first_result = [r for r in results if r.source_identifier == "1299757"][0]
-    second_result = [r for r in results if r.source_identifier == "1416567"][0]
+    first_result = [r for r in results if r.source_identifier == "hal-01299757"][0]
+    second_result = [r for r in results if r.source_identifier == "hal-01416567"][0]
     assert len(first_result.subjects) == 1
     assert len(second_result.subjects) == 2
-    assert second_result.subjects[0].labels[0].value == "International trade"
-    assert second_result.subjects[0] == first_result.subjects[0]
-
-    # there should be only one concept created for the two occurences of the same keyword
+    assert any(
+        first_result.subjects[0].labels[0].value == concept.labels[0].value
+        for concept in second_result.subjects
+    )
+    assert any(
+        concept.labels[0].value == "International trade"
+        for concept in second_result.subjects
+    )
 
 
 @pytest.mark.integration

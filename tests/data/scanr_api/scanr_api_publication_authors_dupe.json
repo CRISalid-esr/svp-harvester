@@ -1,0 +1,748 @@
+{
+  "took": 349,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 18.561577,
+    "hits": [
+      {
+        "_index": "scanr-publications-20230912",
+        "_type": "_doc",
+        "_id": "EekPPosB_zGCMIjFYBAW",
+        "_score": 18.561577,
+        "_source": {
+          "summary": {
+            "default": "Cette recherche porte sur l’exploration de l’environnement inventif algérien à partir de la prise en compte de la production informationnelle qui s’exprime à travers les brevets d’invention. Ces derniers constituent une large source de connaissances techniques gratuites. Ils décrivent, détaillent et dévoilent des technologies employées et fournissent des solutions aux problèmes posés. L’accès aux informations technologiques de type brevet s’est développé au cours de ces dernières années grâce à l’évolution progressive des technologies de l’information et de la communication et des moyens électroniques de distribution et de récupération des données. Divers travaux empiriques considèrent les données des brevets comme un indicateur de l’activité inventive et/ou économique. Pourtant, en Algérie, les brevets sont considérés seulement comme un moyen de protection des inventions et non pas comme une source d’information susceptible de générer de nouvelles connaissances. L’objectif de cette recherche est de savoir si les documents brevets permettent d’extraire et de produire de nouveaux savoirs en termes de veille informationnelle et stratégique dans le contexte algérien. Par la même occasion, nous essayons également d’estimer si l’information brevet relative à ce pays est pertinente, stratégique ou bien insuffisante. Pour ce faire, nous évaluons la capacité d’innovation de l’Algérie par le biais d’un ensemble d’indicateurs représentatifs basé sur les informations contenues dans les brevets d’invention déposés sur son territoire. Étant donné que l’analyse des brevets s’apparente à la bibliométrie, notre approche méthodologique s’inscrit dans ce champ de recherche et se base sur les méthodes uni-dimensionnelles et les méthodes bi-dimensionnelles (relationnelles) qui se rapportent à la méthodologie d’analyse des distributions zipfiennes. Les résultats obtenus indiquent que l’innovation dans ce pays demeure à l’état embryonnaire. Tel qu’il apparaît à travers les brevets, il y a plus d’indicateurs de faiblesse que d’indicateurs de force. L’évolution des dépôts est irrégulière et l’accès aux informations relatives aux dépôts est très difficile. Les brevets prioritaires (déposants algériens) ne sont pas importants. L’étude relève une forme de dépendance stratégique à l’égard des technologies détenues par les brevets étrangers et qui s’illustre particulièrement dans l’industrie pharmaceutique et l’industrie de l’énergie. L’examen des brevets indique également que la majorité des inventeurs algériens activent dans des pays étrangers, ce qui suppose que le pays n’arrive pas à réunir les conditions favorables à la pratique de l’innovation",
+            "en": "This research focuses on the exploration of the Algerian inventive environment based on the published information expressed through patents. They are a large source of free technical skills. They describe detail and reveal the technologies used and provide solutions to the raised issues. The access to technological information kind of patent had developed in the past few years thanks to the progressive development of information and communication technologies and electronic means of distribution and recovery data. Several empirical works considers patent data as an indicator of inventive and/or economic activity. However, in Algeria, patents are considered only as a protecting mean of inventions and not as a source of information that could produce new knowledge. The objective of this research is to know whether patent documents allow the retrieval and production of new knowledge in terms of information and strategic monitoring in the Algerian context. At the same time, we are also trying to estimate whether patent information in this country is relevant, strategic or inadequate. To this end, we evaluate Algeria’s innovative capacity through a set of representative indicators based on the information contained in patents filed on its territory. Since patent analysis is related to bibliometric, our methodological approach its registered within this field of research and is based on the one-dimensional and two-dimensional (relational) methods that relate to the analysis methodology of zipfian distributions. The obtained results show that innovation in this country is still in its embryonic stage. As it appears through patents, there are more indicators of weakness than indicators of strength. The evolution of deposits is irregular and the access to the information relating to them is very difficult. Priority patents (Algerian applicants) are not important. The study notes a form of strategic dependency on technologies held by foreign patents, mainly in the pharmaceutical and energy industries. Patent’s examination also indicates that the majority of Algerian inventors perform in foreign countries, which means that the country couldn’t unify the right conditions to the innovative practice.",
+            "fr": "Cette recherche porte sur l’exploration de l’environnement inventif algérien à partir de la prise en compte de la production informationnelle qui s’exprime à travers les brevets d’invention. Ces derniers constituent une large source de connaissances techniques gratuites. Ils décrivent, détaillent et dévoilent des technologies employées et fournissent des solutions aux problèmes posés. L’accès aux informations technologiques de type brevet s’est développé au cours de ces dernières années grâce à l’évolution progressive des technologies de l’information et de la communication et des moyens électroniques de distribution et de récupération des données. Divers travaux empiriques considèrent les données des brevets comme un indicateur de l’activité inventive et/ou économique. Pourtant, en Algérie, les brevets sont considérés seulement comme un moyen de protection des inventions et non pas comme une source d’information susceptible de générer de nouvelles connaissances. L’objectif de cette recherche est de savoir si les documents brevets permettent d’extraire et de produire de nouveaux savoirs en termes de veille informationnelle et stratégique dans le contexte algérien. Par la même occasion, nous essayons également d’estimer si l’information brevet relative à ce pays est pertinente, stratégique ou bien insuffisante. Pour ce faire, nous évaluons la capacité d’innovation de l’Algérie par le biais d’un ensemble d’indicateurs représentatifs basé sur les informations contenues dans les brevets d’invention déposés sur son territoire. Étant donné que l’analyse des brevets s’apparente à la bibliométrie, notre approche méthodologique s’inscrit dans ce champ de recherche et se base sur les méthodes uni-dimensionnelles et les méthodes bi-dimensionnelles (relationnelles) qui se rapportent à la méthodologie d’analyse des distributions zipfiennes. Les résultats obtenus indiquent que l’innovation dans ce pays demeure à l’état embryonnaire. Tel qu’il apparaît à travers les brevets, il y a plus d’indicateurs de faiblesse que d’indicateurs de force. L’évolution des dépôts est irrégulière et l’accès aux informations relatives aux dépôts est très difficile. Les brevets prioritaires (déposants algériens) ne sont pas importants. L’étude relève une forme de dépendance stratégique à l’égard des technologies détenues par les brevets étrangers et qui s’illustre particulièrement dans l’industrie pharmaceutique et l’industrie de l’énergie. L’examen des brevets indique également que la majorité des inventeurs algériens activent dans des pays étrangers, ce qui suppose que le pays n’arrive pas à réunir les conditions favorables à la pratique de l’innovation"
+          },
+          "keywords": {
+            "default": [
+              "Analyse brevets",
+              "Intelligence économique",
+              "Veille informationnelle",
+              "Indicateurs de puissance innovatrice",
+              "Algérie",
+              "Bibliométrie",
+              "Base de données",
+              "Brevet d’invention",
+              "Patent analysis",
+              "Business intelligence",
+              "Information monitoring",
+              "Indicators of innovative power",
+              "Algeria",
+              "Bibliometry",
+              "Database",
+              "Patent"
+            ]
+          },
+          "year": 2019,
+          "externalIds": [
+            {
+              "id": "2019toul0020",
+              "type": "nnt"
+            },
+            {
+              "id": "hal-03175255",
+              "type": "hal"
+            }
+          ],
+          "productionType": "thesis",
+          "domains": [
+            {
+              "code": "034133771",
+              "count": 2,
+              "label": {
+                "default": "Intelligence économique"
+              },
+              "type": "sudoc"
+            },
+            {
+              "code": "03050998x",
+              "count": 2,
+              "label": {
+                "default": "Veille informationnelle"
+              },
+              "type": "sudoc"
+            },
+            {
+              "code": "050616315",
+              "count": 2,
+              "label": {
+                "default": "Diffusion de l'innovation"
+              },
+              "type": "sudoc"
+            },
+            {
+              "code": "027729915",
+              "count": 2,
+              "label": {
+                "default": "Bibliométrie"
+              },
+              "type": "sudoc"
+            },
+            {
+              "code": "027392457",
+              "count": 2,
+              "label": {
+                "default": "Inventeurs"
+              },
+              "type": "sudoc"
+            },
+            {
+              "code": "Q552515",
+              "count": 2,
+              "label": {
+                "default": "intelligence économique"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q262",
+              "count": 2,
+              "label": {
+                "default": "Algérie"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q3555242",
+              "count": 1,
+              "label": {
+                "default": "Veille informationnelle"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q603441",
+              "count": 1,
+              "label": {
+                "default": "Bibliométrie"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q8513",
+              "count": 1,
+              "label": {
+                "default": "Base de données"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q253623",
+              "count": 1,
+              "label": {
+                "default": "Brevet d’invention"
+              },
+              "type": "wikidata"
+            },
+            {
+              "code": "Q6662173",
+              "count": 1,
+              "label": {
+                "default": "Business intelligence"
+              },
+              "type": "wikidata"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Analyse brevets"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Intelligence économique"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Veille informationnelle"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Indicateurs de puissance innovatrice"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Algérie"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Bibliométrie"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Base de données"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Brevet d’invention"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Patent analysis"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Business intelligence"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Information monitoring"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Indicators of innovative power"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Algeria"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Bibliometry"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Database"
+              },
+              "type": "keyword"
+            },
+            {
+              "count": 1,
+              "label": {
+                "default": "Patent"
+              },
+              "type": "keyword"
+            }
+          ],
+          "affiliations": [
+            {
+              "id": "527028"
+            },
+            {
+              "id": "303091"
+            },
+            {
+              "id": "univ-tln"
+            },
+            {
+              "id": "198056"
+            },
+            {
+              "id": "grid.5399.6"
+            },
+            {
+              "address": [
+                {
+                  "country": "France",
+                  "score": 0.659375700921602,
+                  "address": "58 Boulevard Charles Livon",
+                  "citycode": "13207",
+                  "city": "Marseille",
+                  "urbanUnitCode": "UU00759",
+                  "provider": "adresse.data.gouv.fr",
+                  "postcode": "13007",
+                  "main": true,
+                  "urbanUnitLabel": "Marseille - Aix-en-Provence",
+                  "gps": {
+                    "lon": 5.3591239999999996,
+                    "lat": 43.292154
+                  },
+                  "localisationSuggestions": [
+                    "Provence-Alpes-Côte d'Azur",
+                    "Marseille - Aix-en-Provence (agglomération)",
+                    "Marseille  7e",
+                    "Aix-Marseille (académie)",
+                    "Bouches-du-Rhône (13)"
+                  ]
+                }
+              ],
+              "acronym": {
+                "default": "AMU",
+                "en": "AMU",
+                "fr": "AMU"
+              },
+              "id": "130015332",
+              "label": {
+                "default": "Aix-Marseille University Aix-Marseille Université",
+                "en": "Aix-Marseille University",
+                "fr": "Aix-Marseille Université"
+              }
+            },
+            {
+              "id": "https://ror.org/035xkbk20"
+            },
+            {
+              "id": "univ-amu"
+            },
+            {
+              "id": "shs"
+            },
+            {
+              "id": "19830766200017"
+            },
+            {
+              "id": "grid.12611.35"
+            },
+            {
+              "id": "13001533200013"
+            },
+            {
+              "address": [
+                {
+                  "country": "France",
+                  "score": 0.7115363636363631,
+                  "address": "21 Rue Virgile Marron",
+                  "citycode": "13205",
+                  "city": "Marseille",
+                  "urbanUnitCode": "UU00759",
+                  "provider": "adresse.data.gouv.fr",
+                  "postcode": "13005",
+                  "main": false,
+                  "urbanUnitLabel": "Marseille - Aix-en-Provence",
+                  "gps": {
+                    "lon": 5.390533,
+                    "lat": 43.292078
+                  },
+                  "localisationSuggestions": [
+                    "Provence-Alpes-Côte d'Azur",
+                    "Marseille - Aix-en-Provence (agglomération)",
+                    "Marseille  5e",
+                    "Aix-Marseille (académie)",
+                    "Bouches-du-Rhône (13)"
+                  ]
+                },
+                {
+                  "country": "France",
+                  "score": 0.328240559440559,
+                  "address": "70 Avenue Roger Devoucoux",
+                  "citycode": "83137",
+                  "city": "Toulon",
+                  "urbanUnitCode": "UU00757",
+                  "provider": "adresse.data.gouv.fr",
+                  "postcode": "83100",
+                  "main": true,
+                  "urbanUnitLabel": "Toulon",
+                  "gps": {
+                    "lon": 5.940132,
+                    "lat": 43.121287
+                  },
+                  "localisationSuggestions": [
+                    "Provence-Alpes-Côte d'Azur",
+                    "Toulon (agglomération)",
+                    "Toulon",
+                    "Nice (académie)",
+                    "Var (83)"
+                  ]
+                }
+              ],
+              "acronym": {
+                "default": "IMSIC",
+                "fr": "IMSIC"
+              },
+              "id": "200815499S",
+              "label": {
+                "default": "Institut Méditerranéen des Sciences de l'Information et de la Communication",
+                "fr": "Institut Méditerranéen des Sciences de l'Information et de la Communication"
+              }
+            },
+            {
+              "address": [
+                {
+                  "country": "France",
+                  "score": 0.86214114070141,
+                  "address": "Avenue de l'Université",
+                  "citycode": "83144",
+                  "city": "La Valette-du-Var",
+                  "urbanUnitCode": "UU00757",
+                  "provider": null,
+                  "postcode": "83160",
+                  "main": true,
+                  "urbanUnitLabel": "Toulon",
+                  "gps": {
+                    "lon": 6.003272,
+                    "lat": 43.137136
+                  },
+                  "localisationSuggestions": [
+                    "Provence-Alpes-Côte d'Azur",
+                    "Toulon (agglomération)",
+                    "La Valette-du-Var",
+                    "Nice (académie)",
+                    "Var (83)"
+                  ]
+                }
+              ],
+              "acronym": {
+                "default": "UTLN",
+                "fr": "UTLN"
+              },
+              "id": "198307662",
+              "label": {
+                "default": "Université de Toulon",
+                "fr": "Université de Toulon"
+              }
+            },
+            {
+              "id": "imsic"
+            }
+          ],
+          "source": {},
+          "title": {
+            "default": "L'intelligence économique en Algérie : analyse des brevets comme indicateurs de la puissance innovatrice"
+          },
+          "type": "these",
+          "isOa": false,
+          "authorsCount": 1,
+          "id": "nnt2019toul0020",
+          "publicationDate": "2019-11-29T00:00:00",
+          "authors": [
+            {
+              "firstName": "Nour-Eddine",
+              "lastName": "Aissaoui",
+              "role": "author",
+              "person": "idref243745753",
+              "fullName": "Nour-Eddine Aissaoui",
+              "affiliations": [
+                {
+                  "addresses": [
+                    "Université de Toulon, bureau de l'École doctorale 509, 70 avenue Roger Devoucoux - 83000 TOULON"
+                  ],
+                  "aliases": [
+                    "ED 509",
+                    "Université du Sud Toulon-Var. École doctorale 509",
+                    "Université du Sud Toulon-Var. École doctorale 509 Civilisations et sociétés méditerranéennes et comparées",
+                    "École doctorale de l'UTLN",
+                    "Université du Sud Toulon-Var",
+                    "École doctorale Civilisations et sociétés méditerranéennes et comparées",
+                    "École doctorale Civilisations et sociétés euro-méditerranéennes et comparées",
+                    "Université de Toulon",
+                    "Université du Sud Toulon-Var. École doctorale 509 Sociétés méditerranéennes et sciences humaines",
+                    "École doctorale 509 (Toulon)",
+                    "ED509",
+                    "Université de Toulon. École doctorale 509",
+                    "École doctorale 509"
+                  ],
+                  "comments": [
+                    "Disciplines : droit, lettres et sciences humaines, sciences économiques, sciences de gestion, sciences de l'information et de la communication",
+                    "Thématique de recherche : civilisations et sociétés euro-méditerranéennes et comparées"
+                  ],
+                  "datasource": "theses",
+                  "name": "École doctorale Sociétés méditerranéennes et sciences humaines. ED 509",
+                  "ids": [
+                    {
+                      "id": "grid.12611.35",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "198307662",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "19830766200017",
+                      "type": "siret"
+                    }
+                  ],
+                  "BNF": "http://catalogue.bnf.fr/ark:/12148/cb16678250h",
+                  "idref": "157483967",
+                  "viaf": "http://viaf.org/viaf/282291835",
+                  "alias_idref": []
+                },
+                {
+                  "aliases": [
+                    "IMSIC",
+                    "EA 7492",
+                    "Aix-Marseille Université",
+                    "Université de Toulon",
+                    "Aix-Marseille Université (Institut Méditerranéen des Sciences de l'Information et de la Communication)",
+                    "Université de Toulon (Institut Méditerranéen des Sciences de l'Information et de la Communication)"
+                  ],
+                  "comments": [
+                    "Université de Toulon, Campus Porte d’Italie, 70, Avenue Roger Devoucoux, 83000 Toulon",
+                    "Aix-Marseille Université, EJCAM, 21, rue Virgile Marron – CS80071, 13392 Marseille Cedex 05",
+                    "Site TOULON : Université de Toulon : Campus Porte d’Italie 70, avenue Roger Devoucoux 83000 TOULON  04 83 36 63 39",
+                    "Équipe d’accueil EA 7492 créée en 2018 par la réunion de 2 équipes dans la même unité : I3M EA 3820 et IRSIC EA 4262"
+                  ],
+                  "datasource": "theses",
+                  "name": "Institut Méditerranéen des Sciences de l'Information et de la Communication (IMSIC). EA 7492",
+                  "ids": [
+                    {
+                      "id": "grid.5399.6",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "200815499S",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "130015332",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "13001533200013",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "198307662",
+                      "type": "siren"
+                    },
+                    {
+                      "id": "130015332",
+                      "type": "siren"
+                    }
+                  ],
+                  "idref": "233736085",
+                  "rnsr": "200815499S",
+                  "viaf": "http://viaf.org/viaf/4860155769093627880005",
+                  "alias_idref": []
+                },
+                {
+                  "aliases": [
+                    "Centre universitaire de Toulon et du Var",
+                    "Université de Toulon et du Var",
+                    "UTLN",
+                    "UTV",
+                    "Université du Sud Toulon et du Var",
+                    "USTV"
+                  ],
+                  "comments": [
+                    "IUT en oct. 1968, centre universitaire dépendant de Nice en 1969, université autonome en 1979 ; en 2004, l'UTV change de nom et devient l'Université du Sud Toulon-Var (USTV). Elle change de nom en 2013 et devient l'Université de Toulon (UTLN)"
+                  ],
+                  "docid": "303091",
+                  "datasource": "theses",
+                  "ISNI": "0000000088437055",
+                  "name": "Université de Toulon",
+                  "ids": [
+                    {
+                      "id": "grid.12611.35",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "198307662",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "19830766200017",
+                      "type": "siret"
+                    }
+                  ],
+                  "BNF": "http://catalogue.bnf.fr/ark:/12148/cb118822789",
+                  "idref": "031122337",
+                  "viaf": "http://viaf.org/viaf/157701221",
+                  "alias_idref": []
+                },
+                {
+                  "country": "France",
+                  "structId": "527028",
+                  "hal_docid": "527028",
+                  "datasource": "hal",
+                  "name": "Institut mediterranéen des sciences de l'information et de la communication, EA7492, EA7492, IMSIC, AMU, UTLN, Aix Marseille Université, Université de Toulon, 21, rue Virgile Marron13392 Marseille Cedex 05, France",
+                  "ids": [
+                    {
+                      "id": "grid.5399.6",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "200815499S",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "130015332",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "13001533200013",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "198307662",
+                      "type": "siren"
+                    },
+                    {
+                      "id": "130015332",
+                      "type": "siren"
+                    }
+                  ],
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "rnsr": "200815499S"
+                },
+                {
+                  "country": "France",
+                  "structId": "198056",
+                  "ror": "https://ror.org/035xkbk20",
+                  "hal_docid": "198056",
+                  "datasource": "hal",
+                  "name": "Aix Marseille Université, AMU, Aix-Marseille UniversitéJardins du Pharo58 Boulevard Charles Livon13284 Marseille cedex 7, France",
+                  "ids": [
+                    {
+                      "id": "grid.5399.6",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "130015332",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "13001533200013",
+                      "type": "siret"
+                    }
+                  ],
+                  "detected_countries": [
+                    "fr"
+                  ]
+                },
+                {
+                  "country": "France",
+                  "structId": "303091",
+                  "hal_docid": "303091",
+                  "datasource": "hal",
+                  "name": "Université de Toulon, UTLN, Avenue de l'Université - BP 20132 - 83957 La Garde Cedex, France",
+                  "ids": [
+                    {
+                      "id": "grid.12611.35",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "198307662",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "19830766200017",
+                      "type": "siret"
+                    }
+                  ],
+                  "detected_countries": [
+                    "fr"
+                  ]
+                }
+              ]
+            },
+            {
+              "firstName": "David",
+              "lastName": "Reymond",
+              "role": "directeurthese",
+              "person": "idref122796527",
+              "fullName": "David Reymond"
+            },
+            {
+              "firstName": "Jean-Max",
+              "lastName": "Noyer",
+              "role": "directeurthese",
+              "person": "idref034869417",
+              "fullName": "Jean-Max Noyer"
+            },
+            {
+              "firstName": "David",
+              "lastName": "Reymond",
+              "role": "membrejury",
+              "person": "idref122796527",
+              "fullName": "David Reymond"
+            },
+            {
+              "firstName": "Jean-Max",
+              "lastName": "Noyer",
+              "role": "membrejury",
+              "person": "idref034869417",
+              "fullName": "Jean-Max Noyer"
+            },
+            {
+              "firstName": "Hakima",
+              "lastName": "Amaouz",
+              "role": "membrejury",
+              "person": "idref135685141",
+              "fullName": "Hakima Amaouz"
+            },
+            {
+              "firstName": "Sandrine",
+              "lastName": "Wolff",
+              "role": "membrejury",
+              "person": "idref132138123",
+              "fullName": "Sandrine Wolff"
+            },
+            {
+              "firstName": "Céline",
+              "lastName": "Paganelli",
+              "role": "membrejury",
+              "person": "idref061235563",
+              "fullName": "Céline Paganelli"
+            },
+            {
+              "firstName": "Luc",
+              "lastName": "Quoniam",
+              "role": "membrejury",
+              "person": "idref034105700",
+              "fullName": "Luc Quoniam"
+            },
+            {
+              "firstName": "Hakima",
+              "lastName": "Amaouz",
+              "role": "rapporteur",
+              "person": "idref135685141",
+              "fullName": "Hakima Amaouz"
+            },
+            {
+              "firstName": "Sandrine",
+              "lastName": "Wolff",
+              "role": "rapporteur",
+              "person": "idref132138123",
+              "fullName": "Sandrine Wolff"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

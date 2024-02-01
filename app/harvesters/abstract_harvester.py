@@ -250,7 +250,6 @@ class AbstractHarvester(ABC):
         :return: None
         """
         logger.error(error)
-        # TODO add informations about the error to the harvesting
         await self._update_harvesting_state(Harvesting.State.FAILED)
         await self._add_error_to_harvesting(error)
         await self._put_in_queue(

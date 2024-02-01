@@ -59,7 +59,9 @@ def fixture_idref_non_preferred_lang_concept_http_client_mock(
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_calls_url_from_uri():
+async def test_idref_concept_solver_calls_url_from_uri(
+    idref_rdf_raw_result_for_concept: str,
+):
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id https://www.idref.fr/082303363/id
@@ -70,16 +72,16 @@ async def test_idref_conscept_solver_calls_url_from_uri():
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
         mock_get.return_value.__aenter__.return_value.status = 200
         mock_get.return_value.__aenter__.return_value.text.return_value = (
-            '<?xml version="1.0" encoding="UTF-8"?>'
-            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
-            "</rdf:RDF>"
+            idref_rdf_raw_result_for_concept
         )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_calls_url_from_numeric_id():
+async def test_idref_conscept_solver_calls_url_from_numeric_id(
+    idref_rdf_raw_result_for_concept: str,
+):
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id "082303363"
@@ -90,9 +92,7 @@ async def test_idref_conscept_solver_calls_url_from_numeric_id():
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
         mock_get.return_value.__aenter__.return_value.status = 200
         mock_get.return_value.__aenter__.return_value.text.return_value = (
-            '<?xml version="1.0" encoding="UTF-8"?>'
-            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
-            "</rdf:RDF>"
+            idref_rdf_raw_result_for_concept
         )
         await IdRefConceptSolver().solve(concept_id=concept_id)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
@@ -279,7 +279,7 @@ async def test_idref_concept_solver_returns_concepts_without_language(
             ]
         )
         == 1
-    )
+    )048918482Copier cet identifiant (PPN)
     assert "Unspecified language preferred label" in [
         label.value
         for label in result.labels
