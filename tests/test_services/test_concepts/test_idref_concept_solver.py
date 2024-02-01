@@ -8,6 +8,12 @@ from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 
 
+@pytest.fixture(name="mock_idref_concept_solver", autouse=True)
+def fixture_mock_idref_concept_solver():
+    """Disable mock for IdRefConceptSolver"""
+    return
+
+
 @pytest.fixture(name="idref_concept_http_client_mock")
 def fixture_idref_concept_http_client_mock(idref_rdf_raw_result_for_concept: str):
     """Retrieval service mock to detect run method calls."""
@@ -59,6 +65,7 @@ def fixture_idref_non_preferred_lang_concept_http_client_mock(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_concept_solver_calls_url_from_uri(
     idref_rdf_raw_result_for_concept: str,
 ):
@@ -79,6 +86,7 @@ async def test_idref_concept_solver_calls_url_from_uri(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_conscept_solver_calls_url_from_numeric_id(
     idref_rdf_raw_result_for_concept: str,
 ):
@@ -99,6 +107,7 @@ async def test_idref_conscept_solver_calls_url_from_numeric_id(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_conscept_solver_raises_value_error_with_fantasy_string():
     """
     GIVEN an idref concept solver
@@ -119,6 +128,7 @@ async def test_idref_conscept_solver_raises_value_error_with_fantasy_string():
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_concept_solver_returns_db_concept(idref_concept_http_client_mock):
     """
     GIVEN an idref concept solver
@@ -241,6 +251,7 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_concept_solver_returns_concepts_without_language(
     idref_nolang_concept_http_client_mock,
 ):
