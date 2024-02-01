@@ -8,12 +8,27 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
 
+from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
-from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
-from tests.fixtures.reference_event_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.common import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.pydantic_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.hal_api_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.idref_concept_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.scanr_api_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.science_plus_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.sudoc_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.idref_sparql_endpoint_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.retrieval_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.harvesting_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.reference_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.reference_event_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.open_edition_doc_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.open_alex_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+
 
 environ["APP_ENV"] = "TEST"
 
