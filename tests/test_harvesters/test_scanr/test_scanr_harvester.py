@@ -16,25 +16,43 @@ def test_scanr_harvester_relevant_with_idref(person_with_name_and_idref: Person)
     assert harvester.is_relevant(person_with_name_and_idref) is True
 
 
-def test_scanr_harvester_not_relevant_without_idref(person_with_name_and_orcid: Person):
+def test_scanr_harvester_relevant_with_orcid(person_with_name_and_orcid: Person):
     """Test that the harvester will not run if not submitted with an IDREF"""
     harvester = ScanrHarvester(converter=ScanrReferencesConverter())
-    assert harvester.is_relevant(person_with_name_and_orcid) is False
+    assert harvester.is_relevant(person_with_name_and_orcid) is True
+
+
+def test_scanr_harvester_not_relevant_with_halid_s(
+    person_with_name_and_id_hal_s: Person,
+):
+    """Test that the harvester will not run if not submitted with an IDREF"""
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    assert harvester.is_relevant(person_with_name_and_id_hal_s) is True
+
+
+def test_scanr_harvester_not_relevant_with_person_without_identifiers(
+    person_without_identifiers: Person,
+):
+    """Test that the harvester will not run if not submitted with an IDREF"""
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    assert harvester.is_relevant(person_without_identifiers) is False
 
 
 @pytest.mark.asyncio
 async def test_fetch_references_async(
-        test_client: TestClient,
-        person_with_name_and_idref_json,
-        scanr_api_docs_from_publication,
+    test_client: TestClient,
+    person_with_name_and_idref_json,
+    scanr_api_docs_from_publication,
 ):
     """
     Test a post request with history safe mode set to False.
     """
 
-    with (mock.patch.object(AsyncElasticsearch, 'search',
-                            new=mock.AsyncMock(return_value=scanr_api_docs_from_publication)
-                            )):
+    with mock.patch.object(
+        AsyncElasticsearch,
+        "search",
+        new=mock.AsyncMock(return_value=scanr_api_docs_from_publication),
+    ):
         response = test_client.post(
             REFERENCES_RETRIEVAL_API_PATH,
             json={
@@ -42,7 +60,7 @@ async def test_fetch_references_async(
                 "events": ["created", "updated", "deleted", "unchanged"],
                 "history_safe_mode": False,
                 "harvesters": ["scanr"],
-            }
+            },
         )
 
         assert response.status_code == 200

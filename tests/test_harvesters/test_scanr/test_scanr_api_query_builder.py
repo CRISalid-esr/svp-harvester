@@ -11,13 +11,6 @@ def fixture_scanr_api_query_builder():
     yield scanr_query
 
 
-def test_set_subject_type(scanr_query_builder):
-    """Test if the set_subject_type function return the values set"""
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PERSON)
-
-    assert scanr_query_builder.subject_type.value == "person"
-
-
 def test_set_query(scanr_query_builder):
     """Test if the set_query function return the values set"""
     scanr_query_builder.set_publication_query("idref09850")
@@ -34,16 +27,21 @@ def test_build_person_query_with_idref(scanr_query_builder):
     :param scanr_query_builder:
     :return:
     """
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PERSON)
-    scanr_query_builder.set_query(
-        scanr_query_builder.QueryParameters.AUTH_IDREF, "2556"
+    scanr_query_builder.set_person_query(
+        scanr_query_builder.QueryParameters.AUTH_IDREF, "idref2556"
     )
     query = scanr_query_builder.build()
 
     expected_result = {
         "_source": ["id", "externalIds", "domains", "affiliations", "fullName"],
-        "query": {"bool": {"must": [{"term": {"id": "idref2556"}}]}},
-        "sort": {"publicationDate": {"order": "desc"}},
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"externalIds.type.keyword": "idref"}},
+                    {"term": {"externalIds.id.keyword": "idref2556"}},
+                ]
+            }
+        },
     }
     assert query == expected_result
 
@@ -57,16 +55,21 @@ def test_build_person_query_with_orcid(scanr_query_builder):
     :param scanr_query_builder:
     :return:
     """
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PERSON)
-    scanr_query_builder.set_query(
-        scanr_query_builder.QueryParameters.AUTH_ORCID, "2556"
+    scanr_query_builder.set_person_query(
+        scanr_query_builder.QueryParameters.AUTH_ORCID, "idref2556"
     )
     query = scanr_query_builder.build()
 
     expected_result = {
         "_source": ["id", "externalIds", "domains", "affiliations", "fullName"],
-        "query": {"bool": {"must": [{"term": {"orcid": "2556"}}]}},
-        "sort": {"publicationDate": {"order": "desc"}},
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"externalIds.type.keyword": "orcid"}},
+                    {"term": {"externalIds.id.keyword": "idref2556"}},
+                ]
+            }
+        },
     }
     assert query == expected_result
 
@@ -82,8 +85,7 @@ def test_build_person_query_without_idref_or_orcid(scanr_query_builder):
     :param scanr_query_builder:
     :return:
     """
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PERSON)
-    scanr_query_builder.set_query(
+    scanr_query_builder.set_person_query(
         scanr_query_builder.QueryParameters.AUTH_ID_HAL_S, "john-doe"
     )
     query = scanr_query_builder.build()
@@ -98,7 +100,6 @@ def test_build_person_query_without_idref_or_orcid(scanr_query_builder):
                 ]
             }
         },
-        "sort": {"publicationDate": {"order": "desc"}},
     }
     assert query == expected_result
 
@@ -112,7 +113,6 @@ def test_build_publication_query_with_idref(scanr_query_builder):
     :param scanr_query_builder:
     :return:
     """
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PUBLICATION)
     scanr_query_builder.set_publication_query("idref2556")
     query = scanr_query_builder.build()
 
@@ -134,23 +134,3 @@ def test_build_publication_query_with_idref(scanr_query_builder):
     }
 
     assert query == expected_result
-
-
-# def test_build_publication_query_without_idref(scanr_query_builder):
-#     """Test if build function raise an error when publication build is called without idref"""
-#     scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PUBLICATION)
-#     scanr_query_builder.set_query(
-#         scanr_query_builder.QueryParameters.AUTH_ORCID, "2556"
-#     )
-#
-#     with pytest.raises(NotImplementedError):
-#         scanr_query_builder.build()
-#
-
-
-def test_build_without_set_query(scanr_query_builder):
-    """Test if build function raise an error when set_query is not set"""
-    scanr_query_builder.set_subject_type(scanr_query_builder.SubjectType.PERSON)
-
-    with pytest.raises(AssertionError):
-        scanr_query_builder.build()

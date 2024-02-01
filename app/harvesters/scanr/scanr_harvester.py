@@ -1,7 +1,5 @@
 from typing import AsyncGenerator
 
-from loguru import logger
-
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
 from app.harvesters.scanr.scanr_api_query_builder import (
@@ -21,7 +19,7 @@ class ScanrHarvester(AbstractHarvester):
         "Person": [
             (QueryBuilder.QueryParameters.AUTH_IDREF, "idref"),
             (QueryBuilder.QueryParameters.AUTH_ORCID, "orcid"),
-            (QueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal"),
+            (QueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s"),
         ]
     }
 
@@ -37,23 +35,23 @@ class ScanrHarvester(AbstractHarvester):
         # List convenient query parameters for this entity class
         # and choose the first one for which value is provided
 
-        # TODO: if scanr_query_parameter have idref tuple:
-        #  return scanr_query_parameter, str(identifier_value)
-        #  else:
-        #  make a search in scanr api publication index
-        #  with the other accepted ids to get the unique scanrid (based on idref)
         for scanr_query_parameter, identifier_key in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_key == "idref" and identifier_value is not None:
+                # create a scanr id from idref
                 scanr_id = identifier_key + str(identifier_value)
                 return scanr_id
-            elif identifier_key != "idref" and identifier_value is not None:
+            elif identifier_value is not None:
+                # Search for scanr id from other identifiers on Scanr API Person index
                 scanr_id = await self._get_entity_scanr_id(
                     scanr_query_parameter, identifier_value
                 )
-                return scanr_id
+                if scanr_id:
+                    return scanr_id
 
-        assert False, "Unable to run hal harvester for a person without idref"
+        assert (
+            False
+        ), "Unable to run hal harvester for a person without idref, orcid or id_hal_s"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         async with ScanRElasticClient() as client:
@@ -62,14 +60,6 @@ class ScanrHarvester(AbstractHarvester):
             scanr_id = await self._get_scanr_query_parameters(
                 await self._get_entity_class_name()
             )
-
-            # if identifier_type != QueryBuilder.QueryParameters.AUTH_IDREF:
-            #     logger.warning(
-            #         "For now, Scanr harvester only supports idref identifiers, "
-            #         f"{identifier_type} provided"
-            #     )
-
-            # builder.set_subject_type(builder.SubjectType.PUBLICATION)
 
             builder.set_publication_query(scanr_id=scanr_id)
 
@@ -81,11 +71,12 @@ class ScanrHarvester(AbstractHarvester):
                     formatter_name=ScanrHarvester.FORMATTER_NAME,
                 )
 
-    async def _get_entity_scanr_id(self, identifier_type: str, identifier_value: str):
+    @staticmethod
+    async def _get_entity_scanr_id(identifier_type, identifier_value: str):
         async with ScanRElasticClient() as client:
             builder = QueryBuilder()
             builder.set_person_query(identifier_type, identifier_value)
 
             client.set_query(elastic_query=builder.build())
-            async for doc in client.perform_search(client.Indexes.PUBLICATIONS):
-                return doc.get("_id")
+            async for doc in client.perform_search(client.Indexes.PERSONS):
+                return doc.get("_source", {}).get("id")

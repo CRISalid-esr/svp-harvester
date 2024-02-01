@@ -50,19 +50,6 @@ class ScanRApiQueryBuilder:
         self.subject_type: ScanRApiQueryBuilder.SubjectType | None = None
         self.query = {}
 
-    def set_subject_type(self, subject_type: SubjectType):
-        """
-        Set the type of subject about which data will be retrieved : person or publication
-        :param subject_type: the type of subject
-        :return: the query builder
-        """
-        self.subject_type = subject_type
-
-    # # TODO: Move that function in scanr_harvester get_scanr_query_parameters?
-    # def _set_scanr_id(self):
-    #     if self.identifier_type == self.QueryParameters.AUTH_IDREF:
-    #         self.scanr_id = self.identifier_type.value + self.identifier_value
-
     def set_publication_query(self, scanr_id: str):
         """
         Set the field name and value representing the entity for which the query is built.
@@ -99,7 +86,8 @@ class ScanRApiQueryBuilder:
         """
         self._source_param()
         self._query_param()
-        self._sort_param()
+        if self.subject_type == self.SubjectType.PUBLICATION:
+            self._sort_param()
 
         return self.query
 
@@ -129,14 +117,7 @@ class ScanRApiQueryBuilder:
                     ]
                 }
             }
-        # elif self.identifier_type == self.QueryParameters.AUTH_ORCID:
-        #     query_param = {
-        #         "bool": {
-        #             "must": [
-        #                 {"term": {self.identifier_type.value: self.identifier_value}},
-        #             ]
-        #         }
-        #     }
+
         else:
             query_param = {
                 "bool": {
