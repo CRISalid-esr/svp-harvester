@@ -58,14 +58,22 @@ class AbstractReferencesConverter(ABC):
             concept.labels.append(Label(value=value, language=language))
         return concept
 
-    async def _get_or_create_concept_by_uri(self, uri: str, value: str, language: str):
+    async def _get_or_create_concept_by_uri(
+        self,
+        uri: str,
+        value: str,
+        language: str,
+        concept_source: ConceptFactory.ConceptSources | None = None,
+    ):
         # Look for the concept in the database
         async with async_session() as session:
             concept = await ConceptDAO(session).get_concept_by_uri(uri)
         # If the concept is not in the database, try to create it by dereferencing the uri
         if concept is None:
             try:
-                concept = await ConceptFactory.solve(uri)
+                concept = await ConceptFactory.solve(
+                    concept_id=uri, concept_source=concept_source
+                )
             # If the dereferencing fails, create a concept with the uri and the label
             except DereferencingError:
                 concept = Concept(uri=uri)
@@ -73,7 +81,10 @@ class AbstractReferencesConverter(ABC):
         return concept
 
     async def _get_or_create_concepts_by_uri(
-        self, concept_informations: List[Dict[str, str | None]]
+        self,
+        concept_informations: List[
+            Dict[str, str | ConceptFactory.ConceptSources | None]
+        ],
     ):
         db_concepts = []
         # get all the concepts from the database in one query
@@ -94,8 +105,9 @@ class AbstractReferencesConverter(ABC):
                 concepts_dereferencing_coroutines.append(
                     self._get_or_create_concept_by_uri(
                         concept_information["uri"],
-                        concept_information["label"],
-                        concept_information["language"],
+                        concept_information.get("label", None),
+                        concept_information.get("language", None),
+                        concept_information.get("concept_source", None),
                     )
                 )
         # wait for all the coroutines to finish
