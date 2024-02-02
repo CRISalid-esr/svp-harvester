@@ -1,6 +1,6 @@
 import datetime
 from typing import List
-from sqlalchemy import select, func
+from sqlalchemy import or_, select, func
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -107,8 +107,8 @@ class ReferenceDAO(AbstractDAO):
 
     async def get_references_summary(
         self,
-        event_types: List[ReferenceEvent.Type],
-        nullify: List[str],
+        text_search: str,
+        filter_harvester: dict[List, List],
         date_interval: tuple[datetime.date, datetime.date],
         entity: Person,
     ) -> List[ReferenceSummary]:
@@ -143,11 +143,12 @@ class ReferenceDAO(AbstractDAO):
             .join(Harvesting, onclause=ReferenceEvent.harvesting_id == Harvesting.id)
             .join(Retrieval, onclause=Harvesting.retrieval_id == Retrieval.id)
             .join(entity_id, onclause=Retrieval.entity_id == entity_id.c.id)
+            .join(Entity, onclause=entity_id.c.id == Entity.id)
             .join(Identifier, onclause=entity_id.c.id == Identifier.entity_id)
             .join(Title)
             .filter(
-                ReferenceEvent.type.in_(event_types),
-                Identifier.type.not_in(nullify),
+                ReferenceEvent.type.in_(filter_harvester["event_types"]),
+                Identifier.type.not_in(filter_harvester["nullify"]),
             )
             .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
         )
@@ -159,6 +160,7 @@ class ReferenceDAO(AbstractDAO):
         if date_end:
             query = query.where(Harvesting.timestamp <= date_end)
 
+        query = self._filter_text_search(query, text_search)
         return await self.db_session.execute(query)
 
     async def get_complete_reference_by_id(self, reference_id: int) -> Reference | None:
@@ -175,3 +177,21 @@ class ReferenceDAO(AbstractDAO):
         )
 
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
+
+    def _filter_text_search(self, query, text_search: str):
+        """
+        Filter the query by text search
+
+        :param query: query to filter
+        :param text_search: text to search
+        :return: the filtered query
+        """
+        if text_search == "":
+            return query
+        return query.filter(
+            or_(
+                Entity.name.like(f"%{text_search}%"),
+                Identifier.value.like(f"%{text_search}%"),
+                Title.value.like(f"%{text_search}%"),
+            )
+        )

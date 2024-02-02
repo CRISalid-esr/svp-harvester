@@ -1,6 +1,5 @@
 """ References routes"""
 
-import datetime
 from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, Query
@@ -17,12 +16,12 @@ from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as DbRetrieval
 from app.db.session import async_session
 from app.models.people import Person
-from app.models.reference_events import ReferenceEvent
 from app.models.reference_summary import ReferenceSummary
 from app.models.references import Reference
 from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
+from app.api.dependencies.common_parameters import common_parameters
 
 router = APIRouter()
 
@@ -139,10 +138,8 @@ async def get_retrieval_result(
 
 @router.get("/summary")
 async def get_references(
-    events: Annotated[List[ReferenceEvent.Type], Query()] = None,
-    nullify: Annotated[List[str], Query()] = None,
-    date_start: Annotated[datetime.date, Query()] = None,
-    date_end: Annotated[datetime.date, Query()] = None,
+    params: Annotated[dict, Depends(common_parameters)],
+    text_search: Annotated[str, Query()] = "",
     entity: Person = Depends(build_person_from_fields),
 ) -> List[ReferenceSummary]:
     """
@@ -155,14 +152,15 @@ async def get_references(
 
     :return: References
     """
-    events = events if events else []
-    nullify = nullify if nullify else []
 
     async with async_session() as session:
         result = await ReferenceDAO(session).get_references_summary(
-            event_types=events,
-            nullify=nullify,
-            date_interval=(date_start, date_end),
+            text_search=text_search,
+            filter_harvester={
+                "event_types": params["events"],
+                "nullify": params["nullify"],
+            },
+            date_interval=(params["date_start"], params["date_end"]),
             entity=entity,
         )
 

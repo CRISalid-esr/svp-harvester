@@ -67,7 +67,7 @@ class RetrievalDAO(AbstractDAO):
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
-    async def get_retrievals(
+    async def get_retrievals_summary(
         self,
         event_types: List[ReferenceEvent.Type],
         nullify: List[str],
