@@ -14,22 +14,7 @@ from app.models.retrieval_summary import RetrievalSummary
 router = APIRouter()
 
 
-@router.get("/{retrieval_id}")
-async def get_retrieval(retrieval_id: int) -> RetrievalModel:
-    """
-    Get result of a retrieval in an asynchronous way
-
-    :param retrieval_id: id of the retrieval
-    :return: json representation of the references
-    """
-    async with async_session() as session:
-        retrieval: RetrievalDB = await RetrievalDAO(
-            session
-        ).get_complete_retrieval_by_id(retrieval_id)
-        return RetrievalModel.model_validate(retrieval)
-
-
-@router.get("")
+@router.get("/summary")
 async def get_retrievals(
     events: Annotated[List[ReferenceEvent.Type], Query()] = None,
     nullify: Annotated[List[str], Query()] = None,
@@ -59,3 +44,18 @@ async def get_retrievals(
             entity=entity,
         )
         return result
+
+
+@router.get("/{retrieval_id}")
+async def get_retrieval(retrieval_id: int) -> RetrievalModel:
+    """
+    Get result of a retrieval in an asynchronous way
+
+    :param retrieval_id: id of the retrieval
+    :return: json representation of the references
+    """
+    async with async_session() as session:
+        retrieval: RetrievalDB = await RetrievalDAO(
+            session
+        ).get_complete_retrieval_by_id(retrieval_id)
+        return RetrievalModel.model_validate(retrieval)
