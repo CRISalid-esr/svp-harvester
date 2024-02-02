@@ -137,22 +137,7 @@ async def get_retrieval_result(
     return RetrievalModel.model_validate(retrieval)
 
 
-@router.get("/{reference_id}")
-async def get_reference_by_id(reference_id: int) -> Reference:
-    """
-    Get a reference by its id
-
-    :param reference_id: id of the reference
-    :return: the reference
-    """
-    async with async_session() as session:
-        reference = await ReferenceDAO(session).get_complete_reference_by_id(
-            reference_id
-        )
-        return Reference.model_validate(reference)
-
-
-@router.get("/history")
+@router.get("/summary")
 async def get_references(
     events: Annotated[List[ReferenceEvent.Type], Query()] = None,
     nullify: Annotated[List[str], Query()] = None,
@@ -182,3 +167,18 @@ async def get_references(
         )
 
         return result
+
+
+@router.get("/{reference_id}")
+async def get_reference_by_id(reference_id: int) -> Reference:
+    """
+    Get a reference by its id
+
+    :param reference_id: id of the reference
+    :return: the reference
+    """
+    async with async_session() as session:
+        reference = await ReferenceDAO(session).get_complete_reference_by_id(
+            reference_id
+        )
+        return Reference.model_validate(reference)

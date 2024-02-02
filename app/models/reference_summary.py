@@ -10,7 +10,7 @@ class ReferenceSummary(BaseModel):
 
     id: int
     timestamp: datetime.datetime
-    titles: List[Tuple[str, str]]
+    titles: List[Tuple[str, str | None]]
     harvester: str
     source_identifier: str
     event_type: str
