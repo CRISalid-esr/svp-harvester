@@ -18,6 +18,7 @@ from app.db.models.retrieval import Retrieval as DbRetrieval
 from app.db.session import async_session
 from app.models.people import Person
 from app.models.reference_events import ReferenceEvent
+from app.models.reference_summary import ReferenceSummary
 from app.models.references import Reference
 from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
@@ -136,14 +137,29 @@ async def get_retrieval_result(
     return RetrievalModel.model_validate(retrieval)
 
 
+@router.get("/{reference_id}")
+async def get_reference_by_id(reference_id: int) -> Reference:
+    """
+    Get a reference by its id
+
+    :param reference_id: id of the reference
+    :return: the reference
+    """
+    async with async_session() as session:
+        reference = await ReferenceDAO(session).get_complete_reference_by_id(
+            reference_id
+        )
+        return Reference.model_validate(reference)
+
+
 @router.get("/history")
 async def get_references(
-    name: str = None,
-    events: Annotated[List[ReferenceEvent.Type], Query()] = [],
-    nullify: Annotated[List[str], Query()] = [],
+    events: Annotated[List[ReferenceEvent.Type], Query()] = None,
+    nullify: Annotated[List[str], Query()] = None,
     date_start: Annotated[datetime.date, Query()] = None,
     date_end: Annotated[datetime.date, Query()] = None,
-) -> List[Reference]:
+    entity: Person = Depends(build_person_from_fields),
+) -> List[ReferenceSummary]:
     """
     Get references by parameters
     :param name: name of the entity
@@ -154,13 +170,15 @@ async def get_references(
 
     :return: References
     """
+    events = events if events else []
+    nullify = nullify if nullify else []
+
     async with async_session() as session:
-        result = await ReferenceDAO(session).get_references_by_params(
-            name=name,
+        result = await ReferenceDAO(session).get_references_summary(
             event_types=events,
             nullify=nullify,
-            date_start=date_start,
-            date_end=date_end,
+            date_interval=(date_start, date_end),
+            entity=entity,
         )
 
-        return [Reference.model_validate(r) for r in result]
+        return result
