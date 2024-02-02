@@ -4,6 +4,10 @@ from pydantic import BaseModel
 
 
 class RetrievalSummary(BaseModel):
+    """
+    Retrieval summary model
+    """
+
     id: int
     timestamp: datetime.datetime
     entity_name: str

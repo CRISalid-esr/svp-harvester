@@ -108,7 +108,7 @@ class EntityDAO(AbstractDAO):
         """
         Get a subquery to filter entities by their identifiers
         """
-        entity_filter = and_(1 == 1)
+        entity_filter = and_(True)
         if entity.identifiers:
             entity_filter = and_(
                 Identifier.type.in_([i.type for i in entity.identifiers]),
