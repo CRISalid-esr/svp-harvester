@@ -1,6 +1,7 @@
 """
 API redirection router
 """
+
 from fastapi import APIRouter
 
 from app.api.routes import references, retrieval

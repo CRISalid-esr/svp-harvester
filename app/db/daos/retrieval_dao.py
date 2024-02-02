@@ -1,7 +1,7 @@
 import datetime
-from typing import List
+from typing import List, Tuple
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, and_
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -13,8 +13,10 @@ from app.db.models.identifier import Identifier
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 from app.db.models.reference import Reference
+from app.models.people import Person
 
 
+# pylint: disable=not-callable
 class RetrievalDAO(AbstractDAO):
     """
     Data access object for Retrieval
@@ -65,11 +67,10 @@ class RetrievalDAO(AbstractDAO):
 
     async def get_retrievals(
         self,
-        name: str,
         event_types: List[ReferenceEvent.Type],
         nullify: List[str],
-        date_start: datetime.date,
-        date_end: datetime.date,
+        date_interval: Tuple[datetime.date, datetime.date],
+        entity: Person,
     ) -> List[Retrieval]:
         """
         Get retrieval history for a given entity
@@ -81,18 +82,22 @@ class RetrievalDAO(AbstractDAO):
 
         :return: Retrieval history
         """
-        event_types.append("None")
+        date_start, date_end = date_interval
+
+        harvesting_event_count = self._harvesting_event_count_subquery(
+            event_types, nullify
+        )
+
+        entity_id = self._entity_filter_subquery(entity)
 
         stmt = (
             select(
                 Retrieval.id,
-                (Entity.name).label("entity_name"),
+                Retrieval.timestamp,
+                (entity_id.c.name).label("entity_name"),
                 (
                     func.array_agg(func.distinct(Identifier.type, Identifier.value))
                 ).label("identifier_type"),
-                (func.array_agg(ReferenceEvent.type.distinct())).label(
-                    "reference_event"
-                ),
                 (func.count(ReferenceEvent.id.distinct())).label("event_count"),
                 (func.array_agg(DocumentType.label.distinct())).label("document_type"),
                 (
@@ -100,13 +105,19 @@ class RetrievalDAO(AbstractDAO):
                         func.distinct(
                             Harvesting.harvester,
                             Harvesting.state,
+                            harvesting_event_count.c.type_event,
+                            harvesting_event_count.c.count,
                         )
                     )
                 ).label("harvesting_state"),
             )
             .join(Harvesting, onclause=Retrieval.id == Harvesting.retrieval_id)
-            .join(Entity, onclause=Retrieval.entity_id == Entity.id)
-            .join(Identifier, onclause=Entity.id == Identifier.entity_id)
+            .join(
+                harvesting_event_count,
+                onclause=Harvesting.id == harvesting_event_count.c.id,
+            )
+            .join(entity_id, onclause=Retrieval.entity_id == entity_id.c.id)
+            .join(Identifier, onclause=entity_id.c.id == Identifier.entity_id)
             .outerjoin(
                 ReferenceEvent, onclause=Harvesting.id == ReferenceEvent.harvesting_id
             )
@@ -120,21 +131,48 @@ class RetrievalDAO(AbstractDAO):
                 onclause=DocumentType.id
                 == references_document_type_table.c.document_type_id,
             )
-            .filter(
-                # Add None in case of no event so we can still see the harvesting failed
-                or_(ReferenceEvent.type.in_(event_types), ReferenceEvent.type == None),
-                Identifier.type.not_in(nullify),
-            )
-            .group_by(Retrieval.id, Entity.name)
+            .group_by(Retrieval.id, entity_id.c.name)
         )
 
-        # TODO SEE Date ?
-        # TODO Filter ID_ENTITY for each type
-        if name:
-            stmt = stmt.where(Entity.name == name)
+        if entity.name:
+            stmt = stmt.where(Entity.name == entity.name)
         if date_start:
             stmt = stmt.where(Harvesting.timestamp >= date_start)
         if date_end:
             stmt = stmt.where(Harvesting.timestamp <= date_end)
 
         return await self.db_session.execute(stmt)
+
+    def _harvesting_event_count_subquery(self, event_types, nullify):
+        event_types.append(None)
+        return (
+            select(
+                Harvesting.id,
+                ReferenceEvent.type.label("type_event"),
+                func.count(ReferenceEvent.id.distinct().label("count")),
+            )
+            .outerjoin(
+                ReferenceEvent, onclause=ReferenceEvent.harvesting_id == Harvesting.id
+            )
+            .filter(
+                # Add None in case of no event so we can still see the harvesting failed
+                or_(ReferenceEvent.type.in_(event_types), ReferenceEvent.type == None),
+                Identifier.type.not_in(nullify),
+            )
+            .group_by(Harvesting.id, ReferenceEvent.type)
+        ).subquery("event_count_harvesting")
+
+    def _entity_filter_subquery(self, entity: Person):
+        entity_filter = and_(1 == 1)
+        if entity.identifiers:
+            entity_filter = and_(
+                Identifier.type.in_([i.type for i in entity.identifiers]),
+                Identifier.value.in_([i.value for i in entity.identifiers]),
+            )
+
+        return (
+            select(Entity.id.label("id"), Entity.name.label("name"))
+            .join(Identifier, onclause=Entity.id == Identifier.entity_id)
+            .group_by(Entity.id)
+            .filter(entity_filter)
+        ).subquery("entity_id")

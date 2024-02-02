@@ -1,25 +1,17 @@
 import datetime
-from typing import Annotated, List, Tuple
-from fastapi import APIRouter, Query
-from pydantic import BaseModel
+from typing import Annotated, List
+from fastapi import APIRouter, Depends, Query
+from app.api.dependencies.references import build_person_from_fields
 from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as RetrievalDB
+from app.models.people import Person
 from app.models.reference_events import ReferenceEvent
 from app.models.retrieval import Retrieval as RetrievalModel
 
 from app.db.session import async_session
+from app.models.retrieval_summary import RetrievalSummary
 
 router = APIRouter()
-
-
-class RetrievalHistory(BaseModel):
-    id: int
-    entity_name: str
-    identifier_type: List[Tuple[str, str]]
-    harvesting_state: List[Tuple[str, str]]
-    reference_event: List[str | None]
-    event_count: int
-    document_type: List[str | None]
 
 
 @router.get("/{retrieval_id}")
@@ -39,14 +31,14 @@ async def get_retrieval(retrieval_id: int) -> RetrievalModel:
 
 @router.get("")
 async def get_retrievals(
-    name: str = None,
-    events: Annotated[List[ReferenceEvent.Type], Query()] = [],
-    nullify: Annotated[List[str], Query()] = [],
+    events: Annotated[List[ReferenceEvent.Type], Query()] = None,
+    nullify: Annotated[List[str], Query()] = None,
     date_start: Annotated[datetime.date, Query()] = None,
     date_end: Annotated[datetime.date, Query()] = None,
-) -> List[RetrievalHistory]:
+    entity: Person = Depends(build_person_from_fields),
+) -> List[RetrievalSummary]:
     """
-    Get retrieval history for a given entity
+    Get retrieval summary for a given entity
     :param name: name of the entity
     :param events: list of event types to fetch (default : "created", "updated", "deleted")
     :param nullify: list of identifiers to nullify for the person
@@ -56,12 +48,14 @@ async def get_retrievals(
     :param entity: entity to search
     :return: Retrieval history
     """
+    events = events if events else []
+    nullify = nullify if nullify else []
+
     async with async_session() as session:
         result = await RetrievalDAO(session).get_retrievals(
-            name=name,
             event_types=events,
             nullify=nullify,
-            date_start=date_start,
-            date_end=date_end,
+            date_interval=(date_start, date_end),
+            entity=entity,
         )
         return result
