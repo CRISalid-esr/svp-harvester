@@ -3,6 +3,8 @@ import hashlib
 from abc import ABC, abstractmethod
 from typing import List, Dict
 
+from sqlalchemy.exc import IntegrityError
+
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
 from app.db.models.concept import Concept
@@ -67,18 +69,26 @@ class AbstractReferencesConverter(ABC):
     ):
         # Look for the concept in the database
         async with async_session() as session:
-            concept = await ConceptDAO(session).get_concept_by_uri(uri)
-        # If the concept is not in the database, try to create it by dereferencing the uri
-        if concept is None:
-            try:
-                concept = await ConceptFactory.solve(
-                    concept_id=uri, concept_source=concept_source
-                )
-            # If the dereferencing fails, create a concept with the uri and the label
-            except DereferencingError:
-                concept = Concept(uri=uri)
-                concept.labels.append(Label(value=value, language=language))
-        return concept
+            async with session.begin_nested():
+                concept = await ConceptDAO(session).get_concept_by_uri(uri)
+                # If the concept is not in the database, try to create it by dereferencing the uri
+                if concept is None:
+                    try:
+                        concept = await ConceptFactory.solve(
+                            concept_id=uri, concept_source=concept_source
+                        )
+                    # If the dereferencing fails, create a concept with the uri and the label
+                    except DereferencingError:
+                        concept = Concept(uri=uri)
+                        concept.labels.append(Label(value=value, language=language))
+                    session.add(concept)
+                    try:
+                        await session.commit()
+                    except IntegrityError:
+                        await session.rollback()
+                        concept = await ConceptDAO(session).get_concept_by_uri(uri)
+
+                return concept
 
     async def _get_or_create_concepts_by_uri(
         self,
@@ -120,9 +130,20 @@ class AbstractReferencesConverter(ABC):
 
     async def _get_or_create_document_type_by_uri(self, uri: str, label: str | None):
         async with async_session() as session:
-            document_type = await DocumentTypeDAO(session).get_document_type_by_uri(uri)
-        if document_type is None:
-            document_type = DocumentType(uri=uri, label=label)
+            async with session.begin_nested():
+                document_type = await DocumentTypeDAO(session).get_document_type_by_uri(
+                    uri
+                )
+                if document_type is None:
+                    document_type = DocumentType(uri=uri, label=label)
+                    session.add(document_type)
+                    try:
+                        await session.commit()
+                    except IntegrityError:
+                        await session.rollback()
+                        document_type = await DocumentTypeDAO(
+                            session
+                        ).get_document_type_by_uri(uri)
         return document_type
 
     def _update_contributor_name(self, db_contributor: Contributor, name: str):
