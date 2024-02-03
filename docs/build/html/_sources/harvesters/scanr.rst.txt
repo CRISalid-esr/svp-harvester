@@ -17,8 +17,11 @@ Supported identifiers
 The following identifiers are handled by the harvester:
 
 - idref
+- orcid
+- idHal_s
 
-.. note:: ORCID and idHal_s identifiers are planned to be supported in the future.
+.. note:: When `idref` is unavailable, the harvester uses `orcid` or `idHal_s` to gather the entity's data.
+    It then derives the `scanr_id` from the `idref`, enabling the retrieval of the entity's publications from the ScanR API.
 
 
 Data conversion

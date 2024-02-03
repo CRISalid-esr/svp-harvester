@@ -142,11 +142,17 @@
                                 <p>The following identifiers are handled by the harvester:</p>
                                 <ul class="simple">
                                     <li><p>idref</p></li>
+                                    <li><p>orcid</p></li>
+                                    <li><p>idHal_s</p></li>
                                 </ul>
                                 <div class="admonition note">
                                     <p class="admonition-title">Note</p>
-                                    <p>ORCID and idHal_s identifiers are planned to be supported in
-                                        the future.</p>
+                                    <p>When <cite>idref</cite> is unavailable, the harvester uses
+                                        <cite>orcid</cite> or <cite>idHal_s</cite> to gather the
+                                        entity’s data.
+                                        It then derives the <cite>scanr_id</cite> from the <cite>idref</cite>,
+                                        enabling the retrieval of the entity’s publications from the
+                                        ScanR API.</p>
                                 </div>
                             </section>
                             <section id="data-conversion">
