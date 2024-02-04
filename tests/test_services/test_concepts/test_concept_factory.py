@@ -3,6 +3,7 @@ from unittest import mock
 import pytest
 
 from app.services.concepts.concept_factory import ConceptFactory
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
@@ -57,7 +58,7 @@ async def test_concept_factory_idref_concept_number(mock_idref_concept_solver_so
     :return:
     """
     concept_id = "033265077"
-    await ConceptFactory.solve(concept_id, ConceptFactory.ConceptSources.IDREF)
+    await ConceptFactory.solve(concept_id, ConceptInformations.ConceptSources.IDREF)
     mock_idref_concept_solver_solve.assert_called_once_with(concept_id)
 
 
@@ -75,7 +76,7 @@ async def test_concept_factory_wikidata_concept_number(
     :return:
     """
     concept_id = "Q1234"
-    await ConceptFactory.solve(concept_id, ConceptFactory.ConceptSources.WIKIDATA)
+    await ConceptFactory.solve(concept_id, ConceptInformations.ConceptSources.WIKIDATA)
     mock_wikidata_concept_solver_solve.assert_called_once_with(concept_id)
 
 

@@ -1,14 +1,10 @@
 import re
-from typing import Generator, AsyncGenerator
+from typing import Generator
 
-from app.db.daos.contributor_dao import ContributorDAO
 from app.db.models.abstract import Abstract
-from app.db.models.contribution import Contribution
-from app.db.models.contributor import Contributor
 from app.db.models.reference import Reference
-from app.db.models.title import Title
 from app.db.models.subtitle import Subtitle
-from app.db.session import async_session
+from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -18,6 +14,7 @@ from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
+from app.services.concepts.concept_informations import ConceptInformations
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -51,8 +48,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 map(lambda s: s.id, new_ref.subjects)
             ):
                 new_ref.subjects.append(subject)
-        async for contribution in self._contributions(json_payload):
-            new_ref.contributions.append(contribution)
+        await self._add_contributions(json_payload, new_ref)
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
@@ -79,12 +75,14 @@ class HalReferencesConverter(AbstractReferencesConverter):
     async def _subjects(self, raw_data):
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
-            for value in raw_data[field]:
+            for label in raw_data[field]:
                 yield await self._get_or_create_concept_by_label(
-                    value=value, language=self._language_from_field_name(field)
+                    ConceptInformations(
+                        label=label, language=self._language_from_field_name(field)
+                    )
                 )
 
-    async def _contributions(self, raw_data) -> AsyncGenerator[Contribution, None]:
+    async def _add_contributions(self, raw_data: dict, new_ref: Reference) -> None:
         if len(raw_data.get("authQuality_s", [])) != len(
             raw_data.get("authFullNameFormIDPersonIDIDHal_fs", [])
         ):
@@ -92,49 +90,32 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 "Number of qualities and contributors "
                 f"is not the same for halId_s: {raw_data['halId_s']}"
             )
-
-        async with async_session() as session:
-            # Open transaction as contributions resolution may update some of the contributors
-            for rank, contribution in enumerate(
-                zip(
-                    raw_data.get("authQuality_s", []),
-                    raw_data.get("authFullNameFormIDPersonIDIDHal_fs", []),
+        contribution_informations = []
+        for rank, contribution in enumerate(
+            zip(
+                raw_data.get("authQuality_s", []),
+                raw_data.get("authFullNameFormIDPersonIDIDHal_fs", []),
+            )
+        ):
+            quality, contributor = contribution
+            if not re.match(r".*_FacetSep_.*-.*_FacetSep_", contributor):
+                raise UnexpectedFormatException(
+                    f"Unexpected format for contributor {contributor}"
                 )
-            ):
-                quality, contributor = contribution
-                if not re.match(r".*_FacetSep_.*-.*_FacetSep_", contributor):
-                    raise UnexpectedFormatException(
-                        f"Unexpected format for contributor {contributor}"
-                    )
-                name, ids, _ = contributor.split("_FacetSep_")
-                _, id_hal = ids.split("-")
-                # if IdHal is not '0', find the contributor by source/identifier,
-                # else find the contributor by source/ name
-                db_contributor = None
-                if id_hal != "0":
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_identifier(
-                        source="hal", source_identifier=id_hal
-                    )
-                else:
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_name(source="hal", name=name)
-                if db_contributor is None:
-                    db_contributor = Contributor(
-                        source="hal",
-                        source_identifier=None if id_hal == "0" else id_hal,
-                        name=name,
-                    )
-                else:
-                    self._update_contributor_name(db_contributor, name)
-
-                yield Contribution(
-                    contributor=db_contributor,
-                    role=HalQualitiesConverter.convert(quality=quality),
+            name, ids, _ = contributor.split("_FacetSep_")
+            _, id_hal = ids.split("-")
+            contribution_informations.append(
+                AbstractReferencesConverter.ContributionInformations(
+                    role=HalQualitiesConverter.convert(quality),
+                    identifier=id_hal if id_hal != "0" else None,
+                    name=name,
                     rank=rank,
                 )
+            )
+        async for contribution in self._contributions(
+            contribution_informations=contribution_informations, source="hal"
+        ):
+            new_ref.contributions.append(contribution)
 
     async def _document_type(self, raw_data):
         code_document_type = raw_data.get("docType_s", None)

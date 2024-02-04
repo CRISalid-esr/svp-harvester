@@ -42,6 +42,7 @@ class IdrefSparqlClient:
         ],
         DataSources.OPEN_EDITION: [
             "http://journals.openedition.org/",
+            "https://journals.openedition.org/",
         ],
         DataSources.PERSEE: [
             "http://data.persee.fr/",
