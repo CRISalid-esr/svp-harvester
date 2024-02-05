@@ -70,8 +70,7 @@ class RetrievalDAO(AbstractDAO):
     async def get_retrievals_summary(
         self,
         event_types: List[ReferenceEvent.Type],
-        nullify: List[str],
-        harvester: List[str],
+        filter_harvester: dict[List],
         date_interval: Tuple[datetime.date, datetime.date],
         entity: Person,
     ) -> List[Retrieval]:
@@ -90,7 +89,7 @@ class RetrievalDAO(AbstractDAO):
 
         harvesting_event_count = HarvestingDAO(
             self.db_session
-        ).harvesting_event_count_subquery(event_types, nullify)
+        ).harvesting_event_count_subquery(event_types, filter_harvester["nullify"])
 
         entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
 
@@ -135,7 +134,7 @@ class RetrievalDAO(AbstractDAO):
                 onclause=DocumentType.id
                 == references_document_type_table.c.document_type_id,
             )
-            .where(Reference.harvester.in_(harvester))
+            .where(Reference.harvester.in_(filter_harvester["harvester"]))
             .group_by(Retrieval.id, entity_id.c.name)
         )
 

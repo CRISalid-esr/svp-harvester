@@ -33,8 +33,10 @@ async def get_retrievals(
     async with async_session() as session:
         result = await RetrievalDAO(session).get_retrievals_summary(
             event_types=params["events"],
-            nullify=params["nullify"],
-            harvester=params["harvester"],
+            filter_harvester={
+                "nullify": params["nullify"],
+                "harvester": params["harvester"],
+            },
             date_interval=(params["date_start"], params["date_end"]),
             entity=entity,
         )
