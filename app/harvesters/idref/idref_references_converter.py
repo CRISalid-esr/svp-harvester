@@ -18,6 +18,7 @@ from app.harvesters.rdf_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
+from app.services.concepts.concept_informations import ConceptInformations
 
 
 class IdrefReferencesConverter(AbstractReferencesConverter):
@@ -57,7 +58,9 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         for abstract in dict_payload["note"]:
             new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
         concept_informations = [
-            {"uri": subject.get("uri"), "label": subject.get("label"), "language": "fr"}
+            ConceptInformations(
+                uri=subject.get("uri"), label=subject.get("label"), language="fr"
+            )
             for subject in dict_payload["subject"].values()
         ]
         new_ref.subjects.extend(

@@ -1,13 +1,10 @@
 from xml.etree import ElementTree
+
 from loguru import logger
-from app.db.daos.contributor_dao import ContributorDAO
 
 from app.db.models.abstract import Abstract
-from app.db.models.contribution import Contribution
-from app.db.models.contributor import Contributor
 from app.db.models.reference import Reference
 from app.db.models.title import Title
-from app.db.session import async_session
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -21,6 +18,7 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 from app.harvesters.rdf_harvester_raw_result import (
     RdfHarvesterRawResult as RdfRawResult,
 )
+from app.services.concepts.concept_informations import ConceptInformations
 
 
 class OpenEditionReferencesConverter(AbstractReferencesConverter):
@@ -56,36 +54,34 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
         new_ref.document_type.append(await self._document_type(root))
 
-        async for contribution in self._contributions(root):
-            new_ref.contributions.append(contribution)
+        await self._add_contributions(new_ref, root)
 
         new_ref.hash = self._hash(self._create_dict(root))
         return new_ref
 
-    async def _contributions(self, root: ElementTree):
-        async with async_session() as session:
-            for open_edition_quality, contributors in [
-                (open_edition_role, self._get_terms(root, open_edition_role))
-                for open_edition_role in OpenEditionQualitiesConverter.ROLES_MAPPING
-            ]:
-                if len(contributors) == 0:
-                    continue
-                for contributor_name, _ in contributors:
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_name(
-                        source="openedition", name=contributor_name
-                    )
-                    if db_contributor is None:
-                        db_contributor = Contributor(
-                            name=contributor_name, source="openedition"
-                        )
-                    yield Contribution(
-                        contributor=db_contributor,
+    async def _add_contributions(self, new_ref: Reference, root: ElementTree) -> None:
+        contribution_informations = []
+        for open_edition_quality, contributors in [
+            (open_edition_role, self._get_terms(root, open_edition_role))
+            for open_edition_role in OpenEditionQualitiesConverter.ROLES_MAPPING
+        ]:
+            if len(contributors) == 0:
+                continue
+            for contributor_name, _ in contributors:
+                contribution_informations.append(
+                    AbstractReferencesConverter.ContributionInformations(
                         role=OpenEditionQualitiesConverter.convert(
                             open_edition_quality
                         ),
+                        identifier=None,
+                        name=contributor_name,
+                        rank=None,
                     )
+                )
+        async for contribution in self._contributions(
+            contribution_informations=contribution_informations, source="openedition"
+        ):
+            new_ref.contributions.append(contribution)
 
     def _get_term(self, root: ElementTree, term: str):
         return (
@@ -137,10 +133,13 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         subjects = self._get_terms(root, "subject")
         language = self._language(root)
         for subject in subjects:
-            value, attrib = subject
+            label, attrib = subject
             language = attrib[f"{self.W3_NAMESPACE}lang"]
             yield await self._get_or_create_concept_by_label(
-                value=value, language=language
+                ConceptInformations(
+                    label=label,
+                    language=language,
+                )
             )
 
     async def _document_type(self, root: ElementTree):

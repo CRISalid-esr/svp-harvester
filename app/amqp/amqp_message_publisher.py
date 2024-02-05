@@ -1,5 +1,6 @@
 import aio_pika
 from aio_pika import DeliveryMode
+from loguru import logger
 
 from app.amqp.amqp_harvesting_message_factory import AMQPHarvestingMessageFactory
 from app.amqp.amqp_reference_event_message_factory import (
@@ -30,7 +31,7 @@ class AMQPMessagePublisher:
             message=message,
             routing_key=routing_key,
         )
-        print(str(payload))
+        logger.debug(f"Message published to {routing_key} queue : {payload}")
 
     @staticmethod
     async def _build_message(content) -> tuple[str | None, str | None]:
