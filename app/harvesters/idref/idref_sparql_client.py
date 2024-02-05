@@ -20,6 +20,7 @@ class IdrefSparqlClient:
         SUDOC = "SUDOC"
         SCIENCE_PLUS = "SCIENCE_PLUS"
         OPEN_EDITION = "OPEN_EDITION"
+        PERSEE = "PERSEE"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
@@ -41,6 +42,10 @@ class IdrefSparqlClient:
         ],
         DataSources.OPEN_EDITION: [
             "http://journals.openedition.org/",
+            "https://journals.openedition.org/",
+        ],
+        DataSources.PERSEE: [
+            "http://data.persee.fr/",
         ],
     }
 

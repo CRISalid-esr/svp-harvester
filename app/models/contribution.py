@@ -10,8 +10,6 @@ class Contribution(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-
     rank: int | None
 
     contributor: Contributor

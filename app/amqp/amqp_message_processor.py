@@ -2,6 +2,7 @@ import asyncio
 import json
 
 import aio_pika
+from loguru import logger
 from pydantic import ValidationError
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
@@ -46,9 +47,11 @@ class AMQPMessageProcessor:
                 await self._process_message(payload)
                 self.tasks_queue.task_done()
         except KeyboardInterrupt:
-            print(f"Amqp connect worker {worker_id} has been cancelled")
+            logger.warning(f"Amqp connect worker {worker_id} has been cancelled")
         except Exception as exception:
-            print(f"Exception during {worker_id} message processing : {exception}")
+            logger.error(
+                f"Exception during {worker_id} message processing : {exception}"
+            )
             raise exception
 
     async def _process_message(self, payload: str, timeout=DEFAULT_RESULT_TIMEOUT):
@@ -68,7 +71,6 @@ class AMQPMessageProcessor:
                 )
                 return
             service = RetrievalService(
-                self.settings,
                 history_safe_mode=json_payload.get("history_safe_mode"),
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode"),
                 nullify=json_payload.get("nullify"),
@@ -108,11 +110,11 @@ class AMQPMessageProcessor:
         try:
             while True:
                 result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
-                print(f"Got result {result} for retrieval: {retrieval.id}")
+                logger.debug(f"Got result {result} for retrieval: {retrieval.id}")
                 await self.publisher.publish(result)
         except asyncio.TimeoutError:
             message = f"Retrieval {retrieval.id} results timeout"
-            print(message)
+            logger.warning(message)
             await self.publisher.publish(
                 {
                     "type": "Retrieval",
@@ -123,7 +125,7 @@ class AMQPMessageProcessor:
             )
         except KeyboardInterrupt:
             message = f"Retrieval {retrieval.id} results processing has been cancelled"
-            print(message)
+            logger.warning(message)
             await self.publisher.publish(
                 {
                     "type": "Retrieval",
@@ -134,7 +136,7 @@ class AMQPMessageProcessor:
             )
         except Exception as exception:
             message = f"Exception during retrieval {retrieval.id} results processing: {exception}"
-            print(message)
+            logger.error(message)
             await self.publisher.publish(
                 {
                     "type": "Retrieval",

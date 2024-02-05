@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY app/templates .
 
-RUN npm install && npm run build
+RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 
 FROM python:3.10
 

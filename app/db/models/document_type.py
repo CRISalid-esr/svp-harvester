@@ -11,6 +11,6 @@ class DocumentType(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    uri: Mapped[str] = mapped_column(nullable=False, index=False, unique=True)
+    uri: Mapped[str] = mapped_column(nullable=False, index=True, unique=True)
 
     label: Mapped[str] = mapped_column(nullable=True, index=False)

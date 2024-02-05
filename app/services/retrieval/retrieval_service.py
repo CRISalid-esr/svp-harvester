@@ -20,15 +20,15 @@ from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.models.entities import Entity as PydanticEntity
 from app.models.reference_events import ReferenceEvent
 from app.services.entities.entity_resolution_service import EntityResolutionService
-from app.settings.app_settings import AppSettings
 
 
+# pylint: disable=too-many-instance-attributes
 class RetrievalService:
     """Main harvesters orchestration service"""
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        settings: Annotated[AppSettings, Depends(get_app_settings)],
         background_tasks: BackgroundTasks = None,
         history_safe_mode: Annotated[bool, Body()] = False,
         identifiers_safe_mode: Annotated[bool, Body()] = False,
@@ -41,7 +41,6 @@ class RetrievalService:
         ] = None,
     ):
         """Init RetrievalService class"""
-        self.settings = settings
         self.background_tasks = background_tasks
         self.harvesters_list: List[str] = harvesters
         self.harvesters: dict[str, AbstractHarvester] = {}
@@ -97,7 +96,8 @@ class RetrievalService:
             await self._launch_harvesters(result_queue)
 
     def _build_harvesters(self):
-        for harvester_config in self.settings.harvesters:
+        settings = get_app_settings()
+        for harvester_config in settings.harvesters:
             if (
                 self.harvesters_list is not None
                 and harvester_config["name"] not in self.harvesters_list
@@ -157,5 +157,5 @@ class RetrievalService:
                 raise HTTPException(
                     status_code=422,
                     detail=f"Unprocessable Entity: {conflicting_identifiers}"
-                           f" cannot be declared and nullified at same time"
+                    f" cannot be declared and nullified at same time",
                 )

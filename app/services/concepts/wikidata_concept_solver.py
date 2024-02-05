@@ -1,5 +1,6 @@
 from app.services.concepts.concept_solver import ConceptSolver
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.dereferencing_error import DereferencingError
 
 
 class WikidataConceptSolver(ConceptSolver):
@@ -13,3 +14,4 @@ class WikidataConceptSolver(ConceptSolver):
         :param concept_id: concept id
         :return: Concept
         """
+        raise DereferencingError("Wikidata concept solver not implemented")
