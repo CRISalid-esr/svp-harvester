@@ -7,6 +7,7 @@ from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
+from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -17,6 +18,7 @@ from app.harvesters.rdf_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
+from app.services.concepts.concept_informations import ConceptInformations
 
 
 class IdrefReferencesConverter(AbstractReferencesConverter):
@@ -40,6 +42,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             return await self._convert_from_idref(raw_data)
         if raw_data.formatter_name == IdrefHarvester.Formatters.OPEN_EDITION.value:
             return await OpenEditionReferencesConverter().convert(raw_data)
+        if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
+            return await PerseeReferencesConverter().convert(raw_data)
         return None
 
     async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference:
@@ -53,14 +57,15 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             new_ref.subtitles.append(Subtitle(value=subtitle, language="fr"))
         for abstract in dict_payload["note"]:
             new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
-        for subject in dict_payload["subject"].values():
-            new_ref.subjects.append(
-                await self._get_or_create_concept_by_uri(
-                    uri=subject.get("uri"),
-                    value=subject.get("label"),
-                    language="fr",
-                )
+        concept_informations = [
+            ConceptInformations(
+                uri=subject.get("uri"), label=subject.get("label"), language="fr"
             )
+            for subject in dict_payload["subject"].values()
+        ]
+        new_ref.subjects.extend(
+            await self._get_or_create_concepts_by_uri(concept_informations)
+        )
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
         return new_ref

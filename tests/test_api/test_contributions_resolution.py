@@ -198,13 +198,17 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_2_v2_contributions, 0)[
                 "contributor"
             ]["name"]
-            == reference_2_v1_contributions[0]["contributor"]["name"]
+            == _extract_contribution_by_rank(reference_2_v1_contributions, 0)[
+                "contributor"
+            ]["name"]
         )
         assert (
             _extract_contribution_by_rank(reference_2_v2_contributions, 0)[
                 "contributor"
             ]["source_identifier"]
-            == reference_2_v1_contributions[0]["contributor"]["source_identifier"]
+            == _extract_contribution_by_rank(reference_2_v1_contributions, 0)[
+                "contributor"
+            ]["source_identifier"]
         )
 
         reference_3_v2 = _extract_reference_by_source_identifier(

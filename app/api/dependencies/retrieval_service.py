@@ -4,7 +4,6 @@ from typing import Annotated, List
 from fastapi import Query
 
 from app.api.dependencies.event_types import event_types_or_default
-from app.config import get_app_settings
 from app.models.reference_events import ReferenceEvent
 from app.services.retrieval.retrieval_service import RetrievalService
 
@@ -27,7 +26,6 @@ def build_retrieval_service_from_fields(
     """
 
     return RetrievalService(
-        settings=get_app_settings(),
         history_safe_mode=history_safe_mode,
         identifiers_safe_mode=identifiers_safe_mode,
         nullify=nullify,

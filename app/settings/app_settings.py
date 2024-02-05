@@ -66,3 +66,11 @@ class AppSettings(BaseSettings):
     scanr_es_host: str = "https://host_name.com/"
     scanr_es_user: str = "johndoe"
     scanr_es_password: str = "pass"
+
+    # when solving SKOS concepts from identifiers, fetch labels in these languages if possible
+    concept_languages: list = ["fr", "en"]
+    # refresh concepts from identifiers if older than this number of days
+    concept_expiration_days: dict = {
+        "WIKIDATA": 30,
+        "IDREF": 30,
+    }

@@ -9,9 +9,7 @@ class ReferenceLiteralField(Base):
     Model for persistence of titles
     """
 
-    __tablename__ = "reference_literal_fields"
-
-    type: Mapped[str]
+    __abstract__ = True
 
     __mapper_args__ = {
         "polymorphic_identity": "reference_literal_field",
