@@ -117,6 +117,7 @@ class ReferenceDAO(AbstractDAO):
         :param name: name of the entity
         :param event_types: list of event types to fetch
         :param nullify: list of source to nullify
+        :param harvester: harvester to fetch
         :param date_start: date interval start
         :param date_end: date interval end
 
@@ -149,6 +150,7 @@ class ReferenceDAO(AbstractDAO):
             .filter(
                 ReferenceEvent.type.in_(filter_harvester["event_types"]),
                 Identifier.type.not_in(filter_harvester["nullify"]),
+                Reference.harvester.in_(filter_harvester["harvester"]),
             )
             .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
         )
