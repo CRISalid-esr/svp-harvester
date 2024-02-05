@@ -1,192 +1,167 @@
 {% block publication_history_content %}
-  <div class="row gx-3 bg-white p-2 shadow-sm rounded" id="history-page-content">
-    <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
-      <form id="form-element" class="mb-4">
-        <div class="row">
-          <div class="col-md-8">
-            <h2 class="h5">{% trans %}entity_type_select_label{% endtrans %} <i
-                class="bi bi-info-circle cursor-help"
-                data-bs-toggle="tooltip"
-                data-bs-title="{% trans %}history_page_entity_type_select_help_text{% endtrans %}"
-            ></i></h2>
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-researcher-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-researcher" type="button" role="tab"
-                        aria-controls="pills-researcher" aria-selected="true">
-                  {% trans %}entity_type_select_researcher_pill{% endtrans %}</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-laboratory" type="button" role="tab"
-                        aria-controls="pills-laboratory" aria-selected="false">
-                  {% trans %}entity_type_select_laboratory_pill{% endtrans %}</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-institution-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-institution" type="button" role="tab"
-                        aria-controls="pills-institution" aria-selected="false">
-                  {% trans %}entity_type_select_institution_pill{% endtrans %}</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-project-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-project" type="button" role="tab"
-                        aria-controls="pills-project" aria-selected="false">
-                  {% trans %}entity_type_select_project_pill{% endtrans %}</button>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-        {#TODO put the content in the tabs#}
-        <div class="tab-content" id="pills-tabContent">
-          <div class="tab-pane fade show active" id="pills-researcher" role="tabpanel"
-               aria-labelledby="pills-researcher-tab" tabindex="0">
-          </div>
-          <div class="tab-pane fade" id="pills-laboratory" role="tabpanel"
-               aria-labelledby="pills-laboratory-tab" tabindex="0">
-          </div>
-          <div class="tab-pane fade" id="pills-institution" role="tabpanel"
-               aria-labelledby="pills-institution-tab" tabindex="0">
-          </div>
-          <div class="tab-pane fade" id="pills-project" role="tabpanel"
-               aria-labelledby="pills-project-tab" tabindex="0">
-          </div>
-        </div>
-        <div class="input-group mt-3 mb-3" id="add-identifier-control">
-          <div style="width: max-content;">
-            <select class="form-select rounded-end-0 identifier-control-select"
-                    aria-label="Example select with button addon"
-                    id="add-identifier-control-select">
-              <option selected disabled value="">
-                {% trans %}history_page_entity_name_input_label{% endtrans %}
-              </option>
-              <% Object.entries(identifiers).forEach(function(identifier){ %>
-              <option value="<%= identifier[0] %>"><%= identifier[1]['label'] %></option>
-              <% }); %>
-            </select>
-          </div>
-          <input type="text" class="form-control identifier-control-input"
-                 id="add-identifier-control-input"
-                 placeholder="{% trans %}history_page_entity_name_input_placeholder{% endtrans %}"
-                 aria-label="{% trans %}history_page_entity_name_input_aria_label{% endtrans %}">
+<div class="row gx-3 bg-white p-2 shadow-sm rounded" id="history-page-content">
+  <div class="col-md-8 order-md-1 col-12 mb-md-0 mb-3" id="form-container">
+    <form id="form-element" class="mb-4">
+      <div class="row">
+        <div class="col-md-8">
+          <h2 class="h5">{% trans %}entity_type_select_label{% endtrans %} <i class="bi bi-info-circle cursor-help"
+              data-bs-toggle="tooltip"
+              data-bs-title="{% trans %}history_page_entity_type_select_help_text{% endtrans %}"></i></h2>
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-researcher-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-researcher" type="button" role="tab" aria-controls="pills-researcher"
+                aria-selected="true">
+                {% trans %}entity_type_select_researcher_pill{% endtrans %}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-laboratory" type="button" role="tab" aria-controls="pills-laboratory"
+                aria-selected="false">
+                {% trans %}entity_type_select_laboratory_pill{% endtrans %}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-institution-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-institution" type="button" role="tab" aria-controls="pills-institution"
+                aria-selected="false">
+                {% trans %}entity_type_select_institution_pill{% endtrans %}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-project-tab" data-bs-toggle="pill" data-bs-target="#pills-project"
+                type="button" role="tab" aria-controls="pills-project" aria-selected="false">
+                {% trans %}entity_type_select_project_pill{% endtrans %}</button>
+            </li>
+          </ul>
         </div>
 
-        <div id="identifier-fields-container"></div>
-        <div class="row">
-          <div class="col-md-6 col-12">
-            <h2 class="h5">{% trans %}harvesting_type_select_label{% endtrans %} <i
-                class="bi bi-info-circle cursor-help"
-                data-bs-toggle="tooltip"
-                data-bs-title="{% trans %}history_page_harvesting_type_help_text{% endtrans %}"
-            ></i></h2>
-            <select id="event-type-select"
-                    class="mt-3 mb-3"
-                    multiple="multiple"
-                    aria-label="{% trans %}history_page_harvesting_type_select_aria_label{% endtrans %}">
-              <option selected value="created">
-                {% trans %}harvesting_type_new_references_option_label{% endtrans %}
-              </option>
-              <option selected value="updated">
-                {% trans %}
-                  harvesting_type_updated_references_option_label{% endtrans %}
-              </option>
-              <option selected value="deleted">
-                {% trans %}
-                  harvesting_type_deleted_references_option_label{% endtrans %}
-              </option>
-              <option selected value="unchanged">
-                {% trans %}
-                  harvesting_type_unchanged_references_option_label{% endtrans %}
-              </option>
-            </select>
+      </div>
+      {#TODO put the content in the tabs#}
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-researcher" role="tabpanel"
+          aria-labelledby="pills-researcher-tab" tabindex="0">
+        </div>
+        <div class="tab-pane fade" id="pills-laboratory" role="tabpanel" aria-labelledby="pills-laboratory-tab"
+          tabindex="0">
+        </div>
+        <div class="tab-pane fade" id="pills-institution" role="tabpanel" aria-labelledby="pills-institution-tab"
+          tabindex="0">
+        </div>
+        <div class="tab-pane fade" id="pills-project" role="tabpanel" aria-labelledby="pills-project-tab" tabindex="0">
+        </div>
+      </div>
+
+      <div id="name-field-container">
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping">{% trans %}
+            retrieve_page_entity_name_input_label{% endtrans %}</span>
+          <input type="text" id="name-field-input" class="form-control"
+            placeholder="{% trans %}retrieve_page_entity_name_input_placeholder{% endtrans %}"
+            aria-label="{% trans %}retrieve_page_entity_name_input_aria_label{% endtrans %}">
+        </div>
+      </div>
+
+      <div id="identifier-fields-container"></div>
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <h2 class="h5">{% trans %}harvesting_type_select_label{% endtrans %} <i class="bi bi-info-circle cursor-help"
+              data-bs-toggle="tooltip"
+              data-bs-title="{% trans %}history_page_harvesting_type_help_text{% endtrans %}"></i></h2>
+          <select id="event-type-select" class="mt-3 mb-3" multiple="multiple"
+            aria-label="{% trans %}history_page_harvesting_type_select_aria_label{% endtrans %}">
+            <option selected value="created">
+              {% trans %}harvesting_type_new_references_option_label{% endtrans %}
+            </option>
+            <option selected value="updated">
+              {% trans %}
+              harvesting_type_updated_references_option_label{% endtrans %}
+            </option>
+            <option selected value="deleted">
+              {% trans %}
+              harvesting_type_deleted_references_option_label{% endtrans %}
+            </option>
+            <option selected value="unchanged">
+              {% trans %}
+              harvesting_type_unchanged_references_option_label{% endtrans %}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-6 col-12">
+          <h2 class="h5">{% trans %}harvester_select_label{% endtrans %} <i class="bi bi-info-circle cursor-help"
+              data-bs-toggle="tooltip"
+              data-bs-title="{% trans %}history_page_harvester_select_help_text{% endtrans %}"></i></h2>
+          <select id="harvesters-select" class="mt-3 mb-3" multiple="multiple"
+            aria-label="{% trans %}Data sources{% endtrans %}">
+            <option selected value="hal">
+              {% trans %}harvester_hal_option_label{% endtrans %}
+            </option>
+            <option selected value="idref">
+              {% trans %}harvester_idref_option_label{% endtrans %}
+            </option>
+            <option selected value="openalex">
+              {% trans %}harvester_openalex_option_label{% endtrans %}
+            </option>
+            <option selected value="scanr">
+              {% trans %}harvester_scanr_option_label{% endtrans %}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="h5">{% trans %}harvesting_range_select_label{% endtrans %} <i class="bi bi-info-circle cursor-help"
+          data-bs-toggle="tooltip"
+          data-bs-title="{% trans %}history_page_harvesting_range_select_help_text{% endtrans %}"></i></h2>
+
+      <div class="row">
+        <div id="date-range-picker-container" class="d-flex col-md-8 col-12">
+          <div>
+            <label for="data-range-start">
+              {% trans %}harvesting_range_start_input_label{% endtrans %}
+            </label>
+            <input id="data-range-start" type="text"
+              aria-label="{% trans %}harvesting_range_start_input_aria_label{% endtrans %}" class="form-control"
+              placeholder="{% trans %}harvesting_range_start_input_placeholder{% endtrans %}">
           </div>
-          <div class="col-md-6 col-12">
-            <h2 class="h5">{% trans %}harvester_select_label{% endtrans %} <i
-                class="bi bi-info-circle cursor-help"
-                data-bs-toggle="tooltip"
-                data-bs-title="{% trans %}history_page_harvester_select_help_text{% endtrans %}"
-            ></i></h2>
-            <select id="harvesters-select"
-                    class="mt-3 mb-3"
-                    multiple="multiple"
-                    aria-label="{% trans %}Data sources{% endtrans %}">
-              <option selected value="hal">
-                {% trans %}harvester_hal_option_label{% endtrans %}
-              </option>
-              <option selected value="idref">
-                {% trans %}harvester_idref_option_label{% endtrans %}
-              </option>
-              <option selected value="openalex">
-                {% trans %}harvester_openalex_option_label{% endtrans %}
-              </option>
-              <option selected value="scanr">
-                {% trans %}harvester_scanr_option_label{% endtrans %}
-              </option>
-            </select>
+          <div class="ms-2">
+            <label for="data-range-end">
+              {% trans %}harvesting_range_end_input_label{% endtrans %} </label>
+            <input id="date-range-end" type="text"
+              aria-label="{% trans %}harvesting_range_end_input_arial_label{% endtrans %}" class="form-control"
+              placeholder="{% trans %}harvesting_range_end_input_placeholder{% endtrans %}">
           </div>
         </div>
-
-        <h2 class="h5">{% trans %}harvesting_range_select_label{% endtrans %} <i
-            class="bi bi-info-circle cursor-help"
-            data-bs-toggle="tooltip"
-            data-bs-title="{% trans %}history_page_harvesting_range_select_help_text{% endtrans %}"
-        ></i></h2>
-
-        <div class="row">
-          <div id="date-range-picker-container" class="d-flex col-md-8 col-12">
-            <div>
-              <label for="data-range-start">
-                {% trans %}harvesting_range_start_input_label{% endtrans %}
-              </label>
-              <input id="data-range-start" type="text"
-                     aria-label="{% trans %}harvesting_range_start_input_aria_label{% endtrans %}"
-                     class="form-control"
-                     placeholder="{% trans %}harvesting_range_start_input_placeholder{% endtrans %}">
-            </div>
-            <div class="ms-2">
-              <label for="data-range-end">
-                {% trans %}harvesting_range_end_input_label{% endtrans %}     </label>
-              <input id="date-range-end" type="text"
-                     aria-label="{% trans %}harvesting_range_end_input_arial_label{% endtrans %}"
-                     class="form-control"
-                     placeholder="{% trans %}harvesting_range_end_input_placeholder{% endtrans %}">
-            </div>
-          </div>
-          <div class="col-md-4 col-12 d-md-flex justify-content-md-end">
-            <div class="row align-items-end">
-              <div class="col-auto">
-                <button type="submit" class="btn btn-primary" id="run-history-collection-btn"><i
-                    class="bi bi-search"></i>
-                  {% trans %}history_page_launch_history_search_button{% endtrans %}
-                </button>
-              </div>
+        <div class="col-md-4 col-12 d-md-flex justify-content-md-end">
+          <div class="row align-items-end">
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary" id="run-history-collection-btn"><i class="bi bi-search"></i>
+                {% trans %}history_page_launch_history_search_button{% endtrans %}
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="form-check pt-3">
-          <input class="form-check-input" type="checkbox" id="hide_empty_results_checkbox">
-          <label class="form-check-label" for="hide_empty_results_checkbox">
-            {% trans %}hide_empty_collection_results{% endtrans %}
-          </label>
-        </div>
+      <div class="form-check pt-3">
+        <input class="form-check-input" type="checkbox" id="hide_empty_results_checkbox">
+        <label class="form-check-label" for="hide_empty_results_checkbox">
+          {% trans %}hide_empty_collection_results{% endtrans %}
+        </label>
+      </div>
 
-      </form>
-    </div>
-
+    </form>
   </div>
 
-  <div>
-    <h2 class="h5">{% trans %}history_page_search_result_panel_title{% endtrans %}:</h2>
+</div>
+
+<div>
+  <h2 class="h5">{% trans %}history_page_search_result_panel_title{% endtrans %}:</h2>
 
 
-    <div class="row gx-3 bg-white p-2 shadow-sm rounded">
-      <table id="references-table">
+  <div class="row gx-3 bg-white p-2 shadow-sm rounded">
+    <table id="references-table">
 
-      </table>
-    </div>
-
+    </table>
   </div>
+
+</div>
 
 {% endblock %}
