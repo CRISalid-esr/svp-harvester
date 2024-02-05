@@ -2,7 +2,7 @@ import asyncio
 import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Dict, AsyncGenerator
+from typing import List, AsyncGenerator
 
 from sqlalchemy.exc import IntegrityError
 
@@ -33,7 +33,7 @@ class AbstractReferencesConverter(ABC):
         Informations about a contribution
         """
 
-        role: str
+        role: str | None = Contribution.Role.AUTHOR.value
         rank: int | None = None
         name: str | None = None
         identifier: str | None = None

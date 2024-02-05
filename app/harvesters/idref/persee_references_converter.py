@@ -1,13 +1,12 @@
 from typing import AsyncGenerator
-from rdflib import DCTERMS, FOAF, RDF, Graph, Literal, Namespace, URIRef
+
 import rdflib
-from app.db.daos.contributor_dao import ContributorDAO
-from app.db.models.contribution import Contribution
-from app.db.models.contributor import Contributor
+from rdflib import DCTERMS, FOAF, RDF, Graph, Literal, Namespace, URIRef
+
 from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
 from app.db.models.title import Title
-from app.db.session import async_session
+from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
@@ -29,48 +28,39 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
 
-        async for contribution in self._contributions(pub_graph):
-            new_ref.contributions.append(contribution)
+        await self._add_contributions(pub_graph, new_ref)
 
         return new_ref
 
-    async def _contributions(
-        self, pub_graph: Graph
-    ) -> AsyncGenerator[Contribution, None]:
-        async with async_session() as session:
-            marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
-
-            query = f"""
-                SELECT ?predicate ?object 
-                WHERE {{
-                    ?subject ?predicate ?object .
-                    FILTER(STRSTARTS(STR(?predicate), "{str(marcrel)}")).
-                }}
-            """
-            results = pub_graph.query(query)
-            for role, person in results:
-                role = role.split("/")[-1]
-                graph = await RdfResolver().fetch(person)
-                contributor_name = None
-                for name in graph.objects(person, FOAF.name):
-                    contributor_name = name
-                db_contributor = await ContributorDAO(
-                    session
-                ).get_by_source_and_identifier("persee", str(person))
-                if db_contributor is None:
-                    db_contributor = await ContributorDAO(
-                        session
-                    ).get_by_source_and_name("persee", contributor_name)
-                if db_contributor is None:
-                    db_contributor = Contributor(
-                        name=contributor_name,
-                        source="persee",
-                        source_identifier=str(person),
-                    )
-                yield Contribution(
-                    contributor=db_contributor,
+    async def _add_contributions(self, pub_graph, new_ref):
+        contribution_informations = []
+        marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
+        query = f"""
+                        SELECT ?predicate ?object 
+                        WHERE {{
+                            ?subject ?predicate ?object .
+                            FILTER(STRSTARTS(STR(?predicate), "{str(marcrel)}")).
+                        }}
+                    """
+        results = pub_graph.query(query)
+        for role, identifier in results:
+            role = role.split("/")[-1]
+            graph = await RdfResolver().fetch(identifier)
+            contributor_name = None
+            for name in graph.objects(identifier, FOAF.name):
+                contributor_name = name
+            contribution_informations.append(
+                AbstractReferencesConverter.ContributionInformations(
                     role=PerseeQualitiesConverter.convert(role),
+                    identifier=identifier,
+                    name=contributor_name,
+                    rank=None,
                 )
+            )
+        async for contribution in self._contributions(
+            contribution_informations=contribution_informations, source="persee"
+        ):
+            new_ref.contributions.append(contribution)
 
     async def _document_type(
         self, pub_graph, uri
