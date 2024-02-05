@@ -24,6 +24,7 @@ async def get_retrievals(
     :param events: list of event types to fetch (default : "created", "updated", "deleted")
     :param nullify: list of identifiers to nullify for the person
     :param date_interval: date interval to fetch
+    :param harvester: harvester to fetch
 
     \f
     :param entity: entity to search
@@ -33,6 +34,7 @@ async def get_retrievals(
         result = await RetrievalDAO(session).get_retrievals_summary(
             event_types=params["events"],
             nullify=params["nullify"],
+            harvester=params["harvester"],
             date_interval=(params["date_start"], params["date_end"]),
             entity=entity,
         )

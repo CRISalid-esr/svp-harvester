@@ -71,6 +71,7 @@ class RetrievalDAO(AbstractDAO):
         self,
         event_types: List[ReferenceEvent.Type],
         nullify: List[str],
+        harvester: List[str],
         date_interval: Tuple[datetime.date, datetime.date],
         entity: Person,
     ) -> List[Retrieval]:
@@ -79,6 +80,7 @@ class RetrievalDAO(AbstractDAO):
         :param name: name of the entity
         :param event_types: list of event types to fetch
         :param nullify: list of source to nullify
+        :param harvester: harvester to fetch
         :param date_start: date interval start
         :param date_end: date interval end
 
@@ -133,6 +135,7 @@ class RetrievalDAO(AbstractDAO):
                 onclause=DocumentType.id
                 == references_document_type_table.c.document_type_id,
             )
+            .where(Reference.harvester.in_(harvester))
             .group_by(Retrieval.id, entity_id.c.name)
         )
 

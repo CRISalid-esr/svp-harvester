@@ -147,6 +147,7 @@ async def get_references(
     :param name: name of the entity
     :param events: list of event types to fetch
     :param nullify: list of source to nullify
+    :param harvester: harvester to fetch
     :param date_start: date interval start
     :param date_end: date interval end
 
@@ -159,6 +160,7 @@ async def get_references(
             filter_harvester={
                 "event_types": params["events"],
                 "nullify": params["nullify"],
+                "harvester": params["harvester"],
             },
             date_interval=(params["date_start"], params["date_end"]),
             entity=entity,
