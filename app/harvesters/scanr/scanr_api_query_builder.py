@@ -1,6 +1,10 @@
 from enum import Enum
 import re
 
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
+
 
 class ScanRApiQueryBuilder:
     """
@@ -56,11 +60,11 @@ class ScanRApiQueryBuilder:
 
         :param scanr_id: The Scanr id of an entity in a publication
         """
-        # Check if the index who will receive the query is known
-
-        # check that identifier_type is a valid QueryParameters
-        pattern = r"^idref\d+$"
-        assert re.match(pattern, scanr_id), "Invalid identifier type"
+        pattern = r"^idref\d+[a-zA-Z]?$"
+        if not re.match(pattern, scanr_id):
+            raise UnexpectedFormatException(
+                f"Invalid Scanr person identifier format : {scanr_id}. Expected format : {pattern}"
+            )
         self.scanr_id = scanr_id
         self.subject_type = self.SubjectType.PUBLICATION
 
@@ -72,7 +76,6 @@ class ScanRApiQueryBuilder:
         :param identifier_value: the value of the field
         :return: None
         """
-
         # check that identifier_type is a valid QueryParameters
         assert identifier_type in self.QueryParameters, "Invalid identifier type"
         self.identifier_type = identifier_type

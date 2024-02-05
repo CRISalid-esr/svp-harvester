@@ -1,7 +1,7 @@
 from datetime import datetime
-from enum import Enum
 
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
@@ -14,18 +14,9 @@ class ConceptFactory:
     by calling the appropriate solver
     """
 
-    class ConceptSources(Enum):
-        """
-        Closed list of supported sources
-        """
-
-        IDREF = "IDREF"
-        WIKIDATA = "WIKIDATA"
-        # add more sources here
-
     @staticmethod
     async def solve(
-        concept_id: str, concept_source: ConceptSources = None
+        concept_id: str, concept_source: ConceptInformations.ConceptSources = None
     ) -> DbConcept:
         """
         Solves a concept from a concept id and an optional source
@@ -46,23 +37,23 @@ class ConceptFactory:
 
     @classmethod
     def _create_solver(cls, concept_source) -> ConceptSolver:
-        if concept_source == ConceptFactory.ConceptSources.IDREF:
+        if concept_source == ConceptInformations.ConceptSources.IDREF:
             return IdRefConceptSolver()
-        if concept_source == ConceptFactory.ConceptSources.WIKIDATA:
+        if concept_source == ConceptInformations.ConceptSources.WIKIDATA:
             return WikidataConceptSolver()
         # add more sources here
         # if no solver is found, raise an exception
         raise ValueError(f"Unknown concept source {concept_source}")
 
     @classmethod
-    def _infer_source(cls, concept_id) -> ConceptSources:
+    def _infer_source(cls, concept_id) -> ConceptInformations.ConceptSources:
         # for id "http://www.idref.fr/027219372/id", return ConceptSources.IDREF
         # for id "http://www.wikidata.org/entity/Q1234", return ConceptSources.WIKIDATA
         # add more sources here
         if concept_id.startswith("http://www.idref.fr"):
-            return ConceptFactory.ConceptSources.IDREF  # idref
+            return ConceptInformations.ConceptSources.IDREF  # idref
         if concept_id.startswith("http://www.wikidata.org"):
-            return ConceptFactory.ConceptSources.WIKIDATA
+            return ConceptInformations.ConceptSources.WIKIDATA
         # add more sources here
         # if no source is found, raise an exception
         raise UnknownAuthorityException(concept_id)
