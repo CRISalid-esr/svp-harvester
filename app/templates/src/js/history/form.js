@@ -206,8 +206,12 @@ class HistoryForm {
         event.preventDefault();
         event.stopPropagation();
         var textSearch
+        var hideEmptyCollection
         if (this.subpage === "publication_history") {
             textSearch = this.formElement.querySelector("#publication-history-search-bar").value;
+        }
+        if (this.subpage === "collection_history") {
+            hideEmptyCollection = this.formElement.querySelector("#hide_empty_results_checkbox").checked;
         }
         const entitySubmitEvent = new CustomEvent("entity_submit",
             {
@@ -219,7 +223,8 @@ class HistoryForm {
                     identifiers: this.getIdentifierFieldsContent(true),
                     name: this.formElement.querySelector("#name-field-input").value,
                     dateRange: this.dateRangePicker.getDates("yyyy-mm-dd"),
-                    textSearch: textSearch
+                    textSearch: textSearch,
+                    hideEmptyCollection: hideEmptyCollection
                 }
             }
         );

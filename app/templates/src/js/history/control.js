@@ -25,16 +25,12 @@ class Control {
             identifiers[identifier.identifierType] = identifier.identifierValue
 
         })
-        // const identifiersToNullify = formIdentifiers
-        //     .filter((identifier) => !identifier.identifierValue)
-        //     .map((identifier) => {
-        //         return identifier.identifierType
-        //     })
 
         let params = {
             ...identifiers,
             name: formName,
             events: eventTypes,
+            harvester: harvesters,
             date_start: dateRange[0],
             date_end: dateRange[1],
         }

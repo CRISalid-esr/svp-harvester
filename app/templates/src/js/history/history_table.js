@@ -176,7 +176,6 @@ class HistoryTable {
 }
 
 function formatSourceData(harvesting_state) {
-
     const sources = {};
     harvesting_state.forEach(harvesting => {
         const source = harvesting[0];
