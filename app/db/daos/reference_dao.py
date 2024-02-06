@@ -1,12 +1,22 @@
-from sqlalchemy import select, func
+import datetime
+from typing import List
+from sqlalchemy import or_, select, func
+from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
+from app.db.daos.entity_dao import EntityDAO
+from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
+from app.db.models.identifier import Identifier
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
+from app.db.models.title import Title
+from app.models.people import Person
+from app.models.reference_summary import ReferenceSummary
 
 
+# pylint: disable=not-callable
 class ReferenceDAO(AbstractDAO):
     """
     Data access object for references
@@ -94,3 +104,94 @@ class ReferenceDAO(AbstractDAO):
             .order_by(Reference.version.desc())
         )
         return (await self.db_session.execute(query)).scalars().first()
+
+    async def get_references_summary(
+        self,
+        text_search: str,
+        filter_harvester: dict[List, List],
+        date_interval: tuple[datetime.date, datetime.date],
+        entity: Person,
+    ) -> List[ReferenceSummary]:
+        """
+        Get references sumaru by parameters
+        :param text_search: text to search
+        :param filter_harvester: filter for the harvester (event_types, nullify, harvester)
+        :param date_interval: date interval to fetch
+        :param entity: entity to search
+
+        :return: References
+        """
+        date_start, date_end = date_interval
+
+        entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
+
+        query = (
+            select(
+                Reference.id.label("id"),
+                Harvesting.timestamp.label("timestamp"),
+                (
+                    func.array_agg(func.distinct(Title.value, Title.language)).label(
+                        "titles"
+                    )
+                ),
+                Reference.harvester.label("harvester"),
+                Reference.source_identifier.label("source_identifier"),
+                ReferenceEvent.type.label("event_type"),
+            )
+            .join(ReferenceEvent, onclause=Reference.id == ReferenceEvent.reference_id)
+            .join(Harvesting, onclause=ReferenceEvent.harvesting_id == Harvesting.id)
+            .join(Retrieval, onclause=Harvesting.retrieval_id == Retrieval.id)
+            .join(entity_id, onclause=Retrieval.entity_id == entity_id.c.id)
+            .join(Entity, onclause=entity_id.c.id == Entity.id)
+            .join(Identifier, onclause=entity_id.c.id == Identifier.entity_id)
+            .join(Title)
+            .filter(
+                ReferenceEvent.type.in_(filter_harvester["event_types"]),
+                Identifier.type.not_in(filter_harvester["nullify"]),
+                Reference.harvester.in_(filter_harvester["harvester"]),
+            )
+            .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
+        )
+
+        if entity.name:
+            query = query.where(Entity.name == entity.name)
+        if date_start:
+            query = query.where(Harvesting.timestamp >= date_start)
+        if date_end:
+            query = query.where(Harvesting.timestamp <= date_end)
+
+        query = self._filter_text_search(query, text_search)
+        return await self.db_session.execute(query)
+
+    async def get_complete_reference_by_id(self, reference_id: int) -> Reference | None:
+        """
+        Get a reference by its id
+
+        :param reference_id: id of the reference
+        :return: the reference or None if not found
+        """
+        stmt = (
+            select(Reference)
+            .options(joinedload(Reference.contributions))
+            .where(Reference.id == reference_id)
+        )
+
+        return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
+
+    def _filter_text_search(self, query, text_search: str):
+        """
+        Filter the query by text search
+
+        :param query: query to filter
+        :param text_search: text to search
+        :return: the filtered query
+        """
+        if text_search == "":
+            return query
+        return query.filter(
+            or_(
+                Entity.name.like(f"%{text_search}%"),
+                Identifier.value.like(f"%{text_search}%"),
+                Title.value.like(f"%{text_search}%"),
+            )
+        )
