@@ -15,12 +15,18 @@ class HistoryForm {
         this.subpage = subpage
         this.formElement = rootElement.querySelector("#form-element");
         this.identifierFieldsContainer = this.formElement.querySelector("#identifier-fields-container");
-        this.runSearchButton = this.formElement.querySelector("#run-history-collection-btn");
+        this.runSearchButton = this.formElement.querySelector("#run-history-btn");
         this.handleEventTypesSelect();
         this.handleDatePickers();
         this.handleDataSourcesSelect();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
+        this.addNameInputListener();
+        this.updateSubmitButtonState();
+    }
+
+    addNameInputListener() {
+        this.formElement.querySelector("#name-field-input").addEventListener("input", this.updateSubmitButtonState.bind(this));
     }
 
     handleEventTypesSelect() {
@@ -87,11 +93,20 @@ class HistoryForm {
         }
     }
 
+    updateSubmitButtonState() {
+        if (this.getIdentifierFieldsContent(true).length > 0 || this.formElement.querySelector("#name-field-input").value.length > 0) {
+            this.runSearchButton.removeAttribute("disabled");
+        } else {
+            this.runSearchButton.setAttribute("disabled", true);
+        }
+    }
+
     handleRemoveIdentifierButtonClick(event) {
         const identifierFieldElement = event.target.closest(".identifier-field-container");
         identifierFieldElement.remove();
         this.updateAddIdentifierControlState();
         this.renewAddIdentifierControl();
+        this.updateSubmitButtonState();
     }
 
     addIdentifierField(content) {
@@ -104,6 +119,7 @@ class HistoryForm {
         editIdentifierButton.addEventListener("click", this.handleEditIdentifierButtonClick.bind(this));
         this.identifierFieldElement.dataset.validData = true;
         this.renewAddIdentifierControl();
+        this.updateSubmitButtonState();
     }
 
     handleEditIdentifierButtonClick(event) {
@@ -119,10 +135,12 @@ class HistoryForm {
                 inputField.classList.remove("is-invalid");
                 validateIdentifierButton.removeAttribute("disabled");
                 identifierFieldElement.dataset.validData = true;
+                self.updateSubmitButtonState();
             } else {
                 inputField.classList.add("is-invalid");
                 validateIdentifierButton.setAttribute("disabled", true);
                 identifierFieldElement.dataset.validData = false;
+                self.updateSubmitButtonState();
             }
         });
         inputField.addEventListener('keypress', function (event) {
