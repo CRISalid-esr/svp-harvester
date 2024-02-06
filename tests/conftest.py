@@ -12,6 +12,7 @@ from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
+from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
 from tests.fixtures.common import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.pydantic_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
@@ -28,6 +29,7 @@ from tests.fixtures.reference_event_fixtures import *  # pylint: disable=unused-
 from tests.fixtures.open_edition_doc_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.open_alex_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.scanr_api_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 
 
 environ["APP_ENV"] = "TEST"
@@ -116,4 +118,25 @@ def fixture_mock_idref_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
     with mock.patch.object(IdRefConceptSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_idref_concept_solver
+        yield mock_solve
+
+
+def fake_scanr_elastic_client(
+    scanr_api_docs_from_publication,
+    scanr_api_docs_from_person,
+    selected_index: str,
+    base_size: int = 200,
+):
+    if selected_index == ScanRElasticClient.Indexes.PUBLICATIONS:
+        return scanr_api_docs_from_publication
+    if selected_index == ScanRElasticClient.Indexes.PERSONS:
+        return scanr_api_docs_from_person
+    raise DereferencingError("Scanr Elastic client not allowed during tests")
+
+
+@pytest.fixture(name="mock_scanr_elastic_client", autouse=True)
+def fixture_mock_scanr_elastic_client():
+    """Scanr harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(ScanRElasticClient, "perform_search") as mock_solve:
+        mock_solve.side_effect = fake_scanr_elastic_client
         yield mock_solve
