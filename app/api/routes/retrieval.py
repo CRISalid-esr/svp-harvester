@@ -9,6 +9,7 @@ from app.models.retrieval import Retrieval as RetrievalModel
 
 from app.db.session import async_session
 from app.models.retrieval_summary import RetrievalSummary
+from app.services.summary.fetch_summary import fetch_summary
 
 router = APIRouter()
 
@@ -31,14 +32,7 @@ async def get_retrievals(
     :return: Retrieval history
     """
     async with async_session() as session:
-        result = await RetrievalDAO(session).get_retrievals_summary(
-            event_types=params["events"],
-            nullify=params["nullify"],
-            harvester=params["harvester"],
-            date_interval=(params["date_start"], params["date_end"]),
-            entity=entity,
-        )
-        return result
+        return await fetch_summary(RetrievalDAO, session, params, entity)
 
 
 @router.get("/{retrieval_id}")

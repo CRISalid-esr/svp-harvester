@@ -20,6 +20,7 @@ from app.models.reference_summary import ReferenceSummary
 from app.models.references import Reference
 from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
+from app.services.summary.fetch_summary import fetch_summary
 from app.settings.app_settings import AppSettings
 from app.api.dependencies.common_parameters import common_parameters
 
@@ -155,18 +156,9 @@ async def get_references(
     """
 
     async with async_session() as session:
-        result = await ReferenceDAO(session).get_references_summary(
-            text_search=text_search,
-            filter_harvester={
-                "event_types": params["events"],
-                "nullify": params["nullify"],
-                "harvester": params["harvester"],
-            },
-            date_interval=(params["date_start"], params["date_end"]),
-            entity=entity,
+        return await fetch_summary(
+            ReferenceDAO, session, params, entity, {"text_search": text_search}
         )
-
-        return result
 
 
 @router.get("/{reference_id}")

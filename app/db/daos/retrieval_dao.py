@@ -69,20 +69,15 @@ class RetrievalDAO(AbstractDAO):
 
     async def get_retrievals_summary(
         self,
-        event_types: List[ReferenceEvent.Type],
-        nullify: List[str],
-        harvester: List[str],
+        filter_harvester: dict[List],
         date_interval: Tuple[datetime.date, datetime.date],
         entity: Person,
     ) -> List[Retrieval]:
         """
         Get retrieval history for a given entity
-        :param name: name of the entity
-        :param event_types: list of event types to fetch
-        :param nullify: list of source to nullify
-        :param harvester: harvester to fetch
-        :param date_start: date interval start
-        :param date_end: date interval end
+        :param filter_harvester: filter for the harvester (event_types, nullify, harvester)
+        :param date_interval: date interval to fetch
+        :param entity: entity to search
 
         :return: Retrieval history
         """
@@ -90,7 +85,9 @@ class RetrievalDAO(AbstractDAO):
 
         harvesting_event_count = HarvestingDAO(
             self.db_session
-        ).harvesting_event_count_subquery(event_types, nullify)
+        ).harvesting_event_count_subquery(
+            filter_harvester["event_types"], filter_harvester["nullify"]
+        )
 
         entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
 
@@ -135,7 +132,7 @@ class RetrievalDAO(AbstractDAO):
                 onclause=DocumentType.id
                 == references_document_type_table.c.document_type_id,
             )
-            .where(Reference.harvester.in_(harvester))
+            .where(Reference.harvester.in_(filter_harvester["harvester"]))
             .group_by(Retrieval.id, entity_id.c.name)
         )
 
