@@ -30,8 +30,8 @@ async def fetch_summary(
         ),
     )
     args = {
-        "event_types": params["events"],
         "filter_harvester": {
+            "event_types": params["events"],
             "nullify": params["nullify"],
             "harvester": params["harvester"],
         },

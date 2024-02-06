@@ -114,12 +114,10 @@ class ReferenceDAO(AbstractDAO):
     ) -> List[ReferenceSummary]:
         """
         Get references sumaru by parameters
-        :param name: name of the entity
-        :param event_types: list of event types to fetch
-        :param nullify: list of source to nullify
-        :param harvester: harvester to fetch
-        :param date_start: date interval start
-        :param date_end: date interval end
+        :param text_search: text to search
+        :param filter_harvester: filter for the harvester (event_types, nullify, harvester)
+        :param date_interval: date interval to fetch
+        :param entity: entity to search
 
         :return: References
         """
