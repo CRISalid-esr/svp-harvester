@@ -1,8 +1,10 @@
-from sqlalchemy import update, select
+from sqlalchemy import func, or_, update, select
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
+from app.db.models.identifier import Identifier
+from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
@@ -12,11 +14,11 @@ class HarvestingDAO(AbstractDAO):
     """
 
     async def create_harvesting(
-            self,
-            retrieval: DbRetrieval,
-            harvester: str,
-            state: DbHarvesting.State,
-            history: bool = True
+        self,
+        retrieval: DbRetrieval,
+        harvester: str,
+        state: DbHarvesting.State,
+        history: bool = True,
     ) -> DbHarvesting:
         """
         Create a harvesting for a retrieval
@@ -27,7 +29,9 @@ class HarvestingDAO(AbstractDAO):
         :param history: if True, the harvesting will be recorded in the history
         :return:
         """
-        harvesting = DbHarvesting(harvester=harvester, state=state.value, history=history)
+        harvesting = DbHarvesting(
+            harvester=harvester, state=state.value, history=history
+        )
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
         return harvesting
@@ -42,7 +46,7 @@ class HarvestingDAO(AbstractDAO):
         return await self.db_session.get(DbHarvesting, harvesting_id)
 
     async def get_harvesting_extended_info_by_id(
-            self, harvesting_id
+        self, harvesting_id
     ) -> DbHarvesting | None:
         """
         Get a harvesting without reference events but with retrieval and associated entity
@@ -58,7 +62,7 @@ class HarvestingDAO(AbstractDAO):
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
     async def update_harvesting_state(
-            self, harvesting_id: int, state: DbHarvesting.State
+        self, harvesting_id: int, state: DbHarvesting.State
     ):
         """
         Update the state of a harvesting
@@ -73,3 +77,30 @@ class HarvestingDAO(AbstractDAO):
             .values({"state": state.value})
         )
         await self.db_session.execute(stmt)
+
+    def harvesting_event_count_subquery(self, event_types, nullify):
+        """
+        Get a subquery for the count of events for each harvesting grouped by event type
+
+        """
+        event_types.append(None)
+        # pylint: disable=not-callable
+        return (
+            select(
+                DbHarvesting.id,
+                ReferenceEvent.type.label("type_event"),
+                func.count(ReferenceEvent.id.distinct().label("count")),
+            )
+            .outerjoin(
+                ReferenceEvent, onclause=ReferenceEvent.harvesting_id == DbHarvesting.id
+            )
+            .outerjoin(
+                Identifier, onclause=ReferenceEvent.reference_id == Identifier.entity_id
+            )
+            .filter(
+                # Add None in case of no event so we can still see the harvesting failed
+                or_(ReferenceEvent.type.in_(event_types), ReferenceEvent.type is None),
+                Identifier.type.not_in(nullify),
+            )
+            .group_by(DbHarvesting.id, ReferenceEvent.type)
+        ).subquery("event_count_harvesting")
