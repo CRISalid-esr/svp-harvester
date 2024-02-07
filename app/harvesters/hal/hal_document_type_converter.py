@@ -31,7 +31,7 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
         "POSTER": (f"{RDF_SPAR}ConferencePoster", "Conference Poster"),
         "ISSUE": (f"{RDF_BIBO}Document", "Document"),
         "NOTICE": (f"{RDF_BIBO}Document", "Document"),
-        "PROCEEDING": (f"{RDF_BIBO}Proceedings", "Proceedings"),
+        "PROCEEDINGS": (f"{RDF_BIBO}Proceedings", "Proceedings"),
         "HRD": (f"{RDF_BIBO}Document", "Document"),
         "BLOG": (f"{RDF_COAR}c_6947", "Blog Post"),
         "PATENT": (f"{RDF_BIBO}Patent", "Patent"),
