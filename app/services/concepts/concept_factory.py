@@ -57,6 +57,8 @@ class ConceptFactory:
             return ConceptInformations.ConceptSources.IDREF  # idref
         if concept_id.startswith("http://www.wikidata.org"):
             return ConceptInformations.ConceptSources.WIKIDATA
+        if concept_id.startswith("http://zbw.eu/beta/external_identifiers/jel"):
+            return ConceptInformations.ConceptSources.JEL
         # add more sources here
         # if no source is found, raise an exception
         raise UnknownAuthorityException(concept_id)
