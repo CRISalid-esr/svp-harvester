@@ -1,3 +1,4 @@
+from typing import Tuple
 import aiohttp
 from loguru import logger
 from rdflib import SKOS, Graph
@@ -23,7 +24,7 @@ class WikidataConceptSolver(ConceptSolver):
         )
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(10))
+                timeout=aiohttp.ClientTimeout(total=float(2))
             ) as session:
                 async with session.get(wikidata_url) as response:
                     if not 200 <= response.status < 300:
@@ -32,7 +33,7 @@ class WikidataConceptSolver(ConceptSolver):
                         )
                     xml = (await response.text()).strip()
                     concept_graph = Graph().parse(data=xml)
-                    concept = DbConcept(uri=concept_id)
+                    concept = DbConcept(uri=wikidata_uri)
                     # See if there is a owl:sameAs concept in the graph, if so, use it
                     same_as = concept_graph.objects(
                         rdflib.term.URIRef(wikidata_uri), rdflib.OWL.sameAs
@@ -76,7 +77,9 @@ class WikidataConceptSolver(ConceptSolver):
                 f"Unknown error while dereferencing {wikidata_uri} with message {error}"
             ) from error
 
-    async def _build_url_from_concept_id_or_uri(self, concept_id: str):
+    async def _build_url_from_concept_id_or_uri(
+        self, concept_id: str
+    ) -> Tuple[str, str]:
         """
         Builds a URL from a Wikidata uri
         :param concept_id: concept id or uri
