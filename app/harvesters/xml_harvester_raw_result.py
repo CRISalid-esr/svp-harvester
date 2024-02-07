@@ -5,7 +5,7 @@ from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawRes
 
 
 @dataclass(kw_only=True)
-class EtreeHarvesterRawResult(AbstractHarvesterRawResult[str, ElementTree]):
+class XMLHarvesterRawResult(AbstractHarvesterRawResult[str, ElementTree]):
     """
     Raw result of an Harvester with identifier as a string and payload as an ElementTree
     """
