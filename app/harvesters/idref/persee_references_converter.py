@@ -46,7 +46,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         for role, identifier in results:
             role = role.split("/")[-1]
             graph = await RdfResolver().fetch(identifier)
-            contributor_name = None
+            contributor_name = ""
             for name in graph.objects(identifier, FOAF.name):
                 contributor_name = name
             contribution_informations.append(
