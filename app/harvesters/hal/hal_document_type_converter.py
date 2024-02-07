@@ -32,7 +32,7 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
         "ISSUE": (f"{RDF_BIBO}Document", "Document"),
         "NOTICE": (f"{RDF_BIBO}Document", "Document"),
         "PROCEEDINGS": (f"{RDF_BIBO}Proceedings", "Proceedings"),
-        "HRD": (f"{RDF_BIBO}Document", "Document"),
+        "HDR": (f"{RDF_BIBO}Document", "Document"),
         "BLOG": (f"{RDF_COAR}c_6947", "Blog Post"),
         "PATENT": (f"{RDF_BIBO}Patent", "Patent"),
         "REPORT_LABO": (f"{RDF_COAR}c_93fc", "Report"),
