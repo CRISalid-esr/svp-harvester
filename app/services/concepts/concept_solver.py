@@ -24,6 +24,15 @@ class ConceptSolver(ABC):
         :return: Concept
         """
 
+    @abstractmethod
+    def _get_labels(self, concept_data, uri: str):
+        """
+        Get labels from a concept graph
+        :param concept_data: concept graph
+        :param uri: concept uri
+        :return: labels
+        """
+
     def _add_labels(
         self,
         concept: DbConcept,

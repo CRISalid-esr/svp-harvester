@@ -3,14 +3,14 @@ import re
 import aiohttp
 import rdflib
 from aiohttp import ClientTimeout
-from rdflib import Graph, SKOS
+from rdflib import Graph
 
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.concept_solver import ConceptSolver
+from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
-class IdRefConceptSolver(ConceptSolver):
+class IdRefConceptSolver(ConceptSolverRdf):
     """
     IdRef concept solver
     """
@@ -36,18 +36,13 @@ class IdRefConceptSolver(ConceptSolver):
                     concept_graph = Graph().parse(data=xml, format="xml")
                     concept = DbConcept(uri=idref_uri)
 
-                    pref_labels = concept_graph.objects(
-                        rdflib.term.URIRef(idref_uri), SKOS.prefLabel
-                    )
-                    alt_labels = concept_graph.objects(
-                        rdflib.term.URIRef(idref_uri), SKOS.altLabel
-                    )
-                    self._add_labels(
-                        concept=concept, labels=list(pref_labels), preferred=True
-                    )
-                    self._add_labels(
-                        concept=concept, labels=list(alt_labels), preferred=False
-                    )
+                    [  # pylint: disable=expression-not-assigned
+                        self._add_labels(
+                            concept=concept, labels=list(label[0]), preferred=label[1]
+                        )
+                        for label in self._get_labels(concept_graph, idref_uri)
+                    ]
+
                     return concept
         except aiohttp.ClientError as error:
             raise DereferencingError(

@@ -1,14 +1,13 @@
 from typing import Tuple
 import aiohttp
-from loguru import logger
-from rdflib import SKOS, Graph
+from rdflib import Graph
 import rdflib
-from app.services.concepts.concept_solver import ConceptSolver
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
-class WikidataConceptSolver(ConceptSolver):
+class WikidataConceptSolver(ConceptSolverRdf):
     """
     Wikidata concept solver
     """
@@ -42,7 +41,6 @@ class WikidataConceptSolver(ConceptSolver):
                     )
                     new_concept_id = None
                     for same in same_as:
-                        logger.warning(f"{concept_id} is the same as {same}")
                         new_concept_id = str(same)
                         break
                     if new_concept_id:
@@ -50,18 +48,12 @@ class WikidataConceptSolver(ConceptSolver):
                             new_concept_id
                         )
 
-                    pref_labels = concept_graph.objects(
-                        rdflib.term.URIRef(wikidata_uri), SKOS.prefLabel
-                    )
-                    alt_labels = concept_graph.objects(
-                        rdflib.term.URIRef(wikidata_uri), SKOS.altLabel
-                    )
-                    self._add_labels(
-                        concept=concept, labels=list(pref_labels), preferred=True
-                    )
-                    self._add_labels(
-                        concept=concept, labels=list(alt_labels), preferred=False
-                    )
+                    [  # pylint: disable=expression-not-assigned
+                        self._add_labels(
+                            concept=concept, labels=list(label[0]), preferred=label[1]
+                        )
+                        for label in self._get_labels(concept_graph, wikidata_uri)
+                    ]
 
                     return concept
 
