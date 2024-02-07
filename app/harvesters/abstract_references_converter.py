@@ -248,7 +248,7 @@ class AbstractReferencesConverter(ABC):
                         )
                         await session.rollback()
                         concept = await self._get_or_create_concept_by_uri(
-                            concept_informations=concept_informations
+                            concept_informations=concept_informations, new_attempt=True
                         )
         return concept
 

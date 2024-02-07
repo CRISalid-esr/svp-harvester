@@ -1,5 +1,6 @@
 import re
 from typing import Generator
+from loguru import logger
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
@@ -77,12 +78,16 @@ class HalReferencesConverter(AbstractReferencesConverter):
         # If we have jel_s fields, we use them as subjects
         for code in fields:
             uri = f"http://zbw.eu/beta/external_identifiers/jel#{code.split('.')[-1]}"
-            yield await self._get_or_create_concept_by_uri(
-                ConceptInformations(
-                    uri=uri,
-                    source=ConceptInformations.ConceptSources.JEL,
+            try:
+                yield await self._get_or_create_concept_by_uri(
+                    ConceptInformations(
+                        uri=uri,
+                        source=ConceptInformations.ConceptSources.JEL,
+                    )
                 )
-            )
+            except AssertionError:
+                logger.error(f"Could not create concept with uri {uri}")
+                continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
             for label in raw_data[field]:

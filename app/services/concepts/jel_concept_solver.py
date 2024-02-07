@@ -43,10 +43,17 @@ class JelConceptSolver(ConceptSolver):
                         concept=concept, labels=list(alt_labels), preferred=False
                     )
                     return concept
-
+        except aiohttp.ClientError as error:
+            raise DereferencingError(
+                f"Endpoint failure while dereferencing {uri} with message {error}"
+            ) from error
+        except rdflib.exceptions.ParserError as error:
+            raise DereferencingError(
+                f"Error while parsing xml from {uri} with message {error}"
+            ) from error
         except Exception as error:
             raise DereferencingError(
-                f"Unknown error while dereferencing JEL {uri} with message {error}"
+                f"Unknown error while dereferencing {uri} with message {error}"
             ) from error
 
     async def _build_url_from_concept_id_or_uri(self, concept_id: str):
