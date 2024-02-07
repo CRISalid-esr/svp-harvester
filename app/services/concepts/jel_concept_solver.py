@@ -17,7 +17,7 @@ class JelConceptSolver(ConceptSolver):
         :param concept_id: JEL code
         :return: Concept
         """
-        uri, url = await self._build_url_from_concept_id_or_uri(concept_id)
+        uri, url = await self._build_url_from_concept_uri(concept_id)
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(2))
@@ -56,13 +56,11 @@ class JelConceptSolver(ConceptSolver):
                 f"Unknown error while dereferencing {uri} with message {error}"
             ) from error
 
-    async def _build_url_from_concept_id_or_uri(self, concept_id: str):
+    async def _build_url_from_concept_uri(self, uri: str):
         """
         Builds a URL from a JEL URI
         :param concept_id: Jel code
         :return: URI and URL
         """
-        code = concept_id.split("#")[-1]
-        uri = f"http://zbw.eu/beta/external_identifiers/jel#{code}"
-        url = f"https://zbw.eu/beta/skosmos/rest/v1/jel/data?uri=http%3A%2F%2Fzbw.eu%2Fbeta%2Fexternal_identifiers%2Fjel%23{code}&format=application/rdf%2Bxml"
+        url = f"https://zbw.eu/beta/skosmos/rest/v1/jel/data?uri={uri}&format=application/rdf%2Bxml"
         return uri, url

@@ -29,7 +29,9 @@ class WikidataConceptSolver(ConceptSolver):
                 async with session.get(wikidata_url) as response:
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
-                            f"Endpoint returned status {response.status} while dereferencing {wikidata_uri}"
+                            "Endpoint returned status "
+                            + f"{response.status} while dereferencing "
+                            + f"{wikidata_uri}"
                         )
                     xml = (await response.text()).strip()
                     concept_graph = Graph().parse(data=xml)
@@ -68,7 +70,6 @@ class WikidataConceptSolver(ConceptSolver):
                 f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
             ) from error
         except rdflib.exceptions.ParserError as error:
-            logger.warning(f"error: {error}")
             raise DereferencingError(
                 f"Error while parsing xml from {wikidata_uri} with message {error}"
             ) from error
