@@ -69,7 +69,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         concept_cache = {}
 
         for concept in self._value_from_key(json_payload, "concepts", []):
-            uri = concept.get("wikidata")
+            concept_id = concept.get("wikidata").replace(
+                "https://www.wikidata.org/wiki/", ""
+            )
+            uri = f"http://www.wikidata.org/entity/{concept_id}"
             label = concept.get("display_name")
             concept_key = uri
 
