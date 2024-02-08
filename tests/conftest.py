@@ -121,22 +121,29 @@ def fixture_mock_idref_concept_solver():
         yield mock_solve
 
 
-def fake_scanr_elastic_client(
+@pytest.fixture(name="fake_scanr_elastic_client_perform_search")
+def fixture_fake_scanr_elastic_client_perform_search(
     scanr_api_docs_from_publication,
     scanr_api_docs_from_person,
-    selected_index: str,
-    base_size: int = 200,
 ):
-    if selected_index == ScanRElasticClient.Indexes.PUBLICATIONS:
-        return scanr_api_docs_from_publication
-    if selected_index == ScanRElasticClient.Indexes.PERSONS:
-        return scanr_api_docs_from_person
-    raise DereferencingError("Scanr Elastic client not allowed during tests")
+    async def fake_scanr_elastic_client(
+        selected_index: str,
+        base_size: int = 200,
+    ):
+        if selected_index == ScanRElasticClient.Indexes.PUBLICATIONS:
+            for hit in scanr_api_docs_from_publication.get("hits", {}).get("hits", []):
+                yield hit
+        elif selected_index == ScanRElasticClient.Indexes.PERSONS:
+            yield scanr_api_docs_from_person
+        else:
+            raise DereferencingError("Scanr Elastic client not allowed during tests")
+
+    return fake_scanr_elastic_client
 
 
 @pytest.fixture(name="mock_scanr_elastic_client", autouse=True)
-def fixture_mock_scanr_elastic_client():
+def fixture_mock_scanr_elastic_client(fake_scanr_elastic_client_perform_search):
     """Scanr harvester mock to detect is_relevant method calls."""
     with mock.patch.object(ScanRElasticClient, "perform_search") as mock_solve:
-        mock_solve.side_effect = fake_scanr_elastic_client
+        mock_solve.side_effect = fake_scanr_elastic_client_perform_search
         yield mock_solve
