@@ -5,6 +5,7 @@ from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
 from app.db.models.reference import Reference
 from app.db.models.title import Title
+from app.db.models.publication_identifier import PublicationIdentifier
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.open_alex.open_alex_document_type_converter import (
@@ -17,6 +18,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
     """
     Converts raw data from OpenAlex to a normalised Reference object
     """
+
+    REFERENCE_IDENTIFIERS_IGNORE = ["mag"]
 
     async def convert(self, raw_data: JsonHarvesterRawResult) -> Reference:
         """
@@ -39,9 +42,25 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         async for concept in self._concepts(json_payload, language):
             new_ref.subjects.append(concept)
 
+        async for publication_identifier in self._add_publication_identifiers(
+            json_payload
+        ):
+            new_ref.identifiers.append(publication_identifier)
+
         new_ref.source_identifier = raw_data.source_identifier
         new_ref.hash = self._hash(json_payload)
         return new_ref
+
+    async def _add_publication_identifiers(self, json_payload: dict) -> str:
+        # In OpenAlex, one of the ids is the OpenAlex id same as the source_identifier. We duplicate?
+        try:
+            for id_key in json_payload["ids"]:
+                if id_key not in self.REFERENCE_IDENTIFIERS_IGNORE:
+                    yield PublicationIdentifier(
+                        type=id_key, value=json_payload["ids"][id_key]
+                    )
+        except KeyError:
+            yield
 
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
         contribution_informations = []
