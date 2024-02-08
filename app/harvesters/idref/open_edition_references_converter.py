@@ -120,7 +120,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             if len(abstract) != 0:
                 logger.warning("Description found instead of abstract")
         if len(abstract) == 0:
-            yield Abstract(value=None, language=None)
+            yield
         for value, attrib in abstract:
             # check if language defined, If not then we take the language of the document
             try:
