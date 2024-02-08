@@ -25,6 +25,7 @@ jobs:
       - name: Generate translations files
         run: |
           pybabel extract --mapping babel.cfg --output-file=locales/admin.pot .
+          pybabel update --domain=admin --input-file=locales/admin.pot --output-dir=locales
 
       - name: Commit files
         run: |
