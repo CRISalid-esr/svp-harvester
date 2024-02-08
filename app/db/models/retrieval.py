@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import List
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -30,3 +31,5 @@ class Retrieval(Base):
     event_types: Mapped[ARRAY[str]] = mapped_column(
         "event_types", ARRAY(String), nullable=False
     )
+
+    timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)

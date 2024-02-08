@@ -1,7 +1,8 @@
 """ References routes"""
-from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from typing import Annotated, List
+
+from fastapi import APIRouter, Depends, Query
 from starlette import status
 from starlette.datastructures import URL
 from starlette.requests import Request
@@ -10,13 +11,18 @@ from starlette.responses import JSONResponse, RedirectResponse
 from app.api.dependencies.references import build_person_from_fields
 from app.api.dependencies.retrieval_service import build_retrieval_service_from_fields
 from app.config import get_app_settings
+from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as DbRetrieval
 from app.db.session import async_session
 from app.models.people import Person
+from app.models.reference_summary import ReferenceSummary
+from app.models.references import Reference
 from app.models.retrieval import Retrieval as RetrievalModel
 from app.services.retrieval.retrieval_service import RetrievalService
+from app.services.summary.fetch_summary import fetch_summary
 from app.settings.app_settings import AppSettings
+from app.api.dependencies.common_parameters import common_parameters
 
 router = APIRouter()
 
@@ -129,3 +135,42 @@ async def get_retrieval_result(
             session
         ).get_complete_retrieval_by_id(retrieval_id)
     return RetrievalModel.model_validate(retrieval)
+
+
+@router.get("/summary")
+async def get_references(
+    params: Annotated[dict, Depends(common_parameters)],
+    text_search: Annotated[str, Query()] = "",
+    entity: Person = Depends(build_person_from_fields),
+) -> List[ReferenceSummary]:
+    """
+    Get references by parameters
+    :param name: name of the entity
+    :param events: list of event types to fetch
+    :param nullify: list of source to nullify
+    :param harvester: harvester to fetch
+    :param date_start: date interval start
+    :param date_end: date interval end
+
+    :return: References
+    """
+
+    async with async_session() as session:
+        return await fetch_summary(
+            ReferenceDAO, session, params, entity, {"text_search": text_search}
+        )
+
+
+@router.get("/{reference_id}")
+async def get_reference_by_id(reference_id: int) -> Reference:
+    """
+    Get a reference by its id
+
+    :param reference_id: id of the reference
+    :return: the reference
+    """
+    async with async_session() as session:
+        reference = await ReferenceDAO(session).get_complete_reference_by_id(
+            reference_id
+        )
+        return Reference.model_validate(reference)
