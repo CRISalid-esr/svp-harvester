@@ -33,14 +33,6 @@ jobs:
           git add locales/*
           git commit -m "Update translations"
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
-      - uses: actions/checkout@v3
-
       - name: Delete branch poeditor-translations
         uses: dawidd6/action-delete-branch@v3
         with:
@@ -52,6 +44,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          branch: poeditor-translations
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: poeditor-translations
 
   docker:
