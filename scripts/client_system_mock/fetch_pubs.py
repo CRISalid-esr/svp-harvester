@@ -42,6 +42,10 @@ async def _publish_requests(args):
         )
 
         count = 0
+        print(f"Reading file {args.file}")
+        if not os.path.exists(args.file):
+            print(f"File {args.file} does not exist")
+            return
         with open(f"{args.file}", "r", encoding="UTF-8") as csv_file:
             reader = csv.DictReader(csv_file)
             for row in reader:
@@ -50,7 +54,8 @@ async def _publish_requests(args):
                 payload = {
                     "type": "person",
                     "identifiers_safe_mode": False,
-                    "history_safe_mode": True,
+                    "history_safe_mode": False,
+                    "events": ["created", "updated", "deleted"],
                     "fields": {
                         "name": f"{row['last_name']}, {row['first_name']}",
                         "identifiers": [
