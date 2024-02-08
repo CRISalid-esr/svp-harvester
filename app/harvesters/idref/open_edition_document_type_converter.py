@@ -6,7 +6,16 @@ class OpenEditionDocumentTypeConverter:
     Use mapping table to convert Open Edition document type to loc document type values
     """
 
-    CODES_MAPPING = {"article": ("Article_uri", "Article")}
+    RDF_BIBO = "http://purl.org/ontology/bibo/"
+    RDF_SPAR = "http://purl.org/spar/fabio/"
+    RDF_COAR = "http://purl.org/coar/resource_type"
+
+    CODES_MAPPING = {
+        "article": (f"{RDF_BIBO}Article", "Article"),
+        "introduction": (f"{RDF_BIBO}Chapter", "Chapter"),
+        "review": (f"{RDF_BIBO}Article", "Article"),
+        "archaelogical note": (f"{RDF_BIBO}Note", "Note"),
+    }
 
     UKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unkown", "Uknown")
 

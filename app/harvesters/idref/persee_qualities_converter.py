@@ -10,6 +10,8 @@ class PerseeQualitiesConverter:
 
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
+        "trl": Contribution.Role.TRANSLATOR,
+        "ctb": Contribution.Role.CONTRIBUTOR,
     }
 
     @staticmethod
