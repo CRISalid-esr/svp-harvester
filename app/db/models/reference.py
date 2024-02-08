@@ -15,6 +15,9 @@ from app.db.models.organization import Organization  # pylint: disable=unused-im
 from app.db.models.title import Title  # pylint: disable=unused-import
 from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
 from app.db.models.document_type import DocumentType  # pylint: disable=unused-import
+from app.db.models.publication_identifier import (  # pylint: disable=unused-import
+    PublicationIdentifier,
+)
 
 
 class Reference(Base, VersionedRecord):
@@ -30,6 +33,15 @@ class Reference(Base, VersionedRecord):
     # The reference should stay traceable to the harvester that created it
     # even if the harvesting history is cleaned up
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
+
+    identifiers: Mapped[
+        List["app.db.models.publication_identifier.PublicationIdentifier"]
+    ] = relationship(
+        "app.db.models.publication_identifier.PublicationIdentifier",
+        back_populates="reference",
+        cascade="all, delete-orphan",
+        lazy="joined",
+    )
 
     titles: Mapped[List["app.db.models.title.Title"]] = relationship(
         "app.db.models.title.Title",
@@ -56,28 +68,28 @@ class Reference(Base, VersionedRecord):
         lazy="joined",
     )
 
-    document_type: Mapped[
-        List["app.db.models.document_type.DocumentType"]
-    ] = relationship(
-        "app.db.models.document_type.DocumentType",
-        secondary=references_document_type_table,
-        lazy="joined",
+    document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
+        relationship(
+            "app.db.models.document_type.DocumentType",
+            secondary=references_document_type_table,
+            lazy="joined",
+        )
     )
 
-    reference_events: Mapped[
-        List["app.db.models.reference_event.ReferenceEvent"]
-    ] = relationship(
-        "app.db.models.reference_event.ReferenceEvent",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="raise",
+    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
+        relationship(
+            "app.db.models.reference_event.ReferenceEvent",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="raise",
+        )
     )
 
-    contributions: Mapped[
-        List["app.db.models.contribution.Contribution"]
-    ] = relationship(
-        "app.db.models.contribution.Contribution",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="joined",
+    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
+        relationship(
+            "app.db.models.contribution.Contribution",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="joined",
+        )
     )
