@@ -22,10 +22,13 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
+# TODO: Add a method who remove a ref from the queue if the title is missing
 class AbstractReferencesConverter(ABC):
     """ "
     Abstract mother class for harvesters
     """
+
+    ref_required_fields: list[str] = ["titles"]
 
     @dataclass
     class ContributionInformations:
@@ -331,3 +334,8 @@ class AbstractReferencesConverter(ABC):
                 db_contributor.name
             ]
         db_contributor.name = name
+
+    def _validate_reference(self, new_ref: Reference):
+        return all(
+            [bool(getattr(new_ref, field)) for field in self.ref_required_fields]
+        )

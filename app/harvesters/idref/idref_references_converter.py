@@ -46,7 +46,7 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             return await PerseeReferencesConverter().convert(raw_data)
         return None
 
-    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference:
+    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference | None:
         new_ref = Reference()
         dict_payload: dict = raw_data.payload
         uri = raw_data.source_identifier
@@ -66,8 +66,13 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         new_ref.subjects.extend(
             await self._get_or_create_concepts_by_uri(concept_informations)
         )
+
+        if not self._validate_reference(new_ref):
+            return None
+
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
+
         return new_ref
 
     def _hash_keys(self):

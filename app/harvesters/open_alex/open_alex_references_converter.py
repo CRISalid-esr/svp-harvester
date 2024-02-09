@@ -40,6 +40,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             new_ref.subjects.append(concept)
 
         new_ref.source_identifier = raw_data.source_identifier
+
+        if not self._validate_reference(new_ref):
+            return None
+
         new_ref.hash = self._hash(json_payload)
         return new_ref
 

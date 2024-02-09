@@ -49,6 +49,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
+
+        if not self._validate_reference(new_ref):
+            return None
+
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier

@@ -20,8 +20,11 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     Converts raw data from Persee to a normalised Reference object
     """
 
-    async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference:
+    async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference | None:
         new_ref = await super().convert(raw_data)
+        if new_ref is None:
+            return None
+
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
 
