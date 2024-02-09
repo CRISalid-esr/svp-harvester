@@ -13,6 +13,7 @@ from app.db.models import (
     harvesting,
     identifier,
     label,
+    reference_identifier,
     reference_literal_field,
     person,
     reference_event,
@@ -22,7 +23,6 @@ from app.db.models import (
     title,
     document_type,
     harvesting_error,
-    publication_identifier,
 )
 from app.db.session import Base
 
@@ -48,7 +48,7 @@ def _register_models_for_migrations():
         title,
         document_type,
         harvesting_error,
-        publication_identifier,
+        reference_identifier,
     )
 
 

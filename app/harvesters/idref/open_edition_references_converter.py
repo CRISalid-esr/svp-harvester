@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 from loguru import logger
 
 from app.db.models.abstract import Abstract
-from app.db.models.publication_identifier import PublicationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -64,15 +64,15 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         new_ref.hash = self._hash(self._create_dict(root))
         return new_ref
 
-    def _reference_identifier(self, root: ElementTree) -> PublicationIdentifier:
+    def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
         for identifier in self._get_terms(root, "identifier"):
             if identifier[1]["scheme"] == "URI":
-                yield PublicationIdentifier(
+                yield ReferenceIdentifier(
                     value=identifier[0],
                     type="uri",
                 )
             elif identifier[1]["scheme"] == "URN" and "urn:doi:" in identifier[0]:
-                yield PublicationIdentifier(
+                yield ReferenceIdentifier(
                     value=identifier[0].replace("urn:doi:", ""),
                     type="doi",
                 )

@@ -1,6 +1,5 @@
-from loguru import logger
 from app.db.models.abstract import Abstract
-from app.db.models.publication_identifier import PublicationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -30,10 +29,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         json_payload = raw_data.payload
 
-        logger.debug(
-            f"Converting ScanR reference: \n{json_payload['_source'].get('externalIds')}"
-        )
-
         title = json_payload["_source"].get("title")
         if title:
             new_ref.titles.extend(
@@ -60,11 +55,11 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         new_ref.source_identifier = json_payload["_source"].get("id")
         return new_ref
 
-    def _add_identifiers(self, json_payload: dict) -> PublicationIdentifier:
+    def _add_identifiers(self, json_payload: dict) -> ReferenceIdentifier:
         external_ids = json_payload["_source"].get("externalIds", [])
         for identifier in external_ids:
             if identifier["type"] not in self.IDENTIFIERS_TO_IGNORE:
-                yield PublicationIdentifier(
+                yield ReferenceIdentifier(
                     value=identifier["id"], type=identifier["type"]
                 )
 

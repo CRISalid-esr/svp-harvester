@@ -4,12 +4,12 @@ from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db.session import Base
 
 
-class PublicationIdentifier(Base):
+class ReferenceIdentifier(Base):
     """
-    Model for persistence of publication identifiers
+    Model for persistence of reference identifiers
     """
 
-    __tablename__ = "publication_identifiers"
+    __tablename__ = "reference_identifiers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)

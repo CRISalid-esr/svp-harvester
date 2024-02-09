@@ -1,6 +1,6 @@
 import rdflib
 from rdflib import Literal, DCTERMS
-from app.db.models.publication_identifier import PublicationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 
 from app.db.models.title import Title
@@ -29,4 +29,4 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             yield Title(value=title.value, language=title.language)
 
     def _add_doi_identifier(self, doi: str):
-        return PublicationIdentifier(value=doi, type="doi")
+        return ReferenceIdentifier(value=doi, type="doi")

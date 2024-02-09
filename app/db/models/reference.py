@@ -15,8 +15,8 @@ from app.db.models.organization import Organization  # pylint: disable=unused-im
 from app.db.models.title import Title  # pylint: disable=unused-import
 from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
 from app.db.models.document_type import DocumentType  # pylint: disable=unused-import
-from app.db.models.publication_identifier import (  # pylint: disable=unused-import
-    PublicationIdentifier,
+from app.db.models.reference_identifier import (  # pylint: disable=unused-import
+    ReferenceIdentifier,
 )
 
 
@@ -35,9 +35,9 @@ class Reference(Base, VersionedRecord):
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
 
     identifiers: Mapped[
-        List["app.db.models.publication_identifier.PublicationIdentifier"]
+        List["app.db.models.reference_identifier.ReferenceIdentifier"]
     ] = relationship(
-        "app.db.models.publication_identifier.PublicationIdentifier",
+        "app.db.models.reference_identifier.ReferenceIdentifier",
         back_populates="reference",
         cascade="all, delete-orphan",
         lazy="joined",

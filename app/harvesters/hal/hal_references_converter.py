@@ -2,7 +2,7 @@ import re
 from typing import Generator
 
 from app.db.models.abstract import Abstract
-from app.db.models.publication_identifier import PublicationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
@@ -66,9 +66,9 @@ class HalReferencesConverter(AbstractReferencesConverter):
             # Identifier that are list: europeanProjectCallId_s, wosId_s, piiId_s, pubmedcentralId_s
             if isinstance(raw_data[field], list):
                 for value in raw_data[field]:
-                    yield PublicationIdentifier(type=field, value=value)
+                    yield ReferenceIdentifier(type=field, value=value)
             else:
-                yield PublicationIdentifier(type=field, value=raw_data[field])
+                yield ReferenceIdentifier(type=field, value=raw_data[field])
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class PublicationIdentifier(BaseModel):
+class ReferenceIdentifier(BaseModel):
     """
     Pydantic model matching PublicationIdentifier sql_alchemy model
     """
