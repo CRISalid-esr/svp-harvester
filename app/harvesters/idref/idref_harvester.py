@@ -23,6 +23,9 @@ from app.harvesters.rdf_harvester_raw_result import (
     AbstractHarvesterRawResult as RawResult,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as RdfResult
+from app.harvesters.xml_harvester_raw_result import (
+    XMLHarvesterRawResult as XmlResult,
+)
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
 )
@@ -191,7 +194,7 @@ class IdrefHarvester(AbstractHarvester):
         assert self.OPEN_EDITION_SUFFIX.match(uri), f"Invalid OpenEdition Id {uri}"
         client = OpenEditionResolver()
         pub = await client.fetch(uri)
-        return RdfResult(
+        return XmlResult(
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.OPEN_EDITION.value,

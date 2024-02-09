@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  SVP-Harvester\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-01-03 09:51+0100\n"
+"POT-Creation-Date: 2024-02-09 08:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_us\n"
@@ -31,226 +31,246 @@ msgstr "Collecting data"
 
 #: app/templates/base.html.jinja:67
 msgid "main_menu_history_entry"
-msgstr "History"
+msgstr "Collection history"
 
 #: app/templates/base.html.jinja:74
 #, fuzzy
 msgid "main_menu_settings_entry"
-msgstr ""
+msgstr "Administration des collectes"
 
 #: app/templates/collection_history.html.jinja:7
 #: app/templates/publication_history.html.jinja:13
 #: app/templates/retrieve.html.jinja:12
 msgid "entity_type_select_label"
-msgstr "Entity type"
+msgstr "Type d'entité"
 
-#: app/templates/collection_history.html.jinja:10
-#: app/templates/publication_history.html.jinja:16
+#: app/templates/collection_history.html.jinja:9
+#: app/templates/publication_history.html.jinja:15
 #, fuzzy
 msgid "history_page_entity_type_select_help_text"
-msgstr "Choose the type of entity for which you want to collect references"
+msgstr ""
+"Choisissez le type d'entité pour laquelle vous voulez collecter les "
+"références"
 
-#: app/templates/collection_history.html.jinja:17
-#: app/templates/publication_history.html.jinja:23
+#: app/templates/collection_history.html.jinja:15
+#: app/templates/publication_history.html.jinja:21
 #: app/templates/retrieve.html.jinja:22
+#, fuzzy
 msgid "entity_type_select_researcher_pill"
-msgstr "Researcher"
+msgstr "Chercheur"
 
-#: app/templates/collection_history.html.jinja:23
-#: app/templates/publication_history.html.jinja:29
+#: app/templates/collection_history.html.jinja:21
+#: app/templates/publication_history.html.jinja:27
 #: app/templates/retrieve.html.jinja:28
+#, fuzzy
 msgid "entity_type_select_laboratory_pill"
-msgstr "Laboratory"
+msgstr "Laboratoire"
 
-#: app/templates/collection_history.html.jinja:29
-#: app/templates/publication_history.html.jinja:35
+#: app/templates/collection_history.html.jinja:27
+#: app/templates/publication_history.html.jinja:33
 #: app/templates/retrieve.html.jinja:34
+#, fuzzy
 msgid "entity_type_select_institution_pill"
 msgstr "Institution"
 
-#: app/templates/collection_history.html.jinja:35
-#: app/templates/publication_history.html.jinja:41
+#: app/templates/collection_history.html.jinja:32
+#: app/templates/publication_history.html.jinja:38
 #: app/templates/retrieve.html.jinja:40
+#, fuzzy
 msgid "entity_type_select_project_pill"
-msgstr "Project"
+msgstr "Projet"
 
-#: app/templates/collection_history.html.jinja:62
-#: app/templates/publication_history.html.jinja:68
-#, fuzzy
-msgid "history_page_entity_name_input_label"
-msgstr "Entity name (optional)"
+#: app/templates/collection_history.html.jinja:55
+#: app/templates/publication_history.html.jinja:61
+msgid ""
+"\n"
+"            retrieve_page_entity_name_input_label"
+msgstr "Name of the entity (author, structure, project...)"
 
-#: app/templates/collection_history.html.jinja:71
-#: app/templates/publication_history.html.jinja:77
-#, fuzzy
-msgid "history_page_entity_name_input_placeholder"
-msgstr "e.g. \"Dominique Dupont\" or \"UMR 1234"
+#: app/templates/collection_history.html.jinja:58
+#: app/templates/publication_history.html.jinja:64
+#: app/templates/retrieve.html.jinja:93
+msgid "retrieve_page_entity_name_input_placeholder"
+msgstr "e.g. \"Dominique Dupont\" or \"UMR 1234\""
 
-#: app/templates/collection_history.html.jinja:72
-#: app/templates/publication_history.html.jinja:78
-#, fuzzy
-msgid "history_page_entity_name_input_aria_label"
+#: app/templates/collection_history.html.jinja:59
+#: app/templates/publication_history.html.jinja:65
+#: app/templates/retrieve.html.jinja:94
+msgid "retrieve_page_entity_name_input_aria_label"
 msgstr "Choose the maximum publication date of the references to be collected"
 
-#: app/templates/collection_history.html.jinja:78
-#: app/templates/publication_history.html.jinja:85
+#: app/templates/collection_history.html.jinja:66
+#: app/templates/publication_history.html.jinja:73
 #: app/templates/retrieve.html.jinja:100
+#, fuzzy
 msgid "harvesting_type_select_label"
-msgstr "Type of event"
+msgstr "Type d'événements"
 
-#: app/templates/collection_history.html.jinja:81
-#: app/templates/publication_history.html.jinja:88
+#: app/templates/collection_history.html.jinja:68
+#: app/templates/publication_history.html.jinja:75
 #, fuzzy
 msgid "history_page_harvesting_type_help_text"
-msgstr "Choose the type of event you want to follow"
+msgstr "Choisissez le type d'évènements que vous voulez suivre"
 
-#: app/templates/collection_history.html.jinja:86
-#: app/templates/publication_history.html.jinja:93
+#: app/templates/collection_history.html.jinja:70
+#: app/templates/publication_history.html.jinja:77
 #, fuzzy
 msgid "history_page_harvesting_type_select_aria_label"
-msgstr "Type of event"
+msgstr "Type d'événements"
 
-#: app/templates/collection_history.html.jinja:88
-#: app/templates/publication_history.html.jinja:95
+#: app/templates/collection_history.html.jinja:72
+#: app/templates/publication_history.html.jinja:79
 #: app/templates/retrieve.html.jinja:110
+#, fuzzy
 msgid "harvesting_type_new_references_option_label"
-msgstr "References added"
+msgstr "Références ajoutées"
+
+#: app/templates/collection_history.html.jinja:75
+#: app/templates/publication_history.html.jinja:82
+msgid ""
+"\n"
+"              harvesting_type_updated_references_option_label"
+msgstr "Updated"
+
+#: app/templates/collection_history.html.jinja:79
+#: app/templates/publication_history.html.jinja:86
+msgid ""
+"\n"
+"              harvesting_type_deleted_references_option_label"
+msgstr "Deleted"
+
+#: app/templates/collection_history.html.jinja:83
+#: app/templates/publication_history.html.jinja:90
+msgid ""
+"\n"
+"              harvesting_type_unchanged_references_option_label"
+msgstr "Unchanged"
+
+#: app/templates/collection_history.html.jinja:89
+#: app/templates/publication_history.html.jinja:96
+#: app/templates/retrieve.html.jinja:124
+#, fuzzy
+msgid "harvester_select_label"
+msgstr "Sources de données"
 
 #: app/templates/collection_history.html.jinja:91
 #: app/templates/publication_history.html.jinja:98
 #, fuzzy
-msgid ""
-"\n"
-"                  harvesting_type_updated_references_option_label"
-msgstr "Modified references"
+msgid "history_page_harvester_select_help_text"
+msgstr ""
+"Choisissez les sources de données depuis lesquelles vous voulez collecter"
+" les références"
+
+#: app/templates/collection_history.html.jinja:93
+#: app/templates/publication_history.html.jinja:100
+#: app/templates/retrieve.html.jinja:132
+msgid "Data sources"
+msgstr "Data sources"
 
 #: app/templates/collection_history.html.jinja:95
 #: app/templates/publication_history.html.jinja:102
-#, fuzzy
-msgid ""
-"\n"
-"                  harvesting_type_deleted_references_option_label"
-msgstr "Deleted references"
-
-#: app/templates/collection_history.html.jinja:99
-#: app/templates/publication_history.html.jinja:106
-#, fuzzy
-msgid ""
-"\n"
-"                  harvesting_type_unchanged_references_option_label"
-msgstr "References unchanged"
-
-#: app/templates/collection_history.html.jinja:105
-#: app/templates/publication_history.html.jinja:112
-#: app/templates/retrieve.html.jinja:124
-msgid "harvester_select_label"
-msgstr "Data sources"
-
-#: app/templates/collection_history.html.jinja:108
-#: app/templates/publication_history.html.jinja:115
-#, fuzzy
-msgid "history_page_harvester_select_help_text"
-msgstr "Choose the data sources from which you want to collect references"
-
-#: app/templates/collection_history.html.jinja:113
-#: app/templates/publication_history.html.jinja:120
-#: app/templates/retrieve.html.jinja:132
-msgid "Data sources"
-msgstr ""
-
-#: app/templates/collection_history.html.jinja:115
-#: app/templates/publication_history.html.jinja:122
 #: app/templates/retrieve.html.jinja:134
+#, fuzzy
 msgid "harvester_hal_option_label"
 msgstr "Hal"
 
-#: app/templates/collection_history.html.jinja:118
-#: app/templates/publication_history.html.jinja:125
+#: app/templates/collection_history.html.jinja:98
+#: app/templates/publication_history.html.jinja:105
 #: app/templates/retrieve.html.jinja:137
+#, fuzzy
 msgid "harvester_idref_option_label"
 msgstr "IdRef"
 
-#: app/templates/collection_history.html.jinja:121
+#: app/templates/collection_history.html.jinja:101
 #: app/templates/retrieve.html.jinja:140
+#, fuzzy
 msgid "harvester_openalex_option_label"
 msgstr "OpenAlex"
 
-#: app/templates/collection_history.html.jinja:124
-#: app/templates/publication_history.html.jinja:131
+#: app/templates/collection_history.html.jinja:104
+#: app/templates/publication_history.html.jinja:111
 #: app/templates/retrieve.html.jinja:143
+#, fuzzy
 msgid "harvester_scanr_option_label"
 msgstr "ScanR"
 
-#: app/templates/collection_history.html.jinja:130
-#: app/templates/publication_history.html.jinja:137
+#: app/templates/collection_history.html.jinja:110
+#: app/templates/publication_history.html.jinja:117
+#, fuzzy
 msgid "harvesting_range_select_label"
-msgstr "Collection interval"
+msgstr "Intervalle de collecte"
 
-#: app/templates/collection_history.html.jinja:133
-#: app/templates/publication_history.html.jinja:140
+#: app/templates/collection_history.html.jinja:112
+#: app/templates/publication_history.html.jinja:119
 #, fuzzy
 msgid "history_page_harvesting_range_select_help_text"
 msgstr ""
-"Indicate the limits of the collection interval: these are the minimum and"
-" maximum publication dates of the references to be collected."
+"Indiquez les bornes de l'intervalle de collecte : il s'agit des dates de "
+"publication minimales et maximales des références à collecter"
 
-#: app/templates/collection_history.html.jinja:140
-#: app/templates/publication_history.html.jinja:147
+#: app/templates/collection_history.html.jinja:118
+#: app/templates/publication_history.html.jinja:125
 #, fuzzy
 msgid "harvesting_range_start_input_label"
-msgstr "Since :"
+msgstr "Depuis :"
 
-#: app/templates/collection_history.html.jinja:143
-#: app/templates/publication_history.html.jinja:150
+#: app/templates/collection_history.html.jinja:121
+#: app/templates/publication_history.html.jinja:128
+#, fuzzy
 msgid "harvesting_range_start_input_aria_label"
-msgstr "Select the minimum publication date of the references to be collected"
+msgstr "Choisissez la date de publication minimale des références à collecter"
 
-#: app/templates/collection_history.html.jinja:145
-#: app/templates/publication_history.html.jinja:152
+#: app/templates/collection_history.html.jinja:122
+#: app/templates/publication_history.html.jinja:129
+#, fuzzy
 msgid "harvesting_range_start_input_placeholder"
-msgstr "Minimum publication date"
+msgstr "Date de publication minimale"
 
-#: app/templates/collection_history.html.jinja:149
-#: app/templates/publication_history.html.jinja:156
+#: app/templates/collection_history.html.jinja:126
+#: app/templates/publication_history.html.jinja:133
+#, fuzzy
 msgid "harvesting_range_end_input_label"
-msgstr "Up to :"
+msgstr "Jusqu'à :"
 
-#: app/templates/collection_history.html.jinja:151
-#: app/templates/publication_history.html.jinja:158
+#: app/templates/collection_history.html.jinja:128
+#: app/templates/publication_history.html.jinja:135
+#, fuzzy
 msgid "harvesting_range_end_input_arial_label"
-msgstr "Choose the maximum publication date of the references to be collected"
+msgstr "Choisissez la date de publication maximale des références à collecter"
 
-#: app/templates/collection_history.html.jinja:153
-#: app/templates/publication_history.html.jinja:160
+#: app/templates/collection_history.html.jinja:129
+#: app/templates/publication_history.html.jinja:136
+#, fuzzy
 msgid "harvesting_range_end_input_placeholder"
-msgstr "Maximum publication date"
+msgstr "Date de publication maximale"
 
-#: app/templates/collection_history.html.jinja:161
-#: app/templates/publication_history.html.jinja:168
+#: app/templates/collection_history.html.jinja:136
+#: app/templates/publication_history.html.jinja:143
+#, fuzzy
 msgid "history_page_launch_history_search_button"
-msgstr "Search"
+msgstr "Rechercher"
 
-#: app/templates/collection_history.html.jinja:171
+#: app/templates/collection_history.html.jinja:146
 msgid "hide_empty_collection_results"
-msgstr ""
+msgstr "Masquer les collectes sans résultat"
 
-#: app/templates/collection_history.html.jinja:181
-#: app/templates/publication_history.html.jinja:181
+#: app/templates/collection_history.html.jinja:156
+#: app/templates/publication_history.html.jinja:156
 #, fuzzy
 msgid "history_page_search_result_panel_title"
-msgstr "Collected references"
+msgstr "Références collectées"
 
 #: app/templates/history.html.jinja:3 app/templates/history.html.jinja:4
 msgid "history_page_title"
-msgstr "History"
+msgstr "Historique"
 
 #: app/templates/history.html.jinja:9
 msgid "history_page_collection_history_link"
-msgstr ""
+msgstr "Historique des collectes"
 
 #: app/templates/history.html.jinja:12
 msgid "history_page_publication_history_link"
-msgstr ""
+msgstr "Historique des publications collectées"
 
 #: app/templates/overview.html.jinja:2 app/templates/overview.html.jinja:3
 msgid "overview_page_overview_page_title"
@@ -261,9 +281,9 @@ msgstr ""
 #: app/templates/publication_history.html.jinja:8
 #: app/templates/publication_history.html.jinja:10
 msgid "history_publication_searchbar_label"
-msgstr "Search"
+msgstr "Search for a publication by title, author..."
 
-#: app/templates/publication_history.html.jinja:128
+#: app/templates/publication_history.html.jinja:108
 #, fuzzy
 msgid "hharvester_openalex_option_label"
 msgstr "OpenAlex"
@@ -275,7 +295,7 @@ msgstr "Collecting data"
 #: app/templates/retrieve.html.jinja:4
 #, fuzzy
 msgid "retrieve_page_data_retrieval_page_title\n"
-msgstr "Collecting data"
+msgstr "Collecte de données"
 
 #: app/templates/retrieve.html.jinja:15
 msgid "retrieve_page_entity_type_select_help_text"
@@ -308,15 +328,7 @@ msgstr "Do not save ID alignment changes submitted from this interface"
 msgid ""
 "\n"
 "              retrieve_page_entity_name_input_label"
-msgstr "Entity name (optional)"
-
-#: app/templates/retrieve.html.jinja:93
-msgid "retrieve_page_entity_name_input_placeholder"
-msgstr "e.g. \"Dominique Dupont\" or \"UMR 1234"
-
-#: app/templates/retrieve.html.jinja:94
-msgid "retrieve_page_entity_name_input_aria_label"
-msgstr "Choose the maximum publication date of the references to be collected"
+msgstr "Nom de l'entité (optionnel)"
 
 #: app/templates/retrieve.html.jinja:103
 msgid "retrieve_page_harvesting_type_help_text"
@@ -327,16 +339,19 @@ msgid "retrieve_page_harvesting_type_select_aria_label"
 msgstr "Type of event"
 
 #: app/templates/retrieve.html.jinja:113
+#, fuzzy
 msgid "harvesting_type_updated_references_option_label"
-msgstr "Modified references"
+msgstr "Références modifiées"
 
 #: app/templates/retrieve.html.jinja:116
+#, fuzzy
 msgid "harvesting_type_deleted_references_option_label"
-msgstr "Deleted references"
+msgstr "Références supprimées"
 
 #: app/templates/retrieve.html.jinja:119
+#, fuzzy
 msgid "harvesting_type_unchanged_references_option_label"
-msgstr "References unchanged"
+msgstr "Références inchangées"
 
 #: app/templates/retrieve.html.jinja:127
 msgid "retrieve_page_harvester_select_help_text"
@@ -367,14 +382,14 @@ msgstr "Book/monograph"
 msgid ""
 "\n"
 "                  retrieve_page_reference_type_book_section_option_label"
-msgstr "Book/monograph section"
+msgstr "Section de livre/monographie"
 
 #: app/templates/retrieve.html.jinja:169
 #, fuzzy
 msgid ""
 "\n"
 "                  retrieve_page_reference_type_book_chapter_option_label"
-msgstr "Book chapter/monograph"
+msgstr "Chapitre de livre/monographie"
 
 #: app/templates/retrieve.html.jinja:179
 msgid "retrieve_page_launch_retrieval_button_label"
@@ -385,18 +400,42 @@ msgstr "Start collection"
 msgid ""
 "\n"
 "          retrieve_page_current_entity_card_title"
-msgstr "Entity in the process of collection"
+msgstr "Entité en cours de collecte"
 
 #: app/templates/retrieve.html.jinja:199
 #, fuzzy
 msgid ""
 "\n"
 "          retrieve_page_collection_status_card_title"
-msgstr "Collection progress"
+msgstr "Avancement de la collecte"
 
 #: app/templates/retrieve.html.jinja:212
 msgid "retrieve_page_search_result_panel_title"
 msgstr "Collected references"
+
+#~ msgid "application_name"
+#~ msgstr "SoVisu+ Harvester"
+
+#~ msgid "retrieve_page_harvesting_history_page_title"
+#~ msgstr "Collection history"
+
+#~ msgid "retrieve_page_entity_parameters_section_title"
+#~ msgstr "Entity parameters"
+
+#~ msgid "retrieve_page_entity_type_select_label"
+#~ msgstr "Entity type"
+
+#~ msgid "retrieve_page_entity_type_select_researcher_pill"
+#~ msgstr "Researcher"
+
+#~ msgid "retrieve_page_entity_type_select_laboratory_pill"
+#~ msgstr "Laboratory"
+
+#~ msgid "retrieve_page_entity_type_select_institution_pill"
+#~ msgstr "Institution"
+
+#~ msgid "retrieve_page_entity_type_select_project_pill"
+#~ msgstr "Project"
 
 #~ msgid "retrieve_page_self_mode_switch_label"
 #~ msgstr "Safe mode"
@@ -411,17 +450,44 @@ msgstr "Collected references"
 #~ msgid "retrieve_page_self_mode_switch_aria_label"
 #~ msgstr "Activate/deactivate safe mode"
 
-#~ msgid "application_name"
-#~ msgstr "SoVisu+ Harvester"
+#~ msgid "retrieve_page_harvesting_type_select_label"
+#~ msgstr "Type of event"
 
-#~ msgid "retrieve_page_harvesting_history_page_title"
-#~ msgstr "Collection history"
+#~ msgid "retrieve_page_harvesting_type_new_references_option_label"
+#~ msgstr "References added"
 
-#~ msgid "retrieve_page_entity_parameters_section_title"
-#~ msgstr "Entity parameters"
+#~ msgid "retrieve_page_harvesting_type_updated_references_option_label"
+#~ msgstr "Modified references"
 
-#~ msgid "history_page_launch_retrieval_history_button_label"
-#~ msgstr ""
+#~ msgid "retrieve_page_harvesting_type_deleted_references_option_label"
+#~ msgstr "Deleted references"
+
+#~ msgid "retrieve_page_harvesting_type_unchanged_references_option_label"
+#~ msgstr "References unchanged"
+
+#~ msgid "retrieve_page_harvester_select_label"
+#~ msgstr "Data sources"
+
+#~ msgid "retrieve_page_harvester_hal_option_label"
+#~ msgstr "Hal"
+
+#~ msgid "retrieve_page_harvester_idref_option_label"
+#~ msgstr "IdRef"
+
+#~ msgid "retrieve_page_harvester_openalex_option_label"
+#~ msgstr "OpenAlex"
+
+#~ msgid "retrieve_page_harvester_scanr_option_label"
+#~ msgstr "ScanR"
+
+#~ msgid "retrieve_page_reference_type_book_section_option_label"
+#~ msgstr "Book/monograph section"
+
+#~ msgid "retrieve_page_reference_type_book_chapter_option_label"
+#~ msgstr "Book chapter/monograph"
+
+#~ msgid "retrieve_page_harvesting_range_select_label"
+#~ msgstr "Collection interval"
 
 #~ msgid "retrieve_page_harvesting_range_select_help_text"
 #~ msgstr ""
@@ -432,4 +498,52 @@ msgstr "Collected references"
 
 #~ msgid "retrieve_page_harvesting_range_start_input_label"
 #~ msgstr "Since :"
+
+#~ msgid "retrieve_page_harvesting_range_start_input_aria_label"
+#~ msgstr "Select the minimum publication date of the references to be collected"
+
+#~ msgid "retrieve_page_harvesting_range_start_input_placeholder"
+#~ msgstr "Minimum publication date"
+
+#~ msgid "retrieve_page_harvesting_range_end_input_label"
+#~ msgstr "Up to :"
+
+#~ msgid "retrieve_page_harvesting_range_end_input_arial_label"
+#~ msgstr "Choose the maximum publication date of the references to be collected"
+
+#~ msgid "retrieve_page_harvesting_range_end_input_placeholder"
+#~ msgstr "Maximum publication date"
+
+#~ msgid "retrieve_page_current_entity_card_title"
+#~ msgstr "Entity in the process of collection"
+
+#~ msgid "retrieve_page_collection_status_card_title"
+#~ msgstr "Collection progress"
+
+#~ msgid "retrieve_page_entity_name_input_label"
+#~ msgstr "Entity name (optional)"
+
+#~ msgid "history_page_entity_name_input_label"
+#~ msgstr "Nom de l'entité (optionnel)"
+
+#~ msgid "history_page_entity_name_input_placeholder"
+#~ msgstr "ex.: « Dominique Dupont » ou « UMR 1234 »"
+
+#~ msgid "history_page_entity_name_input_aria_label"
+#~ msgstr "Choisissez la date de publication maximale des références à collecter"
+
+#~ msgid ""
+#~ "\n"
+#~ "                  harvesting_type_updated_references_option_label"
+#~ msgstr "Références modifiées"
+
+#~ msgid ""
+#~ "\n"
+#~ "                  harvesting_type_deleted_references_option_label"
+#~ msgstr "Références supprimées"
+
+#~ msgid ""
+#~ "\n"
+#~ "                  harvesting_type_unchanged_references_option_label"
+#~ msgstr "Références inchangées"
 

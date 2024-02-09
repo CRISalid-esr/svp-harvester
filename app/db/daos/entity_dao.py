@@ -1,8 +1,9 @@
-from sqlalchemy import select
+from sqlalchemy import and_, select
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.entity import Entity
 from app.db.models.identifier import Identifier
+from app.db.models.person import Person
 
 
 class EntityDAO(AbstractDAO):
@@ -102,3 +103,21 @@ class EntityDAO(AbstractDAO):
         :return: None
         """
         await self.db_session.delete(entity)
+
+    def entity_filter_subquery(self, entity: Person):
+        """
+        Get a subquery to filter entities by their identifiers
+        """
+        entity_filter = and_(True)
+        if entity.identifiers:
+            entity_filter = and_(
+                Identifier.type.in_([i.type for i in entity.identifiers]),
+                Identifier.value.in_([i.value for i in entity.identifiers]),
+            )
+
+        return (
+            select(Entity.id.label("id"), Entity.name.label("name"))
+            .join(Identifier, onclause=Entity.id == Identifier.entity_id)
+            .group_by(Entity.id)
+            .filter(entity_filter)
+        ).subquery("entity_id")
