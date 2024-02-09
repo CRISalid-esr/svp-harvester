@@ -44,6 +44,7 @@ class HalApiQueryBuilder:
         "citationRef_s",
         "authIdHasStructure_fs",
         "labStructId_i",
+        "*Id_s",
     ]
 
     DEFAULT_SORT_PARAMETER = "halId_s"
