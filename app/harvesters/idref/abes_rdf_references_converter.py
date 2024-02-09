@@ -5,6 +5,7 @@ import rdflib
 from rdflib import Graph, Literal, DCTERMS
 
 from app.db.models.abstract import Abstract
+from app.db.models.publication_identifier import PublicationIdentifier
 from app.db.models.reference import Reference
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.rdf_harvester_raw_result import (
@@ -32,6 +33,11 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             for abstract in self._abstracts(pub_graph, uri)
         ]
 
+        [  # pylint: disable=expression-not-assigned
+            new_ref.identifiers.append(document_idenfier)
+            for document_idenfier in self._add_publication_identifiers(pub_graph, uri)
+        ]
+
         new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
         return new_ref
 
@@ -45,6 +51,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     @abstractmethod
     def _titles(self, pub_graph, uri):
         raise NotImplementedError()
+
+    def _add_publication_identifiers(self, pub_graph, uri):
+        yield PublicationIdentifier(value=uri, type="uri")
 
     def _abstracts(self, pub_graph, uri):
         abstract: Literal

@@ -270,8 +270,10 @@ class IdrefHarvester(AbstractHarvester):
         # concatenate encoded params to query suffix
         query_uri = f"{self.SCIENCE_PLUS_QUERY_SUFFIX}?{urllib.parse.urlencode(params)}"
         pub = await client.fetch(query_uri, output_format="xml")
+        doi = doc.get("doi", None)
         return RdfResult(
             payload=pub,
             source_identifier=URIRef(uri),
             formatter_name=self.Formatters.SCIENCE_PLUS_RDF.value,
+            doi=doi,
         )
