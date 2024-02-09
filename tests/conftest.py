@@ -136,7 +136,7 @@ def fixture_fake_scanr_elastic_client_perform_search(
         elif selected_index == ScanRElasticClient.Indexes.PERSONS:
             yield scanr_api_docs_from_person
         else:
-            raise DereferencingError("Scanr Elastic client not allowed during tests")
+            raise DereferencingError("Invalid index requested")
 
     return fake_scanr_elastic_client
 
