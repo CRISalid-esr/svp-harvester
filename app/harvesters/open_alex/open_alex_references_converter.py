@@ -50,7 +50,6 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         return new_ref
 
     async def _add_reference_identifiers(self, json_payload: dict) -> str:
-        # In OpenAlex, one of the ids is the OpenAlex id same as the source_identifier. We duplicate?
         try:
             for id_key in json_payload["ids"]:
                 if id_key not in self.REFERENCE_IDENTIFIERS_IGNORE:

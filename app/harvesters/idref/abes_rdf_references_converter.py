@@ -52,6 +52,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     def _titles(self, pub_graph, uri):
         raise NotImplementedError()
 
+    # pylint: disable=unused-argument
     def _add_reference_identifiers(self, pub_graph, uri):
         yield ReferenceIdentifier(value=uri, type="uri")
 
