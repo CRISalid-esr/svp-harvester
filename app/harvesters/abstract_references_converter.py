@@ -224,6 +224,7 @@ class AbstractReferencesConverter(ABC):
                             concept_id=concept_informations.uri,
                             concept_source=concept_informations.source,
                         )
+                        concept_informations.uri = concept.uri
                     # If the dereferencing fails, create a concept with the uri and the label
                     except DereferencingError:
                         concept = Concept(uri=concept_informations.uri)

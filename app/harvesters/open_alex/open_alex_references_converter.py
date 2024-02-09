@@ -72,22 +72,20 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             concept_id = concept.get("wikidata").replace(
                 "https://www.wikidata.org/wiki/", ""
             )
-            uri = f"http://www.wikidata.org/entity/{concept_id}"
             label = concept.get("display_name")
-            concept_key = uri
 
-            if concept_key in concept_cache:
-                yield concept_cache[concept_key]
+            if concept_id in concept_cache:
+                yield concept_cache[concept_id]
                 continue
             concept_db = await self._get_or_create_concept_by_uri(
                 ConceptInformations(
-                    uri=uri,
+                    uri=concept_id,
                     label=label,
                     language=language,
                     source=ConceptInformations.ConceptSources.WIKIDATA,
                 )
             )
-            concept_cache[concept_key] = concept_db
+            concept_cache[concept_id] = concept_db
             yield concept_db
 
     def _title(self, json_payload, language: str):

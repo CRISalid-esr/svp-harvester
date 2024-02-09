@@ -77,16 +77,15 @@ class HalReferencesConverter(AbstractReferencesConverter):
         fields = raw_data.get("jel_s", [])
         # If we have jel_s fields, we use them as subjects
         for code in fields:
-            uri = f"http://zbw.eu/beta/external_identifiers/jel#{code.split('.')[-1]}"
             try:
                 yield await self._get_or_create_concept_by_uri(
                     ConceptInformations(
-                        uri=uri,
+                        uri=code,
                         source=ConceptInformations.ConceptSources.JEL,
                     )
                 )
             except AssertionError:
-                logger.error(f"Could not create concept with uri {uri}")
+                logger.error(f"Could not create concept with uri {code}")
                 continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
