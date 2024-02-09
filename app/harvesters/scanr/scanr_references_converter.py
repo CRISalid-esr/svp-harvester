@@ -1,4 +1,6 @@
+from loguru import logger
 from app.db.models.abstract import Abstract
+from app.db.models.publication_identifier import PublicationIdentifier
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -16,6 +18,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
     Converts raw data from ScanR to a normalised Reference object
     """
 
+    IDENTIFIERS_TO_IGNORE = ["scanr"]
+
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from ScanR to a normalised Reference object
@@ -25,6 +29,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         new_ref = Reference()
 
         json_payload = raw_data.payload
+
+        logger.debug(
+            f"Converting ScanR reference: \n{json_payload['_source'].get('externalIds')}"
+        )
 
         title = json_payload["_source"].get("title")
         if title:
@@ -44,10 +52,21 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         await self._add_contributions(json_payload, new_ref)
 
+        for identifier in self._add_identifiers(json_payload):
+            new_ref.identifiers.append(identifier)
+
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
         new_ref.source_identifier = json_payload["_source"].get("id")
         return new_ref
+
+    def _add_identifiers(self, json_payload: dict) -> PublicationIdentifier:
+        external_ids = json_payload["_source"].get("externalIds", [])
+        for identifier in external_ids:
+            if identifier["type"] not in self.IDENTIFIERS_TO_IGNORE:
+                yield PublicationIdentifier(
+                    value=identifier["id"], type=identifier["type"]
+                )
 
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
         raw_contributions = json_payload["_source"].get("authors")
