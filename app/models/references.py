@@ -6,6 +6,7 @@ from app.models.abstracts import Abstract
 from app.models.concepts import Concept
 from app.models.contribution import Contribution
 from app.models.document_type import DocumentType
+from app.models.reference_identifier import ReferenceIdentifier
 from app.models.subtitles import Subtitle
 from app.models.titles import Title
 
@@ -19,7 +20,7 @@ class Reference(BaseModel):
 
     source_identifier: str
     harvester: str
-
+    identifiers: List[ReferenceIdentifier] = []
     titles: List[Title] = []
     subtitles: List[Subtitle] = []
     abstracts: List[Abstract] = []

@@ -33,3 +33,4 @@ async def test_convert_for_rdf_result(
         abstract.value.startswith(expected_french_abstract_beginning)
         for abstract in result.abstracts
     )
+    assert result.identifiers[0].value == sudoc_rdf_result_for_doc.source_identifier
