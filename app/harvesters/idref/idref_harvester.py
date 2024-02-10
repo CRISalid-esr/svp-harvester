@@ -59,7 +59,7 @@ class IdrefHarvester(AbstractHarvester):
         PERSEE_RDF = "PERSEE_RDF"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
-        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-branches, too-many-statements
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
             idref: str = (await self._get_entity()).get_identifier("idref")
@@ -94,6 +94,7 @@ class IdrefHarvester(AbstractHarvester):
                             pending_queries, return_when=asyncio.ALL_COMPLETED
                         )
                         for query in done_queries:
+                            pub = None
                             exception = query.exception()
                             if isinstance(
                                 exception,
@@ -106,6 +107,7 @@ class IdrefHarvester(AbstractHarvester):
                                 yield pub
             # process remaining queries
             while pending_queries:
+                pub = None
                 done_queries, pending_queries = await asyncio.wait(
                     pending_queries, return_when=asyncio.FIRST_COMPLETED
                 )
@@ -127,6 +129,7 @@ class IdrefHarvester(AbstractHarvester):
                 coro = self._secondary_query_process(doc)
                 pending_queries.add(asyncio.create_task(coro))
                 while pending_queries:
+                    pub = None
                     done_queries, pending_queries = await asyncio.wait(
                         pending_queries, return_when=asyncio.FIRST_COMPLETED
                     )

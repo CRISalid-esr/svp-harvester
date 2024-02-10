@@ -31,7 +31,6 @@ def fixture_mock_wikidata_concept_solver_solve():
 
 # if we call the concept factory with a concept id beginning with http://www.idref.fr,
 # without specifying a source,  then the idref solver is called
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_concept_factory_idref_concept_id(mock_idref_concept_solver_solve):
     """
