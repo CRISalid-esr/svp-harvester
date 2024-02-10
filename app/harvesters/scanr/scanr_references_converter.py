@@ -60,9 +60,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 identifier=contribution.get("person"),
                 rank=rank,
             )
-            for rank, contribution in zip(
-                range(0, len(raw_contributions)), raw_contributions
-            )
+            for rank, contribution in enumerate(raw_contributions)
         ]
         async for contribution in self._contributions(
             contribution_informations=contribution_informations, source="scanr"
