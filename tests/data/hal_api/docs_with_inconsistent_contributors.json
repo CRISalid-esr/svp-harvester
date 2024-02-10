@@ -1,0 +1,131 @@
+{
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "2514028",
+        "citationRef_s": "[Research Report] CNRS. 2019",
+        "citationFull_s": "Laïla Nehmé, Nathalie Delhopital, Caroline Durand, Florent Egal, Zbigniew T. Fiema, et al.. Report on the 2019 Season of the Madâ’in Sâlih Archaeological Project. [Research Report] CNRS. 2019.",
+        "en_title_s": [
+          "Report on the 2019 Season of the Madâ’in Sâlih Archaeological Project"
+        ],
+        "en_keyword_s": [
+          "Madâin Sâlih",
+          "Hegra"
+        ],
+        "fr_keyword_s": [
+          "Hegra"
+        ],
+        "en_abstract_s": [
+          "This is the report on the 2019 season of the Madâ’in Sâlih (ancient Hegra) Archaeological Project in Saudi Arabia. In contains contributions on the excavation of the Roman Fort, the Nababataean sanctuary, the pottery, as well as a small anthropoloigical study on the human bones from the tombs."
+        ],
+        "authIdForm_i": [
+          35191,
+          617836,
+          55912,
+          1809876,
+          1375659,
+          375381,
+          1809877,
+          1809878,
+          1809879,
+          617838,
+          1809880,
+          513580,
+          1809536,
+          1167413,
+          1809881,
+          160654,
+          1167414
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut",
+          "aut"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Laïla Nehmé_FacetSep_35191-183355_FacetSep_laila-nehme",
+          "Nathalie Delhopital_FacetSep_617836-0_FacetSep_",
+          "Caroline Durand_FacetSep_55912-753365_FacetSep_caroline-durand",
+          "Florent Egal_FacetSep_1809876-0_FacetSep_",
+          "Zbigniew T. Fiema_FacetSep_1375659-0_FacetSep_",
+          "Damien Gazagne_FacetSep_375381-0_FacetSep_",
+          "Ahmad S Al-Huwaytî_FacetSep_1809877-0_FacetSep_",
+          "Maha Al-Juhanî_FacetSep_1809878-0_FacetSep_",
+          "Saad A Al-Muqbil_FacetSep_1809879-0_FacetSep_",
+          "Mâher Al-Mûsa_FacetSep_617838-0_FacetSep_",
+          "Samar M Al Nawfal_FacetSep_1809880-0_FacetSep_",
+          "Laila Nehmé_FacetSep_513580-183355_FacetSep_laila-nehme",
+          "Jérôme Norris_FacetSep_1809536-0_FacetSep_",
+          "Marie Peillet_FacetSep_1167413-0_FacetSep_",
+          "Ibrahîm N Al-Sabhân_FacetSep_1809881-0_FacetSep_",
+          "Jacqueline Studer_FacetSep_160654-0_FacetSep_",
+          "Daifallah Al-Talhi_FacetSep_1167414-0_FacetSep_"
+        ],
+        "authIdHasStructure_fs": [
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_542221_FacetSep_ORIENT ET MÉDITERRANÉE : Textes, Archéologie, Histoire",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_300026_FacetSep_Collège de France",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_413221_FacetSep_Sorbonne Université",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_551603_FacetSep_Équipe Mondes sémitiques",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_542221_FacetSep_ORIENT ET MÉDITERRANÉE : Textes, Archéologie, Histoire",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_300026_FacetSep_Collège de France",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_413221_FacetSep_Sorbonne Université",
+          "35191-183355_FacetSep_Laïla Nehmé_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_1003_FacetSep_Archéologies et Sciences de l'Antiquité",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_11141_FacetSep_Université Paris 8 Vincennes-Saint-Denis",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_116205_FacetSep_Université Paris Nanterre",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_300125_FacetSep_Ministère de la Culture et de la Communication",
+          "617836-0_FacetSep_Nathalie Delhopital_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "1375659-0_FacetSep_Zbigniew T. Fiema_JoinSep_320019_FacetSep_Université d'Helsinki",
+          "375381-0_FacetSep_Damien Gazagne_JoinSep_363687_FacetSep_EVEHA (Etudes et valorisations archeologiques)",
+          "617838-0_FacetSep_Mâher Al-Mûsa_JoinSep_184974_FacetSep_Research Center",
+          "617838-0_FacetSep_Mâher Al-Mûsa_JoinSep_333252_FacetSep_Saudi commission for Tourism and Antiquities",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_551603_FacetSep_Équipe Mondes sémitiques",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_542221_FacetSep_ORIENT ET MÉDITERRANÉE : Textes, Archéologie, Histoire",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_7550_FacetSep_Université Paris 1 Panthéon-Sorbonne",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_110691_FacetSep_École Pratique des Hautes Études",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_564132_FacetSep_Université Paris sciences et lettres",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_300026_FacetSep_Collège de France",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_413221_FacetSep_Sorbonne Université",
+          "513580-183355_FacetSep_Laila Nehmé_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "1167413-0_FacetSep_Marie Peillet_JoinSep_494327_FacetSep_Musées de la ville de Strasbourg",
+          "160654-0_FacetSep_Jacqueline Studer_JoinSep_320957_FacetSep_Museum d'Histoire Naturelle [Genève]",
+          "1167414-0_FacetSep_Daifallah Al-Talhi_JoinSep_536351_FacetSep_University of Hail"
+        ],
+        "labStructId_i": [
+          542221,
+          542221,
+          1003,
+          184974
+        ],
+        "halId_s": "halshs-02514028",
+        "docType_s": "REPORT",
+        "publicationDate_tdate": "2019-01-01T00:00:00Z"
+      }
+    ]
+  }
+}
