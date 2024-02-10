@@ -19,7 +19,9 @@ class ResolverHTTPClient:
         :return: the document as text
         """
         try:
-            async with aiohttp.ClientSession(connector=self.connector) as session:
+            async with aiohttp.ClientSession(
+                connector=self.connector, timeout=aiohttp.ClientTimeout(total=300)
+            ) as session:
                 async with session.get(document_url) as resp:
                     if resp.status == 200:
                         return await resp.text()

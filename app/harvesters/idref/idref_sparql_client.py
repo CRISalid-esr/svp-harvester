@@ -142,4 +142,8 @@ class IdrefSparqlClient:
         raise ExternalEndpointFailure(f"Unknown data source for uri {uri}")
 
     def _get_client(self) -> SPARQLClient:
-        return SPARQLClient(DATA_IDREF_FR_URL, connector=aiohttp.TCPConnector(limit=0))
+        return SPARQLClient(
+            DATA_IDREF_FR_URL,
+            connector=aiohttp.TCPConnector(limit=0),
+            timeout=aiohttp.ClientTimeout(total=300),
+        )
