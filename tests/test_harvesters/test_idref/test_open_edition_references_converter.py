@@ -24,6 +24,10 @@ async def test_open_edition_convert_for_rfd_result(
     expected_french_abstract_beginning = (
         "Si le caractère très ancien et les facteurs religieux des émeutes"
     )
+    expected_reference_identifier = [
+        "https://journals.openedition.org/conflits/756",
+        "10.4000/conflits.756",
+    ]
 
     assert result.source_identifier == str(
         open_edition_rdf_result_for_doc.source_identifier
@@ -33,5 +37,9 @@ async def test_open_edition_convert_for_rfd_result(
     assert any(
         abstract.value.startswith(expected_french_abstract_beginning)
         for abstract in result.abstracts
+    )
+    assert any(
+        identifier.value in expected_reference_identifier
+        for identifier in result.identifiers
     )
     assert result.document_type[0].label == "Article"

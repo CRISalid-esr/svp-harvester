@@ -77,6 +77,7 @@ class IdrefSparqlClient:
                         "type": [],
                         "altLabel": [],
                         "subject": {},
+                        "doi": result.get("doi", {}).get("value", ""),
                     }
                 # replace by a loop
                 for key in ["type", "title", "altLabel", "note"]:
