@@ -33,7 +33,7 @@ class RetrievalService:
         history_safe_mode: Annotated[bool, Body()] = False,
         identifiers_safe_mode: Annotated[bool, Body()] = False,
         harvesters: Annotated[
-            List[str], Body(examples=[["hal", "idref", "orcid"]])
+            List[str], Body(examples=[["hal", "idref", "scanr", "openalex"]])
         ] = None,
         nullify: Annotated[List[str], Body(examples=[["id_hal_s"]])] = None,
         events: Annotated[

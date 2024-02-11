@@ -64,7 +64,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: svph-api-config
-          image: crisalidesr/svp-harvester:v0.1-dev
+          image: crisalidesr/svp-harvester:v0.2-dev
           imagePullPolicy: Always
           name: svph-web
           ports:
