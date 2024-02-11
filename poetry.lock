@@ -2,17 +2,17 @@
 
 [[package]]
 name = "aio-pika"
-version = "9.3.0"
+version = "9.4.0"
 description = "Wrapper around the aiormq for asyncio and humans"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "aio_pika-9.3.0-py3-none-any.whl", hash = "sha256:3aeb60410403bb61c0c0483f6487a471bfcf1f2cc7b738d6f3f466b18641a8f0"},
-    {file = "aio_pika-9.3.0.tar.gz", hash = "sha256:230c1087e089e62a590fae95b77ccda053331d3c745bca067d274d76ffceda27"},
+    {file = "aio_pika-9.4.0-py3-none-any.whl", hash = "sha256:06d3680ea8515aa6c02ac6f94ffe2dde3396f141fde92eef63beb98c7a143cfd"},
+    {file = "aio_pika-9.4.0.tar.gz", hash = "sha256:5199be0f50bd0fb1338962390383bb83a3ce8e760bb603aa071e58b56afeeec1"},
 ]
 
 [package.dependencies]
-aiormq = ">=6.7.7,<6.8.0"
+aiormq = ">=6.8.0,<6.9.0"
 yarl = "*"
 
 [[package]]
@@ -124,17 +124,17 @@ speedups = ["Brotli", "aiodns", "brotlicffi"]
 
 [[package]]
 name = "aiormq"
-version = "6.7.7"
+version = "6.8.0"
 description = "Pure python AMQP asynchronous client library"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = ">=3.8,<4.0"
 files = [
-    {file = "aiormq-6.7.7-py3-none-any.whl", hash = "sha256:f5efbfcd7d703f3c05c08d4e74cfaa66ca7199840e2969d75ad41b0810026b0a"},
-    {file = "aiormq-6.7.7.tar.gz", hash = "sha256:3b93f612f56989b2757a9a7b299dd94dd3227ce28ba43e81d5fbcded6341dfab"},
+    {file = "aiormq-6.8.0-py3-none-any.whl", hash = "sha256:9a16174dcae4078c957a773d2f02d3dfd6c2fcf12c909dc244333a458f2aeab0"},
+    {file = "aiormq-6.8.0.tar.gz", hash = "sha256:198f9c7430feb7bc491016099a06266dc45880b6b1de3925d410fde6541a66fb"},
 ]
 
 [package.dependencies]
-pamqp = "3.2.1"
+pamqp = "3.3.0"
 yarl = "*"
 
 [[package]]
@@ -1397,13 +1397,13 @@ files = [
 
 [[package]]
 name = "pamqp"
-version = "3.2.1"
+version = "3.3.0"
 description = "RabbitMQ Focused AMQP low-level library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pamqp-3.2.1-py2.py3-none-any.whl", hash = "sha256:15acef752356593ca569d13dfedc8ada9f17deeeb8cec4f7b77825e2b6c7de3e"},
-    {file = "pamqp-3.2.1.tar.gz", hash = "sha256:22550ceb1ca50aafda65873e77e8c1c1b139fb5975e1a09860fae940cf8e970a"},
+    {file = "pamqp-3.3.0-py2.py3-none-any.whl", hash = "sha256:c901a684794157ae39b52cbf700db8c9aae7a470f13528b9d7b4e5f7202f8eb0"},
+    {file = "pamqp-3.3.0.tar.gz", hash = "sha256:40b8795bd4efcf2b0f8821c1de83d12ca16d5760f4507836267fd7a02b06763b"},
 ]
 
 [package.extras]

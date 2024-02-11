@@ -225,7 +225,7 @@ class AbstractHarvester(ABC):
             {
                 "type": "Harvesting",
                 "id": self.harvesting_id,
-                "state": (await self.get_harvesting()).state,
+                "state": (await self.get_harvesting(refresh=True)).state,
             }
         )
 
@@ -291,13 +291,13 @@ class AbstractHarvester(ABC):
         entity = await self._get_entity()
         return entity.__class__.__name__
 
-    async def get_harvesting(self) -> Harvesting:
+    async def get_harvesting(self, refresh=False) -> Harvesting:
         """
         Retrieve the harvesting db entry representing the harvesting operation
         from the database if not already done
         :return: The harvesting db entry representing the harvesting operation
         """
-        if self.harvesting is None:
+        if self.harvesting is None or refresh:
             async with async_session() as session:
                 self.harvesting = await HarvestingDAO(session).get_harvesting_by_id(
                     self.harvesting_id
