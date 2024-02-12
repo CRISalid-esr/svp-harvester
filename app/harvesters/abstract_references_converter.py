@@ -236,6 +236,7 @@ class AbstractReferencesConverter(ABC):
                             concept_id=concept_informations.uri,
                             concept_source=concept_informations.source,
                         )
+                        concept_informations.uri = concept.uri
                     # If the dereferencing fails, create a concept with the uri and the label
                     except DereferencingError:
                         concept = Concept(uri=concept_informations.uri)
@@ -260,7 +261,7 @@ class AbstractReferencesConverter(ABC):
                         )
                         await session.rollback()
                         concept = await self._get_or_create_concept_by_uri(
-                            concept_informations=concept_informations
+                            concept_informations=concept_informations, new_attempt=True
                         )
         return concept
 
