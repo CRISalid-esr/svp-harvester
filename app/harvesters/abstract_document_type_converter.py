@@ -21,6 +21,9 @@ class AbstractDocumentTypeConverter(ABC):
     def convert(self, document_type: str) -> tuple[str, str]:
         """
         Given a document type, return the corresponding loc document type
+        :param document_type: document type
+
+        :return: Uri and label of the document type
         """
         if document_type not in self.types_mapping:
             logger.warning(f"Unknown {self.harvester} document type: {document_type}")
