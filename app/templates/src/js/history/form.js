@@ -41,19 +41,20 @@ class HistoryForm {
         this.dateRangePicker = new DateRangePicker(this.formElement.querySelector("#date-range-picker-container"), {
             buttonClass: 'btn',
             clearButton: 'true',
+            allowOneSidedRange: 'true'
         })
-        this.dateRangePicker.setDates([Date.now(), null]);
+        this.dateRangePicker.setDates([Date.now() - 1000 * 60 * 60 * 24, null])
     }
 
     addSubmitListener() {
-        this.formElement.addEventListener("submit", this.search_Submit.bind(this));
+        this.formElement.addEventListener("submit", this.searchSubmit.bind(this));
     }
 
     renewAddIdentifierControl() {
         if (this.addIdentifierControlElement) {
             this.addIdentifierControlElement.remove();
         }
-        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, { identifiers: this.remainingIdentifiers() }));
+        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, {identifiers: this.remainingIdentifiers()}));
         this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
         this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
         this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
@@ -110,7 +111,7 @@ class HistoryForm {
     }
 
     addIdentifierField(content) {
-        content = { ...content, identifierLabel: this.env.identifiers[content.identifierType].label };
+        content = {...content, identifierLabel: this.env.identifiers[content.identifierType].label};
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
@@ -187,7 +188,7 @@ class HistoryForm {
                 identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""
             };
         }
-        return { identifierType: identifierType, identifierValue: identifierValue };
+        return {identifierType: identifierType, identifierValue: identifierValue};
     }
 
     remainingIdentifiers() {
@@ -220,9 +221,11 @@ class HistoryForm {
         return new RegExp(this.env.identifiers[identifierElementContent.identifierType].format).test(identifierElementContent.identifierValue);
     }
 
-    search_Submit(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    searchSubmit(event) {
+        if (event !== undefined) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         var textSearch
         var hideEmptyCollection
         if (this.subpage === "publication_history") {
@@ -234,16 +237,16 @@ class HistoryForm {
         const entitySubmitEvent = new CustomEvent("entity_submit",
             {
                 detail:
-                {
-                    subpage: this.subpage,
-                    eventTypes: this.eventTypeSelect.getValue(),
-                    harvesters: this.harvestersSelect.getValue(),
-                    identifiers: this.getIdentifierFieldsContent(true),
-                    name: this.formElement.querySelector("#name-field-input").value,
-                    dateRange: this.dateRangePicker.getDates("yyyy-mm-dd"),
-                    textSearch: textSearch,
-                    hideEmptyCollection: hideEmptyCollection
-                }
+                    {
+                        subpage: this.subpage,
+                        eventTypes: this.eventTypeSelect.getValue(),
+                        harvesters: this.harvestersSelect.getValue(),
+                        identifiers: this.getIdentifierFieldsContent(true),
+                        name: this.formElement.querySelector("#name-field-input").value,
+                        dateRange: this.dateRangePicker.getDates("yyyy-mm-dd"),
+                        textSearch: textSearch,
+                        hideEmptyCollection: hideEmptyCollection
+                    }
             }
         );
         this.rootElement.dispatchEvent(entitySubmitEvent)
