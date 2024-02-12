@@ -5,6 +5,7 @@ import add_identifier_control from "../retrieve/templates/add_identifier_control
 import identifier_field from "../retrieve/templates/identifier_field";
 import stringToHTML from "../utils";
 import th from "vanillajs-datepicker/locales/th";
+import SessionStorage from "../common/session_storage";
 
 const IDENTIFIER_NULL_VALUE = "null";
 
@@ -22,11 +23,20 @@ class HistoryForm {
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.addNameInputListener();
+        this.sessionStorage = new SessionStorage(this);
+        this.fillWithSessionStorage();
         this.updateSubmitButtonState();
     }
 
+    fillWithSessionStorage() {
+        this.sessionStorage.fillForm();
+    }
+
     addNameInputListener() {
-        this.formElement.querySelector("#name-field-input").addEventListener("input", this.updateSubmitButtonState.bind(this));
+        this.formElement.querySelector("#name-field-input").addEventListener("input", (event) => {
+            this.sessionStorage.setItem("name", event.target.value);
+            this.updateSubmitButtonState.bind(this)
+        });
     }
 
     handleEventTypesSelect() {
@@ -54,7 +64,7 @@ class HistoryForm {
         if (this.addIdentifierControlElement) {
             this.addIdentifierControlElement.remove();
         }
-        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, {identifiers: this.remainingIdentifiers()}));
+        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, { identifiers: this.remainingIdentifiers() }));
         this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
         this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
         this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
@@ -104,6 +114,7 @@ class HistoryForm {
 
     handleRemoveIdentifierButtonClick(event) {
         const identifierFieldElement = event.target.closest(".identifier-field-container");
+        this.sessionStorage.deleteItem(identifierFieldElement.querySelector("option").value);
         identifierFieldElement.remove();
         this.updateAddIdentifierControlState();
         this.renewAddIdentifierControl();
@@ -111,7 +122,7 @@ class HistoryForm {
     }
 
     addIdentifierField(content) {
-        content = {...content, identifierLabel: this.env.identifiers[content.identifierType].label};
+        content = { ...content, identifierLabel: this.env.identifiers[content.identifierType].label };
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
@@ -188,7 +199,7 @@ class HistoryForm {
                 identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""
             };
         }
-        return {identifierType: identifierType, identifierValue: identifierValue};
+        return { identifierType: identifierType, identifierValue: identifierValue };
     }
 
     remainingIdentifiers() {
@@ -207,7 +218,9 @@ class HistoryForm {
             if (validOnly && identifierFieldElement.dataset.validData === "false") {
                 continue;
             }
-            identifierFieldsContent.push(this.getIdentifierFieldContent(identifierFieldElement, false));
+            var content = this.getIdentifierFieldContent(identifierFieldElement, false);
+            this.sessionStorage.setItem(content.identifierType, content.identifierValue);
+            identifierFieldsContent.push(content);
         }
         return identifierFieldsContent;
     }
@@ -237,16 +250,16 @@ class HistoryForm {
         const entitySubmitEvent = new CustomEvent("entity_submit",
             {
                 detail:
-                    {
-                        subpage: this.subpage,
-                        eventTypes: this.eventTypeSelect.getValue(),
-                        harvesters: this.harvestersSelect.getValue(),
-                        identifiers: this.getIdentifierFieldsContent(true),
-                        name: this.formElement.querySelector("#name-field-input").value,
-                        dateRange: this.dateRangePicker.getDates("yyyy-mm-dd"),
-                        textSearch: textSearch,
-                        hideEmptyCollection: hideEmptyCollection
-                    }
+                {
+                    subpage: this.subpage,
+                    eventTypes: this.eventTypeSelect.getValue(),
+                    harvesters: this.harvestersSelect.getValue(),
+                    identifiers: this.getIdentifierFieldsContent(true),
+                    name: this.formElement.querySelector("#name-field-input").value,
+                    dateRange: this.dateRangePicker.getDates("yyyy-mm-dd"),
+                    textSearch: textSearch,
+                    hideEmptyCollection: hideEmptyCollection
+                }
             }
         );
         this.rootElement.dispatchEvent(entitySubmitEvent)
