@@ -27,6 +27,14 @@ async def test_convert(open_alex_api_work: dict):
         formatter_name="OPEN_ALEX",
     )
 
+    expected_reference_identifier = [
+        "https://openalex.org/W2023271753",
+        "https://doi.org/10.1103/physrevb.37.785",
+        "https://pubmed.ncbi.nlm.nih.gov/9944570",
+    ]
+
+    expected_reference_identifier_ignored = ["mag"]
+
     test_reference = await converter_under_tests.convert(result)
 
     assert test_reference.titles[0].value == expected_title
@@ -41,3 +49,11 @@ async def test_convert(open_alex_api_work: dict):
     for contribution in test_reference.contributions:
         assert contribution.contributor.name in expected_contributors_name
         assert contribution.contributor.source == expected_source_contributor
+    assert any(
+        identifier.value in expected_reference_identifier
+        for identifier in test_reference.identifiers
+    )
+    assert all(
+        identifier.type not in expected_reference_identifier_ignored
+        for identifier in test_reference.identifiers
+    )

@@ -39,3 +39,4 @@ async def test_parsee_convert_for_rdf_result(persee_rdf_result_for_doc):
     )
     assert len(result.contributions) == 1
     assert expected_auth_name == result.contributions[0].contributor.name.value
+    assert result.identifiers[0].value == expected_source_identifier

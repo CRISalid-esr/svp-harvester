@@ -10,3 +10,5 @@ class RdfHarvesterRawResult(AbstractHarvesterRawResult[URIRef, Graph]):
     """
     Raw result of an Harvester with identifier as an URL and payload as a graph
     """
+
+    doi: str = None

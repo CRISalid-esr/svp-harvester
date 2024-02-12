@@ -1,7 +1,9 @@
 import asyncio
 import json
+from datetime import datetime
 
 import aio_pika
+from aio_pika import IncomingMessage
 from loguru import logger
 from pydantic import ValidationError
 
@@ -41,14 +43,26 @@ class AMQPMessageProcessor:
         :param worker_id: queue worker identifier
         :return: None
         """
+        message: IncomingMessage | None = None
         try:
             while True:
-                payload: str = await self.tasks_queue.get()
-                await self._process_message(payload)
-                self.tasks_queue.task_done()
+                message = await self.tasks_queue.get()
+                start_time = datetime.now()
+                async with message.process(ignore_processed=True):
+                    payload = message.body
+                    await self._process_message(payload)
+                    await message.ack()
+                    self.tasks_queue.task_done()
+                    end_time = datetime.now()
+                    logger.debug(
+                        f"Performance : Message  processed by {worker_id} "
+                        f"in {end_time - start_time} for payload {payload}"
+                    )
         except KeyboardInterrupt:
+            await message.nack(requeue=True)
             logger.warning(f"Amqp connect worker {worker_id} has been cancelled")
         except Exception as exception:
+            await message.nack(requeue=True)
             logger.error(
                 f"Exception during {worker_id} message processing : {exception}"
             )
@@ -88,10 +102,7 @@ class AMQPMessageProcessor:
                 }
             )
             # Run the retrieval
-            run = asyncio.create_task(
-                service.run(result_queue=retrieval_results_queue),
-                name=f"amqp_retrieval_service_{retrieval.id}_launcher",
-            )
+            run_task_name = f"amqp_retrieval_service_{retrieval.id}_launcher"
             # Listen for results
             listen = asyncio.create_task(
                 self._wait_for_retrieval_result(
@@ -101,8 +112,15 @@ class AMQPMessageProcessor:
                 ),
                 name=f"amqp_retrieval_service_{retrieval.id}_listener",
             )
-            # Wait for both tasks to finish
-            await asyncio.gather(run, listen)
+            tasks = [
+                asyncio.create_task(
+                    service.run(result_queue=retrieval_results_queue),
+                    name=run_task_name,
+                ),
+                listen,
+            ]
+            await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            listen.cancel()
 
     async def _wait_for_retrieval_result(
         self, result_queue: asyncio.Queue, retrieval: Retrieval, timeout: int

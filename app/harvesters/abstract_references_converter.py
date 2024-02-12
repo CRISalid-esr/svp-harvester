@@ -43,30 +43,42 @@ class AbstractReferencesConverter(ABC):
         contribution_informations: List[ContributionInformations],
         source: str,
     ) -> AsyncGenerator[Contribution, None]:
-        contributors_cache = {}
+        # if a contributor duplicate was created inside the loop, unicity rules
+        # would apply only later and the whole reference would fail to be
+        # created in database. To avoid this, we use a cache to store contributors
+        # already created and avoid duplicates.
+        # A duplicate is an identifiers duplicate for contributors with an identifier
+        # or a name duplicate for contributors without an identifier.
+        contributors_identifiers_cache = {}
+        contributors_names_cache = {}
         for contribution_information in contribution_informations:
-            contributor_cache_key = (
-                contribution_information.name,
-                contribution_information.identifier,
-            )
-            db_contributor = contributors_cache.get(contributor_cache_key)
+            identifier = contribution_information.identifier
+            name = contribution_information.name
+            assert (
+                identifier is not None or name is not None
+            ), "No identifier or name provided for contributor"
+            if identifier is not None:
+                db_contributor = contributors_identifiers_cache.get(identifier)
+            else:
+                db_contributor = contributors_names_cache.get(name)
             if db_contributor is None:
-                if contribution_information.identifier is not None:
+                if identifier is not None:
                     db_contributor = (
                         await self._get_or_create_contributor_by_identifier(
                             source=source,
-                            source_identifier=contribution_information.identifier,
-                            name=contribution_information.name,
+                            source_identifier=identifier,
+                            name=name,
                         )
                     )
-                    self._update_contributor_name(
-                        db_contributor, contribution_information.name
-                    )
+                    self._update_contributor_name(db_contributor, name)
                 else:
                     db_contributor = await self._get_or_create_contributor_by_name(
-                        source=source, name=contribution_information.name
+                        source=source, name=name
                     )
-                contributors_cache[contributor_cache_key] = db_contributor
+                if identifier is not None:
+                    contributors_identifiers_cache[identifier] = db_contributor
+                else:
+                    contributors_names_cache[name] = db_contributor
 
             yield Contribution(
                 contributor=db_contributor,
