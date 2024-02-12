@@ -2,6 +2,7 @@ from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
@@ -67,9 +68,11 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             await self._get_or_create_concepts_by_uri(concept_informations)
         )
 
+        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
+
         if not self._validate_reference(new_ref):
             return None
-
+          
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
 

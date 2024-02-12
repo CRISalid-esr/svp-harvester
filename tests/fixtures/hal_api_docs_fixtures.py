@@ -34,6 +34,19 @@ def fixture_hal_api_docs_with_contributors_version_1(_base_path) -> dict:
     return _hal_api_json_data_from_file(_base_path, "docs_with_contributors_version_1")
 
 
+@pytest.fixture(name="hal_api_docs_with_inconsistent_contributors")
+def fixture_hal_api_docs_with_inconsistent_contributors(_base_path) -> dict:
+    """
+    Generate a json response with contributors
+    having the same identifier but different names
+    :param _base_path: test data directory base
+    :return: HAL API response for inconsistent contributors in JSON format
+    """
+    return _hal_api_json_data_from_file(
+        _base_path, "docs_with_inconsistent_contributors"
+    )
+
+
 @pytest.fixture(name="hal_api_docs_for_researcher_version_2")
 def fixture_hal_api_docs_for_researcher_version_2(_base_path) -> dict:
     """

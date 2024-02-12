@@ -4,6 +4,7 @@ import rdflib
 from rdflib import DCTERMS, FOAF, RDF, Graph, Literal, Namespace, URIRef
 
 from app.db.models.document_type import DocumentType
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -19,8 +20,10 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     """
     Converts raw data from Persee to a normalised Reference object
     """
+    RDF_BIBO = "http://purl.org/ontology/bibo/"
 
     async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference | None:
+
         new_ref = await super().convert(raw_data)
         if new_ref is None:
             return None
@@ -34,6 +37,13 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         await self._add_contributions(pub_graph, new_ref)
 
         return new_ref
+
+    def _add_reference_identifiers(self, pub_graph, uri):
+        yield ReferenceIdentifier(value=uri, type="uri")
+        for identifier in pub_graph.objects(
+            rdflib.term.URIRef(uri), URIRef(self.RDF_BIBO + "doi")
+        ):
+            yield ReferenceIdentifier(value=identifier, type="doi")
 
     async def _add_contributions(self, pub_graph, new_ref):
         contribution_informations = []
@@ -49,7 +59,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         for role, identifier in results:
             role = role.split("/")[-1]
             graph = await RdfResolver().fetch(identifier)
-            contributor_name = None
+            contributor_name = ""
             for name in graph.objects(identifier, FOAF.name):
                 contributor_name = name
             contribution_informations.append(

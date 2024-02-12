@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: svp-client-mock-cron
+spec:
+  schedule: "0 6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            gke-gcsfuse/volumes: "true"
+            gke-gcsfuse/cpu-limit: 100m
+            gke-gcsfuse/memory-limit: 0.1Gi
+            gke-gcsfuse/ephemeral-storage-limit: 0.1Gi
+        spec:
+          serviceAccountName: svp-ksa-cloud-storage
+          containers:
+            - name: svp-client-mock
+              image: crisalidesr/svp-client-mock:v0.2-dev
+              imagePullPolicy: Always
+              env:
+                - name: RESEARCH_IDS_FILE
+                  value: "/data/researcher_ids.csv"
+                - name: AMQP_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: svp-rabbit-secret
+                      key: amqppassword
+                - name: AMQP_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: svp-rabbit-secret
+                      key: amqpuser
+              envFrom:
+                - configMapRef:
+                    name: svph-api-config
+              command:
+                - /bin/sh
+                - -c
+                - "/usr/local/bin/python3 /app/fetch_pubs.py"
+              volumeMounts:
+                - name: gcs-fuse-csi-ephemeral
+                  mountPath: /data
+                  readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+            - name: gcs-fuse-csi-ephemeral
+              csi:
+                driver: gcsfuse.csi.storage.gke.io
+                readOnly: true
+                volumeAttributes:
+                  bucketName: depl-bucket
+                  mountOptions: "implicit-dirs"

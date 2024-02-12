@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: svp-rabbit
+  name: svp-rabbit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svp-rabbit
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: svp-rabbit
+    spec:
+      containers:
+        - image: rabbitmq:3-management
+          livenessProbe:
+            exec:
+              command:
+                - rabbitmq-diagnostics
+                - -q
+                - ping
+            failureThreshold: 30
+            periodSeconds: 1
+            timeoutSeconds: 3
+          name: svp-rabbit
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: svp-rabbit-secret
+                  key: amqppassword
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svp-rabbit-secret
+                  key: amqpuser
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          resources: { }
+          volumeMounts:
+            - mountPath: /var/lib/rabbitmq
+              name: svp-rabbit-data
+            - mountPath: /var/log/rabbitmq
+              name: svp-rabbit-logs
+      restartPolicy: Always
+      volumes:
+        - name: svp-rabbit-data
+          persistentVolumeClaim:
+            claimName: svp-rabbit-pvc-data
+        - name: svp-rabbit-logs
+          persistentVolumeClaim:
+            claimName: svp-rabbit-pvc-logs

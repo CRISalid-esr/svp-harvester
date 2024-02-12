@@ -2,6 +2,7 @@ import re
 from typing import Generator
 
 from app.db.models.abstract import Abstract
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
@@ -31,6 +32,11 @@ class HalReferencesConverter(AbstractReferencesConverter):
         json_payload = raw_data.payload
         new_ref = Reference()
         [  # pylint: disable=expression-not-assigned
+            new_ref.identifiers.append(identifier)
+            for identifier in self._identifiers(json_payload)
+        ]
+
+        [  # pylint: disable=expression-not-assigned
             new_ref.titles.append(title) for title in self._titles(json_payload)
         ]
         [  # pylint: disable=expression-not-assigned
@@ -57,6 +63,16 @@ class HalReferencesConverter(AbstractReferencesConverter):
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
         return new_ref
+
+    def _identifiers(self, raw_data):
+        fields = self._keys_by_pattern(pattern=r".*Id_s", data=raw_data)
+        for field in fields:
+            # Identifier that are list: europeanProjectCallId_s, wosId_s, piiId_s, pubmedcentralId_s
+            if isinstance(raw_data[field], list):
+                for value in raw_data[field]:
+                    yield ReferenceIdentifier(type=field, value=value)
+            else:
+                yield ReferenceIdentifier(type=field, value=raw_data[field])
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(

@@ -25,6 +25,7 @@ jobs:
       - name: Generate translations files
         run: |
           pybabel extract --mapping babel.cfg --output-file=locales/admin.pot .
+          pybabel update --domain=admin --input-file=locales/admin.pot --output-dir=locales
 
       - name: Commit files
         run: |
@@ -32,14 +33,6 @@ jobs:
           git config --global user.email "action@github.com"
           git add locales/*
           git commit -m "Update translations"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
-      - uses: actions/checkout@v3
 
       - name: Delete branch poeditor-translations
         uses: dawidd6/action-delete-branch@v3
@@ -52,6 +45,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          branch: poeditor-translations
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: poeditor-translations
 
   docker:
@@ -77,4 +82,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: crisalidesr/svp-harvester:v0.1-dev
+          tags: crisalidesr/svp-harvester:v0.2-dev

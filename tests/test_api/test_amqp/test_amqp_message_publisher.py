@@ -1,4 +1,5 @@
 """Test AMQP publishing capabilities."""
+
 from unittest.mock import Mock
 
 import pytest
@@ -68,6 +69,7 @@ async def test_publish_created_reference(
             "reference": {
                 "source_identifier": "123456789",
                 "harvester": "hal",
+                "identifiers": [],
                 "titles": [{"value": "title", "language": "fr"}],
                 "subtitles": [{"value": "subtitle", "language": "fr"}],
                 "abstracts": [],

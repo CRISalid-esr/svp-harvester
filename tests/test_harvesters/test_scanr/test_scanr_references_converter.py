@@ -49,6 +49,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         "uri": "http://purl.org/ontology/bibo/Thesis",
         "label": "Thesis",
     }
+    expected_reference_identifiers = ["2019lysem032", "tel-02966640"]
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -67,6 +68,10 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_abstracts == expected_abstracts
         assert test_reference.document_type[0].uri == expected_document_type["uri"]
         assert test_reference.document_type[0].label == expected_document_type["label"]
+        assert any(
+            identifier.value in expected_reference_identifiers
+            for identifier in test_reference.identifiers
+        )
 
 
 async def test_convert_with_default_dupe(

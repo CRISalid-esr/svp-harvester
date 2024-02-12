@@ -6,6 +6,8 @@ from aio_pika import ExchangeType
 from app.amqp.amqp_message_processor import AMQPMessageProcessor
 from app.settings.app_settings import AppSettings
 
+PREFETCH_COUNT = 50
+
 DEFAULT_RESULT_TIMEOUT = 600
 
 
@@ -73,11 +75,7 @@ class AMQPInterface:
     async def _listen_to_messages(self):
         async with self.pika_queue.iterator() as queue_iter:
             async for message in queue_iter:
-                # pylints warns about code that is pretty identical to official aiopika examples
-                # https://aio-pika.readthedocs.io/en/latest/quick-start.html#simple-consumer
-                async with message.process(ignore_processed=True):
-                    async with message.process():
-                        await self.inner_tasks_queue.put(message.body)
+                await self.inner_tasks_queue.put(message)
 
     async def _declare_exchange(self) -> None:
         """
@@ -91,7 +89,7 @@ class AMQPInterface:
 
     async def _bind_queue(self) -> None:
         # Bind service message queue to publication exchange
-        await self.pika_channel.set_qos(prefetch_count=100)
+        await self.pika_channel.set_qos(prefetch_count=PREFETCH_COUNT)
         self.pika_queue = await self.pika_channel.declare_queue(
             self.settings.amqp_queue_name, durable=True
         )
@@ -104,4 +102,4 @@ class AMQPInterface:
             f"{self.settings.amqp_password}"
             f"@{self.settings.amqp_host}/",
         )
-        self.pika_channel = await self.pika_connexion.channel()
+        self.pika_channel = await self.pika_connexion.channel(publisher_confirms=True)
