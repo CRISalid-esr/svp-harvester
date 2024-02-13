@@ -1,7 +1,7 @@
 from typing import List, Tuple
-from graphviz import Graph
-from rdflib import SKOS
-import rdflib
+
+from rdflib import SKOS, Graph, term
+
 from app.services.concepts.concept_solver import ConceptSolver
 
 
@@ -21,6 +21,6 @@ class ConceptSolverRdf(ConceptSolver):
 
         :return: labels
         """
-        pref_labels = concept_data.objects(rdflib.term.URIRef(uri), SKOS.prefLabel)
-        alt_labels = concept_data.objects(rdflib.term.URIRef(uri), SKOS.altLabel)
+        pref_labels = concept_data.objects(term.URIRef(uri), SKOS.prefLabel)
+        alt_labels = concept_data.objects(term.URIRef(uri), SKOS.altLabel)
         return [(pref_labels, True), (alt_labels, False)]
