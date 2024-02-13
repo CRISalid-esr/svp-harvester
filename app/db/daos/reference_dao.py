@@ -123,7 +123,10 @@ class ReferenceDAO(AbstractDAO):
         """
         date_start, date_end = date_interval
 
-        entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
+        if entity:
+            entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
+        else:
+            entity_id = EntityDAO(self.db_session).get_all_entities_subquery()
 
         query = (
             select(
@@ -153,7 +156,7 @@ class ReferenceDAO(AbstractDAO):
             .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
         )
 
-        if entity.name:
+        if entity and entity.name:
             query = query.where(Entity.name == entity.name)
         if date_start:
             query = query.where(Harvesting.timestamp >= date_start)
