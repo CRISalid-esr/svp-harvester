@@ -8,12 +8,12 @@ class SciencePlusDocumentTypeConverter(AbstractDocumentTypeConverter):
     Converts raw data from SciencePlus to a normalised DocumentType object
     """
 
+    RDF_BIBO = "http://purl.org/ontology/bibo/"
+    RDF_RDA = "http://rdaregistry.info/Elements/c/"
+
     HARVESTER = "SciencePlus"
 
     TYPES_MAPPING = {
-        "http://rdaregistry.info/Elements/c/C10001": ("URI", "LABEL"),
-        "http://purl.org/ontology/bibo/Article": (
-            "http://purl.org/ontology/bibo/Article",
-            "Article",
-        ),
+        f"{RDF_RDA}C10001": (f"{RDF_RDA}C10001", "Work"),
+        f"{RDF_BIBO}Article": (f"{RDF_BIBO}Article", "Article"),
     }

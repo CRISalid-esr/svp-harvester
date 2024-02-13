@@ -8,12 +8,12 @@ class IdrefDocumentTypeConverter(AbstractDocumentTypeConverter):
     Document type converter for IdRef Sparql harvester
     """
 
+    RDF_FRBR = "http://purl.org/vocab/frbr/core#"
+    RDF_RDA = "http://rdaregistry.info/Elements/c/"
+
     HARVESTER = "IDREF"
 
     TYPES_MAPPING = {
-        "http://purl.org/vocab/frbr/core#Work": (
-            "http://purl.org/vocab/frbr/core#Work",
-            "Work",
-        ),
-        "http://rdaregistry.info/Elements/c/C10001": ("URI", "LABEL"),
+        f"{RDF_FRBR}Work": (f"{RDF_FRBR}Work", "Work"),
+        f"{RDF_RDA}C10001": (f"{RDF_RDA}C10001", "Work"),
     }
