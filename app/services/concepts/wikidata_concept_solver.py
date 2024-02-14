@@ -1,16 +1,26 @@
-from typing import Tuple
+import json
+from typing import List, Tuple
 import aiohttp
-from rdflib import Graph
-import rdflib
+from loguru import logger
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
+from app.db.models.label import Label as DbLabel
+from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
-class WikidataConceptSolver(ConceptSolverRdf):
+class WikidataConceptSolver(ConceptSolver):
     """
     Wikidata concept solver
     """
+
+    async def get_uri(self, concept_id: str) -> str:
+        """
+        Get the uri of a concept from a concept id
+        :param concept_id: concept id
+        :return: uri
+        """
+        _, wikidata_uri = await self._build_url_from_concept_id_or_uri(concept_id)
+        return wikidata_uri
 
     async def solve(self, concept_id: str) -> DbConcept:
         """
@@ -32,43 +42,75 @@ class WikidataConceptSolver(ConceptSolverRdf):
                             + f"{response.status} while dereferencing "
                             + f"{wikidata_uri}"
                         )
-                    xml = (await response.text()).strip()
-                    concept_graph = Graph().parse(data=xml)
+                    concept_data: json = (await response.json())["entities"][concept_id]
                     concept = DbConcept(uri=wikidata_uri)
-                    # See if there is a owl:sameAs concept in the graph, if so, use it
-                    same_as = concept_graph.objects(
-                        rdflib.term.URIRef(wikidata_uri), rdflib.OWL.sameAs
-                    )
-                    new_concept_id = None
-                    for same in same_as:
-                        new_concept_id = str(same)
-                        break
-                    if new_concept_id:
-                        _, wikidata_uri = await self._build_url_from_concept_id_or_uri(
-                            new_concept_id
-                        )
 
                     [  # pylint: disable=expression-not-assigned
                         self._add_labels(
-                            concept=concept, labels=list(label[0]), preferred=label[1]
+                            concept=concept, labels=label[0], preferred=label[1]
                         )
-                        for label in self._get_labels(concept_graph, wikidata_uri)
+                        for label in self._get_labels(concept_data)
                     ]
 
                     return concept
 
         except aiohttp.ClientError as error:
+            logger.error(
+                f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
+            )
             raise DereferencingError(
                 f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
             ) from error
-        except rdflib.exceptions.ParserError as error:
-            raise DereferencingError(
-                f"Error while parsing xml from {wikidata_uri} with message {error}"
-            ) from error
         except Exception as error:
+            logger.error(
+                f"Exception failure while dereferencing {wikidata_uri} with message {error}"
+            )
             raise DereferencingError(
                 f"Unknown error while dereferencing {wikidata_uri} with message {error}"
             ) from error
+
+    def _get_labels(self, concept_data: json) -> List[Tuple[str, bool]]:
+        pref_labels = concept_data.get("labels", {})
+        alt_labels = concept_data.get("aliases", {})
+        return [(pref_labels, True), (alt_labels, False)]
+
+    def _add_labels(self, concept: DbConcept, labels: dict, preferred: bool = True):
+
+        def interesting_labels(label_language):
+            a = (
+                label_language in self.settings.concept_languages
+                or label_language is None
+            )
+            return a
+
+        if len(labels) == 0:
+            return
+        if preferred:
+            preferred_labels = [
+                labels[label_language]
+                for label_language in labels
+                if interesting_labels(label_language)
+            ]
+            for label in preferred_labels:
+                self._add_label(concept, label, preferred)
+
+        else:
+            alt_labels = [
+                labels[label_language][0]
+                for label_language in labels
+                if interesting_labels(label_language)
+            ]
+            for label in alt_labels:
+                self._add_label(concept, label, preferred)
+
+    def _add_label(self, concept, label, preferred):
+        concept.labels.append(
+            DbLabel(
+                value=label["value"],
+                language=label["language"],
+                preferred=preferred,
+            )
+        )
 
     async def _build_url_from_concept_id_or_uri(
         self, concept_id: str
@@ -82,7 +124,7 @@ class WikidataConceptSolver(ConceptSolverRdf):
 
         wikidata_uri = f"http://www.wikidata.org/entity/{concept_id}"
         wikidata_url = (
-            f"https://www.wikidata.org/wiki/Special:EntityData/{concept_id}.ttl"
+            f"https://www.wikidata.org/wiki/Special:EntityData/{concept_id}.json"
         )
 
         return wikidata_url, wikidata_uri
