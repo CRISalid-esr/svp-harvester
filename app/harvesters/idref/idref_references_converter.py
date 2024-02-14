@@ -45,8 +45,10 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             return await OpenEditionReferencesConverter().convert(raw_data)
         if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
             return await PerseeReferencesConverter().convert(raw_data)
+
         return None
 
+    @AbstractReferencesConverter.validate_reference
     async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference | None:
         new_ref = Reference()
         dict_payload: dict = raw_data.payload
@@ -69,9 +71,6 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         )
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
-
-        if not self._validate_reference(new_ref):
-            return None
 
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri

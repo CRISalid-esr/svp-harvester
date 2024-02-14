@@ -2,8 +2,9 @@ import asyncio
 import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from functools import wraps
 from typing import List, AsyncGenerator
-
+from loguru import logger
 from sqlalchemy.exc import IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
@@ -88,6 +89,32 @@ class AbstractReferencesConverter(ABC):
                 rank=contribution_information.rank,
             )
 
+    @staticmethod
+    def validate_reference(func):
+        """
+        Decorator to validate the reference object content before returning it
+        """
+
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            new_ref = await func(self, *args, **kwargs)
+            failed_fields = [
+                field
+                for field in self.ref_required_fields
+                if not bool(getattr(new_ref, field))
+            ]
+            if failed_fields:
+                logger.error(
+                    f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
+                    f" for reference: {new_ref.source_identifier}."
+                    f" {', '.join(failed_fields)} should be set on reference"
+                )
+                return None
+            return new_ref
+
+        return wrapper
+
+    @validate_reference
     @abstractmethod
     async def convert(self, raw_data: AbstractHarvesterRawResult) -> Reference:
         """
@@ -345,6 +372,3 @@ class AbstractReferencesConverter(ABC):
                 db_contributor.name
             ]
         db_contributor.name = name
-
-    def _validate_reference(self, new_ref: Reference):
-        return all(bool(getattr(new_ref, field)) for field in self.ref_required_fields)

@@ -32,6 +32,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     W3_NAMESPACE = "{http://www.w3.org/XML/1998/namespace}"
     TERMS = "{http://purl.org/dc/terms/}"
 
+    @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: RdfRawResult) -> Reference | None:
         new_ref: Reference = Reference()
 
@@ -60,9 +61,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         new_ref.document_type.append(await self._document_type(root))
 
         await self._add_contributions(new_ref, root)
-
-        if not self._validate_reference(new_ref):
-            return None
 
         new_ref.hash = self._hash(self._create_dict(root))
         return new_ref

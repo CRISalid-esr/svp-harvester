@@ -21,6 +21,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
     REFERENCE_IDENTIFIERS_IGNORE = ["mag"]
 
+    @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonHarvesterRawResult) -> Reference:
         """
         Convert raw data from OpenAlex to a normalised Reference object
@@ -46,9 +47,6 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             new_ref.identifiers.append(reference_identifier)
 
         new_ref.source_identifier = raw_data.source_identifier
-
-        if not self._validate_reference(new_ref):
-            return None
 
         new_ref.hash = self._hash(json_payload)
         return new_ref

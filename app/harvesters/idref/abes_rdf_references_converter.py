@@ -18,6 +18,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     Converts raw data from ABES RDF to a normalised Reference object
     """
 
+    @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: RdfRawResult) -> Reference | None:
         new_ref = Reference()
         pub_graph: Graph = raw_data.payload
@@ -37,9 +38,6 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             new_ref.identifiers.append(document_idenfier)
             for document_idenfier in self._add_reference_identifiers(pub_graph, uri)
         ]
-
-        if not self._validate_reference(new_ref):
-            return None
 
         new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
         return new_ref

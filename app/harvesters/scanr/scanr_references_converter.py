@@ -19,6 +19,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     IDENTIFIERS_TO_IGNORE = ["scanr"]
 
+    @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from ScanR to a normalised Reference object
@@ -50,8 +51,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
-        if not self._validate_reference(new_ref):
-            return None
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "scanR"
         new_ref.source_identifier = json_payload["_source"].get("id")
