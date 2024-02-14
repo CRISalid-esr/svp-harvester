@@ -17,4 +17,4 @@ class Harvesting(BaseModel):
     state: str
 
     reference_events: List[ReferenceEvent] = []
-    error: HarvestingError | None
+    error: List[HarvestingError] | None
