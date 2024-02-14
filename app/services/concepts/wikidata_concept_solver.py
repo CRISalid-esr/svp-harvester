@@ -49,7 +49,7 @@ class WikidataConceptSolver(ConceptSolver):
                         self._add_labels(
                             concept=concept, labels=label[0], preferred=label[1]
                         )
-                        for label in self._get_labels(concept_data)
+                        for label in self._get_labels(concept_data, wikidata_uri)
                     ]
 
                     return concept
@@ -69,7 +69,8 @@ class WikidataConceptSolver(ConceptSolver):
                 f"Unknown error while dereferencing {wikidata_uri} with message {error}"
             ) from error
 
-    def _get_labels(self, concept_data: json) -> List[Tuple[str, bool]]:
+    # pylint: disable=unused-argument
+    def _get_labels(self, concept_data: json, uri: str) -> List[Tuple[str, bool]]:
         pref_labels = concept_data.get("labels", {})
         alt_labels = concept_data.get("aliases", {})
         return [(pref_labels, True), (alt_labels, False)]

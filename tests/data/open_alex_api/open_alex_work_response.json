@@ -181,8 +181,8 @@
     ],
     "concepts": [
         {
-            "id": "http://www.wikidata.org/entity/test_id",
-            "wikidata": "http://www.wikidata.org/entity/test_id",
+            "id": "https://openalex.org/test_id",
+            "wikidata": "https://www.wikidata.org/wiki/test_id",
             "display_name": "Kinetic energy",
             "level": 2,
             "score": 0.72443604

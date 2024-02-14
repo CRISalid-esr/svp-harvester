@@ -6,13 +6,13 @@ from app.db.models.label import Label
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
 
 
-def fake_wikidata_concept_solver(concept_id: str):
+def fake_wikidata_concept_solver(uri: str):
     """
     Fake wikidata concept solver
     :param concept_id: concept id
     :return: fake concept
     """
-    if concept_id == "http://www.wikidata.org/entity/test_id":
+    if uri == "http://www.wikidata.org/entity/test_id":
         return DbConcept(
             uri="http://www.wikidata.org/entity/test_id",
             labels=[
