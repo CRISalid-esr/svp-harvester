@@ -1,9 +1,13 @@
-from app.services.concepts.concept_solver import ConceptSolver
+from typing import Tuple
+import aiohttp
+from rdflib import Graph
+import rdflib
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
-class WikidataConceptSolver(ConceptSolver):
+class WikidataConceptSolver(ConceptSolverRdf):
     """
     Wikidata concept solver
     """
@@ -14,4 +18,71 @@ class WikidataConceptSolver(ConceptSolver):
         :param concept_id: concept id
         :return: Concept
         """
-        raise DereferencingError("Wikidata concept solver not implemented")
+        wikidata_url, wikidata_uri = await self._build_url_from_concept_id_or_uri(
+            concept_id
+        )
+        try:
+            async with aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=float(2))
+            ) as session:
+                async with session.get(wikidata_url) as response:
+                    if not 200 <= response.status < 300:
+                        raise DereferencingError(
+                            "Endpoint returned status "
+                            + f"{response.status} while dereferencing "
+                            + f"{wikidata_uri}"
+                        )
+                    xml = (await response.text()).strip()
+                    concept_graph = Graph().parse(data=xml)
+                    concept = DbConcept(uri=wikidata_uri)
+                    # See if there is a owl:sameAs concept in the graph, if so, use it
+                    same_as = concept_graph.objects(
+                        rdflib.term.URIRef(wikidata_uri), rdflib.OWL.sameAs
+                    )
+                    new_concept_id = None
+                    for same in same_as:
+                        new_concept_id = str(same)
+                        break
+                    if new_concept_id:
+                        _, wikidata_uri = await self._build_url_from_concept_id_or_uri(
+                            new_concept_id
+                        )
+
+                    [  # pylint: disable=expression-not-assigned
+                        self._add_labels(
+                            concept=concept, labels=list(label[0]), preferred=label[1]
+                        )
+                        for label in self._get_labels(concept_graph, wikidata_uri)
+                    ]
+
+                    return concept
+
+        except aiohttp.ClientError as error:
+            raise DereferencingError(
+                f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
+            ) from error
+        except rdflib.exceptions.ParserError as error:
+            raise DereferencingError(
+                f"Error while parsing xml from {wikidata_uri} with message {error}"
+            ) from error
+        except Exception as error:
+            raise DereferencingError(
+                f"Unknown error while dereferencing {wikidata_uri} with message {error}"
+            ) from error
+
+    async def _build_url_from_concept_id_or_uri(
+        self, concept_id: str
+    ) -> Tuple[str, str]:
+        """
+        Builds a URL from a Wikidata uri
+        :param concept_id: concept id or uri
+        :return: URL, URI
+        """
+        concept_id = concept_id.replace("https://www.wikidata.org/wiki/", "")
+
+        wikidata_uri = f"http://www.wikidata.org/entity/{concept_id}"
+        wikidata_url = (
+            f"https://www.wikidata.org/wiki/Special:EntityData/{concept_id}.ttl"
+        )
+
+        return wikidata_url, wikidata_uri

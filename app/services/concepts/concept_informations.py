@@ -15,6 +15,7 @@ class ConceptInformations:
 
         IDREF = "IDREF"
         WIKIDATA = "WIKIDATA"
+        JEL = "JEL"
         # add more sources here
 
     language: str | None = None

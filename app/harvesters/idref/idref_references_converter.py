@@ -4,6 +4,9 @@ from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.idref.idref_document_type_converter import (
+    IdrefDocumentTypeConverter,
+)
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
@@ -69,6 +72,12 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         new_ref.subjects.extend(
             await self._get_or_create_concepts_by_uri(concept_informations)
         )
+
+        for document_type in dict_payload["type"]:
+            uri_type, label = IdrefDocumentTypeConverter().convert(document_type)
+            new_ref.document_type.append(
+                await self._get_or_create_document_type_by_uri(uri_type, label)
+            )
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 

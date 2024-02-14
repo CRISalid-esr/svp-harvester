@@ -1,4 +1,5 @@
 """References dependencies."""
+
 from typing import Optional
 
 from fastapi import Depends
@@ -40,3 +41,16 @@ def build_person_from_fields(
             ],
         }
     )
+
+
+def build_person_from_fields_optional(
+    name: str | None = None,
+    identifiers: identifiers_model = Depends(),
+):
+    """
+    wrapper to make the dependency optional
+    """
+    if not name and not any(identifiers.dict().values()):
+        return None
+
+    return build_person_from_fields(name, identifiers)

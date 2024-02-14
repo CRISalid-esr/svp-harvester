@@ -9,13 +9,20 @@ class TextFieldSelector {
         const allPlugins = [...new Set([...defaultPlugins, ...plugins])];
 
         this.selector = new TomSelect(rootElementSelector, {
-            sortField: {field: "text"},
+            sortField: { field: "text" },
             plugins: allPlugins,
+            onChange: (value) => {
+                sessionStorage.setItem(rootElementSelector, value)
+            },
         });
     }
 
     getValue() {
         return [].concat(this.selector.getValue());
+    }
+
+    setValues(values) {
+        this.selector.setValue(values);
     }
 }
 

@@ -4,6 +4,7 @@ from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
+from app.services.concepts.jel_concept_solver import JelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
 
@@ -41,6 +42,8 @@ class ConceptFactory:
             return IdRefConceptSolver()
         if concept_source == ConceptInformations.ConceptSources.WIKIDATA:
             return WikidataConceptSolver()
+        if concept_source == ConceptInformations.ConceptSources.JEL:
+            return JelConceptSolver()
         # add more sources here
         # if no solver is found, raise an exception
         raise ValueError(f"Unknown concept source {concept_source}")
@@ -54,6 +57,8 @@ class ConceptFactory:
             return ConceptInformations.ConceptSources.IDREF  # idref
         if concept_id.startswith("http://www.wikidata.org"):
             return ConceptInformations.ConceptSources.WIKIDATA
+        if concept_id.startswith("http://zbw.eu/beta/external_identifiers/jel"):
+            return ConceptInformations.ConceptSources.JEL
         # add more sources here
         # if no source is found, raise an exception
         raise UnknownAuthorityException(concept_id)

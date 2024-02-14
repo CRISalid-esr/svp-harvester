@@ -16,20 +16,7 @@ async def test_convert(open_alex_api_work: dict):
         "insertion gradient expansions for density, density-functional formulas"
     )
     expected_document_type = "Article"
-    expected_subjects = [
-        "Kinetic energy",
-        "Density matrix",
-        "Electronic correlation",
-        "Physics",
-        "Energy (signal processing)",
-        "Electron density",
-        "Atomic physics",
-        "Hartree–Fock method",
-        "Potential energy",
-        "Electron",
-        "Quantum mechanics",
-        "Quantum",
-    ]
+    expected_subjects = ["Test concept", "Concept de test", "Concepto de test"]
     expected_id = "https://openalex.org/W2023271753"
     expected_source_contributor = "open_alex"
     expected_contributors_name = ["Chengteh Lee", "Weitao Yang", "Robert G. Parr"]
@@ -56,7 +43,7 @@ async def test_convert(open_alex_api_work: dict):
     for concept in test_reference.subjects:
         for label in concept.labels:
             assert label.value in expected_subjects
-    assert len(test_reference.subjects) == len(expected_subjects)
+    assert len(test_reference.subjects) == 1
     assert test_reference.source_identifier == expected_id
     assert len(test_reference.contributions) == len(expected_contributors_name)
     for contribution in test_reference.contributions:

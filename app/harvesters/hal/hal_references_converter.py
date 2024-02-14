@@ -1,5 +1,6 @@
 import re
 from typing import Generator
+from loguru import logger
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -49,7 +50,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             for abstract in self._abstracts(json_payload)
         ]
         new_ref.document_type.append(await self._document_type(json_payload))
-        async for subject in self._subjects(json_payload):
+        async for subject in self._concepts(json_payload):
             # Concept from hal may be repeated, avoid duplicates
             if subject.id is None or subject.id not in list(
                 map(lambda s: s.id, new_ref.subjects)
@@ -90,7 +91,20 @@ class HalReferencesConverter(AbstractReferencesConverter):
         ):
             yield Abstract(value=value, language=language)
 
-    async def _subjects(self, raw_data):
+    async def _concepts(self, raw_data):
+        fields = raw_data.get("jel_s", [])
+        # If we have jel_s fields, we use them as subjects
+        for code in fields:
+            try:
+                yield await self._get_or_create_concept_by_uri(
+                    ConceptInformations(
+                        uri=code,
+                        source=ConceptInformations.ConceptSources.JEL,
+                    )
+                )
+            except AssertionError:
+                logger.error(f"Could not create concept with uri {code}")
+                continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
             for label in raw_data[field]:

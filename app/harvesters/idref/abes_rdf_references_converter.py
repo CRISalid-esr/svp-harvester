@@ -39,6 +39,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             for document_idenfier in self._add_reference_identifiers(pub_graph, uri)
         ]
 
+        async for document_type in self._document_type(pub_graph, uri):
+            new_ref.document_type.append(document_type)
+
         new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
         return new_ref
 
@@ -61,3 +64,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         abstract: Literal
         for abstract in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.abstract):
             yield Abstract(value=abstract.value, language=abstract.language)
+
+    @abstractmethod
+    async def _document_type(self, pub_graph, uri):
+        raise NotImplementedError()

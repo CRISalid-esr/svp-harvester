@@ -15,6 +15,7 @@ const MAPPING_COLOR_EVENT = {
     "updated": "badge-updated",
 }
 
+const SPINNER = `<div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>`;
 
 class HistoryTable {
     constructor(env, rootElement, subpage, client) {
@@ -91,16 +92,19 @@ class HistoryTable {
             const tr = event.target.closest("tr");
             const row = this.dataTable.row(tr);
             if (row.child.isShown()) {
+                row.data()[(this.subpage === "collection_history") ? 9 : 7] = SPINNER;
                 row.child.hide();
                 tr.classList.remove('shown');
             } else {
                 switch (this.subpage) {
                     case "collection_history":
+                        row.child(row.data()[9]).show();
                         const retrieval = await this.client.getRetrieval(row.data()[8]);
                         row.data()[9] = "<pre>" + prettyPrintJson.toHtml(retrieval.data) + "</pre>";
                         row.child(row.data()[9]).show();
                         break;
                     case "publication_history":
+                        row.child(row.data()[7]).show();
                         const reference = await this.client.getReference(row.data()[6]);
                         row.data()[7] = "<pre>" + prettyPrintJson.toHtml(reference.data) + "</pre>";
                         row.child(row.data()[7]).show();
@@ -140,7 +144,7 @@ class HistoryTable {
                 reference.event_type,
                 reference.titles,
                 reference.id,
-                ""
+                SPINNER
             ];
             data.push(row);
         }
@@ -162,7 +166,7 @@ class HistoryTable {
                 formatDocumentType(retrieval.document_type),
                 retrieval.event_count,
                 retrieval.id,
-                ""
+                SPINNER
             ];
             data.push(row);
         }

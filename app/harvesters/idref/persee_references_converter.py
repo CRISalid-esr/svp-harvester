@@ -29,10 +29,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             return None
 
         pub_graph: Graph = raw_data.payload
-        uri = raw_data.source_identifier
-
-        async for document_type in self._document_type(pub_graph, uri):
-            new_ref.document_type.append(document_type)
 
         await self._add_contributions(pub_graph, new_ref)
 

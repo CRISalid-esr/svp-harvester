@@ -1,7 +1,7 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends
 from app.api.dependencies.common_parameters import common_parameters
-from app.api.dependencies.references import build_person_from_fields
+from app.api.dependencies.references import build_person_from_fields_optional
 from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as RetrievalDB
 from app.models.people import Person
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.get("/summary")
 async def get_retrievals(
     params: Annotated[dict, Depends(common_parameters)],
-    entity: Person = Depends(build_person_from_fields),
+    entity: Person = Depends(build_person_from_fields_optional),
 ) -> List[RetrievalSummary]:
     """
     Get retrieval summary for a given entity
