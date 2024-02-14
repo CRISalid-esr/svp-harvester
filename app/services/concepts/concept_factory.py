@@ -16,6 +16,18 @@ class ConceptFactory:
     """
 
     @staticmethod
+    async def get_uri(
+        concept_id: str, concept_source: ConceptInformations.ConceptSources = None
+    ) -> str:
+        """
+        Get the uri of a concept from
+        """
+        if concept_source is None:
+            concept_source = ConceptFactory._infer_source(concept_id)
+        solver: ConceptSolver = ConceptFactory._create_solver(concept_source)
+        return await solver.get_uri(concept_id)
+
+    @staticmethod
     async def solve(
         concept_id: str, concept_source: ConceptInformations.ConceptSources = None
     ) -> DbConcept:
