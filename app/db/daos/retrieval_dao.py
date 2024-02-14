@@ -89,7 +89,10 @@ class RetrievalDAO(AbstractDAO):
             filter_harvester["event_types"], filter_harvester["nullify"]
         )
 
-        entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
+        if entity:
+            entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
+        else:
+            entity_id = EntityDAO(self.db_session).get_all_entities_subquery()
 
         stmt = (
             select(
@@ -136,7 +139,7 @@ class RetrievalDAO(AbstractDAO):
             .group_by(Retrieval.id, entity_id.c.name)
         )
 
-        if entity.name:
+        if entity and entity.name:
             stmt = stmt.where(entity_id.c.name == entity.name)
         if date_start:
             stmt = stmt.where(Harvesting.timestamp >= date_start)

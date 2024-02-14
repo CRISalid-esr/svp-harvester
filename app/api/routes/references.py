@@ -8,7 +8,10 @@ from starlette.datastructures import URL
 from starlette.requests import Request
 from starlette.responses import JSONResponse, RedirectResponse
 
-from app.api.dependencies.references import build_person_from_fields
+from app.api.dependencies.references import (
+    build_person_from_fields,
+    build_person_from_fields_optional,
+)
 from app.api.dependencies.retrieval_service import build_retrieval_service_from_fields
 from app.config import get_app_settings
 from app.db.daos.reference_dao import ReferenceDAO
@@ -141,7 +144,7 @@ async def get_retrieval_result(
 async def get_references(
     params: Annotated[dict, Depends(common_parameters)],
     text_search: Annotated[str, Query()] = "",
-    entity: Person = Depends(build_person_from_fields),
+    entity: Person = Depends(build_person_from_fields_optional),
 ) -> List[ReferenceSummary]:
     """
     Get references by parameters
