@@ -5,6 +5,7 @@ import stringToHTML from "../utils";
 import identifier_field from "./templates/identifier_field";
 import add_identifier_control from "./templates/add_identifier_control";
 import TextFieldSelector from "../common/text_field_selector";
+import SessionStorage from "../common/session_storage";
 
 
 const IDENTIFIER_NULL_VALUE = "null";
@@ -23,7 +24,20 @@ class Form {
         this.handleHistorySafeModeToggle();
         this.renewAddIdentifierControl();
         this.addSubmitListener();
+        this.addNameInputListener();
+        this.sessionStorage = new SessionStorage(this);
+        this.fillWithSessionStorage();
         this.updateSubmitButtonState();
+    }
+
+    fillWithSessionStorage() {
+        this.sessionStorage.fillForm();
+    }
+
+    addNameInputListener() {
+        this.formElement.querySelector("#name-field-input").addEventListener("input", (event) => {
+            this.sessionStorage.setItem("name", event.target.value);
+        });
     }
 
     handleReferenceTypesSelect() {
@@ -56,14 +70,14 @@ class Form {
         const entitySubmitEvent = new CustomEvent("entity_submit",
             {
                 detail:
-                    {
-                        identifiers: this.getIdentifierFieldsContent(true),
-                        name: this.formElement.querySelector("#name-field-input").value,
-                        eventTypes: this.eventTypeSelect.getValue(),
-                        harvesters: this.harvestersSelect.getValue(),
-                        historySafeMode: this.historySafeModeToggle.checked,
-                        identifiersSafeMode: this.identifiersSafeModeToggle.checked,
-                    }
+                {
+                    identifiers: this.getIdentifierFieldsContent(true),
+                    name: this.formElement.querySelector("#name-field-input").value,
+                    eventTypes: this.eventTypeSelect.getValue(),
+                    harvesters: this.harvestersSelect.getValue(),
+                    historySafeMode: this.historySafeModeToggle.checked,
+                    identifiersSafeMode: this.identifiersSafeModeToggle.checked,
+                }
             }
         );
         this.rootElement.dispatchEvent(entitySubmitEvent);
@@ -73,7 +87,7 @@ class Form {
         if (this.addIdentifierControlElement) {
             this.addIdentifierControlElement.remove();
         }
-        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, {identifiers: this.remainingIdentifiers()}));
+        this.addIdentifierControlElement = stringToHTML(ejs.render(add_identifier_control, { identifiers: this.remainingIdentifiers() }));
         this.identifierFieldsContainer.appendChild(this.addIdentifierControlElement);
         this.addIdentifierButton = this.formElement.querySelector("#add-identifier-control-button");
         this.addIdentifierInputField = this.formElement.querySelector("#add-identifier-control-input");
@@ -93,6 +107,7 @@ class Form {
 
     handleRemoveIdentifierButtonClick(event) {
         const identifierFieldElement = event.target.closest(".identifier-field-container");
+        this.sessionStorage.deleteItem(identifierFieldElement.querySelector("option").value);
         identifierFieldElement.remove();
         this.updateAddIdentifierControlState();
         this.renewAddIdentifierControl();
@@ -179,7 +194,7 @@ class Form {
                 identifierValue: explicitNullValue ? IDENTIFIER_NULL_VALUE : ""
             };
         }
-        return {identifierType: identifierType, identifierValue: identifierValue};
+        return { identifierType: identifierType, identifierValue: identifierValue };
     }
 
     handleAddIdentifierAction() {
@@ -190,7 +205,7 @@ class Form {
     }
 
     addIdentifierField(content) {
-        content = {...content, identifierLabel: this.env.identifiers[content.identifierType].label};
+        content = { ...content, identifierLabel: this.env.identifiers[content.identifierType].label };
         this.identifierFieldElement = stringToHTML(ejs.render(identifier_field, content));
         this.identifierFieldsContainer.insertBefore(this.identifierFieldElement, this.addIdentifierControlElement);
         const removeIdentifierButton = this.identifierFieldElement.querySelector(".btn-remove-identifier");
@@ -208,7 +223,9 @@ class Form {
             if (validOnly && identifierFieldElement.dataset.validData === "false") {
                 continue;
             }
-            identifierFieldsContent.push(this.getIdentifierFieldContent(identifierFieldElement, false));
+            var content = this.getIdentifierFieldContent(identifierFieldElement, false);
+            this.sessionStorage.setItem(content.identifierType, content.identifierValue);
+            identifierFieldsContent.push(content);
         }
         return identifierFieldsContent;
     }

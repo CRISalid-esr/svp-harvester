@@ -8,6 +8,23 @@ class Control {
         this.subPage = subPage
         this.client = client
         this.addSubmitListener();
+        this.addPageLoadedListener();
+    }
+
+    addPageLoadedListener() {
+        // We send a default request to the server to get the latest data in the day
+        window.addEventListener("load", (event) => {
+            this.handleSubmit({
+                detail: {
+                    identifiers: [],
+                    name: "",
+                    eventTypes: ['created', 'updated', 'deleted', 'unchanged'],
+                    harvesters: ['hal', 'idref', 'openalex', 'scanr'],
+                    dateRange: [new Date().toISOString().split('T')[0], undefined],
+                    textSearch: undefined
+                }
+            });
+        })
     }
 
     addSubmitListener() {
@@ -15,6 +32,7 @@ class Control {
     }
 
     handleSubmit(event) {
+        this.form.spinnerOn()
         const formIdentifiers = event.detail.identifiers;
         const formName = event.detail.name === "" ? null : event.detail.name;
         const eventTypes = event.detail.eventTypes;
@@ -39,6 +57,7 @@ class Control {
                 this.client.getHistoryRetrieval(params).then((response) => {
                     const retrieval = response.data
                     this.historyTable.updateTable(retrieval);
+                    this.form.spinnerOff()
                 }).catch((error) => {
                     console.log(error);
                 });
@@ -51,6 +70,7 @@ class Control {
                 this.client.getHistoryPublication(params).then((response) => {
                     const retrieval = response.data
                     this.historyTable.updateTable(retrieval);
+                    this.form.spinnerOff()
                 }).catch((error) => {
                     console.log(error);
                 });

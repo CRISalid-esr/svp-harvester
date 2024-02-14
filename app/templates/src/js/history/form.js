@@ -5,8 +5,10 @@ import add_identifier_control from "../retrieve/templates/add_identifier_control
 import identifier_field from "../retrieve/templates/identifier_field";
 import stringToHTML from "../utils";
 import th from "vanillajs-datepicker/locales/th";
+import SessionStorage from "../common/session_storage";
 
 const IDENTIFIER_NULL_VALUE = "null";
+const SPINNER = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
 class HistoryForm {
     constructor(env, rootElement, subpage) {
@@ -22,11 +24,18 @@ class HistoryForm {
         this.renewAddIdentifierControl();
         this.addSubmitListener();
         this.addNameInputListener();
-        this.updateSubmitButtonState();
+        this.sessionStorage = new SessionStorage(this);
+        this.fillWithSessionStorage();
+    }
+
+    fillWithSessionStorage() {
+        this.sessionStorage.fillForm();
     }
 
     addNameInputListener() {
-        this.formElement.querySelector("#name-field-input").addEventListener("input", this.updateSubmitButtonState.bind(this));
+        this.formElement.querySelector("#name-field-input").addEventListener("input", (event) => {
+            this.sessionStorage.setItem("name", event.target.value);
+        });
     }
 
     handleEventTypesSelect() {
@@ -41,12 +50,13 @@ class HistoryForm {
         this.dateRangePicker = new DateRangePicker(this.formElement.querySelector("#date-range-picker-container"), {
             buttonClass: 'btn',
             clearButton: 'true',
+            allowOneSidedRange: 'true'
         })
-        this.dateRangePicker.setDates([Date.now(), null]);
+        this.dateRangePicker.setDates([Date.now() - 1000 * 60 * 60 * 24, null])
     }
 
     addSubmitListener() {
-        this.formElement.addEventListener("submit", this.search_Submit.bind(this));
+        this.formElement.addEventListener("submit", this.searchSubmit.bind(this));
     }
 
     renewAddIdentifierControl() {
@@ -93,20 +103,12 @@ class HistoryForm {
         }
     }
 
-    updateSubmitButtonState() {
-        if (this.getIdentifierFieldsContent(true).length > 0 || this.formElement.querySelector("#name-field-input").value.length > 0) {
-            this.runSearchButton.removeAttribute("disabled");
-        } else {
-            this.runSearchButton.setAttribute("disabled", true);
-        }
-    }
-
     handleRemoveIdentifierButtonClick(event) {
         const identifierFieldElement = event.target.closest(".identifier-field-container");
+        this.sessionStorage.deleteItem(identifierFieldElement.querySelector("option").value);
         identifierFieldElement.remove();
         this.updateAddIdentifierControlState();
         this.renewAddIdentifierControl();
-        this.updateSubmitButtonState();
     }
 
     addIdentifierField(content) {
@@ -119,7 +121,6 @@ class HistoryForm {
         editIdentifierButton.addEventListener("click", this.handleEditIdentifierButtonClick.bind(this));
         this.identifierFieldElement.dataset.validData = true;
         this.renewAddIdentifierControl();
-        this.updateSubmitButtonState();
     }
 
     handleEditIdentifierButtonClick(event) {
@@ -135,12 +136,10 @@ class HistoryForm {
                 inputField.classList.remove("is-invalid");
                 validateIdentifierButton.removeAttribute("disabled");
                 identifierFieldElement.dataset.validData = true;
-                self.updateSubmitButtonState();
             } else {
                 inputField.classList.add("is-invalid");
                 validateIdentifierButton.setAttribute("disabled", true);
                 identifierFieldElement.dataset.validData = false;
-                self.updateSubmitButtonState();
             }
         });
         inputField.addEventListener('keypress', function (event) {
@@ -206,7 +205,9 @@ class HistoryForm {
             if (validOnly && identifierFieldElement.dataset.validData === "false") {
                 continue;
             }
-            identifierFieldsContent.push(this.getIdentifierFieldContent(identifierFieldElement, false));
+            var content = this.getIdentifierFieldContent(identifierFieldElement, false);
+            this.sessionStorage.setItem(content.identifierType, content.identifierValue);
+            identifierFieldsContent.push(content);
         }
         return identifierFieldsContent;
     }
@@ -220,9 +221,28 @@ class HistoryForm {
         return new RegExp(this.env.identifiers[identifierElementContent.identifierType].format).test(identifierElementContent.identifierValue);
     }
 
-    search_Submit(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    spinnerOn() {
+        this.runSearchButton.setAttribute("disabled", true);
+        this.runSearchButton.removeChild(this.runSearchButton.firstChild)
+        let spinner = document.createElement("span");
+        spinner.classList.add("spinner-border", "spinner-border-sm", "spinner-inline");
+        spinner.setAttribute("role", "status");
+        this.runSearchButton.insertBefore(spinner, this.runSearchButton.firstChild);
+    }
+
+    spinnerOff() {
+        this.runSearchButton.removeAttribute("disabled");
+        this.runSearchButton.removeChild(this.runSearchButton.firstChild)
+        let lookup = document.createElement("i");
+        lookup.classList.add("bi", "bi-search");
+        this.runSearchButton.insertBefore(lookup, this.runSearchButton.firstChild);
+    }
+
+    searchSubmit(event) {
+        if (event !== undefined) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         var textSearch
         var hideEmptyCollection
         if (this.subpage === "publication_history") {

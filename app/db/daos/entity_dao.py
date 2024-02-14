@@ -104,6 +104,16 @@ class EntityDAO(AbstractDAO):
         """
         await self.db_session.delete(entity)
 
+    def get_all_entities_subquery(self):
+        """
+        Get all entities id and name subqery
+
+        :return: all entities id and name subquery
+        """
+        return (
+            select(Entity.id.label("id"), Entity.name.label("name")).group_by(Entity.id)
+        ).subquery("entity_id")
+
     def entity_filter_subquery(self, entity: Person):
         """
         Get a subquery to filter entities by their identifiers
