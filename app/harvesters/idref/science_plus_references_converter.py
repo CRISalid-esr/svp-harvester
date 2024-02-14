@@ -1,11 +1,14 @@
 import rdflib
-from rdflib import Literal, DCTERMS
+from rdflib import RDF, Literal, DCTERMS
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 
 from app.db.models.title import Title
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
+)
+from app.harvesters.idref.science_plus_document_type_converter import (
+    SciencePlusDocumentTypeConverter,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 
@@ -30,3 +33,17 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
 
     def _add_doi_identifier(self, doi: str):
         return ReferenceIdentifier(value=doi, type="doi")
+
+    async def _document_type(self, pub_graph, uri):
+        cache = {}
+        document_type: Literal
+        for document_type in pub_graph.objects(rdflib.term.URIRef(uri), RDF.type):
+            if document_type in cache:
+                yield cache[document_type]
+                continue
+            uri, label = SciencePlusDocumentTypeConverter().convert(str(document_type))
+            document_type_db = await self._get_or_create_document_type_by_uri(
+                uri, label
+            )
+            cache[document_type] = document_type_db
+            yield document_type_db

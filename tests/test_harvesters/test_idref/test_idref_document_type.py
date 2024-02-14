@@ -1,26 +1,26 @@
-from app.harvesters.idref.open_edition_document_type_converter import (
-    OpenEditionDocumentTypeConverter,
+from app.harvesters.idref.idref_document_type_converter import (
+    IdrefDocumentTypeConverter,
 )
 
 
-def test_kwown_open_edition_document_type():
-    # TODO WHEN Mapping Table is complete
+def test_known_idref_document_type():
     """
-    GIVEN a known OpenEdition document type
+    GIVEN a known IdRef document type
     WHEN the document type converter is called
     THEN the document type is converted into the corresponding uri and label
     """
-    document_type = "book"
-    convert = OpenEditionDocumentTypeConverter.convert(type_document=document_type)
+    document_type = "http://purl.org/vocab/frbr/core#Work"
+    convert = IdrefDocumentTypeConverter().convert(document_type)
+    assert convert == ("http://purl.org/vocab/frbr/core#Work", "Work")
 
 
-def test_uknown_open_edition_document_type(caplog):
+def test_unknown_idref_document_type(caplog):
     """
-    GIVEN an unknown OpenEdition document type
+    GIVEN an unknown IdRef document type
     WHEN the document type converter is called
     THEN the Unknown document type is returned
     """
-    document_type = "UKNOWN"
-    convert = OpenEditionDocumentTypeConverter.convert(type_document=document_type)
-    assert convert == ("http://data.crisalid.org/ref/document_types/unkown", "Uknown")
-    assert f"Unknown Open Edition document type: {document_type}" in caplog.text
+    document_type = "UNKNOWN"
+    convert = IdrefDocumentTypeConverter().convert(document_type)
+    assert convert == ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
+    assert f"Unknown IDREF document type: {document_type}" in caplog.text
