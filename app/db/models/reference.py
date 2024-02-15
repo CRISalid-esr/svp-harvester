@@ -1,6 +1,5 @@
 from typing import List
 
-from sqlalchemy import Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.abstract import Abstract
