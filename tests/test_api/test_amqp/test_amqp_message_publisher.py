@@ -28,7 +28,7 @@ async def test_publish_harvesting_status(
     expected_sent_message_payload = {
         "harvester": "idref",
         "state": "running",
-        "error": None,
+        "error": [],
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
             "name": "John Doe",
