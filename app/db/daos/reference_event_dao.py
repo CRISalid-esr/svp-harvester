@@ -65,6 +65,16 @@ class ReferenceEventDAO(AbstractDAO):
                 )
             )
             .options(
+                joinedload(ReferenceEvent.reference).joinedload(
+                    Reference.subjects, innerjoin=False
+                )
+            )
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(
+                    Reference.abstracts, innerjoin=False
+                )
+            )
+            .options(
                 joinedload(ReferenceEvent.harvesting)
                 .joinedload(Harvesting.retrieval)
                 .joinedload(Retrieval.entity)

@@ -62,14 +62,18 @@ class RetrievalDAO(AbstractDAO):
                 .joinedload(Harvesting.reference_events)
                 .options(
                     joinedload(ReferenceEvent.reference).joinedload(
-                        Reference.contributions
+                        Reference.contributions, innerjoin=False
                     )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.abstracts, innerjoin=False
+                    )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.subjects, innerjoin=False
+                    )
                 )
             )
             .where(Retrieval.id == retrieval_id)
