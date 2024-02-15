@@ -98,11 +98,17 @@ class AbstractReferencesConverter(ABC):
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
             new_ref = await func(self, *args, **kwargs)
-            failed_fields = [
-                field
-                for field in self.ref_required_fields
-                if not bool(getattr(new_ref, field))
-            ]
+
+            assert new_ref.source_identifier is not None, logger.error(
+                f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
+                f": Source identifier should be set on reference"
+            )
+
+            failed_fields = []
+            for field in self.ref_required_fields:
+                if not getattr(new_ref, field):
+                    failed_fields.append(field)
+
             if failed_fields:
                 logger.error(
                     f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
