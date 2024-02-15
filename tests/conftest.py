@@ -113,11 +113,29 @@ def fake_idref_concept_solver(concept_id: str):
     raise DereferencingError("Idref concept dereferencing not allowed during tests")
 
 
+def fake_idref_concept_uri_solver(concept_id: str):
+    """
+    Fake idref concept solver for tests
+
+    :param concept_id: concept id to solve
+    :return: fake uri
+    """
+    return concept_id
+
+
 @pytest.fixture(name="mock_idref_concept_solver", autouse=True)
 def fixture_mock_idref_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
     with mock.patch.object(IdRefConceptSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_idref_concept_solver
+        yield mock_solve
+
+
+@pytest.fixture(name="mock_idref_concept_solver_uri", autouse=True)
+def fixture_mock_idref_concept_solver_uri():
+    """Hal harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(IdRefConceptSolver, "get_uri") as mock_solve:
+        mock_solve.side_effect = fake_idref_concept_uri_solver
         yield mock_solve
 
 

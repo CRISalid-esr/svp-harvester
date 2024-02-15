@@ -17,6 +17,14 @@ class ConceptSolver(ABC):
         self.settings = get_app_settings()
 
     @abstractmethod
+    async def get_uri(self, concept_id: str) -> str:
+        """
+        Get the uri of a concept from a concept id
+        :param concept_id: concept id
+        :return: uri
+        """
+
+    @abstractmethod
     async def solve(self, concept_id: str) -> DbConcept:
         """
         Solves a concept from a concept id

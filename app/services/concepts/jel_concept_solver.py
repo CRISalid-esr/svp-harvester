@@ -11,6 +11,12 @@ class JelConceptSolver(ConceptSolverRdf):
     JEL concept solver
     """
 
+    async def get_uri(self, concept_id: str) -> str:
+        """
+        JEL concept uri is the same as the concept id
+        """
+        return concept_id
+
     async def solve(self, concept_id: str) -> DbConcept:
         """
         Solves a JEL concept from a concept id
