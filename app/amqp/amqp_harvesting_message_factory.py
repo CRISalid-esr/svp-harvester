@@ -12,7 +12,7 @@ class AMQPHarvestingMessageFactory(AbstractAMQPMessageFactory):
     """Factory for building AMQP messages related to harvesting states."""
 
     def _build_routing_key(self) -> str:
-        return "event.references.harvesting.state"
+        return self.settings.amqp_harvesting_event_routing_key
 
     async def _build_payload(self) -> dict[str, Any]:
         assert "id" in self.content, "Harvesting id is required"
