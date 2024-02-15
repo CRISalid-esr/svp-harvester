@@ -60,8 +60,17 @@ class RetrievalDAO(AbstractDAO):
             .options(
                 joinedload(Retrieval.harvestings)
                 .joinedload(Harvesting.reference_events)
-                .joinedload(ReferenceEvent.reference)
-                .joinedload(Reference.contributions)
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.contributions
+                    )
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
+                )
             )
             .where(Retrieval.id == retrieval_id)
         )

@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.abstract import Abstract
@@ -59,13 +60,13 @@ class Reference(Base, VersionedRecord):
         "app.db.models.abstract.Abstract",
         back_populates="reference",
         cascade="all, delete-orphan",
-        lazy="joined",
+        lazy="raise",
     )
 
     subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
         "app.db.models.concept.Concept",
         secondary=references_subjects_table,
-        lazy="joined",
+        lazy="raise",
     )
 
     document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
