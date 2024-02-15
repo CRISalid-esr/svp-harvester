@@ -29,6 +29,7 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
                 reference_event: DbReferenceEvent = await ReferenceEventDAO(
                     session
                 ).get_detailed_reference_event_by_id(self.content.get("id"))
+                self.reference_event_type = reference_event.type
                 entity: DbEntity = reference_event.harvesting.retrieval.entity
                 reference_event_representation: ReferenceEventModel = (
                     ReferenceEventModel.model_validate(reference_event)
