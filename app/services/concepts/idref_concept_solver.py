@@ -15,6 +15,10 @@ class IdRefConceptSolver(ConceptSolverRdf):
     IdRef concept solver
     """
 
+    async def get_uri(self, concept_id: str) -> str:
+        _, idref_uri = await self._build_url_from_concept_id_or_uri(concept_id)
+        return idref_uri
+
     async def solve(self, concept_id: str) -> DbConcept:
         """
         Solves an IdRef concept from a concept id
