@@ -82,6 +82,8 @@ async def test_publish_created_reference(
                 ],
                 "document_type": [],
                 "contributions": [],
+                "issued": None,
+                "created": None,
             },
         },
         "entity": {

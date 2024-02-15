@@ -1,5 +1,6 @@
 import re
 from typing import Generator
+import isodate
 from loguru import logger
 
 from app.db.models.abstract import Abstract
@@ -56,6 +57,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
+        new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
+        new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
@@ -70,6 +73,17 @@ class HalReferencesConverter(AbstractReferencesConverter):
                     yield ReferenceIdentifier(type=field, value=value)
             else:
                 yield ReferenceIdentifier(type=field, value=raw_data[field])
+
+    def _date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            return isodate.parse_datetime(date).replace(tzinfo=None)
+        except isodate.ISO8601Error as error:
+            raise UnexpectedFormatException(
+                f"Invalid date format: {date} from HAL"
+            ) from error
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(

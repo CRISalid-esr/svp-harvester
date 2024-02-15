@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -68,28 +69,31 @@ class Reference(Base, VersionedRecord):
         lazy="raise",
     )
 
-    document_type: Mapped[
-        List["app.db.models.document_type.DocumentType"]
-    ] = relationship(
-        "app.db.models.document_type.DocumentType",
-        secondary=references_document_type_table,
-        lazy="joined",
+    document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
+        relationship(
+            "app.db.models.document_type.DocumentType",
+            secondary=references_document_type_table,
+            lazy="joined",
+        )
     )
 
-    reference_events: Mapped[
-        List["app.db.models.reference_event.ReferenceEvent"]
-    ] = relationship(
-        "app.db.models.reference_event.ReferenceEvent",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="raise",
+    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
+        relationship(
+            "app.db.models.reference_event.ReferenceEvent",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="raise",
+        )
     )
 
-    contributions: Mapped[
-        List["app.db.models.contribution.Contribution"]
-    ] = relationship(
-        "app.db.models.contribution.Contribution",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="joined",
+    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
+        relationship(
+            "app.db.models.contribution.Contribution",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="joined",
+        )
     )
+
+    issued: Mapped[datetime] = mapped_column(nullable=True, index=True)
+    created: Mapped[datetime] = mapped_column(nullable=True, index=True)
