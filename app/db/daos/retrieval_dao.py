@@ -18,7 +18,7 @@ from app.db.models.reference import Reference
 from app.models.people import Person
 
 
-# pylint: disable=not-callable
+# pylint: disable=not-callable, duplicate-code
 class RetrievalDAO(AbstractDAO):
     """
     Data access object for Retrieval

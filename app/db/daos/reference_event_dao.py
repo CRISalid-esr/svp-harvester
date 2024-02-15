@@ -9,6 +9,7 @@ from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 
 
+# pylint: disable=duplicate-code
 class ReferenceEventDAO(AbstractDAO):
     """
     Data access object for reference events
