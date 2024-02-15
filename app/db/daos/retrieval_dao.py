@@ -18,7 +18,7 @@ from app.db.models.reference import Reference
 from app.models.people import Person
 
 
-# pylint: disable=not-callable
+# pylint: disable=not-callable, duplicate-code
 class RetrievalDAO(AbstractDAO):
     """
     Data access object for Retrieval
@@ -60,8 +60,21 @@ class RetrievalDAO(AbstractDAO):
             .options(
                 joinedload(Retrieval.harvestings)
                 .joinedload(Harvesting.reference_events)
-                .joinedload(ReferenceEvent.reference)
-                .joinedload(Reference.contributions)
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.contributions, innerjoin=False
+                    )
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.abstracts, innerjoin=False
+                    )
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).joinedload(
+                        Reference.subjects, innerjoin=False
+                    )
+                )
             )
             .where(Retrieval.id == retrieval_id)
         )

@@ -9,6 +9,7 @@ from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 
 
+# pylint: disable=duplicate-code
 class ReferenceEventDAO(AbstractDAO):
     """
     Data access object for reference events
@@ -62,6 +63,16 @@ class ReferenceEventDAO(AbstractDAO):
             .options(
                 joinedload(ReferenceEvent.reference).joinedload(
                     Reference.contributions, innerjoin=False
+                )
+            )
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(
+                    Reference.subjects, innerjoin=False
+                )
+            )
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(
+                    Reference.abstracts, innerjoin=False
                 )
             )
             .options(

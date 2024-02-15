@@ -292,6 +292,7 @@ async def test_hal_harvester_registers_abstract(
     await hal_harvester.run()
     stmt = (
         select(Reference)
+        .options(joinedload(Reference.abstracts))
         .join(ReferenceEvent)
         .join(Harvesting)
         .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)

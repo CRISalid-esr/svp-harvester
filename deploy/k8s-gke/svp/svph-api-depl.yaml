@@ -70,7 +70,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
-          resources: { }
+          resources:
+            limits:
+              cpu: 5000m
+              memory: 10Gi
+            requests:
+              cpu: 2000m
+              memory: 7Gi
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
           args:
@@ -78,6 +84,13 @@ spec:
             - "--auto-iam-authn"
             - "--port=5432"
             - "fake-cgp-vanilla-project:europe-west9:svp-test-postgres"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
           securityContext:
             runAsNonRoot: true
 
