@@ -13,7 +13,7 @@ class AMQPRetrievalMessageFactory(AbstractAMQPMessageFactory):
     def _build_routing_key(self) -> str:
         if "error" in self.content:
             return "event.references.retrieval.error"
-        return "event.references.retrieval.state"
+        return self.settings.amqp_retrieval_event_routing_key
 
     async def _build_payload(self) -> dict[str, Any]:
         if "error" in self.content:

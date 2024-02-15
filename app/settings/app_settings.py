@@ -1,6 +1,7 @@
 """
 App settings base class
 """
+
 import os
 from typing import ClassVar, TextIO
 
@@ -49,6 +50,14 @@ class AppSettings(BaseSettings):
     amqp_password: str = "guest"
     amqp_host: str = "127.0.0.1"
     amqp_queue_name: str = "svp-harvester"
+    amqp_wait_before_shutdown: int = 30
+    amqp_task_parallelism_limit: int = 50
+    amqp_exchange_name: str = "publications"
+    amqp_prefetch_count: int = 50
+    amqp_retrieval_routing_key: str = "task.entity.references.retrieval"
+    amqp_reference_event_routing_key: str = "event.references.reference.*"
+    amqp_harvesting_event_routing_key: str = "event.references.harvesting.state"
+    amqp_retrieval_event_routing_key: str = "event.references.retrieval.state"
 
     harvesters_settings_file: str = settings_file_path(filename="harvesters.yml")
     harvesters: list = lst_from_yml(yml_file=harvesters_settings_file)
