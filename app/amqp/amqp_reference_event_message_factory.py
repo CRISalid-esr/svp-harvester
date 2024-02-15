@@ -26,12 +26,10 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
     async def _build_payload(self) -> dict[str, Any]:
         async with async_session() as session:
             async with session.begin():
-                result = await ReferenceEventDAO(
+                reference_event: DbReferenceEvent = await ReferenceEventDAO(
                     session
                 ).get_detailed_reference_event_by_id(self.content.get("id"))
-                reference_event: DbReferenceEvent = result[0]
-                self.reference_event_type = reference_event.type
-                entity: DbEntity = result[1]
+                entity: DbEntity = reference_event.harvesting.retrieval.entity
                 reference_event_representation: ReferenceEventModel = (
                     ReferenceEventModel.model_validate(reference_event)
                 )
