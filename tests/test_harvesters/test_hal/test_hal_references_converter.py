@@ -1,7 +1,4 @@
 import pytest
-from app.harvesters.exceptions.unexpected_format_exception import (
-    UnexpectedFormatException,
-)
 
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
@@ -79,12 +76,16 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
 
 
 @pytest.mark.asyncio
-async def test_convert_with_date_inconsistency(hal_api_docs_with_date_inconsistency):
+async def test_convert_with_date_inconsistency(
+    hal_api_docs_with_date_inconsistency, caplog
+):
     """Test that the converter will raise an exception when the date is inconsistent"""
     converter_under_tests = HalReferencesConverter()
     for doc in hal_api_docs_with_date_inconsistency["response"]["docs"]:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
-        with pytest.raises(UnexpectedFormatException):
-            await converter_under_tests.convert(result)
+        reference = await converter_under_tests.convert(result)
+        assert reference.issued is None
+        assert reference.created is None
+        assert "Could not parse date" in caplog.text
