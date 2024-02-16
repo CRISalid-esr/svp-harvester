@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.affiliations import affiliations_table
 from app.db.session import Base
+from app.db.models.organization import Organization  # pylint: disable=unused-import
 
 
 class Contribution(Base):
@@ -67,7 +68,6 @@ class Contribution(Base):
     contributor_id: Mapped[int] = mapped_column(ForeignKey("contributors.id"))
     contributor: Mapped["app.db.models.contributor.Contributor"] = relationship(
         "app.db.models.contributor.Contributor",
-        back_populates="contributions",
         lazy="joined",
         cascade="all",
     )
@@ -83,11 +83,13 @@ class Contribution(Base):
         nullable=False, index=True, default=Role.AUTHOR.value
     )
 
-    affiliations: Mapped[
-        List["app.db.models.organization.Organization"]
-    ] = relationship(
-        "app.db.models.organization.Organization",
-        secondary=affiliations_table,
-        lazy="joined",
-        back_populates="contributions",
+    affiliations: Mapped[List["app.db.models.organization.Organization"]] = (
+        relationship(
+            "app.db.models.organization.Organization",
+            secondary=affiliations_table,
+            lazy="joined",
+        )
     )
+
+    def __repr__(self):
+        return f"<Contribution(contribution_id={self.id}, role={self.role}), \naffiliations:{self.affiliations}>\n"

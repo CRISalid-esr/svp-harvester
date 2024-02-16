@@ -1,6 +1,7 @@
 import re
-from typing import Generator
+from typing import Generator, List
 from loguru import logger
+from sqlalchemy import inspect
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -16,7 +17,9 @@ from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
+from app.db.models.organization import Organization
 from app.services.concepts.concept_informations import ConceptInformations
+from app.db.session import async_session
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -145,7 +148,34 @@ class HalReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._contributions(
             contribution_informations=contribution_informations, source="hal"
         ):
+            organizations = self._organizations_from_contributor(
+                raw_data, contribution.contributor.source_identifier
+            )
+            async for org in self._orgnanizations(organizations):
+                contribution.affiliations.append(org)
+            logger.debug(f"Adding contribution {contribution}")
             new_ref.contributions.append(contribution)
+
+    def _organizations_from_contributor(
+        self, raw_data, id_contributor
+    ) -> List[AbstractReferencesConverter.OrganizationInformations]:
+        # Get the organizations of the contributor
+        organizations = []
+
+        for auth_org in raw_data.get("authIdHasStructure_fs", []):
+            auth, org = auth_org.split("_JoinSep_")
+            ids, _ = auth.split("_FacetSep_")
+            _, id_hal = ids.split("-")
+            if id_hal != id_contributor:
+                continue
+
+            org_id, org_name = org.split("_FacetSep_")
+            organizations.append(
+                AbstractReferencesConverter.OrganizationInformations(
+                    name=org_name, identifier=org_id, source="hal"
+                )
+            )
+        return set(organizations)
 
     async def _document_type(self, raw_data):
         code_document_type = raw_data.get("docType_s", None)

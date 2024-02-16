@@ -2,30 +2,45 @@ import asyncio
 import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from operator import eq
 from typing import List, AsyncGenerator
+from venv import logger
 
 from sqlalchemy.exc import IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
+from app.db.daos.organization_dao import OrganizationDAO
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
 from app.db.models.document_type import DocumentType
 from app.db.models.label import Label
+from app.db.models.organization import Organization
 from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.organizations.organization_factory import OrganizationFactory
 
 
 class AbstractReferencesConverter(ABC):
     """ "
     Abstract mother class for harvesters
     """
+
+    @dataclass(frozen=True)
+    class OrganizationInformations:
+        """
+        Informations about an organization
+        """
+
+        name: str | None = None
+        identifier: str | None = None
+        source: str | None = None
 
     @dataclass
     class ContributionInformations:
@@ -348,3 +363,78 @@ class AbstractReferencesConverter(ABC):
                 db_contributor.name
             ]
         db_contributor.name = name
+
+    async def _orgnanizations(
+        self, organization_informations: List[OrganizationInformations]
+    ) -> AsyncGenerator[Organization, None]:
+        organizations_identifiers_cache = {}
+        for organization_information in organization_informations:
+            identifier = organization_information.identifier
+            name = organization_information.name
+            assert (
+                identifier is not None or name is not None
+            ), "No identifier or name provided for organization"
+            if identifier is not None:
+                db_organization = organizations_identifiers_cache.get(identifier)
+            if db_organization is None:
+                if identifier is not None:
+                    db_organization = (
+                        await self._get_or_create_organization_by_identifier(
+                            organization_informations=organization_information
+                        )
+                    )
+
+                if identifier is not None:
+                    organizations_identifiers_cache[identifier] = db_organization
+
+            yield db_organization
+
+    async def _get_or_create_organization_by_identifier(
+        self,
+        organization_informations: OrganizationInformations,
+        new_attempt: bool = False,
+    ):
+        async with async_session() as session:
+            async with session.begin_nested():
+                organization = await OrganizationDAO(
+                    session
+                ).get_organization_by_identifier(
+                    identifier=organization_informations.identifier
+                )
+
+                if organization is None:
+                    try:
+                        organization = await OrganizationFactory.solve(
+                            organization_id=organization_informations.identifier,
+                            organization_source=organization_informations.source,
+                        )
+
+                    except DereferencingError:
+                        organization = Organization(
+                            source=organization_informations.source,
+                            source_identifier=organization_informations.identifier,
+                            name=organization_informations.name,
+                        )
+                    session.add(organization)
+                    try:
+                        await session.commit()
+                    except IntegrityError as error:
+                        logger.error("Error while creating organization")
+                        assert new_attempt is False, (
+                            f"Unique identifier {organization_informations.identifier} violation "
+                            "for organization cannot occur twice "
+                            f"during organization creation : {error}"
+                        )
+                        await session.rollback()
+                        organization = (
+                            await self._get_or_create_organization_by_identifier(
+                                organization_informations=organization_informations,
+                                new_attempt=True,
+                            )
+                        )
+                else:
+                    logger.info(
+                        f"Organization with identifier {organization_informations.identifier} already exists"
+                    )
+                    await session.refresh(organization)
+        return organization

@@ -18,11 +18,14 @@ class Organization(Base):
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
     name: Mapped[str] = mapped_column(nullable=False)
 
-    contributions: Mapped[
-        List["app.db.models.contribution.Contribution"]
-    ] = relationship(
-        "app.db.models.contribution.Contribution",
-        secondary=affiliations_table,
-        lazy="raise",
-        back_populates="affiliations",
+    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
+        relationship(
+            "app.db.models.contribution.Contribution",
+            secondary=affiliations_table,
+            lazy="raise",
+            back_populates="affiliations",
+        )
     )
+
+    def __repr__(self):
+        return f"<Organization(id={self.id} name={self.name}, source={self.source}, source_identifier={self.source_identifier})>"
