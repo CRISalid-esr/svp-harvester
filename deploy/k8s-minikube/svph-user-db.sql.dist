@@ -1,4 +1,0 @@
-CREATE USER svp_harvester WITH PASSWORD 'svp_harvester_password';
-CREATE DATABASE svp_harvester;
-GRANT ALL PRIVILEGES ON DATABASE svp_harvester to svp_harvester;
-
