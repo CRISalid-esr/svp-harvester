@@ -59,13 +59,13 @@ class Reference(Base, VersionedRecord):
         "app.db.models.abstract.Abstract",
         back_populates="reference",
         cascade="all, delete-orphan",
-        lazy="raise",
+        lazy="noload",
     )
 
     subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
         "app.db.models.concept.Concept",
         secondary=references_subjects_table,
-        lazy="raise",
+        lazy="noload",
     )
 
     document_type: Mapped[
