@@ -81,9 +81,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 return None
             return isodate.parse_datetime(date).replace(tzinfo=None)
         except isodate.ISO8601Error as error:
-            raise UnexpectedFormatException(
-                f"Invalid date format: {date} from HAL"
-            ) from error
+            logger.error(f"Could not parse date {date} from HAL with error {error}")
+            return None
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(
@@ -180,6 +179,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             "labStructId_i",
             "docType_s",
             "publicationDate_tdate",
+            "producedDate_tdate",
         ]
 
     def _keys_by_pattern(self, pattern: str, data: dict) -> list[str]:
