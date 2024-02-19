@@ -3,7 +3,6 @@ import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, AsyncGenerator
-from venv import logger
 
 from sqlalchemy.exc import IntegrityError
 
@@ -363,28 +362,20 @@ class AbstractReferencesConverter(ABC):
             ]
         db_contributor.name = name
 
-    async def _orgnanizations(
+    async def _organizations(
         self, organization_informations: List[OrganizationInformations]
     ) -> AsyncGenerator[Organization, None]:
+        # Get all the organizations from the database, or create if they do not exist
         organizations_identifiers_cache = {}
         for organization_information in organization_informations:
             identifier = organization_information.identifier
-            name = organization_information.name
-            assert (
-                identifier is not None or name is not None
-            ), "No identifier or name provided for organization"
-            if identifier is not None:
-                db_organization = organizations_identifiers_cache.get(identifier)
+            assert identifier is not None, "No identifier provided for organization"
+            db_organization = organizations_identifiers_cache.get(identifier)
             if db_organization is None:
-                if identifier is not None:
-                    db_organization = (
-                        await self._get_or_create_organization_by_identifier(
-                            organization_informations=organization_information
-                        )
-                    )
-
-                if identifier is not None:
-                    organizations_identifiers_cache[identifier] = db_organization
+                db_organization = await self._get_or_create_organization_by_identifier(
+                    organization_informations=organization_information
+                )
+                organizations_identifiers_cache[identifier] = db_organization
 
             yield db_organization
 
@@ -418,7 +409,6 @@ class AbstractReferencesConverter(ABC):
                     try:
                         await session.commit()
                     except IntegrityError as error:
-                        logger.error("Error while creating organization")
                         assert new_attempt is False, (
                             f"Unique identifier {organization_informations.identifier} violation "
                             "for organization cannot occur twice "
