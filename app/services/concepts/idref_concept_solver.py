@@ -1,9 +1,8 @@
 import re
-
 import aiohttp
-import rdflib
 from aiohttp import ClientTimeout
 from rdflib import Graph
+import rdflib
 
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_solver_rdf import ConceptSolverRdf

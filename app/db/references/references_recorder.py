@@ -1,11 +1,8 @@
 from typing import List
 
-from loguru import logger
-
 from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.reference_event_dao import ReferenceEventDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
-from app.db.models.organization import Organization
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.session import async_session

@@ -1,4 +1,7 @@
+from typing import List
 from pydantic import BaseModel, ConfigDict
+
+from app.models.organization_identifier import OrganizationIdentifier
 
 
 class Organization(BaseModel):
@@ -11,3 +14,5 @@ class Organization(BaseModel):
     source: str
     source_identifier: str
     name: str
+    type: str
+    identifiers: List[OrganizationIdentifier] = []

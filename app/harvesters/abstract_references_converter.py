@@ -2,7 +2,6 @@ import asyncio
 import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from operator import eq
 from typing import List, AsyncGenerator
 from venv import logger
 
@@ -433,8 +432,5 @@ class AbstractReferencesConverter(ABC):
                             )
                         )
                 else:
-                    logger.info(
-                        f"Organization with identifier {organization_informations.identifier} already exists"
-                    )
                     await session.refresh(organization)
         return organization

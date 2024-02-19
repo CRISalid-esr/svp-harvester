@@ -4,6 +4,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.affiliations import affiliations_table
 from app.db.session import Base
+from app.db.models.organization_identifier import (  # pylint: disable=unused-import
+    OrganizationIdentifier,
+)
 
 
 class Organization(Base):
@@ -17,6 +20,15 @@ class Organization(Base):
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
     name: Mapped[str] = mapped_column(nullable=False)
+    type: Mapped[str] = mapped_column(nullable=False, index=True)
+    identifiers: Mapped[
+        List["app.db.models.organization_identifier.OrganizationIdentifier"]
+    ] = relationship(
+        "app.db.models.organization_identifier.OrganizationIdentifier",
+        back_populates="organization",
+        cascade="all, delete-orphan",
+        lazy="joined",
+    )
 
     contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
         relationship(
@@ -26,6 +38,3 @@ class Organization(Base):
             back_populates="affiliations",
         )
     )
-
-    def __repr__(self):
-        return f"<Organization(id={self.id} name={self.name}, source={self.source}, source_identifier={self.source_identifier})>"

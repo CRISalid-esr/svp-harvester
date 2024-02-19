@@ -1,7 +1,6 @@
 import re
 from typing import Generator, List
 from loguru import logger
-from sqlalchemy import inspect
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -17,9 +16,7 @@ from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
-from app.db.models.organization import Organization
 from app.services.concepts.concept_informations import ConceptInformations
-from app.db.session import async_session
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -59,6 +56,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
+        await self._add_organization(json_payload, new_ref)
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
@@ -148,19 +146,21 @@ class HalReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._contributions(
             contribution_informations=contribution_informations, source="hal"
         ):
+            new_ref.contributions.append(contribution)
+
+    async def _add_organization(self, raw_data: dict, new_ref: Reference) -> None:
+        for contribution in new_ref.contributions:
             organizations = self._organizations_from_contributor(
                 raw_data, contribution.contributor.source_identifier
             )
             async for org in self._orgnanizations(organizations):
                 contribution.affiliations.append(org)
-            logger.debug(f"Adding contribution {contribution}")
-            new_ref.contributions.append(contribution)
 
     def _organizations_from_contributor(
         self, raw_data, id_contributor
     ) -> List[AbstractReferencesConverter.OrganizationInformations]:
         # Get the organizations of the contributor
-        organizations = []
+        organizations = set()
 
         for auth_org in raw_data.get("authIdHasStructure_fs", []):
             auth, org = auth_org.split("_JoinSep_")
@@ -170,12 +170,12 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 continue
 
             org_id, org_name = org.split("_FacetSep_")
-            organizations.append(
+            organizations.add(
                 AbstractReferencesConverter.OrganizationInformations(
                     name=org_name, identifier=org_id, source="hal"
                 )
             )
-        return set(organizations)
+        return organizations
 
     async def _document_type(self, raw_data):
         code_document_type = raw_data.get("docType_s", None)
