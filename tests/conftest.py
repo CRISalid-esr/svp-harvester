@@ -30,7 +30,7 @@ from tests.fixtures.open_edition_doc_fixtures import *  # pylint: disable=unused
 from tests.fixtures.open_alex_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.wikidata_concept_solver import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
-
+from tests.fixtures.organizations_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 
 environ["APP_ENV"] = "TEST"
 

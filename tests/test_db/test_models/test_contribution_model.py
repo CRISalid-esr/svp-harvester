@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+
 import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -79,6 +80,7 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
         source="hal",
         source_identifier="source_identifier_1234",
         name="Physics Department",
+        type="laboratory",
     )
 
     contributor = Contributor(
