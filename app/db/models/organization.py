@@ -20,7 +20,7 @@ class Organization(Base):
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    type: Mapped[str] = mapped_column(nullable=False, index=True)
+    type: Mapped[str] = mapped_column(nullable=True, index=True)
     identifiers: Mapped[
         List["app.db.models.organization_identifier.OrganizationIdentifier"]
     ] = relationship(

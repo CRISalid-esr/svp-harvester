@@ -65,14 +65,11 @@ class IdrefOrganizationSolver(OrganizationSolver):
                             continue
                         try:
                             if source in self.IDENTITY_DEEP_SEARCH:
-                                print("DEEP SEARCH", identifier, source, seen)
-                                print("IDENTIFIERS", new_identifiers)
                                 identifiers, seen = (
                                     await organization_factory.OrganizationFactory.solve_identities(
                                         identifier, source, seen
                                     )
                                 )
-                                print("DEEP SEARCH", identifiers)
                                 new_identifiers.extend(identifiers)
                             elif source in self.IDENTITY_SAVE:
                                 new_identifiers.append(
