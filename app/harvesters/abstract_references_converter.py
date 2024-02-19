@@ -22,6 +22,7 @@ from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawRes
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.organizations.merge_organization import merge_organization
 from app.services.organizations.organization_factory import OrganizationFactory
 
 
@@ -388,7 +389,7 @@ class AbstractReferencesConverter(ABC):
             async with session.begin_nested():
                 organization = await OrganizationDAO(
                     session
-                ).get_organization_by_identifier(
+                ).get_organization_by_source_identifier(
                     identifier=organization_informations.identifier
                 )
 
@@ -398,6 +399,20 @@ class AbstractReferencesConverter(ABC):
                             organization_id=organization_informations.identifier,
                             organization_source=organization_informations.source,
                         )
+
+                        # TODO : Handle when the organization exist, with other source identifier.
+
+                        # same_organization = await OrganizationDAO(
+                        #     session
+                        # ).get_organization_by_identifiers(organization.identifiers)
+                        # if same_organization is not None and len(
+                        #     same_organization.identifiers
+                        # ) != len(organization.identifiers):
+                        #     print("Need to merge organizations")
+                        #     logger.warning("Need to merge organizations")
+                        #     organization = merge_organization(
+                        #         same_organization, organization
+                        #     )
 
                     except DereferencingError:
                         organization = Organization(
