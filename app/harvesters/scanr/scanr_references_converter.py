@@ -89,7 +89,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         ):
             new_ref.contributions.append(contribution)
 
-    def _remove_duplicates_from_language_data(self, language_data: dict, model_class):
+    @staticmethod
+    def _remove_duplicates_from_language_data(language_data: dict, model_class):
         processed_items = [
             model_class(value=value, language=key)
             for key, value in language_data.items()
@@ -139,11 +140,13 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         source_mapping = {
             "wikidata": ConceptInformations.ConceptSources.WIKIDATA,
             "sudoc": ConceptInformations.ConceptSources.IDREF,
-            "keyword": ConceptInformations.ConceptSources.JEL,
+            "keyword": None,
         }
-        concept_source = source_mapping.get(concept_type)
-        if concept_source is None:
+        if concept_type not in source_mapping:
             logger.warning(f"Unknown Scanr subject type: {concept_type}")
+
+        concept_source = source_mapping.get(concept_type)
+
         return concept_source
 
     def _get_concept_label(self, label_dict):
