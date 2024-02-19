@@ -90,6 +90,3 @@ class Contribution(Base):
             lazy="joined",
         )
     )
-
-    def __repr__(self):
-        return f"<Contribution(contribution_id={self.id}, role={self.role}), \naffiliations:{self.affiliations}>\n"

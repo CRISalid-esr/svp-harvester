@@ -54,7 +54,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                 new_ref.subjects.append(subject)
 
         for identifier in self._reference_identifier(root):
-            logger.debug(identifier)
             new_ref.identifiers.append(identifier)
 
         new_ref.document_type.append(await self._document_type(root))

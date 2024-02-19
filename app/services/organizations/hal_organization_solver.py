@@ -23,11 +23,20 @@ class HalOrganizationSolver(OrganizationSolver):
         "rnsr_s": "rnsr",
     }
 
+    TYPE_MAPPING = {
+        "institution": "institution",
+        "laboratory": "laboratory",
+        "regroupinstitution": "institution_group",
+        "regrouplaboratory": "laboratory_group",
+        "researchteam": "research_team",
+        "department": "research_team_group",
+    }
+
     async def solve(self, organization_id: str) -> Organization:
         """
-        Solves an organization from an organization id
+        Solves an organization from an organization id, with deep search
         :param organization_id: id of the organization
-        :return: organization
+        :return: Organization
         """
         try:
             async with aiohttp.ClientSession(
@@ -44,7 +53,7 @@ class HalOrganizationSolver(OrganizationSolver):
                         source="hal",
                         source_identifier=organization_id,
                         name=data["response"]["docs"][0]["name_s"],
-                        type=data["response"]["docs"][0]["type_s"],
+                        type=self.TYPE_MAPPING[data["response"]["docs"][0]["type_s"]],
                     )
                     org.identifiers.append(
                         OrganizationIdentifier(type="hal", value=organization_id)
@@ -73,7 +82,6 @@ class HalOrganizationSolver(OrganizationSolver):
                                 OrganizationIdentifier(type=source, value=code)
                             )
                             seen.append(source)
-                    print("NEW IDENTIFIERS", new_identifiers)
                     org.identifiers.extend(new_identifiers)
                     return org
 
