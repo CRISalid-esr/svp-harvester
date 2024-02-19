@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import wraps
 from typing import List, AsyncGenerator
-from loguru import logger
+
 from sqlalchemy.exc import IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
@@ -28,7 +28,15 @@ class AbstractReferencesConverter(ABC):
     Abstract mother class for harvesters
     """
 
-    ref_required_fields: list[str] = ["titles"]
+    reference_non_empty_lists_fields: list[str] = ["titles"]
+    reference_non_blank_string_fields: list[str] = ["harvester"]
+    reference_not_null_fields: list[str] = [
+        "abstracts",
+        "subtitles",
+        "subjects",
+        "document_type",
+        "contributions",
+    ]
 
     @dataclass
     class ContributionInformations:
@@ -99,23 +107,34 @@ class AbstractReferencesConverter(ABC):
         async def wrapper(self, *args, **kwargs):
             new_ref = await func(self, *args, **kwargs)
 
-            assert new_ref.source_identifier is not None, logger.error(
+            assert new_ref.source_identifier is not None, (
                 f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
-                f": Source identifier should be set on reference"
+                f" Source identifier should be set on reference"
             )
 
             failed_fields = []
-            for field in self.ref_required_fields:
-                if not getattr(new_ref, field):
+            for field in self.reference_non_empty_lists_fields:
+                if (
+                    not isinstance(getattr(new_ref, field), list)
+                    or len(getattr(new_ref, field)) == 0
+                ):
+                    failed_fields.append(field)
+            for field in self.reference_non_blank_string_fields:
+                if (
+                    not isinstance(getattr(new_ref, field), str)
+                    or not getattr(new_ref, field).strip()
+                ):
+                    failed_fields.append(field)
+            for field in self.reference_not_null_fields:
+                if getattr(new_ref, field) is None:
                     failed_fields.append(field)
 
             if failed_fields:
-                logger.error(
+                assert False, (
                     f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
                     f" for reference: {new_ref.source_identifier}."
                     f" {', '.join(failed_fields)} should be set on reference"
                 )
-                return None
             return new_ref
 
         return wrapper
