@@ -24,6 +24,34 @@ class HalReferencesConverter(AbstractReferencesConverter):
     Converts raw data from HAL to a normalised Reference object
     """
 
+    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "arxivId_s": "arxiv",
+        "bibcodeId_s": "bibcode",
+        "biorxivId_s": "biorxiv",
+        "cernId_s": "cern",
+        "chemrxivId_s": "chemrxiv",
+        "doiId_s": "doi",
+        "ensamId_s": "ensam",
+        "halId_s": "hal",
+        "inerisId_s": "ineris",
+        "inspireId_s": "inspire",
+        "irdId_s": "ird",
+        "irsteaId_s": "irstea",
+        "irThesaurusId_s": "ir_thesaurus",
+        "meditagriId_s": "meditagri",
+        "nntId_s": "nnt",
+        "okinaId_s": "okina",
+        "oataoId_s": "oatao",
+        "piiId_s": "pii",
+        "ppnId_s": "ppn",
+        "prodinraId_s": "prodinra",
+        "pubmedId_s": "pubmed",
+        "pubmedcentralId_s": "pubmedcentral",
+        "sciencespoId_s": "sciencespo",
+        "swhidId_s": "swhid",
+        "wosId_s": "wos",
+    }
+
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from HAL to a normalised Reference object
@@ -64,12 +92,24 @@ class HalReferencesConverter(AbstractReferencesConverter):
     def _identifiers(self, raw_data):
         fields = self._keys_by_pattern(pattern=r".*Id_s", data=raw_data)
         for field in fields:
+            if field == "linkExtId_s":
+                continue
             # Identifier that are list: europeanProjectCallId_s, wosId_s, piiId_s, pubmedcentralId_s
             if isinstance(raw_data[field], list):
                 for value in raw_data[field]:
-                    yield ReferenceIdentifier(type=field, value=value)
+                    yield ReferenceIdentifier(
+                        type=self._identifier_type(field), value=value
+                    )
             else:
-                yield ReferenceIdentifier(type=field, value=raw_data[field])
+                yield ReferenceIdentifier(
+                    type=self._identifier_type(field), value=raw_data[field]
+                )
+
+    def _identifier_type(self, field):
+        for pattern, identifier_type in self.FIElD_NAME_TO_IDENTIFIER_TYPE.items():
+            if pattern in field:
+                return identifier_type
+        logger.error(f"Unknown identifier type from Hal for field {field}")
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(
