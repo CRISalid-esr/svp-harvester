@@ -1,0 +1,204 @@
+{
+  "head": {
+    "vars": [
+      "prefLabel",
+      "altLabel"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "B - History of Economic Thought, Methodology, and Heterodox Approaches"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "B - History of Economic Thought, Methodology, and Heterodox Approaches"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "B - History of Economic Thought, Methodology, and Heterodox Approaches"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "History of Economic Thought, Methodology, and Heterodox Approaches"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "B - History of Economic Thought, Methodology, and Heterodox Approaches"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "B - Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "B - Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "B - Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "History of Economic Thought, Methodology, and Heterodox Approaches"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "B - Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "B - Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "B - Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "B - Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "History of Economic Thought, Methodology, and Heterodox Approaches"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "B - Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "B - Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "es",
+          "value": "Historia del pensamiento econ\u00f3mico y metodolog\u00eda y enfoques heterodoxes"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "B - Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "de",
+          "value": "Dogmengeschichte und Methodik der Wirtschaftswissenschaften und heterodoxe Ans\u00e4tze"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "B - Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "en",
+          "value": "History of Economic Thought, Methodology, and Heterodox Approaches"
+        }
+      },
+      {
+        "prefLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "B - Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        },
+        "altLabel": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Histoire de la pens\u00e9e \u00e9conomique et m\u00e9thodologie et approches h\u00e9t\u00e9rodoxes"
+        }
+      }
+    ]
+  }
+}

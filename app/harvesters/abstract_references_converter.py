@@ -227,7 +227,7 @@ class AbstractReferencesConverter(ABC):
         async with async_session() as session:
             async with session.begin_nested():
                 # First we resolve the uri of the concept
-                concept_informations.uri = await ConceptFactory.get_uri(
+                concept_informations.uri = ConceptFactory.get_uri(
                     concept_id=concept_informations.uri,
                     concept_source=concept_informations.source,
                 )

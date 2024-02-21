@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
+from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.services.concepts.jel_concept_solver import JelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
@@ -16,7 +18,7 @@ class ConceptFactory:
     """
 
     @staticmethod
-    async def get_uri(
+    def get_uri(
         concept_id: str, concept_source: ConceptInformations.ConceptSources = None
     ) -> str:
         """
@@ -25,7 +27,7 @@ class ConceptFactory:
         if concept_source is None:
             concept_source = ConceptFactory._infer_source(concept_id)
         solver: ConceptSolver = ConceptFactory._create_solver(concept_source)
-        return await solver.get_uri(concept_id)
+        return solver.get_uri(concept_id)
 
     @staticmethod
     async def solve(
@@ -55,6 +57,9 @@ class ConceptFactory:
         if concept_source == ConceptInformations.ConceptSources.WIKIDATA:
             return WikidataConceptSolver()
         if concept_source == ConceptInformations.ConceptSources.JEL:
+            setting = get_app_settings()
+            if setting.svp_jel_proxy_url is not None:
+                return SparqlJelConceptSolver()
             return JelConceptSolver()
         # add more sources here
         # if no solver is found, raise an exception

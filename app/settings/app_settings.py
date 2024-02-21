@@ -83,3 +83,5 @@ class AppSettings(BaseSettings):
         "WIKIDATA": 30,
         "IDREF": 30,
     }
+
+    svp_jel_proxy_url: str | None = None
