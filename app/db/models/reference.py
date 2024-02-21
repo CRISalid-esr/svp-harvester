@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -93,3 +94,6 @@ class Reference(Base, VersionedRecord):
             lazy="joined",
         )
     )
+
+    issued: Mapped[datetime] = mapped_column(nullable=True, index=True)
+    created: Mapped[datetime] = mapped_column(nullable=True, index=True)

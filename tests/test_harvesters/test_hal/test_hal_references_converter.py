@@ -70,10 +70,26 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             test_reference.contributions[0].contributor.source_identifier
             == expected_contributor_source_identifier
         )
-        for type, value in zip(
+        for type_, value in zip(
             expected_references_identifier_types, expected_references_identifier_values
         ):
             assert any(
-                identifier.type == type and identifier.value == value
+                identifier.type == type_ and identifier.value == value
                 for identifier in test_reference.identifiers
             )
+
+
+@pytest.mark.asyncio
+async def test_convert_with_date_inconsistency(
+    hal_api_docs_with_date_inconsistency, caplog
+):
+    """Test that the converter will raise an exception when the date is inconsistent"""
+    converter_under_tests = HalReferencesConverter()
+    for doc in hal_api_docs_with_date_inconsistency["response"]["docs"]:
+        result = JsonHarvesterRawResult(
+            source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+        )
+        reference = await converter_under_tests.convert(result)
+        assert reference.issued is None
+        assert reference.created is None
+        assert "Could not parse date" in caplog.text
