@@ -24,6 +24,13 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     IDENTIFIERS_TO_IGNORE = ["scanr"]
 
+    SOURCE_MAPPING = {
+        "wikidata": ConceptInformations.ConceptSources.WIKIDATA,
+        "sudoc": ConceptInformations.ConceptSources.IDREF,
+        "keyword": None,
+    }
+
+    async def convert(self, raw_data: JsonRawResult) -> Reference:
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
         """
@@ -109,10 +116,20 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
+    # TODO: Refacto the concept_cache method. The concept_id is at None in cases where the type is "keyword".
+    #  Make a method who deduplicate on two phases: fist with the couple type and code, then for those where type is "keyword" aka code is None, deduplicate on the label and language.
+
     async def _concepts(self, domains):
-        concept_cache = {}
+        subjects_with_source = []
+        subjects_without_source = []
 
         for subject in domains:
+            if self._get_concept_source(subject.get("type")) is not None:
+                subjects_with_source.append(subject)
+            else:
+                subjects_without_source.append(subject)
+
+        for subject in subjects_with_source:
             concept_id = subject.get("code")
 
             concept_type = subject.get("type")
@@ -121,9 +138,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             label_dict = subject.get("label", {})
             concept_label, concept_language = self._get_concept_label(label_dict)
 
-            if concept_id in concept_cache:
-                yield concept_cache[concept_id]
-                continue
             concept_db = await self._get_or_create_concept_by_uri(
                 ConceptInformations(
                     uri=concept_id,
@@ -132,20 +146,26 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     source=concept_source,
                 )
             )
-            concept_cache[concept_id] = concept_db
+            yield concept_db
+
+        for subject in subjects_without_source:
+            label_dict = subject.get("label", {})
+            concept_label, concept_language = self._get_concept_label(label_dict)
+
+            concept_db = await self._get_or_create_concept_by_label(
+                ConceptInformations(
+                    label=concept_label,
+                    language=concept_language,
+                )
+            )
             yield concept_db
 
     @staticmethod
     def _get_concept_source(concept_type):
-        source_mapping = {
-            "wikidata": ConceptInformations.ConceptSources.WIKIDATA,
-            "sudoc": ConceptInformations.ConceptSources.IDREF,
-            "keyword": None,
-        }
-        if concept_type not in source_mapping:
+        if concept_type not in ScanrReferencesConverter.SOURCE_MAPPING:
             logger.warning(f"Unknown Scanr subject type: {concept_type}")
 
-        concept_source = source_mapping.get(concept_type)
+        concept_source = ScanrReferencesConverter.SOURCE_MAPPING.get(concept_type)
 
         return concept_source
 
