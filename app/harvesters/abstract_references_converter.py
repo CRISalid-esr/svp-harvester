@@ -244,7 +244,7 @@ class AbstractReferencesConverter(ABC):
                         )
                     # If the dereferencing fails, create a concept with the uri and the label
                     except DereferencingError as error:
-                        logger.warn(
+                        logger.error(
                             "Dereferencing failure for concept "
                             f"{concept_informations.uri} with error  : {error}"
                         )

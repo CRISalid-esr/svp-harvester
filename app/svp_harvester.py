@@ -38,6 +38,16 @@ class SvpHarvester(FastAPI):
 
         self.include_router(gui_router)
 
+        if settings.svp_jel_proxy_url is not None:
+            logger.info(
+                f"JEL Sparql endpoint has been set to {settings.svp_jel_proxy_url}"
+            )
+        else:
+            logger.warning(
+                "JEL Sparql endpoint has not been set, "
+                "JEL concepts URIs wille be resolved against ZBW Skosmos instance"
+            )
+
         # Remove default logger and add custom logger
         logger.remove()
         logger.add(
