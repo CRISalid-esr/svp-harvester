@@ -128,4 +128,8 @@ class ReferencesRecorder:
     async def _create_reference(self, new_ref: Reference):
         async with async_session() as session:
             async with session.begin():
+                for contrib in new_ref.contributions:
+                    contrib.affiliations = [
+                        await session.merge(org) for org in contrib.affiliations
+                    ]
                 session.add(new_ref)
