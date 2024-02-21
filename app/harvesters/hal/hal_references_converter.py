@@ -24,6 +24,34 @@ class HalReferencesConverter(AbstractReferencesConverter):
     Converts raw data from HAL to a normalised Reference object
     """
 
+    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "arxivId_s": "arxiv",
+        "bibcodeId_s": "bibcode",
+        "biorxivId_s": "biorxiv",
+        "cernId_s": "cern",
+        "chemrxivId_s": "chemrxiv",
+        "doiId_s": "doi",
+        "ensamId_s": "ensam",
+        "halId_s": "hal",
+        "inerisId_s": "ineris",
+        "inspireId_s": "inspire",
+        "irdId_s": "ird",
+        "irsteaId_s": "irstea",
+        "irThesaurusId_s": "ir_thesaurus",
+        "meditagriId_s": "meditagri",
+        "nntId_s": "nnt",
+        "okinaId_s": "okina",
+        "oataoId_s": "oatao",
+        "piiId_s": "pii",
+        "ppnId_s": "ppn",
+        "prodinraId_s": "prodinra",
+        "pubmedId_s": "pubmed",
+        "pubmedcentralId_s": "pubmedcentral",
+        "sciencespoId_s": "sciencespo",
+        "swhidId_s": "swhid",
+        "wosId_s": "wos",
+    }
+
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from HAL to a normalised Reference object
@@ -63,14 +91,23 @@ class HalReferencesConverter(AbstractReferencesConverter):
         return new_ref
 
     def _identifiers(self, raw_data):
-        fields = self._keys_by_pattern(pattern=r".*Id_s", data=raw_data)
-        for field in fields:
-            # Identifier that are list: europeanProjectCallId_s, wosId_s, piiId_s, pubmedcentralId_s
-            if isinstance(raw_data[field], list):
-                for value in raw_data[field]:
-                    yield ReferenceIdentifier(type=field, value=value)
-            else:
-                yield ReferenceIdentifier(type=field, value=raw_data[field])
+        for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
+            if field == "linkExtId_s":
+                continue
+            field_data = raw_data[field]
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            for value in field_data:
+                identifier_type = self._identifier_type(field)
+                if identifier_type is not None:
+                    yield ReferenceIdentifier(type=identifier_type, value=value)
+
+    def _identifier_type(self, field):
+        for pattern, identifier_type in self.FIElD_NAME_TO_IDENTIFIER_TYPE.items():
+            if pattern in field:
+                return identifier_type
+        logger.error(f"Unknown identifier type from Hal for field {field}")
+        return None
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(
@@ -101,8 +138,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
                         source=ConceptInformations.ConceptSources.JEL,
                     )
                 )
-            except AssertionError:
-                logger.error(f"Could not create concept with uri {code}")
+            except AssertionError as error:
+                logger.error(
+                    f"Could not create JEL concept with uri {code} because : {error}"
+                )
                 continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:

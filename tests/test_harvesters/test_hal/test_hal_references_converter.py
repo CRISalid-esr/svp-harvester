@@ -34,7 +34,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_contributor_name = "Violaine Sebillotte Cuchet"
     expected_contributor_source = "hal"
     expected_contributor_source_identifier = "10227"
-    expected_references_identifier = ["halshs-01387023"]
+    expected_references_identifier_types = ["hal", "doi"]
+    expected_references_identifier_values = ["halshs-01387023", "doi/1234"]
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -69,7 +70,10 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             test_reference.contributions[0].contributor.source_identifier
             == expected_contributor_source_identifier
         )
-        assert any(
-            identifier.value == expected_references_identifier[0]
-            for identifier in test_reference.identifiers
-        )
+        for type, value in zip(
+            expected_references_identifier_types, expected_references_identifier_values
+        ):
+            assert any(
+                identifier.type == type and identifier.value == value
+                for identifier in test_reference.identifiers
+            )
