@@ -83,4 +83,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: crisalidesr/svp-harvester:v0.2-dev
+          tags: crisalidesr/svp-harvester:v0.3-dev
