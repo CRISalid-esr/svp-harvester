@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, AsyncGenerator
 
+from loguru import logger
 from sqlalchemy.exc import IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
@@ -242,7 +243,11 @@ class AbstractReferencesConverter(ABC):
                             concept_source=concept_informations.source,
                         )
                     # If the dereferencing fails, create a concept with the uri and the label
-                    except DereferencingError:
+                    except DereferencingError as error:
+                        logger.warn(
+                            "Dereferencing failure for concept "
+                            f"{concept_informations.uri} with error  : {error}"
+                        )
                         concept = Concept(uri=concept_informations.uri)
                         concept.labels.append(
                             Label(
