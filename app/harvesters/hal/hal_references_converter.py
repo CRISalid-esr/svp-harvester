@@ -90,26 +90,20 @@ class HalReferencesConverter(AbstractReferencesConverter):
         return new_ref
 
     def _identifiers(self, raw_data):
-        fields = self._keys_by_pattern(pattern=r".*Id_s", data=raw_data)
-        for field in fields:
+        for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
             if field == "linkExtId_s":
                 continue
-            # Identifier that are list: europeanProjectCallId_s, wosId_s, piiId_s, pubmedcentralId_s
-            if isinstance(raw_data[field], list):
-                for value in raw_data[field]:
-                    yield ReferenceIdentifier(
-                        type=self._identifier_type(field), value=value
-                    )
-            else:
-                yield ReferenceIdentifier(
-                    type=self._identifier_type(field), value=raw_data[field]
-                )
+            for value in list(raw_data[field]):
+                identifier_type = self._identifier_type(field)
+                if identifier_type is not None:
+                    yield ReferenceIdentifier(type=identifier_type, value=value)
 
     def _identifier_type(self, field):
         for pattern, identifier_type in self.FIElD_NAME_TO_IDENTIFIER_TYPE.items():
             if pattern in field:
                 return identifier_type
         logger.error(f"Unknown identifier type from Hal for field {field}")
+        return None
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(
