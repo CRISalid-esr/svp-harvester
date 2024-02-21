@@ -26,7 +26,7 @@ class SparqlJelConceptSolver(ConceptSolverRdf):
     }
     """
 
-    async def get_uri(self, concept_id: str) -> str:
+    def get_uri(self, concept_id: str) -> str:
         """
         Concatenate the JEL namespace with the last part of the concept id
         """
