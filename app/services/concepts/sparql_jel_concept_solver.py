@@ -58,6 +58,13 @@ class SparqlJelConceptSolver(ConceptSolverRdf):
             sparql_response = await client.query(query)
             concept = DbConcept(uri=concept_id)
             labels = sparql_response["results"]["bindings"]
+            pref_labels = [
+                label["prefLabel"]["value"] for label in labels if "prefLabel" in label
+            ]
+            if not pref_labels:
+                raise DereferencingError(
+                    f"JEL Sparql endpoint returned no prefLabel while dereferencing {concept_id}"
+                )
             self._add_labels(
                 concept,
                 list(
