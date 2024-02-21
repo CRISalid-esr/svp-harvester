@@ -93,7 +93,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
             if field == "linkExtId_s":
                 continue
-            for value in list(raw_data[field]):
+            field_data = raw_data[field]
+            if not isinstance(field_data, list):
+                field_data = [field_data]
+            for value in field_data:
                 identifier_type = self._identifier_type(field)
                 if identifier_type is not None:
                     yield ReferenceIdentifier(type=identifier_type, value=value)
