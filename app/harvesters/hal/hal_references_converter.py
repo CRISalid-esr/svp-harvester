@@ -1,6 +1,6 @@
 import re
-from typing import Generator
 import isodate
+from typing import Generator, List
 from loguru import logger
 
 from app.db.models.abstract import Abstract
@@ -87,6 +87,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         await self._add_contributions(json_payload, new_ref)
         new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
         new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
+        await self._add_organization(json_payload, new_ref)
         new_ref.hash = self._hash(json_payload)
         new_ref.harvester = "hal"
         new_ref.source_identifier = raw_data.source_identifier
@@ -198,6 +199,37 @@ class HalReferencesConverter(AbstractReferencesConverter):
             contribution_informations=contribution_informations, source="hal"
         ):
             new_ref.contributions.append(contribution)
+
+    async def _add_organization(self, raw_data: dict, new_ref: Reference) -> None:
+        # For each contribution, get the organizations of the contributor
+        # and add them to the contribution
+        for contribution in new_ref.contributions:
+            organizations = self._organizations_from_contributor(
+                raw_data, contribution.contributor.source_identifier
+            )
+            async for org in self._organizations(organizations):
+                contribution.affiliations.append(org)
+
+    def _organizations_from_contributor(
+        self, raw_data, id_contributor
+    ) -> List[AbstractReferencesConverter.OrganizationInformations]:
+        # Get the organizations informations of the contributor
+        organizations = set()
+
+        for auth_org in raw_data.get("authIdHasStructure_fs", []):
+            auth, org = auth_org.split("_JoinSep_")
+            ids, _ = auth.split("_FacetSep_")
+            _, id_hal = ids.split("-")
+            if id_hal != id_contributor:
+                continue
+
+            org_id, org_name = org.split("_FacetSep_")
+            organizations.add(
+                AbstractReferencesConverter.OrganizationInformations(
+                    name=org_name, identifier=org_id, source="hal"
+                )
+            )
+        return organizations
 
     async def _document_type(self, raw_data):
         code_document_type = raw_data.get("docType_s", None)
