@@ -100,8 +100,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
                         source=ConceptInformations.ConceptSources.JEL,
                     )
                 )
-            except AssertionError:
-                logger.error(f"Could not create concept with uri {code}")
+            except AssertionError as error:
+                logger.error(
+                    f"Could not create JEL concept with uri {code} because : {error}"
+                )
                 continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)
         for field in fields:
