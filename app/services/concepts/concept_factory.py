@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
+from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.services.concepts.jel_concept_solver import JelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
@@ -55,6 +57,9 @@ class ConceptFactory:
         if concept_source == ConceptInformations.ConceptSources.WIKIDATA:
             return WikidataConceptSolver()
         if concept_source == ConceptInformations.ConceptSources.JEL:
+            setting = get_app_settings()
+            if setting.svp_jel_proxy_url is not None:
+                return SparqlJelConceptSolver()
             return JelConceptSolver()
         # add more sources here
         # if no solver is found, raise an exception
