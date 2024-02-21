@@ -1,11 +1,12 @@
 import re
-import isodate
 from typing import Generator, List
+
+import isodate
 from loguru import logger
 
 from app.db.models.abstract import Abstract
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
