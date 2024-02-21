@@ -23,7 +23,6 @@ from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawRes
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
-from app.services.organizations.merge_organization import merge_organization
 from app.services.organizations.organization_factory import OrganizationFactory
 
 
