@@ -1,0 +1,497 @@
+{
+  "took": 7,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 12.227409,
+    "hits": [
+      {
+        "_index": "scanr-publications-20230912",
+        "_type": "_doc",
+        "_id": "KHToPYsB9owg1fG7YUfI",
+        "_version": 1,
+        "_seq_no": 537000,
+        "_primary_term": 1,
+        "found": true,
+        "_source": {
+          "id": "nnt2019lysem032",
+          "title": {
+            "default": "Sécurité adaptative et énergétiquement efficace dans l’Internet des Objets"
+          },
+          "summary": {
+            "default": "La sécurité des circuits intégrés pour l’IoT est généralement incompatible avec[...]",
+            "fr": "La sécurité des circuits intégrés pour l’IoT est généralement incompatible avec la [...]",
+            "en": "The goal of this work is to propose new methods that provide both a high security and a high energy efficiency[...]"
+          },
+          "externalIds": [
+            {
+              "type": "nnt",
+              "id": "2019lysem032"
+            },
+            {
+              "type": "hal",
+              "id": "tel-02966640"
+            }
+          ],
+          "year": 2019,
+          "publicationDate": "2019-12-06T00:00:00",
+          "type": "these",
+          "productionType": "thesis",
+          "isOa": true,
+          "oaEvidence": {
+            "hostType": "repository",
+            "url": "https://theses.hal.science/tel-02966640/document"
+          },
+          "source": {},
+          "keywords": {
+            "default": [
+              "Déni de service",
+              "Radio de réveil",
+              "Sécurité des circuits intégrés",
+              "Attaques et contre-mesures matérielles",
+              "Efficacité énergétique",
+              "Efficacité énergétique",
+              "Energy efficiency",
+              "Wake-up radio",
+              "Denial-of- Service",
+              "Hardware attacks and countermeasures",
+              "Efficacité énergétique",
+              "Energy efficiency",
+              "Wake-up radio",
+              "Denial-of- Service",
+              "Hardware attacks and countermeasures",
+              "Déni de service",
+              "Radio de réveil",
+              "Sécurité des circuits intégrés",
+              "Attaques et contre-mesures matérielles"
+            ]
+          },
+          "domains": [
+            {
+              "label": {
+                "default": "Efficacité énergétique"
+              },
+              "code": "Q924713",
+              "type": "wikidata",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Efficacité énergétique"
+              },
+              "type": "keyword",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Internet des objets"
+              },
+              "code": "146775570",
+              "type": "sudoc",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Systèmes informatiques -- Mesures de sûreté"
+              },
+              "code": "027248062",
+              "type": "sudoc",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Attaques par déni de service"
+              },
+              "code": "169553345",
+              "type": "sudoc",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Économies d'énergie"
+              },
+              "code": "027710254",
+              "type": "sudoc",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Déni de service"
+              },
+              "code": "Q131406",
+              "type": "wikidata",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "circuits intégrés"
+              },
+              "code": "Q80831",
+              "type": "wikidata",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "contre-mesures"
+              },
+              "code": "Q1032176",
+              "type": "wikidata",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Déni de service"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Radio de réveil"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Sécurité des circuits intégrés"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Attaques et contre-mesures matérielles"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Energy efficiency"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Wake-up radio"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Denial-of- Service"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "Hardware attacks and countermeasures"
+              },
+              "type": "keyword",
+              "count": 2
+            },
+            {
+              "label": {
+                "default": "l’Internet des Objets"
+              },
+              "code": "Q251212",
+              "type": "wikidata",
+              "count": 1
+            }
+          ],
+          "affiliations": [
+            {
+              "id": "200017711F",
+              "label": {
+                "fr": "Mortalité, santé, épidémiologie",
+                "default": "Mortalité, santé, épidémiologie"
+              },
+              "acronym": {
+                "fr": "MSE",
+                "default": "MSE"
+              },
+              "address": [
+                {
+                  "main": true,
+                  "address": "9 Cours des Humanités",
+                  "gps": {
+                    "lat": 48.909428,
+                    "lon": 2.366671
+                  },
+                  "postcode": "93300",
+                  "city": "Aubervilliers",
+                  "citycode": "93001",
+                  "urbanUnitCode": "UU00851",
+                  "urbanUnitLabel": "Paris",
+                  "localisationSuggestions": [
+                    "Île-de-France",
+                    "Paris (agglomération)",
+                    "Aubervilliers",
+                    "Créteil (académie)",
+                    "Seine-Saint-Denis (93)"
+                  ],
+                  "country": "France",
+                  "provider": "adresse.data.gouv.fr",
+                  "score": 0.5643390909090901
+                }
+              ]
+            },
+            {
+              "id": "grid.29773.38"
+            },
+            {
+              "id": "star"
+            },
+            {
+              "id": "130021363",
+              "label": {
+                "fr": "Université de Lyon - Communauté d'universités et d'établissements",
+                "default": "Université de Lyon - Communauté d'universités et d'établissements"
+              },
+              "acronym": {
+                "fr": "UdL",
+                "default": "UdL"
+              },
+              "address": [
+                {
+                  "main": true,
+                  "address": "90 Rue Pasteur",
+                  "gps": {
+                    "lat": 45.748601,
+                    "lon": 4.836732
+                  },
+                  "postcode": "69007",
+                  "city": "Lyon",
+                  "citycode": "69387",
+                  "urbanUnitCode": "UU00758",
+                  "urbanUnitLabel": "Lyon",
+                  "localisationSuggestions": [
+                    "Auvergne-Rhône-Alpes",
+                    "Lyon (agglomération)",
+                    "Lyon 7e",
+                    "Lyon (académie)",
+                    "Rhône (69)"
+                  ],
+                  "country": "France",
+                  "provider": "adresse.data.gouv.fr",
+                  "score": 0.7267050538823241
+                }
+              ]
+            }
+          ],
+          "authorsCount": 1,
+          "authors": [
+            {
+              "firstName": "Maxime",
+              "lastName": "Montoya",
+              "fullName": "Maxime Montoya",
+              "person": "idref249750902",
+              "role": "author",
+              "affiliations": [
+                {
+                  "name": "Ed Sis 488",
+                  "datasource": "theses",
+                  "ids": []
+                },
+                {
+                  "name": "École nationale supérieure des mines",
+                  "idref": "028028694",
+                  "aliases": [
+                    "École des mines",
+                    "École des mines (Saint-Etienne)",
+                    "École des mineurs de Saint-Étienne",
+                    "ENSMSE",
+                    "EMSE"
+                  ],
+                  "comments": [
+                    "Dépend du Ministère ayant l'industrie dans ses attributions (Ministère du redéploiement industriel et du commerce extérieur, Ministère de l'industrie, des P et T et du tourisme, etc.)",
+                    "Participe à l'institut Mines-Télécom depuis 2012, suite au décret n° 2012-279 du 28 février 2012, et en devient école interne suite au décret n° 2016-1527 du 14 novembre 2016."
+                  ],
+                  "ISNI": "0000000121847997",
+                  "BNF": "http://catalogue.bnf.fr/ark:/12148/cb11994668z",
+                  "viaf": "http://viaf.org/viaf/150904809",
+                  "alias_idref": [
+                    "03327441X"
+                  ],
+                  "datasource": "theses",
+                  "ids": [
+                    {
+                      "id": "grid.424462.2",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "siret"
+                    }
+                  ]
+                },
+                {
+                  "name": "Centre Microélectronique de Provence - Site Georges Charpak (CMP-GC) / CMP-ENSMSE",
+                  "datasource": "theses",
+                  "ids": [
+                    {
+                      "id": "200322879K",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "siren"
+                    }
+                  ]
+                },
+                {
+                  "name": "Université de Lyon",
+                  "idref": "190915757",
+                  "aliases": [
+                    "UDL",
+                    "COMUE UDL",
+                    "Communauté d'universités et établissements Université de Lyon",
+                    "COMUE Université de Lyon"
+                  ],
+                  "addresses": [
+                    "92, rue Pasteur, CS 30122, 69361 Lyon cedex 07"
+                  ],
+                  "comments": [
+                    "« Université de Lyon » est un établissement public à caractère scientifique, culturel et professionnel constitué sous la forme d’une communauté d’universités et établissements (COMUE). Il a été créée par le décret n° 2015-127 du 5 février 2015, entré en vigueur le 1er mars 2015. L’établissement est composé des membres suivants : – au titre des établissements d’enseignement supérieur : l’Ecole centrale de Lyon, l’Ecole nationale d’ingénieurs de Saint-Etienne, l’Ecole nationale des travaux publics de l’Etat, l’Ecole normale supérieure de Lyon, l’Institut d’enseignement supérieur et de recherche en alimentation, santé animale, sciences agronomiques et de l’environnement (VetAgroSup), l’Institut d’études politiques de Lyon, l’Institut national des sciences appliquées de Lyon, l’université Lyon-I, l’université Lyon-II, l’université Lyon-III, l’université de Saint-Etienne ; – au titre des organismes de recherche : le Centre national de la recherche scientifique."
+                  ],
+                  "BNF": "http://catalogue.bnf.fr/ark:/12148/cb17846082z",
+                  "viaf": "http://viaf.org/viaf/538145556877096660009",
+                  "alias_idref": [],
+                  "datasource": "theses",
+                  "ids": [
+                    {
+                      "id": "grid.25697.3f",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "130021363",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "13002136300010",
+                      "type": "siret"
+                    }
+                  ]
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Centre Microélectronique de Provence - Site Georges Charpak (CMP-GC), CMP-ENSMSE, Mines Saint-Étienne MSE, École des Mines de Saint-Étienne, 880, route de Mimet 13541 GARDANNE - FRANCE, France",
+                  "hal_docid": "30860",
+                  "country": "France",
+                  "structId": "30860",
+                  "datasource": "hal",
+                  "ids": [
+                    {
+                      "id": "grid.424462.2",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "200322879K",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "18009202500105",
+                      "type": "siren"
+                    }
+                  ]
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "École des Mines de Saint-Étienne, Mines Saint-Étienne MSE, IMT, Institut Mines-Télécom [Paris], 158, Cours Fauriel - 42023 Saint Étienne cedex 2, France",
+                  "hal_docid": "29212",
+                  "country": "France",
+                  "structId": "29212",
+                  "datasource": "hal",
+                  "ids": [
+                    {
+                      "id": "grid.29773.38",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "200017711F",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "180092025",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "18009202500089",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "18009202500154",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "180037020",
+                      "type": "siren"
+                    }
+                  ]
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Institut Mines-Télécom [Paris], IMT, 37-39 Rue Dareau, 75014 Paris, France",
+                  "hal_docid": "302102",
+                  "country": "France",
+                  "ror": "https://ror.org/025vp2923",
+                  "structId": "302102",
+                  "datasource": "hal",
+                  "ids": [
+                    {
+                      "id": "grid.29773.38",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "180092025",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "18009202500089",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "18009202500154",
+                      "type": "siret"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
