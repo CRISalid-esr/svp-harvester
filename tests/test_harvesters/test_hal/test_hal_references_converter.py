@@ -70,12 +70,13 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             test_reference.contributions[0].contributor.source_identifier
             == expected_contributor_source_identifier
         )
-        for type, value in zip(
+        for type_, value in zip(
             expected_references_identifier_types, expected_references_identifier_values
         ):
             assert any(
-                identifier.type == type and identifier.value == value
+                identifier.type == type_ and identifier.value == value
                 for identifier in test_reference.identifiers
+            )
 
 
 @pytest.mark.asyncio
