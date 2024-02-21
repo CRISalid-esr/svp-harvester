@@ -15,8 +15,8 @@ class IdRefConceptSolver(ConceptSolverRdf):
     IdRef concept solver
     """
 
-    async def get_uri(self, concept_id: str) -> str:
-        _, idref_uri = await self._build_url_from_concept_id_or_uri(concept_id)
+    def get_uri(self, concept_id: str) -> str:
+        _, idref_uri = self._build_url_from_concept_id_or_uri(concept_id)
         return idref_uri
 
     async def solve(self, concept_id: str) -> DbConcept:
@@ -25,7 +25,7 @@ class IdRefConceptSolver(ConceptSolverRdf):
         :param concept_id: concept id (numeric or uri)
         :return: Concept
         """
-        idref_url, idref_uri = await self._build_url_from_concept_id_or_uri(concept_id)
+        idref_url, idref_uri = self._build_url_from_concept_id_or_uri(concept_id)
         try:
             async with aiohttp.ClientSession(
                 timeout=ClientTimeout(total=float(2))
@@ -61,7 +61,7 @@ class IdRefConceptSolver(ConceptSolverRdf):
                 f"Unknown error while dereferencing {idref_url} with message {error}"
             ) from error
 
-    async def _build_url_from_concept_id_or_uri(self, concept_id):
+    def _build_url_from_concept_id_or_uri(self, concept_id):
         original_concept_id = concept_id
         match = re.search(r"https?://www.idref.fr/(\d+X?)/id", concept_id)
         if match is not None:
