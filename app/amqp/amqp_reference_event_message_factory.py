@@ -12,17 +12,25 @@ from app.models.reference_events import ReferenceEvent as ReferenceEventModel
 class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
     """Factory for building AMQP messages related to reference events."""
 
+    def __init__(self, content):
+        super().__init__(content)
+        self.reference_event_type = None
+
     def _build_routing_key(self) -> str:
-        return "event.references.reference.event"
+        if not self.reference_event_type:
+            return self.settings.amqp_reference_event_routing_key.replace("*", "event")
+        return self.settings.amqp_reference_event_routing_key.replace(
+            "*", self.reference_event_type
+        )
 
     async def _build_payload(self) -> dict[str, Any]:
         async with async_session() as session:
             async with session.begin():
-                result = await ReferenceEventDAO(
+                reference_event: DbReferenceEvent = await ReferenceEventDAO(
                     session
                 ).get_detailed_reference_event_by_id(self.content.get("id"))
-                reference_event: DbReferenceEvent = result[0]
-                entity: DbEntity = result[1]
+                self.reference_event_type = reference_event.type
+                entity: DbEntity = reference_event.harvesting.retrieval.entity
                 reference_event_representation: ReferenceEventModel = (
                     ReferenceEventModel.model_validate(reference_event)
                 )

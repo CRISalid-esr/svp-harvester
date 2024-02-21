@@ -20,7 +20,7 @@ class AMQPMessagePublisher:
 
     async def publish(self, content: dict) -> None:
         """Publish a message to the AMQP queue"""
-        routing_key, payload = await self._build_message(content)
+        payload, routing_key = await self._build_message(content)
         if routing_key is None:
             return
         message = aio_pika.Message(

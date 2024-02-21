@@ -2,7 +2,6 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
-from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
@@ -59,21 +58,15 @@ class ReferenceEventDAO(AbstractDAO):
         :return:   the reference event or None if not found
         """
         stmt = (
-            select(ReferenceEvent, Entity)
+            select(ReferenceEvent)
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(
-                    Reference.contributions, innerjoin=False
-                )
+                joinedload(ReferenceEvent.reference).joinedload(Reference.contributions)
             )
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(
-                    Reference.subjects, innerjoin=False
-                )
+                joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
             )
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(
-                    Reference.abstracts, innerjoin=False
-                )
+                joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
             )
             .options(
                 joinedload(ReferenceEvent.harvesting)
@@ -82,4 +75,4 @@ class ReferenceEventDAO(AbstractDAO):
             )
             .where(ReferenceEvent.id == reference_event_id)
         )
-        return (await self.db_session.execute(stmt)).unique().first()
+        return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()

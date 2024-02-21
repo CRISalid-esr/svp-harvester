@@ -92,7 +92,7 @@ async def test_publish_created_reference(
         },
     }
 
-    expected_sent_message_routing_key = "event.references.reference.event"
+    expected_sent_message_routing_key = "event.references.reference.created"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         str(expected_sent_message_payload).encode(),

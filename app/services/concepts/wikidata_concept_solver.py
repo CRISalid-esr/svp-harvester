@@ -13,13 +13,13 @@ class WikidataConceptSolver(ConceptSolver):
     Wikidata concept solver
     """
 
-    async def get_uri(self, concept_id: str) -> str:
+    def get_uri(self, concept_id: str) -> str:
         """
         Get the uri of a concept from a concept id
         :param concept_id: concept id
         :return: uri
         """
-        _, wikidata_uri = await self._build_url_from_concept_id_or_uri(concept_id)
+        _, wikidata_uri = self._build_url_from_concept_id_or_uri(concept_id)
         return wikidata_uri
 
     async def solve(self, concept_id: str) -> DbConcept:
@@ -28,9 +28,7 @@ class WikidataConceptSolver(ConceptSolver):
         :param concept_id: concept id
         :return: Concept
         """
-        wikidata_url, wikidata_uri = await self._build_url_from_concept_id_or_uri(
-            concept_id
-        )
+        wikidata_url, wikidata_uri = self._build_url_from_concept_id_or_uri(concept_id)
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(2))
@@ -76,7 +74,6 @@ class WikidataConceptSolver(ConceptSolver):
         return [(pref_labels, True), (alt_labels, False)]
 
     def _add_labels(self, concept: DbConcept, labels: dict, preferred: bool = True):
-
         def interesting_labels(label_language):
             a = (
                 label_language in self.settings.concept_languages
@@ -113,9 +110,7 @@ class WikidataConceptSolver(ConceptSolver):
             )
         )
 
-    async def _build_url_from_concept_id_or_uri(
-        self, concept_id: str
-    ) -> Tuple[str, str]:
+    def _build_url_from_concept_id_or_uri(self, concept_id: str) -> Tuple[str, str]:
         """
         Builds a URL from a Wikidata uri
         :param concept_id: concept id or uri
