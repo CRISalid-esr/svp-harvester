@@ -112,8 +112,6 @@ class AbstractHarvester(ABC):
                 new_ref = await self.converter.convert(result)
                 if new_ref is None:
                     continue
-                # copy the harvester name from the harvesting to the reference
-                new_ref.harvester = (await self.get_harvesting()).harvester
                 old_ref = await references_recorder.exists(new_ref=new_ref)
                 if old_ref is not None:
                     existing_references.append(old_ref)

@@ -59,7 +59,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         await self._add_contributions(json_payload, new_ref)
 
         new_ref.hash = self._hash(json_payload)
-        new_ref.harvester = "hal"
+        new_ref.harvester = "HAL"
         new_ref.source_identifier = raw_data.source_identifier
         return new_ref
 

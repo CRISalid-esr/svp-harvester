@@ -81,6 +81,7 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
+        new_ref.harvester = "Idref"
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
 

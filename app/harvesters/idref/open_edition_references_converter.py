@@ -62,6 +62,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
         await self._add_contributions(new_ref, root)
 
+        new_ref.harvester = "Idref.OpenEdition"
         new_ref.hash = self._hash(self._create_dict(root))
         return new_ref
 

@@ -48,6 +48,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         new_ref.source_identifier = raw_data.source_identifier
 
+        new_ref.harvester = "OpenAlex"
         new_ref.hash = self._hash(json_payload)
         return new_ref
 

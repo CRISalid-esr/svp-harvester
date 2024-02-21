@@ -20,16 +20,18 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     """
     Converts raw data from Persee to a normalised Reference object
     """
+
     RDF_BIBO = "http://purl.org/ontology/bibo/"
 
+    @AbesRDFReferencesConverter.validate_reference
     async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference | None:
-
         new_ref = await super().convert(raw_data)
         if new_ref is None:
             return None
 
         pub_graph: Graph = raw_data.payload
 
+        new_ref.harvester = "Idref.Persee"
         await self._add_contributions(pub_graph, new_ref)
 
         return new_ref
