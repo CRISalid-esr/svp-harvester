@@ -1,4 +1,5 @@
 from typing import List
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
@@ -27,3 +28,5 @@ class Reference(BaseModel):
     subjects: List[Concept] = []
     document_type: List[DocumentType] = []
     contributions: List[Contribution] = []
+    issued: datetime | None = None
+    created: datetime | None = None

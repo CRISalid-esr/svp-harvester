@@ -52,7 +52,8 @@
           529251
         ],
         "docType_s": "ART",
-        "publicationDate_tdate": "2012-01-01T00:00:00Z"
+        "publicationDate_tdate": "2012-01-01T00:00:00Z",
+        "producedDate_tdate": "2012-01-01T00:00:00Z"
       },
       {
         "docid": "2-will-change",
@@ -143,7 +144,8 @@
           1004986
         ],
         "docType_s": "COUV",
-        "publicationDate_tdate": "2016-01-01T00:00:00Z"
+        "publicationDate_tdate": "2016-01-01T00:00:00Z",
+        "producedDate_tdate": "2016-01-01T00:00:00Z"
       }
     ]
   }
