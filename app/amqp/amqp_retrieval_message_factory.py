@@ -24,11 +24,10 @@ class AMQPRetrievalMessageFactory(AbstractAMQPMessageFactory):
             }
         assert "id" in self.content, "Retrieval id is required"
         async with async_session() as session:
-            async with session.begin():
-                retrieval: DbRetrieval = await RetrievalDAO(
-                    session
-                ).get_complete_retrieval_by_id(self.content.get("id"))
-                retrieval_representation: RetrievalModel = (
-                    RetrievalModel.model_validate(retrieval)
-                )
-            return retrieval_representation.model_dump(exclude={"id": True})
+            retrieval: DbRetrieval = await RetrievalDAO(
+                session
+            ).get_complete_retrieval_by_id(self.content.get("id"))
+            retrieval_representation: RetrievalModel = RetrievalModel.model_validate(
+                retrieval
+            )
+        return retrieval_representation.model_dump(exclude={"id": True})
