@@ -25,34 +25,33 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
 
     async def _build_payload(self) -> dict[str, Any]:
         async with async_session() as session:
-            async with session.begin():
-                reference_event: DbReferenceEvent = await ReferenceEventDAO(
-                    session
-                ).get_detailed_reference_event_by_id(self.content.get("id"))
-                self.reference_event_type = reference_event.type
-                entity: DbEntity = reference_event.harvesting.retrieval.entity
-                reference_event_representation: ReferenceEventModel = (
-                    ReferenceEventModel.model_validate(reference_event)
-                )
-                return {
-                    "reference_event": reference_event_representation.model_dump(
-                        exclude={
+            reference_event: DbReferenceEvent = await ReferenceEventDAO(
+                session
+            ).get_detailed_reference_event_by_id(self.content.get("id"))
+            self.reference_event_type = reference_event.type
+            entity: DbEntity = reference_event.harvesting.retrieval.entity
+            reference_event_representation: ReferenceEventModel = (
+                ReferenceEventModel.model_validate(reference_event)
+            )
+            return {
+                "reference_event": reference_event_representation.model_dump(
+                    exclude={
+                        "id": True,
+                        "reference": {
                             "id": True,
-                            "reference": {
-                                "id": True,
-                                "titles": {"__all__": {"id"}},
-                                "subtitles": {"__all__": {"id"}},
-                                "subjects": {
-                                    "__all__": {
-                                        "id": True,
-                                        "labels": {"__all__": {"id"}},
-                                    }
-                                },
+                            "titles": {"__all__": {"id"}},
+                            "subtitles": {"__all__": {"id"}},
+                            "subjects": {
+                                "__all__": {
+                                    "id": True,
+                                    "labels": {"__all__": {"id"}},
+                                }
                             },
-                        }
-                    )
-                } | {
-                    "entity": EntityModel.model_validate(entity).model_dump(
-                        exclude={"id": True}
-                    )
-                }
+                        },
+                    }
+                )
+            } | {
+                "entity": EntityModel.model_validate(entity).model_dump(
+                    exclude={"id": True}
+                )
+            }
