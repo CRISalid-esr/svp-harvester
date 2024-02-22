@@ -1,8 +1,8 @@
-"""Merge migration after litterals refactoring
+"""Rebuild alembic revisions
 
-Revision ID: 4c96f2c87560
+Revision ID: b272f63e0548
 Revises: 
-Create Date: 2024-01-24 09:32:37.600813
+Create Date: 2024-02-22 06:42:33.192416
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '4c96f2c87560'
+revision: str = 'b272f63e0548'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,16 +23,19 @@ def upgrade() -> None:
     op.create_table('concepts',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('uri', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('uri')
+    sa.Column('dereferenced', sa.Boolean(), nullable=False),
+    sa.Column('last_dereferencing_date_time', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_concepts_uri'), 'concepts', ['uri'], unique=True)
     op.create_table('contributors',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('source', sa.String(), nullable=False),
     sa.Column('source_identifier', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('name_variants', postgresql.ARRAY(sa.String()), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('source', 'source_identifier')
     )
     op.create_index(op.f('ix_contributors_name'), 'contributors', ['name'], unique=False)
     op.create_index(op.f('ix_contributors_source'), 'contributors', ['source'], unique=False)
@@ -41,10 +44,10 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('uri', sa.String(), nullable=False),
     sa.Column('label', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('uri')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_document_types_id'), 'document_types', ['id'], unique=False)
+    op.create_index(op.f('ix_document_types_uri'), 'document_types', ['uri'], unique=True)
     op.create_table('entities',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
@@ -56,21 +59,36 @@ def upgrade() -> None:
     sa.Column('source', sa.String(), nullable=False),
     sa.Column('source_identifier', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('type', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_organizations_source'), 'organizations', ['source'], unique=False)
     op.create_index(op.f('ix_organizations_source_identifier'), 'organizations', ['source_identifier'], unique=False)
+    op.create_index(op.f('ix_organizations_type'), 'organizations', ['type'], unique=False)
     op.create_table('references',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('source_identifier', sa.String(), nullable=False),
     sa.Column('harvester', sa.String(), nullable=False),
+    sa.Column('issued', sa.DateTime(), nullable=True),
+    sa.Column('created', sa.DateTime(), nullable=True),
     sa.Column('hash', sa.String(), nullable=False),
     sa.Column('version', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_references_created'), 'references', ['created'], unique=False)
     op.create_index(op.f('ix_references_harvester'), 'references', ['harvester'], unique=False)
+    op.create_index(op.f('ix_references_issued'), 'references', ['issued'], unique=False)
     op.create_index(op.f('ix_references_source_identifier'), 'references', ['source_identifier'], unique=False)
     op.create_index(op.f('ix_references_version'), 'references', ['version'], unique=False)
+    op.create_table('abstracts',
+    sa.Column('value', sa.Text(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('language', sa.String(), nullable=True),
+    sa.Column('reference_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reference_id'], ['references.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_abstracts_language'), 'abstracts', ['language'], unique=False)
     op.create_table('contributions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('rank', sa.Integer(), nullable=True),
@@ -105,22 +123,31 @@ def upgrade() -> None:
     op.create_index(op.f('ix_labels_language'), 'labels', ['language'], unique=False)
     op.create_index(op.f('ix_labels_preferred'), 'labels', ['preferred'], unique=False)
     op.create_index(op.f('ix_labels_value'), 'labels', ['value'], unique=False)
+    op.create_table('organization_identifiers',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('type', sa.String(), nullable=False),
+    sa.Column('value', sa.String(), nullable=False),
+    sa.Column('organization_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['organization_id'], ['organizations.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_organization_identifiers_type'), 'organization_identifiers', ['type'], unique=False)
+    op.create_index(op.f('ix_organization_identifiers_value'), 'organization_identifiers', ['value'], unique=False)
     op.create_table('people',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['id'], ['entities.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('reference_literal_fields',
-    sa.Column('type', sa.String(), nullable=False),
+    op.create_table('reference_identifiers',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('type', sa.String(), nullable=False),
     sa.Column('value', sa.String(), nullable=False),
-    sa.Column('language', sa.String(), nullable=True),
     sa.Column('reference_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['reference_id'], ['references.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_reference_literal_fields_language'), 'reference_literal_fields', ['language'], unique=False)
-    op.create_index(op.f('ix_reference_literal_fields_value'), 'reference_literal_fields', ['value'], unique=False)
+    op.create_index(op.f('ix_reference_identifiers_type'), 'reference_identifiers', ['type'], unique=False)
+    op.create_index(op.f('ix_reference_identifiers_value'), 'reference_identifiers', ['value'], unique=False)
     op.create_table('references_document_types_table',
     sa.Column('reference_id', sa.Integer(), nullable=True),
     sa.Column('document_type_id', sa.Integer(), nullable=True),
@@ -137,9 +164,30 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('entity_id', sa.Integer(), nullable=False),
     sa.Column('event_types', postgresql.ARRAY(sa.String()), nullable=False),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['entity_id'], ['entities.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('subtitles',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('value', sa.String(), nullable=False),
+    sa.Column('language', sa.String(), nullable=True),
+    sa.Column('reference_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reference_id'], ['references.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_subtitles_language'), 'subtitles', ['language'], unique=False)
+    op.create_index(op.f('ix_subtitles_value'), 'subtitles', ['value'], unique=False)
+    op.create_table('titles',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('value', sa.String(), nullable=False),
+    sa.Column('language', sa.String(), nullable=True),
+    sa.Column('reference_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['reference_id'], ['references.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_titles_language'), 'titles', ['language'], unique=False)
+    op.create_index(op.f('ix_titles_value'), 'titles', ['value'], unique=False)
     op.create_table('affiliations_table',
     sa.Column('contribution_id', sa.Integer(), nullable=True),
     sa.Column('organization_id', sa.Integer(), nullable=True),
@@ -193,13 +241,22 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_harvestings_harvester'), table_name='harvestings')
     op.drop_table('harvestings')
     op.drop_table('affiliations_table')
+    op.drop_index(op.f('ix_titles_value'), table_name='titles')
+    op.drop_index(op.f('ix_titles_language'), table_name='titles')
+    op.drop_table('titles')
+    op.drop_index(op.f('ix_subtitles_value'), table_name='subtitles')
+    op.drop_index(op.f('ix_subtitles_language'), table_name='subtitles')
+    op.drop_table('subtitles')
     op.drop_table('retrievals')
     op.drop_table('references_subjects_table')
     op.drop_table('references_document_types_table')
-    op.drop_index(op.f('ix_reference_literal_fields_value'), table_name='reference_literal_fields')
-    op.drop_index(op.f('ix_reference_literal_fields_language'), table_name='reference_literal_fields')
-    op.drop_table('reference_literal_fields')
+    op.drop_index(op.f('ix_reference_identifiers_value'), table_name='reference_identifiers')
+    op.drop_index(op.f('ix_reference_identifiers_type'), table_name='reference_identifiers')
+    op.drop_table('reference_identifiers')
     op.drop_table('people')
+    op.drop_index(op.f('ix_organization_identifiers_value'), table_name='organization_identifiers')
+    op.drop_index(op.f('ix_organization_identifiers_type'), table_name='organization_identifiers')
+    op.drop_table('organization_identifiers')
     op.drop_index(op.f('ix_labels_value'), table_name='labels')
     op.drop_index(op.f('ix_labels_preferred'), table_name='labels')
     op.drop_index(op.f('ix_labels_language'), table_name='labels')
@@ -209,19 +266,26 @@ def downgrade() -> None:
     op.drop_table('identifiers')
     op.drop_index(op.f('ix_contributions_role'), table_name='contributions')
     op.drop_table('contributions')
+    op.drop_index(op.f('ix_abstracts_language'), table_name='abstracts')
+    op.drop_table('abstracts')
     op.drop_index(op.f('ix_references_version'), table_name='references')
     op.drop_index(op.f('ix_references_source_identifier'), table_name='references')
+    op.drop_index(op.f('ix_references_issued'), table_name='references')
     op.drop_index(op.f('ix_references_harvester'), table_name='references')
+    op.drop_index(op.f('ix_references_created'), table_name='references')
     op.drop_table('references')
+    op.drop_index(op.f('ix_organizations_type'), table_name='organizations')
     op.drop_index(op.f('ix_organizations_source_identifier'), table_name='organizations')
     op.drop_index(op.f('ix_organizations_source'), table_name='organizations')
     op.drop_table('organizations')
     op.drop_table('entities')
+    op.drop_index(op.f('ix_document_types_uri'), table_name='document_types')
     op.drop_index(op.f('ix_document_types_id'), table_name='document_types')
     op.drop_table('document_types')
     op.drop_index(op.f('ix_contributors_source_identifier'), table_name='contributors')
     op.drop_index(op.f('ix_contributors_source'), table_name='contributors')
     op.drop_index(op.f('ix_contributors_name'), table_name='contributors')
     op.drop_table('contributors')
+    op.drop_index(op.f('ix_concepts_uri'), table_name='concepts')
     op.drop_table('concepts')
     # ### end Alembic commands ###
