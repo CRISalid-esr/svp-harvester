@@ -16,5 +16,9 @@ class SkosmosJelConceptSolver(JelConceptSolver, RdfConceptSolver):
         :param uri: JEL URI
         :return: URI and URL
         """
-        url = f"https://zbw.eu/beta/skosmos/rest/v1/jel/data?uri={urllib.parse.quote(concept_id_or_uri)}&format=application/rdf%2Bxml"
+        url = (
+            "https://zbw.eu/beta/skosmos/rest/v1/jel/data?uri="
+            f"{urllib.parse.quote(concept_id_or_uri)}"
+            "&format=application/rdf%2Bxml"
+        )
         return concept_id_or_uri, url

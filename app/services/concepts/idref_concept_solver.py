@@ -10,7 +10,7 @@ class IdRefConceptSolver(RdfConceptSolver):
     """
 
     def get_uri(self, concept_id: str) -> str:
-        idref_uri, idref_url = self._build_uri_and_url(concept_id)
+        idref_uri, _ = self._build_uri_and_url(concept_id)
         return idref_uri
 
     def _build_uri_and_url(self, concept_id_or_uri: str) -> Tuple[str, str]:
