@@ -9,10 +9,10 @@ class IdRefConceptSolver(RdfConceptSolver):
     """
 
     def get_uri(self, concept_id: str) -> str:
-        _, idref_uri = self._build_url_from_concept_id_or_uri(concept_id)
+        idref_uri, idref_url = self._build_url_from_concept_uri(concept_id)
         return idref_uri
 
-    def _build_url_from_concept_id_or_uri(self, concept_id):
+    def _build_url_from_concept_uri(self, concept_id):
         original_concept_id = concept_id
         match = re.search(r"https?://www.idref.fr/(\d+X?)/id", concept_id)
         if match is not None:
