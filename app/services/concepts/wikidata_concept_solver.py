@@ -1,9 +1,11 @@
 import json
+import re
 from typing import List, Tuple
 import aiohttp
 from loguru import logger
 from app.db.models.concept import Concept as DbConcept
 from app.db.models.label import Label as DbLabel
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.dereferencing_error import DereferencingError
 
@@ -13,55 +15,63 @@ class WikidataConceptSolver(ConceptSolver):
     Wikidata concept solver
     """
 
-    def get_uri(self, concept_id: str) -> str:
+    def add_uri(self, concept_informations: ConceptInformations) -> str:
         """
         Get the uri of a concept from a concept id
         :param concept_id: concept id
         :return: uri
         """
-        _, wikidata_uri = self._build_url_from_concept_id_or_uri(concept_id)
-        return wikidata_uri
+        self._build_url_from_concept_id_or_uri(concept_informations)
 
-    async def solve(self, concept_id: str) -> DbConcept:
+    async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """
         Solves a Wikidata concept from a concept id
-        :param concept_id: concept id
+        :param concept_informations: concept informations
         :return: Concept
         """
-        wikidata_url, wikidata_uri = self._build_url_from_concept_id_or_uri(concept_id)
+        self._build_url_from_concept_id_or_uri(concept_informations)
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(2))
             ) as session:
-                async with session.get(wikidata_url) as response:
+                async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
                             "Endpoint returned status "
-                            + f"{response.status} while dereferencing "
-                            + f"{wikidata_uri}"
+                            f"{response.status} while dereferencing "
+                            f"{concept_informations.uri} "
+                            f"at url {concept_informations.url}"
                         )
-                    concept_data: json = (await response.json())["entities"][concept_id]
-                    concept = DbConcept(uri=wikidata_uri)
+                    json_response = await response.json()
+                    concept_data: json = json_response["entities"][
+                        concept_informations.code
+                    ]
+                    concept = DbConcept(uri=concept_informations.uri)
 
                     [  # pylint: disable=expression-not-assigned
                         self._add_labels(
                             concept=concept, labels=label[0], preferred=label[1]
                         )
-                        for label in self._get_labels(concept_data, wikidata_uri)
+                        for label in self._get_labels(
+                            concept_data, concept_informations.uri
+                        )
                     ]
 
                     return concept
 
         except aiohttp.ClientError as error:
             logger.error(
-                f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
+                f"Endpoint failure while dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             )
             raise DereferencingError(
-                f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
+                f"Endpoint failure while dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             ) from error
         except Exception as error:
             logger.error(
-                f"Exception failure while dereferencing {wikidata_uri} with message {error}"
+                f"Exception failure dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             )
             raise DereferencingError(
                 f"Unknown error while dereferencing {wikidata_uri} with message {error}"
@@ -110,17 +120,26 @@ class WikidataConceptSolver(ConceptSolver):
             )
         )
 
-    def _build_url_from_concept_id_or_uri(self, concept_id: str) -> Tuple[str, str]:
+    @staticmethod
+    def _build_url_from_concept_id_or_uri(
+        cls, concept_informations: ConceptInformations
+    ) -> None:
         """
         Builds a URL from a Wikidata uri
         :param concept_id: concept id or uri
         :return: URL, URI
         """
-        concept_id = concept_id.replace("https://www.wikidata.org/wiki/", "")
-
-        wikidata_uri = f"http://www.wikidata.org/entity/{concept_id}"
-        wikidata_url = (
-            f"https://www.wikidata.org/wiki/Special:EntityData/{concept_id}.json"
+        if concept_informations.uri:
+            concept_informations.code = re.sub(
+                r"https?://www.wikidata.org/(wiki|entity)/",
+                "",
+                concept_informations.uri,
+            )
+        if concept_informations.code is None:
+            raise DereferencingError(
+                f"Unable to use wikidata concept informations {concept_informations.uri} {concept_informations.label}"
+            )
+        concept_informations.uri = (
+            f"http://www.wikidata.org/entity/{concept_informations.code}"
         )
-
-        return wikidata_url, wikidata_uri
+        concept_informations.url = f"https://www.wikidata.org/wiki/Special:EntityData/{concept_informations.code}.json"

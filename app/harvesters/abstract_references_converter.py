@@ -242,20 +242,14 @@ class AbstractReferencesConverter(ABC):
         async with async_session() as session:
             async with session.begin_nested():
                 # First we resolve the uri of the concept
-                concept_informations.uri = ConceptFactory.get_uri(
-                    concept_id=concept_informations.uri,
-                    concept_source=concept_informations.source,
-                )
+                ConceptFactory.add_uri(concept_informations)
                 concept = await ConceptDAO(session).get_concept_by_uri(
                     concept_informations.uri
                 )
                 # If the concept is not in the database, try to create it by dereferencing the uri
                 if concept is None:
                     try:
-                        concept = await ConceptFactory.solve(
-                            concept_id=concept_informations.uri,
-                            concept_source=concept_informations.source,
-                        )
+                        concept = await ConceptFactory.solve(concept_informations)
                     # If the dereferencing fails, create a concept with the uri and the label
                     except DereferencingError as error:
                         logger.error(

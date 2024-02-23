@@ -4,6 +4,7 @@ import aiosparql
 import pytest
 
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 
 
@@ -36,15 +37,15 @@ async def test_jel_sparql_concept_solver_returns_db_concept(
     THEN the returned value is a DbConcept with the correct uri and label
     :return:
     """
-    concept_id = "G2"
+    concept_informations = ConceptInformations(code="G2")
     solver = SparqlJelConceptSolver()
-    concept_uri = solver.get_uri(concept_id)
-    assert concept_uri == "http://zbw.eu/beta/external_identifiers/jel#G2"
-    result = await solver.solve(concept_id=concept_uri)
+    solver.add_uri(concept_informations)
+    assert concept_informations.uri == "http://zbw.eu/beta/external_identifiers/jel#G2"
+    result = await solver.solve(concept_informations)
     jel_sparql_endpoint_client_mock_with_concept.assert_called_once()
     args, _ = jel_sparql_endpoint_client_mock_with_concept.call_args
     assert "SELECT ?prefLabel ?altLabel" in args[0]
-    assert concept_uri in args[0]
+    assert concept_informations.uri in args[0]
     assert result is not None
     assert isinstance(result, DbConcept)
     assert result.uri == "http://zbw.eu/beta/external_identifiers/jel#G2"

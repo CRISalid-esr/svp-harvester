@@ -167,7 +167,7 @@ def fixture_mock_sparql_jel_concept_solver():
 @pytest.fixture(name="mock_idref_concept_solver_uri", autouse=True)
 def fixture_mock_idref_concept_solver_uri():
     """Hal harvester mock to detect is_relevant method calls."""
-    with mock.patch.object(IdRefConceptSolver, "get_uri") as mock_solve:
+    with mock.patch.object(IdRefConceptSolver, "add_uri") as mock_solve:
         mock_solve.side_effect = fake_idref_concept_uri_solver
         yield mock_solve
 

@@ -8,7 +8,7 @@ class JelConceptSolver(ConceptSolver, ABC):
     JEL concept solver
     """
 
-    def get_uri(self, concept_id: str) -> str:
+    def add_uri(self, concept_id: str) -> str:
         """
         Concatenate the JEL namespace with the last part of the concept id
         """

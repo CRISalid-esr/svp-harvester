@@ -10,7 +10,7 @@ class SkosmosJelConceptSolver(JelConceptSolver, RdfConceptSolver):
     JEL concept solver
     """
 
-    def _build_uri_and_url(self, concept_id_or_uri: str) -> Tuple[str, str]:
+    def _add_uri_and_url(self, concept_id_or_uri: str) -> Tuple[str, str]:
         """
         Builds Skosmos URL from a JEL URI
         :param uri: JEL URI
