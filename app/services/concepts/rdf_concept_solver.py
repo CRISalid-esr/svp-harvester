@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABC, abstractmethod
 from typing import Generator, Tuple
 
@@ -56,6 +57,10 @@ class RdfConceptSolver(ConceptSolver, ABC):
         except rdflib.exceptions.ParserError as error:
             raise DereferencingError(
                 f"Error while parsing xml from {url} with message {error}"
+            ) from error
+        except asyncio.exceptions.TimeoutError as error:
+            raise DereferencingError(
+                f"Timeout while dereferencing {url} with message {error}"
             ) from error
         except Exception as error:
             raise DereferencingError(
