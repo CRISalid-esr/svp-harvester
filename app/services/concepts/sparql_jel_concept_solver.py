@@ -5,11 +5,11 @@ from rdflib import Literal
 
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.concepts.jel_concept_solver import JelConceptSolver
 
 
-class SparqlJelConceptSolver(ConceptSolverRdf):
+class SparqlJelConceptSolver(JelConceptSolver):
     """
     JEL concept solver
     """
@@ -25,13 +25,6 @@ class SparqlJelConceptSolver(ConceptSolverRdf):
       }
     }
     """
-
-    def get_uri(self, concept_id: str) -> str:
-        """
-        Concatenate the JEL namespace with the last part of the concept id
-        """
-        concept_code = concept_id.rsplit(".", 1)[-1]
-        return f"http://zbw.eu/beta/external_identifiers/jel#{concept_code}"
 
     def _get_client(self) -> SPARQLClient:
         settings = get_app_settings()

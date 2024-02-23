@@ -6,7 +6,7 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
-from app.services.concepts.jel_concept_solver import JelConceptSolver
+from app.services.concepts.skosmos_jel_concept_solver import SkosmosJelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
 
@@ -60,7 +60,7 @@ class ConceptFactory:
             setting = get_app_settings()
             if setting.svp_jel_proxy_url is not None:
                 return SparqlJelConceptSolver()
-            return JelConceptSolver()
+            return SkosmosJelConceptSolver()
         # add more sources here
         # if no solver is found, raise an exception
         raise ValueError(f"Unknown concept source {concept_source}")

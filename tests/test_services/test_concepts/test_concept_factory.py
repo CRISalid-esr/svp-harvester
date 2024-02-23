@@ -6,7 +6,7 @@ from app.config import get_app_settings
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
-from app.services.concepts.jel_concept_solver import JelConceptSolver
+from app.services.concepts.skosmos_jel_concept_solver import SkosmosJelConceptSolver
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
@@ -35,17 +35,17 @@ def fixture_mock_wikidata_concept_solver_solve():
 @pytest.fixture(name="mock_jel_concept_solver_solve")
 def fixture_mock_jel_concept_solver_solve():
     """
-    Mocks the JelConceptSolver.solve method
+    Mocks the SkosmosJelConceptSolver.solve method
     :return: mock
     """
-    with mock.patch.object(JelConceptSolver, "solve") as mock_solve:
+    with mock.patch.object(SkosmosJelConceptSolver, "solve") as mock_solve:
         yield mock_solve
 
 
 @pytest.fixture(name="mock_sparql_jel_concept_solver_solve")
 def fixture_mocksparql__jel_concept_solver_solve():
     """
-    Mocks the JelConceptSolver.solve method
+    Mocks the SkosmosJelConceptSolver.solve method
     :return: mock
     """
     with mock.patch.object(SparqlJelConceptSolver, "solve") as mock_solve:

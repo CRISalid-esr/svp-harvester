@@ -262,6 +262,10 @@ class AbstractReferencesConverter(ABC):
                             "Dereferencing failure for concept "
                             f"{concept_informations.uri} with error  : {error}"
                         )
+                        assert concept_informations.label is not None, (
+                            f"Could not create concept with uri {concept_informations.uri} "
+                            "without any label"
+                        )
                         concept = Concept(uri=concept_informations.uri)
                         concept.labels.append(
                             Label(

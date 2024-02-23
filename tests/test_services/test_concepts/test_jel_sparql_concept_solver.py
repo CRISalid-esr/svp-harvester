@@ -1,12 +1,9 @@
 from unittest import mock
 
-import aiohttp
 import aiosparql
 import pytest
 
-from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 
 
@@ -42,6 +39,7 @@ async def test_jel_sparql_concept_solver_returns_db_concept(
     concept_id = "G2"
     solver = SparqlJelConceptSolver()
     concept_uri = solver.get_uri(concept_id)
+    assert concept_uri == "http://zbw.eu/beta/external_identifiers/jel#G2"
     result = await solver.solve(concept_id=concept_uri)
     jel_sparql_endpoint_client_mock_with_concept.assert_called_once()
     args, _ = jel_sparql_endpoint_client_mock_with_concept.call_args

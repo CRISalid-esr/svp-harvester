@@ -1,15 +1,9 @@
 import re
-import aiohttp
-from aiohttp import ClientTimeout
-from rdflib import Graph
-import rdflib
 
-from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.concepts.rdf_concept_solver import RdfConceptSolver
 
 
-class IdRefConceptSolver(ConceptSolverRdf):
+class IdRefConceptSolver(RdfConceptSolver):
     """
     IdRef concept solver
     """
@@ -17,48 +11,6 @@ class IdRefConceptSolver(ConceptSolverRdf):
     def get_uri(self, concept_id: str) -> str:
         _, idref_uri = self._build_url_from_concept_id_or_uri(concept_id)
         return idref_uri
-
-    async def solve(self, concept_id: str) -> DbConcept:
-        """
-        Solves an IdRef concept from a concept id
-        :param concept_id: concept id (numeric or uri)
-        :return: Concept
-        """
-        idref_url, idref_uri = self._build_url_from_concept_id_or_uri(concept_id)
-        try:
-            async with aiohttp.ClientSession(
-                timeout=ClientTimeout(total=float(2))
-            ) as session:
-                async with session.get(idref_url) as response:
-                    if not 200 <= response.status < 300:
-                        raise DereferencingError(
-                            f"Endpoint returned status {response.status}"
-                            f" while dereferencing {idref_url}"
-                        )
-                    xml = await response.text()
-                    concept_graph = Graph().parse(data=xml, format="xml")
-                    concept = DbConcept(uri=idref_uri)
-
-                    [  # pylint: disable=expression-not-assigned
-                        self._add_labels(
-                            concept=concept, labels=list(label[0]), preferred=label[1]
-                        )
-                        for label in self._get_labels(concept_graph, idref_uri)
-                    ]
-
-                    return concept
-        except aiohttp.ClientError as error:
-            raise DereferencingError(
-                f"Endpoint failure while dereferencing {idref_url} with message {error}"
-            ) from error
-        except rdflib.exceptions.ParserError as error:
-            raise DereferencingError(
-                f"Error while parsing xml from {idref_url} with message {error}"
-            ) from error
-        except Exception as error:
-            raise DereferencingError(
-                f"Unknown error while dereferencing {idref_url} with message {error}"
-            ) from error
 
     def _build_url_from_concept_id_or_uri(self, concept_id):
         original_concept_id = concept_id
@@ -69,4 +21,4 @@ class IdRefConceptSolver(ConceptSolverRdf):
             raise ValueError(f"Invalid idref concept id or uri {original_concept_id}")
         idref_url = f"https://www.idref.fr/{concept_id}.rdf"
         idref_uri = f"http://www.idref.fr/{concept_id}/id"
-        return idref_url, idref_uri
+        return idref_uri, idref_url
