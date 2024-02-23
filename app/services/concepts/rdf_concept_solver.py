@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generator
+from typing import Generator, Tuple
 
 import aiohttp
 import rdflib
@@ -22,7 +22,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :param concept_id: JEL code
         :return: Concept
         """
-        uri, url = self._build_url_from_concept_uri(concept_id)
+        uri, url = self._build_uri_and_url(concept_id)
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(2))
@@ -98,5 +98,5 @@ class RdfConceptSolver(ConceptSolver, ABC):
         return self._get_labels(concept_data, uri, SKOS.altLabel)
 
     @abstractmethod
-    def _build_url_from_concept_uri(self, concept_id):
+    def _build_uri_and_url(self, concept_id_or_uri: str) -> Tuple[str, str]:
         pass
