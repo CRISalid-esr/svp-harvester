@@ -1,6 +1,8 @@
 import asyncio
 from typing import List
+
 import aiohttp
+
 import app.services.organizations.organization_factory as organization_factory
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
@@ -15,13 +17,15 @@ class HalOrganizationSolver(OrganizationSolver):
 
     URL = "https://api.archives-ouvertes.fr/ref/structure/?q=docid:{}&wt=json&fl=*"
 
-    IDENTITY_DEEP_SEARCH = {
-        "idref_s": "idref",
-        "ror_s": "ror",
-    }
+    # values could be
+    # "idref_s": "idref",
+    # "ror_s": "ror",
+    IDENTITY_DEEP_SEARCH = {}
     IDENTITY_SAVE = {
         "isni_s": "isni",
         "rnsr_s": "rnsr",
+        "idref_s": "idref",
+        "ror_s": "ror",
     }
 
     TYPE_MAPPING = {
