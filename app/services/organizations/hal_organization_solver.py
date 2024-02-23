@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 import aiohttp
 import app.services.organizations.organization_factory as organization_factory
@@ -65,12 +66,13 @@ class HalOrganizationSolver(OrganizationSolver):
                             key in data["response"]["docs"][0]
                         ):
                             code = data["response"]["docs"][0][key][0]
-                            identifiers, seen = (
-                                await organization_factory.OrganizationFactory.solve_identities(
-                                    code,
-                                    source,
-                                    seen,
-                                )
+                            (
+                                identifiers,
+                                seen,
+                            ) = await organization_factory.OrganizationFactory.solve_identities(
+                                code,
+                                source,
+                                seen,
                             )
                             new_identifiers.extend(identifiers)
                     for key, source in self.IDENTITY_SAVE.items():
@@ -88,6 +90,11 @@ class HalOrganizationSolver(OrganizationSolver):
         except aiohttp.ClientError as error:
             raise DereferencingError(
                 "Endpoint failure while dereferencing HAL"
+                f" organization {organization_id} with message {error}"
+            ) from error
+        except asyncio.TimeoutError as error:
+            raise DereferencingError(
+                "Timeout while dereferencing HAL"
                 f" organization {organization_id} with message {error}"
             ) from error
 
