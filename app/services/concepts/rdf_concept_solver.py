@@ -24,6 +24,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :param concept_informations: concept informations
         :return: Concept
         """
+        # pylint: disable=duplicate code
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(10))
@@ -32,7 +33,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
                             f"Endpoint returned status {response.status}"
-                            f" while dereferencing {concept_informations.uri}"
+                            f" while dereferencing RDF concept {concept_informations.uri}"
                             f"at url {concept_informations.url}"
                         )
                     xml = (await response.text()).strip()

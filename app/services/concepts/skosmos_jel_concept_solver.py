@@ -1,5 +1,4 @@
 import urllib
-from typing import Tuple
 
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.jel_concept_solver import JelConceptSolver
