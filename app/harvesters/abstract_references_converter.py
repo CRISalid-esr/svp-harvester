@@ -242,7 +242,7 @@ class AbstractReferencesConverter(ABC):
         async with async_session() as session:
             async with session.begin_nested():
                 # First we resolve the uri of the concept
-                ConceptFactory.add_uri(concept_informations)
+                ConceptFactory.complete_information(concept_informations)
                 concept = await ConceptDAO(session).get_concept_by_uri(
                     concept_informations.uri
                 )

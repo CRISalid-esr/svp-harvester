@@ -1,5 +1,6 @@
 from abc import ABC
 
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 
 
@@ -8,9 +9,13 @@ class JelConceptSolver(ConceptSolver, ABC):
     JEL concept solver
     """
 
-    def add_uri(self, concept_id: str) -> str:
+    def complete_information(self, concept_informations: ConceptInformations) -> None:
         """
+        Concept code from hal is a concatenation of type : G1.G12.G123
         Concatenate the JEL namespace with the last part of the concept id
         """
-        concept_code = concept_id.rsplit(".", 1)[-1]
-        return f"http://zbw.eu/beta/external_identifiers/jel#{concept_code}"
+        if concept_informations.uri is None and concept_informations.code is not None:
+            concept_code = concept_informations.code.rsplit(".", 1)[-1]
+            concept_informations.uri = (
+                f"http://zbw.eu/beta/external_identifiers/jel#{concept_code}"
+            )

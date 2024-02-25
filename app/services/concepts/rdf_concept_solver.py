@@ -24,10 +24,9 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :param concept_informations: concept informations
         :return: Concept
         """
-        self._add_uri_and_url(concept_informations)
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(2))
+                timeout=aiohttp.ClientTimeout(total=float(10))
             ) as session:
                 async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
@@ -109,7 +108,3 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :return: alternative labels
         """
         return self._get_labels(concept_data, uri, SKOS.altLabel)
-
-    @abstractmethod
-    def _add_uri_and_url(self, concept_id_or_uri: str) -> Tuple[str, str]:
-        pass

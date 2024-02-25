@@ -18,7 +18,7 @@ class ConceptSolver(ABC):
         self.settings = get_app_settings()
 
     @abstractmethod
-    def add_uri(self, concept_id: str) -> str:
+    def complete_information(self, concept_informations: ConceptInformations) -> str:
         """
         Get the uri of a concept from a concept id
         :param concept_id: concept id

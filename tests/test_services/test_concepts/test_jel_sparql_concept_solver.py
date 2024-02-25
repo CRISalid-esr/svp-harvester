@@ -39,7 +39,7 @@ async def test_jel_sparql_concept_solver_returns_db_concept(
     """
     concept_informations = ConceptInformations(code="G2")
     solver = SparqlJelConceptSolver()
-    solver.add_uri(concept_informations)
+    solver.complete_information(concept_informations)
     assert concept_informations.uri == "http://zbw.eu/beta/external_identifiers/jel#G2"
     result = await solver.solve(concept_informations)
     jel_sparql_endpoint_client_mock_with_concept.assert_called_once()

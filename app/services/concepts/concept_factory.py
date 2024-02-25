@@ -19,14 +19,19 @@ class ConceptFactory:
     """
 
     @staticmethod
-    def add_uri(concept_informations: ConceptInformations) -> str:
+    def complete_information(concept_informations: ConceptInformations) -> None:
         """
-        Get the uri of a concept from
+        Infer additional concept information from provided informations
+
+        :param concept_informations: concept informations
+        :return: None
         """
         if concept_informations.source is None:
-            ConceptFactory._infer_source(concept_informations.uri)
-        solver: ConceptSolver = ConceptFactory._create_solver(concept_informations)
-        solver.add_uri(concept_informations)
+            ConceptFactory._infer_source(concept_informations)
+        solver: ConceptSolver = ConceptFactory._create_solver(
+            concept_informations.source
+        )
+        solver.complete_information(concept_informations)
 
     @staticmethod
     async def solve(concept_informations: ConceptInformations) -> DbConcept:
@@ -75,16 +80,18 @@ class ConceptFactory:
                 concept_informations.source = (
                     ConceptInformations.ConceptSources.IDREF
                 )  # idref
-            if cls._wikidata_pattern().match(concept_informations.uri):
+            elif cls._wikidata_pattern().match(concept_informations.uri):
                 concept_informations.source = (
                     ConceptInformations.ConceptSources.WIKIDATA
                 )
-            if cls._jel_pattern().match(concept_informations.uri):
+            elif cls._jel_pattern().match(concept_informations.uri):
                 concept_informations.source = ConceptInformations.ConceptSources.JEL
-            raise UnknownAuthorityException(concept_informations.uri)
-        raise UnknownAuthorityException(
-            concept_informations.code or concept_informations.label
-        )
+            else:
+                raise UnknownAuthorityException(concept_informations.uri)
+        else:
+            raise UnknownAuthorityException(
+                concept_informations.code or concept_informations.label
+            )
 
     @classmethod
     def _idref_pattern(cls):
