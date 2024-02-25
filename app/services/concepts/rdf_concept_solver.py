@@ -24,7 +24,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :param concept_informations: concept informations
         :return: Concept
         """
-        # pylint: disable=duplicate code
+        # pylint: disable=duplicate-code
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(10))
