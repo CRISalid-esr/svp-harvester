@@ -1,6 +1,7 @@
 import json
 import re
-from typing import List, Tuple
+from typing import List
+
 import aiohttp
 from loguru import logger
 from rdflib import Literal
@@ -23,7 +24,6 @@ class WikidataConceptSolver(ConceptSolver):
         :param concept_informations: concept informations
         :return: Concept
         """
-
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(10))
@@ -31,17 +31,16 @@ class WikidataConceptSolver(ConceptSolver):
                 async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
-                            "Endpoint returned status "
-                            f"{response.status} while dereferencing "
+                            f"Endpoint returned status {response.status} "
+                            f"while dereferencing Wikidata concept "
                             f"{concept_informations.uri} "
-                            f"at url {concept_informations.url}"
+                            f"from url {concept_informations.url}"
                         )
                     json_response = await response.json()
                     concept_data: json = json_response["entities"][
                         concept_informations.code
                     ]
                     concept = DbConcept(uri=concept_informations.uri)
-                    # _alt_labels : [[{'language': 'zh', 'value': '人文科學'}, {'language': 'zh', 'value': '人文學'}, {'language': 'zh', 'value': '人文'}, {'language': 'zh', 'value': '人文科学'}], [{'language': 'pl', 'value': 'humanistyka'}], [{'language': 'es', 'value': 'humanistica'}, {'language': 'es', 'value': 'letras humanas'}, {'language': 'es', 'value': 'saber humanístico'}, {'language': 'es', 'value': 'saberes humanísticos'}, {'language': 'es', 'value': 'ciencia humana'}, {'language': 'es', 'value': 'letras'}, {'language': 'es', 'value': 'ciencias humanas'}, {'language': 'es', 'value': 'saber humanistico'}, {'language': 'es', 'value': 'saberes humanisticos'}], [{'language': 'et', 'value': 'Humanitaarteadus'}, {'language': 'et', 'value': 'Humanitaaria'}], [{'language': 'sv', 'value': 'humanvetenskap'}, {'language': 'sv', 'value': 'humanoira'}], [{'language': 'nl', 'value': 'Geesteswetenschap'}, {'language': 'nl', 'value': 'Letteren en Wijsbegeerte'}], [{'language': 'ar', 'value': 'الإنسانيات'}, {'language': 'ar', 'value': 'العلوم الانسانية'}, {'language': 'ar', 'value': 'علوم إنسانية'}, {'language': 'ar', 'value': 'العلوم الإنسانية'}], [{'language': 'eo', 'value': 'homsciencoj'}, {'language': 'eo', 'value': 'homscienco'}, {'language': 'eo', 'value': 'homaj sciencoj'}, {'language': 'eo', 'value': 'socia scienco'}], [{'language': 'yi', 'value': 'מדעי הרוח'}, {'language': 'yi', 'value': 'הומענעטיס'}, {'language': 'yi', 'value': 'הומאנעטיס'}], [{'language': 'tr', 'value': 'beşeri bilim'}, {'language': 'tr', 'value': 'beşerî bilimler'}], [{'language': 'fi', 'value': 'humanistinen tiede'}, {'language': 'fi', 'value': 'humanistinen tutkimus'}, {'language': 'fi', 'value': 'humanistiset aineet'}], [{'language': 'tl', 'value': 'Mga araling pang-tao'}, {'language': 'tl', 'value': 'Pagiging tao'}, {'language': 'tl', 'value': 'Pantao'}, {'language': 'tl', 'value': 'Humanist'}, {'language': 'tl', 'value': 'Pang-tao'}, {'language': 'tl', 'value': 'Mga araling pantao'}, {'language': 'tl', 'value': 'Maka-pantao'}, {'language': 'tl', 'value': 'Mga humanidades'}, {'language': 'tl', 'value': 'Umanidades'}, {'language': 'tl', 'value': 'Humanismo'}, {'language': 'tl', 'value': 'Araling ukol sa tao'}, {'language': 'tl', 'value': 'Humanism'}, {'language': 'tl', 'value': 'Pantaong aralin'}, {'language': 'tl', 'value': 'Mga araling nauukol sa tao'}, {'language': 'tl', 'value': 'Pan-tao'}, {'language': 'tl', 'value': 'Pangtao'}, {'language': 'tl', 'value': 'Mga araling hinggil sa sangkatauhan'}, {'language': 'tl', 'value': 'Humanista'}, {'language': 'tl', 'value': 'Mga araling pangtao'}, {'language': 'tl', 'value': 'Umanista'}, {'language': 'tl', 'value': 'Mga pagkatao'}, {'language': 'tl', 'value': 'Araling nauukol sa tao'}, {'language': 'tl', 'value': 'Mga araling ukol sa tao'}, {'language': 'tl', 'value': 'Mga umanidades'}, {'language': 'tl', 'value': 'Humanists'}, {'language': 'tl', 'value': 'Makapangtao'}, {'language': 'tl', 'value': 'Makapantao'}, {'language': 'tl', 'value': 'The Humanities'}, {'language': 'tl', 'value': 'Umanismo'}, {'language': 'tl', 'value': 'Humanities'}, {'language': 'tl', 'value': 'Pag-aaral ng pagkatao'}, {'language': 'tl', 'value': 'Mga aralin hinggil sa sangkatauhan'}, {'language': 'tl', 'value': 'araling pantao'}], [{'language': 'da', 'value': 'humanvidenskab'}], [{'language': 'an', 'value': 'Umanidaz'}], [{'language': 'ko', 'value': '인문과학'}, {'language': 'ko', 'value': '인문학자'}, {'language': 'ko', 'value': '인문 과학'}, {'language': 'ko', 'value': '인문'}], [{'language': 'bar', 'value': 'Geisteswissenschaft'}], [{'language': 'it', 'value': 'lettere e filosofia'}, {'language': 'it', 'value': 'umanistica'}], [{'language': 'id', 'value': 'Ilmu Budaya'}], [{'language': 'ja', 'value': '人文'}, {'language': 'ja', 'value': '人文科学'}, {'language': 'ja', 'value': 'ヒューマニティクス'}, {'language': 'ja', 'value': 'アーテス・ウマニオレス'}], [{'language': 'vi', 'value': 'nhân văn'}], [{'language': 'sh', 'value': 'Humanističke nauke'}], [{'language': 'sk', 'value': 'Humanitné vedy'}, {'language': 'sk', 'value': 'Humanitná veda'}, {'language': 'sk', 'value': 'Duchovné vedy'}], [{'language': 'th', 'value': 'มนุษย์ศาสตร์'}, {'language': 'th', 'value': 'Humanities'}], [{'language': 'ca', 'value': 'filosofia i lletres'}, {'language': 'ca', 'value': 'lletres'}], [{'language': 'sl', 'value': 'humanistične vede'}], [{'language': 'cs', 'value': 'humanitní věda'}], [{'language': 'fa', 'value': 'علوم\u200cانسانی'}], [{'language': 'bg', 'value': 'Социалните науки'}, {'language': 'bg', 'value': 'Социална наука'}, {'language': 'bg', 'value': 'Хуманитарните науки'}, {'language': 'bg', 'value': 'Хуманитарна наука'}, {'language': 'bg', 'value': 'Хуманитаристика'}], [{'language': 'gv', 'value': 'Dooieaghtyn'}], [{'language': 'nb', 'value': 'humanistiske fag'}], [{'language': 'ru', 'value': 'гуманитарное знание'}, {'language': 'ru', 'value': 'гуманитарная сфера'}, {'language': 'ru', 'value': 'социальные науки'}, {'language': 'ru', 'value': 'гуманитарная наука'}, {'language': 'ru', 'value': 'социальная наука'}], [{'language': 'gl', 'value': 'humanistica'}], [{'language': 'tg', 'value': 'Илмҳои гуманитарӣ'}], [{'language': 'tt', 'value': 'гуманитар фәннәр'}], [{'language': 'tt-cyrl', 'value': 'гуманитар фәннәр'}], [{'language': 'ga', 'value': 'sruithléann'}], [{'language': 'ro', 'value': 'ştiinţe umaniste'}], [{'language': 'sq', 'value': 'Humanistika'}, {'language': 'sq', 'value': 'Shkencat humane'}], [{'language': 'fr', 'value': 'humanités'}], [{'language': 'de', 'value': 'Geisteswissenschaft'}], [{'language': 'cy', 'value': 'y dyniaethau'}], [{'language': 'en', 'value': 'arts and humanities'}], [{'language': 'sms', 'value': 'humaniistlaž tiõtti'}]]
 
                     self._add_labels(
                         concept=concept,
@@ -79,7 +78,8 @@ class WikidataConceptSolver(ConceptSolver):
                 f"at url {concept_informations.url} with message {error}"
             )
             raise DereferencingError(
-                f"Unknown error while dereferencing {wikidata_uri} with message {error}"
+                f"Exception failure dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             ) from error
 
     def _alt_labels(self, concept_data: json) -> List[str]:
@@ -155,4 +155,7 @@ class WikidataConceptSolver(ConceptSolver):
         assert (
             concept_informations.code is not None
         ), "Concept code should not be None at this point"
-        concept_informations.url = f"https://www.wikidata.org/wiki/Special:EntityData/{concept_informations.code}.json"
+        concept_informations.url = (
+            "https://www.wikidata.org/wiki/Special:EntityData/"
+            f"{concept_informations.code}.json"
+        )

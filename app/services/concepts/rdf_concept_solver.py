@@ -1,6 +1,6 @@
 import asyncio
-from abc import ABC, abstractmethod
-from typing import Generator, Tuple
+from abc import ABC
+from typing import Generator
 
 import aiohttp
 import rdflib

@@ -1,5 +1,4 @@
 import re
-from typing import Tuple
 
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError

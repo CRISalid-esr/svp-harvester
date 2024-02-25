@@ -57,7 +57,8 @@ class SparqlJelConceptSolver(JelConceptSolver):
             ]
             if not pref_labels:
                 raise DereferencingError(
-                    f"JEL Sparql endpoint returned no prefLabel while dereferencing {concept_informations.uri}"
+                    "JEL Sparql endpoint returned no prefLabel "
+                    f"while dereferencing {concept_informations.uri}"
                 )
             self._add_labels(
                 concept,
