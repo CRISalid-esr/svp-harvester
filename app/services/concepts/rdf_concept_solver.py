@@ -27,7 +27,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         # pylint: disable=duplicate-code
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(10))
+                timeout=aiohttp.ClientTimeout(total=float(15))
             ) as session:
                 async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
@@ -67,7 +67,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         except asyncio.exceptions.TimeoutError as error:
             raise DereferencingError(
                 f"Timeout while dereferencing {concept_informations.uri}"
-                f"at url {concept_informations.url} with message {error}"
+                f"at url {concept_informations.url}"
             ) from error
         except Exception as error:
             raise DereferencingError(
