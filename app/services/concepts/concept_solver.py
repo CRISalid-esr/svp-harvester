@@ -5,6 +5,7 @@ import rdflib
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.db.models.label import Label as DbLabel
+from app.services.concepts.concept_informations import ConceptInformations
 
 
 class ConceptSolver(ABC):
@@ -17,7 +18,7 @@ class ConceptSolver(ABC):
         self.settings = get_app_settings()
 
     @abstractmethod
-    def get_uri(self, concept_id: str) -> str:
+    def complete_information(self, concept_informations: ConceptInformations) -> str:
         """
         Get the uri of a concept from a concept id
         :param concept_id: concept id
@@ -25,20 +26,11 @@ class ConceptSolver(ABC):
         """
 
     @abstractmethod
-    async def solve(self, concept_id: str) -> DbConcept:
+    async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """
-        Solves a concept from a concept id
-        :param concept_id: concept id
+        Solves a concept from informations
+        :param concept_informations: availablke informations
         :return: Concept
-        """
-
-    @abstractmethod
-    def _get_labels(self, concept_data, uri: str):
-        """
-        Get labels from a concept graph
-        :param concept_data: concept graph
-        :param uri: concept uri
-        :return: labels
         """
 
     def _add_labels(

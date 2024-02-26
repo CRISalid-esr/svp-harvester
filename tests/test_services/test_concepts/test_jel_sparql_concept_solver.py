@@ -1,12 +1,10 @@
 from unittest import mock
 
-import aiohttp
 import aiosparql
 import pytest
 
-from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.idref_concept_solver import IdRefConceptSolver
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 
 
@@ -29,7 +27,6 @@ def fixture_jel_sparql_endpoint_client_mock_with_concept(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_jel_sparql_concept_solver_returns_db_concept(
     jel_sparql_endpoint_client_mock_with_concept,
 ):
@@ -39,14 +36,15 @@ async def test_jel_sparql_concept_solver_returns_db_concept(
     THEN the returned value is a DbConcept with the correct uri and label
     :return:
     """
-    concept_id = "G2"
+    concept_informations = ConceptInformations(code="G2")
     solver = SparqlJelConceptSolver()
-    concept_uri = solver.get_uri(concept_id)
-    result = await solver.solve(concept_id=concept_uri)
+    solver.complete_information(concept_informations)
+    assert concept_informations.uri == "http://zbw.eu/beta/external_identifiers/jel#G2"
+    result = await solver.solve(concept_informations)
     jel_sparql_endpoint_client_mock_with_concept.assert_called_once()
     args, _ = jel_sparql_endpoint_client_mock_with_concept.call_args
     assert "SELECT ?prefLabel ?altLabel" in args[0]
-    assert concept_uri in args[0]
+    assert concept_informations.uri in args[0]
     assert result is not None
     assert isinstance(result, DbConcept)
     assert result.uri == "http://zbw.eu/beta/external_identifiers/jel#G2"

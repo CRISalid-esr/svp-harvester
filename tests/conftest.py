@@ -10,6 +10,7 @@ from starlette.testclient import TestClient
 
 from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
@@ -77,7 +78,9 @@ async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
     await engine.dispose()
 
 
-def fake_idref_concept_solver(concept_id: str):
+def fake_idref_concept_solver(
+    concept_informations: ConceptInformations,
+):
     """
     Fake idref concept solver for tests
     Raises DereferencingError except for a specific concept id
@@ -85,9 +88,9 @@ def fake_idref_concept_solver(concept_id: str):
     :param concept_id: concept id to solve
     :return: fake concept
     """
-    if concept_id == "http://www.idref.fr/allowed_concept_for_tests/id":
+    if concept_informations.uri == "http://www.idref.fr/123456789X/id":
         return DbConcept(
-            uri="http://www.idref.fr/allowed_concept_for_tests/id",
+            uri="http://www.idref.fr/123456789X/id",
             labels=[
                 Label(
                     value="Idref concept allowed for test",
@@ -138,14 +141,14 @@ def fake_jel_sparql_concept_solver(concept_id: str):
     raise DereferencingError("Jel concept dereferencing not allowed during tests")
 
 
-def fake_idref_concept_uri_solver(concept_id: str):
+def fake_idref_concept_uri_solver(concept_informations: ConceptInformations):
     """
     Fake idref concept solver for tests
 
     :param concept_id: concept id to solve
     :return: fake uri
     """
-    return concept_id
+    pass
 
 
 @pytest.fixture(name="mock_idref_concept_solver", autouse=True)
@@ -161,14 +164,6 @@ def fixture_mock_sparql_jel_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
     with mock.patch.object(SparqlJelConceptSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_jel_sparql_concept_solver
-        yield mock_solve
-
-
-@pytest.fixture(name="mock_idref_concept_solver_uri", autouse=True)
-def fixture_mock_idref_concept_solver_uri():
-    """Hal harvester mock to detect is_relevant method calls."""
-    with mock.patch.object(IdRefConceptSolver, "get_uri") as mock_solve:
-        mock_solve.side_effect = fake_idref_concept_uri_solver
         yield mock_solve
 
 
