@@ -5,6 +5,7 @@ import pytest
 
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 
 
@@ -74,18 +75,21 @@ async def test_idref_concept_solver_calls_url_from_uri(
     THEN the URL https://www.idref.fr/082303363.rdf is called through aiohttp
     :return:
     """
-    concept_id = "https://www.idref.fr/082303363/id"
+    concept_uri = "https://www.idref.fr/082303363/id"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
         mock_get.return_value.__aenter__.return_value.status = 200
         mock_get.return_value.__aenter__.return_value.text.return_value = (
             idref_rdf_raw_result_for_concept
         )
-        await IdRefConceptSolver().solve(concept_id=concept_id)
+        concept_informations = ConceptInformations(uri=concept_uri)
+        solver = IdRefConceptSolver()
+        solver.complete_information(concept_informations)
+        await solver.solve(concept_informations)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_calls_url_from_numeric_id(
+async def test_idref_concept_solver_calls_url_from_numeric_id(
     idref_rdf_raw_result_for_concept: str,
 ):
     """
@@ -100,12 +104,17 @@ async def test_idref_conscept_solver_calls_url_from_numeric_id(
         mock_get.return_value.__aenter__.return_value.text.return_value = (
             idref_rdf_raw_result_for_concept
         )
-        await IdRefConceptSolver().solve(concept_id=concept_id)
+        concept_informations = ConceptInformations(
+            code=concept_id, source=ConceptInformations.ConceptSources.IDREF
+        )
+        solver = IdRefConceptSolver()
+        solver.complete_information(concept_informations)
+        await solver.solve(concept_informations)
         mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
 
 
 @pytest.mark.asyncio
-async def test_idref_conscept_solver_raises_value_error_with_fantasy_string():
+async def test_idref_concept_solver_raises_value_error_with_fantasy_string():
     """
     GIVEN an idref concept solver
     WHEN calling it with the concept id "fantasy"
@@ -116,7 +125,10 @@ async def test_idref_conscept_solver_raises_value_error_with_fantasy_string():
     concept_id = "fantasy"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
         with pytest.raises(ValueError) as exception_info:
-            await IdRefConceptSolver().solve(concept_id=concept_id)
+            concept_informations = ConceptInformations(code=concept_id)
+            solver = IdRefConceptSolver()
+            solver.complete_information(concept_informations)
+            await solver.solve(concept_informations)
         assert (
             exception_info.value.args[0]
             == f"Invalid idref concept id or uri {concept_id}"
@@ -133,7 +145,10 @@ async def test_idref_concept_solver_returns_db_concept(idref_concept_http_client
     :return:
     """
     concept_id = "082303363"
-    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    concept_informations = ConceptInformations(code=concept_id)
+    solver = IdRefConceptSolver()
+    solver.complete_information(concept_informations)
+    result = await solver.solve(concept_informations)
     idref_concept_http_client_mock.assert_called_once_with(
         "https://www.idref.fr/082303363.rdf"
     )
@@ -159,7 +174,10 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
     """
     assert get_app_settings().concept_languages == ["fr", "en"]
     concept_id = "123456789"
-    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    concept_informations = ConceptInformations(code=concept_id)
+    solver = IdRefConceptSolver()
+    solver.complete_information(concept_informations)
+    result = await IdRefConceptSolver().solve(concept_informations)
     idref_multilang_concept_http_client_mock.assert_called_once_with(
         "https://www.idref.fr/123456789.rdf"
     )
@@ -257,7 +275,10 @@ async def test_idref_concept_solver_returns_concepts_without_language(
     """
     assert get_app_settings().concept_languages == ["fr", "en"]
     concept_id = "123456789"
-    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    concept_informations = ConceptInformations(code=concept_id)
+    solver = IdRefConceptSolver()
+    solver.complete_information(concept_informations)
+    result = await solver.solve(concept_informations)
     idref_nolang_concept_http_client_mock.assert_called_once_with(
         "https://www.idref.fr/123456789.rdf"
     )
@@ -297,6 +318,7 @@ async def test_idref_concept_solver_returns_concepts_without_language(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     idref_non_preferred_lang_concept_http_client_mock,
 ):
@@ -309,7 +331,10 @@ async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     """
     assert get_app_settings().concept_languages == ["fr", "en"]
     concept_id = "123456789"
-    result = await IdRefConceptSolver().solve(concept_id=concept_id)
+    concept_informations = ConceptInformations(code=concept_id)
+    solver = IdRefConceptSolver()
+    solver.complete_information(concept_informations)
+    result = await solver.solve(concept_informations)
     idref_non_preferred_lang_concept_http_client_mock.assert_called_once_with(
         "https://www.idref.fr/123456789.rdf"
     )

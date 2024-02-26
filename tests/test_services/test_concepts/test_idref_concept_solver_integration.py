@@ -26,6 +26,7 @@ def fixture_idref_sparql_endpoint_client_mock_with_test_concept(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_idref_harvester_gets_concept_resolved(
     harvesting_db_model_for_person_with_idref,
     idref_sparql_endpoint_client_mock_with_test_concept,  # pylint: disable=unused-argument
@@ -57,7 +58,7 @@ async def test_idref_harvester_gets_concept_resolved(
 
         assert len(reference.subjects) == 1
         concept = reference.subjects[0]
-        assert concept.uri == "http://www.idref.fr/allowed_concept_for_tests/id"
+        assert concept.uri == "http://www.idref.fr/123456789X/id"
         assert len(concept.labels) == 4
         assert any(
             label.value == "Concept Idref autorisé pour les tests"

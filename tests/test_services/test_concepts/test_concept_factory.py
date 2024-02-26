@@ -64,12 +64,16 @@ async def test_concept_factory_idref_concept_uri(mock_idref_concept_solver_solve
     :return:
     """
     concept_code = "033265077"
-    concept_uri = "http://www.idref.fr/033265077"
-    await ConceptFactory.solve(ConceptInformations(uri=concept_uri))
+    concept_uri = "http://www.idref.fr/033265077/id"
+    concept_url = "https://www.idref.fr/033265077.rdf"
+    concept_informations = ConceptInformations(uri=concept_uri)
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_idref_concept_solver_solve.assert_called_once()
     args, _ = mock_idref_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
+    assert args[0].url == concept_url
 
 
 # if we call the concept factory with a concept number and specifying the idref source,
@@ -84,15 +88,18 @@ async def test_concept_factory_idref_concept_number(mock_idref_concept_solver_so
     :return:
     """
     concept_code = "033265077"
-    concept_uri = "http://www.idref.fr/033265077"
-    await ConceptFactory.solve(
-        ConceptInformations(code=concept_code),
-        source=ConceptInformations.ConceptSources.IDREF,
+    concept_uri = "http://www.idref.fr/033265077/id"
+    concept_url = "https://www.idref.fr/033265077.rdf"
+    concept_informations = ConceptInformations(
+        code=concept_code, source=ConceptInformations.ConceptSources.IDREF
     )
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_idref_concept_solver_solve.assert_called_once()
     args, _ = mock_idref_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
+    assert args[0].url == concept_url
 
 
 # if we call the concept factory with a concept number and specifying the wikidata source,
@@ -110,15 +117,17 @@ async def test_concept_factory_wikidata_concept_number(
     """
     concept_code = "Q1234"
     concept_uri = "http://www.wikidata.org/entity/Q1234"
-    await ConceptFactory.solve(
-        ConceptInformations(
-            code=concept_code, source=ConceptInformations.ConceptSources.WIKIDATA
-        )
+    concept_url = "https://www.wikidata.org/wiki/Special:EntityData/Q1234.json"
+    concept_informations = ConceptInformations(
+        code=concept_code, source=ConceptInformations.ConceptSources.WIKIDATA
     )
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_wikidata_concept_solver_solve.assert_called_once()
     args, _ = mock_wikidata_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
+    assert args[0].url == concept_url
 
 
 @pytest.mark.asyncio
@@ -133,33 +142,15 @@ async def test_concept_factory_wikidata_concept_uri(mock_wikidata_concept_solver
     """
     concept_code = "Q1234"
     concept_uri = "http://www.wikidata.org/entity/Q1234"
-    await ConceptFactory.solve(ConceptInformations(uri=concept_uri))
+    concept_url = "https://www.wikidata.org/wiki/Special:EntityData/Q1234.json"
+    concept_informations = ConceptInformations(uri=concept_uri)
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_wikidata_concept_solver_solve.assert_called_once()
     args, _ = mock_wikidata_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
-
-
-@pytest.mark.asyncio
-async def test_concept_factory_wikidata_concept_id(mock_wikidata_concept_solver_solve):
-    """
-    GIVEN a concept factory
-    WHEN calling it with a concept id and the Wikidata source
-    THEN the wikidata concept solver is called
-    :param mock_wikidata_concept_solver_solve:
-    :return:
-    """
-    concept_code = "Q1234"
-    concept_uri = "http://www.wikidata.org/entity/Q1234"
-    await ConceptFactory.solve(
-        ConceptInformations(
-            code=concept_code, source=ConceptInformations.ConceptSources.WIKIDATA
-        )
-    )
-    mock_wikidata_concept_solver_solve.assert_called_once()
-    args, _ = mock_wikidata_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
+    assert args[0].url == concept_url
 
 
 @pytest.mark.asyncio
@@ -167,45 +158,49 @@ async def test_concept_factory_wikidata_concept_id(mock_wikidata_concept_solver_
 async def test_concept_factory_jel_concept_uri(mock_jel_concept_solver_solve):
     """
     GIVEN a concept factory
-    WHEN calling it with a concept id beginning with http://www.aeaweb.org/jel/
+    WHEN calling it with a concept id beginning with http://zbw.eu/
     THEN the jel concept solver is called
     """
     settings = get_app_settings()
     settings.svp_jel_proxy_url = None
     concept_code = "A10"
     concept_uri = "http://zbw.eu/beta/external_identifiers/jel#A10"
-    await ConceptFactory.solve(
-        ConceptInformations(
-            uri=concept_uri, source=ConceptInformations.ConceptSources.IDREF
-        )
+    concept_url = (
+        "https://zbw.eu/beta/skosmos/rest/v1/jel/data?"
+        "uri=http%3A//zbw.eu/beta/external_identifiers/jel%23A10&format=application/rdf%2Bxml"
     )
+    concept_informations = ConceptInformations(
+        uri=concept_uri, source=ConceptInformations.ConceptSources.JEL
+    )
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_jel_concept_solver_solve.assert_called_once()
     args, _ = mock_jel_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
+    assert args[0].url == concept_url
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_jel_concept_id(mock_jel_concept_solver_solve):
     """
     GIVEN a concept factory
-    WHEN calling it with a concept id beginning with http://www.aeaweb.org/jel/
+    WHEN calling it with a concept id beginning with http://zbw.eu
     THEN the jel concept solver is called
     """
     settings = get_app_settings()
     settings.svp_jel_proxy_url = None
     concept_code = "A10"
     concept_uri = "http://zbw.eu/beta/external_identifiers/jel#A10"
-    await ConceptFactory.solve(
-        ConceptInformations(
-            code=concept_code, source=ConceptInformations.ConceptSources.IDREF
-        )
+    concept_informations = ConceptInformations(
+        code=concept_code, source=ConceptInformations.ConceptSources.JEL
     )
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_jel_concept_solver_solve.assert_called_once()
     args, _ = mock_jel_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
 
 
 @pytest.mark.asyncio
@@ -215,18 +210,20 @@ async def test_concept_factory_mock_sparkl_jel_concept_id(
 ):
     """
     GIVEN a concept factory
-    WHEN calling it with a concept id beginning with http://www.aeaweb.org/jel/
+    WHEN calling it with a concept id beginning with http://zbw.eu
     THEN the jel concept solver is called
     """
     settings = get_app_settings()
     settings.svp_jel_proxy_url = "http://fake_url"
     concept_code = "A10"
     concept_uri = "http://zbw.eu/beta/external_identifiers/jel#A10"
-    await ConceptFactory.solve(ConceptInformations(uri=concept_uri))
+    concept_informations = ConceptInformations(uri=concept_uri)
+    ConceptFactory.complete_information(concept_informations)
+    await ConceptFactory.solve(concept_informations)
     mock_sparql_jel_concept_solver_solve.assert_called_once()
     args, _ = mock_sparql_jel_concept_solver_solve.call_args
-    assert args.uri == concept_uri
-    assert args.code == concept_code
+    assert args[0].uri == concept_uri
+    assert args[0].code == concept_code
 
 
 # if we call the concept factory with a fake concept id, UnknownAuthorityException is raised

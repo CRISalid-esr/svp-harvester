@@ -78,7 +78,9 @@ async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
     await engine.dispose()
 
 
-def fake_idref_concept_solver(concept_id: str):
+def fake_idref_concept_solver(
+    concept_informations: ConceptInformations,
+):
     """
     Fake idref concept solver for tests
     Raises DereferencingError except for a specific concept id
@@ -86,9 +88,9 @@ def fake_idref_concept_solver(concept_id: str):
     :param concept_id: concept id to solve
     :return: fake concept
     """
-    if concept_id == "http://www.idref.fr/allowed_concept_for_tests/id":
+    if concept_informations.uri == "http://www.idref.fr/123456789X/id":
         return DbConcept(
-            uri="http://www.idref.fr/allowed_concept_for_tests/id",
+            uri="http://www.idref.fr/123456789X/id",
             labels=[
                 Label(
                     value="Idref concept allowed for test",

@@ -27,7 +27,6 @@ def fixture_jel_sparql_endpoint_client_mock_with_concept(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_jel_sparql_concept_solver_returns_db_concept(
     jel_sparql_endpoint_client_mock_with_concept,
 ):

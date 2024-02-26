@@ -37,8 +37,7 @@ class ConceptFactory:
     async def solve(concept_informations: ConceptInformations) -> DbConcept:
         """
         Solves a concept from a concept id and an optional source
-        :param concept_id: id or uri of the concept
-        :param concept_source: source of the concept, among supported sources
+        :param concept_informations: concept informations
         :return:
         """
         if concept_informations.source is None:
