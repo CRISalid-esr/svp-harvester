@@ -6,6 +6,7 @@ import pytest
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 
 
@@ -124,14 +125,14 @@ async def test_idref_concept_solver_raises_value_error_with_fantasy_string():
     """
     concept_id = "fantasy"
     with mock.patch("aiohttp.ClientSession.get") as mock_get:
-        with pytest.raises(ValueError) as exception_info:
+        with pytest.raises(DereferencingError) as exception_info:
             concept_informations = ConceptInformations(code=concept_id)
             solver = IdRefConceptSolver()
             solver.complete_information(concept_informations)
             await solver.solve(concept_informations)
         assert (
             exception_info.value.args[0]
-            == f"Invalid idref concept id or uri {concept_id}"
+            == f"Invalid idref concept id or uri http://www.idref.fr/{concept_id}/id"
         )
         mock_get.assert_not_called()
 
@@ -318,7 +319,6 @@ async def test_idref_concept_solver_returns_concepts_without_language(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     idref_non_preferred_lang_concept_http_client_mock,
 ):

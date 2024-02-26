@@ -154,7 +154,6 @@ async def test_concept_factory_wikidata_concept_uri(mock_wikidata_concept_solver
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_jel_concept_uri(mock_jel_concept_solver_solve):
     """
     GIVEN a concept factory
@@ -204,7 +203,6 @@ async def test_concept_factory_jel_concept_id(mock_jel_concept_solver_solve):
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_concept_factory_mock_sparkl_jel_concept_id(
     mock_sparql_jel_concept_solver_solve,
 ):
