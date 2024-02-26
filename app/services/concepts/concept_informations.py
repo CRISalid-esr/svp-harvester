@@ -19,6 +19,8 @@ class ConceptInformations:
         # add more sources here
 
     language: str | None = None
+    code: str | None = None
     uri: str | None = None
+    url: str | None = None
     label: str | None = None
     source: ConceptSources | None = None

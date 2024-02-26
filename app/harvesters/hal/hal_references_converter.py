@@ -148,13 +148,13 @@ class HalReferencesConverter(AbstractReferencesConverter):
             try:
                 yield await self._get_or_create_concept_by_uri(
                     ConceptInformations(
-                        uri=code,
+                        code=code,
                         source=ConceptInformations.ConceptSources.JEL,
                     )
                 )
             except AssertionError as error:
                 logger.error(
-                    f"Could not create JEL concept with uri {code} because : {error}"
+                    f"Could not create JEL concept with code {code} because : {error}"
                 )
                 continue
         fields = self._keys_by_pattern(pattern=r".*_keyword_s", data=raw_data)

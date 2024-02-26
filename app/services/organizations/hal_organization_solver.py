@@ -1,5 +1,8 @@
+import asyncio
 from typing import List
+
 import aiohttp
+
 import app.services.organizations.organization_factory as organization_factory
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
@@ -14,13 +17,15 @@ class HalOrganizationSolver(OrganizationSolver):
 
     URL = "https://api.archives-ouvertes.fr/ref/structure/?q=docid:{}&wt=json&fl=*"
 
-    IDENTITY_DEEP_SEARCH = {
-        "idref_s": "idref",
-        "ror_s": "ror",
-    }
+    # values could be
+    # "idref_s": "idref",
+    # "ror_s": "ror",
+    IDENTITY_DEEP_SEARCH = {}
     IDENTITY_SAVE = {
         "isni_s": "isni",
         "rnsr_s": "rnsr",
+        "idref_s": "idref",
+        "ror_s": "ror",
     }
 
     TYPE_MAPPING = {
@@ -65,12 +70,13 @@ class HalOrganizationSolver(OrganizationSolver):
                             key in data["response"]["docs"][0]
                         ):
                             code = data["response"]["docs"][0][key][0]
-                            identifiers, seen = (
-                                await organization_factory.OrganizationFactory.solve_identities(
-                                    code,
-                                    source,
-                                    seen,
-                                )
+                            (
+                                identifiers,
+                                seen,
+                            ) = await organization_factory.OrganizationFactory.solve_identities(
+                                code,
+                                source,
+                                seen,
                             )
                             new_identifiers.extend(identifiers)
                     for key, source in self.IDENTITY_SAVE.items():
@@ -88,6 +94,11 @@ class HalOrganizationSolver(OrganizationSolver):
         except aiohttp.ClientError as error:
             raise DereferencingError(
                 "Endpoint failure while dereferencing HAL"
+                f" organization {organization_id} with message {error}"
+            ) from error
+        except asyncio.TimeoutError as error:
+            raise DereferencingError(
+                "Timeout while dereferencing HAL"
                 f" organization {organization_id} with message {error}"
             ) from error
 

@@ -16,6 +16,8 @@ class Concept(BaseModel):
 
     labels: list[Label] = Field(exclude=True, default=[])
 
+    dereferenced: bool
+
     @computed_field
     @property
     def pref_labels(self) -> List[Label]:

@@ -18,8 +18,9 @@ class IdrefOrganizationSolver(OrganizationSolver):
     """
 
     URL = "www.idref.fr/"
-    IDENTITY_DEEP_SEARCH = ["ror"]
-    IDENTITY_SAVE = ["hal", "isni", "viaf"]
+    # value could be 'ror'
+    IDENTITY_DEEP_SEARCH = []
+    IDENTITY_SAVE = ["hal", "isni", "viaf", "ror"]
 
     async def solve(self, organization_id: str) -> Organization:
         """
@@ -65,10 +66,11 @@ class IdrefOrganizationSolver(OrganizationSolver):
                             continue
                         try:
                             if source in self.IDENTITY_DEEP_SEARCH:
-                                identifiers, seen = (
-                                    await organization_factory.OrganizationFactory.solve_identities(
-                                        identifier, source, seen
-                                    )
+                                (
+                                    identifiers,
+                                    seen,
+                                ) = await organization_factory.OrganizationFactory.solve_identities(
+                                    identifier, source, seen
                                 )
                                 new_identifiers.extend(identifiers)
                             elif source in self.IDENTITY_SAVE:
