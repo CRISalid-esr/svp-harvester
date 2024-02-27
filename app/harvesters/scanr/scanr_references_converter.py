@@ -128,7 +128,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 subjects_with_source.append(subject)
             else:
                 subjects_without_source.append(subject)
-
+        labels_with_source = []
         for subject in subjects_with_source:
             concept_id = subject.get("code")
 
@@ -146,12 +146,16 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     source=concept_source,
                 )
             )
+            labels_with_source.extend(concept_db.pref_labels)
+            labels_with_source.extend(concept_db.alt_labels)
             yield concept_db
 
         for subject in subjects_without_source:
             label_dict = subject.get("label", {})
             concept_label, concept_language = self._get_concept_label(label_dict)
 
+            if concept_label in labels_with_source:
+                continue
             concept_db = await self._get_or_create_concept_by_label(
                 ConceptInformations(
                     label=concept_label,
