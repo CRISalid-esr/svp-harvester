@@ -25,9 +25,10 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
 
     async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference:
         new_ref = await super().convert(raw_data)
-        pub_graph: Graph = raw_data.payload
 
-        await self._add_contributions(pub_graph, new_ref)
+        # pub_graph: Graph = raw_data.payload
+
+        # await self._add_contributions(pub_graph, new_ref)
 
         return new_ref
 
@@ -38,7 +39,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         ):
             yield ReferenceIdentifier(value=identifier, type="doi")
 
-    async def _add_contributions(self, pub_graph, new_ref):
+    async def _add_contributions(self, pub_graph, uri):
         contribution_informations = []
         marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
         query = f"""
@@ -66,7 +67,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         async for contribution in self._contributions(
             contribution_informations=contribution_informations, source="persee"
         ):
-            new_ref.contributions.append(contribution)
+            yield contribution
 
     async def _document_type(
         self, pub_graph, uri
