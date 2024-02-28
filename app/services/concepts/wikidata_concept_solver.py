@@ -90,38 +90,30 @@ class WikidataConceptSolver(ConceptSolver):
         return concept_data.get("labels", {})
 
     def _add_labels(self, concept: DbConcept, labels: dict, preferred: bool = True):
-        def interesting_labels(label_language):
-            a = (
-                label_language in self.settings.concept_languages
-                or label_language is None
-            )
-            return a
+        def interesting_languages(language):
+            return language in self.settings.concept_languages or language is None
 
         if len(labels) == 0:
             return
         if preferred:
             preferred_labels = [
-                labels[label_language]
-                for label_language in labels
-                if interesting_labels(label_language)
+                label for label in labels if interesting_languages(label.language)
             ]
             for label in preferred_labels:
                 self._add_label(concept, label, preferred)
 
         else:
             alt_labels = [
-                labels[label_language][0]
-                for label_language in labels
-                if interesting_labels(label_language)
+                label for label in labels if interesting_languages(label.language)
             ]
             for label in alt_labels:
                 self._add_label(concept, label, preferred)
 
-    def _add_label(self, concept, label, preferred):
+    def _add_label(self, concept: DbConcept, label: Literal, preferred: bool):
         concept.labels.append(
             DbLabel(
-                value=label["value"],
-                language=label["language"],
+                value=label.value,
+                language=label.language,
                 preferred=preferred,
             )
         )
