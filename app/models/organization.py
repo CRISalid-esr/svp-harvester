@@ -14,5 +14,5 @@ class Organization(BaseModel):
     source: str
     source_identifier: str
     name: str
-    type: str
+    type: str | None = None
     identifiers: List[OrganizationIdentifier] = []
