@@ -2,6 +2,7 @@ import asyncio
 import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from functools import wraps
 from typing import List, AsyncGenerator
 
 from loguru import logger
@@ -31,6 +32,16 @@ class AbstractReferencesConverter(ABC):
     """ "
     Abstract mother class for harvesters
     """
+
+    reference_non_empty_lists_fields: list[str] = ["titles"]
+    reference_non_blank_string_fields: list[str] = ["harvester"]
+    reference_not_null_fields: list[str] = [
+        "abstracts",
+        "subtitles",
+        "subjects",
+        "document_type",
+        "contributions",
+    ]
 
     @dataclass(frozen=True)
     class OrganizationInformations:
@@ -101,6 +112,49 @@ class AbstractReferencesConverter(ABC):
                 rank=contribution_information.rank,
             )
 
+    @staticmethod
+    def validate_reference(func):
+        """
+        Decorator to validate the reference object content before returning it
+        """
+
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            new_ref = await func(self, *args, **kwargs)
+
+            assert new_ref.source_identifier is not None, (
+                f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
+                f" Source identifier should be set on reference"
+            )
+
+            failed_fields = []
+            for field in self.reference_non_empty_lists_fields:
+                if (
+                    not isinstance(getattr(new_ref, field), list)
+                    or len(getattr(new_ref, field)) == 0
+                ):
+                    failed_fields.append(field)
+            for field in self.reference_non_blank_string_fields:
+                if (
+                    not isinstance(getattr(new_ref, field), str)
+                    or not getattr(new_ref, field).strip()
+                ):
+                    failed_fields.append(field)
+            for field in self.reference_not_null_fields:
+                if getattr(new_ref, field) is None:
+                    failed_fields.append(field)
+
+            if failed_fields:
+                assert False, (
+                    f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
+                    f" for reference: {new_ref.source_identifier}."
+                    f" {', '.join(failed_fields)} should be set on reference"
+                )
+            return new_ref
+
+        return wrapper
+
+    @validate_reference
     @abstractmethod
     async def convert(self, raw_data: AbstractHarvesterRawResult) -> Reference:
         """
