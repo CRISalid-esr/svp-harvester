@@ -9,7 +9,7 @@ class SudocQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "aut": Contribution.Role.UNKNOWN,
+        "aut": Contribution.Role.AUTHOR,
         "trl": Contribution.Role.UNKNOWN,
         "opn": Contribution.Role.UNKNOWN,
         "ths": Contribution.Role.UNKNOWN,
@@ -20,6 +20,10 @@ class SudocQualitiesConverter:
         "clb": Contribution.Role.UNKNOWN,
         "fmo": Contribution.Role.UNKNOWN,
         "dnr": Contribution.Role.UNKNOWN,
+        "cur": Contribution.Role.UNKNOWN,
+        "aft": Contribution.Role.UNKNOWN,
+        "ive": Contribution.Role.UNKNOWN,
+        "ctg": Contribution.Role.UNKNOWN,
     }
 
     @staticmethod

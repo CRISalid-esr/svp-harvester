@@ -1,3 +1,5 @@
+from loguru import logger
+from rdflib import FOAF
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.subtitle import Subtitle
@@ -8,10 +10,12 @@ from app.harvesters.idref.idref_document_type_converter import (
     IdrefDocumentTypeConverter,
 )
 from app.harvesters.idref.idref_harvester import IdrefHarvester
+from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -75,6 +79,29 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             new_ref.document_type.append(
                 await self._get_or_create_document_type_by_uri(uri_type, label)
             )
+        contributor_informations = []
+        for contributor in dict_payload["author"]:
+            contributor = contributor.replace("/id", ".rdf")
+            contributor = contributor.replace("http://", "https://")
+            logger.debug(f"Fetching contributor {contributor}")
+            graph = await RdfResolver().fetch(contributor)
+            contributor_name = ""
+            for name in graph.objects(contributor, FOAF.name):
+                contributor_name = name
+            role = dict_payload["role"].split("/")[-1]
+            contributor_informations.append(
+                AbstractReferencesConverter.ContributionInformations(
+                    role=IdrefQualitiesConverter.convert(role),
+                    identifier=contributor,
+                    name=contributor_name,
+                    rank=None,
+                )
+            )
+        async for contribution in self._contributions(
+            contribution_informations=contributor_informations, source="idref"
+        ):
+            new_ref.contributions.append(contribution)
+
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
