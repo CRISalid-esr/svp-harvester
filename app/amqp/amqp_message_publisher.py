@@ -1,3 +1,5 @@
+import json
+
 import aio_pika
 from aio_pika import DeliveryMode
 from loguru import logger
@@ -24,7 +26,7 @@ class AMQPMessagePublisher:
         if routing_key is None:
             return
         message = aio_pika.Message(
-            str(payload).encode(),
+            json.dumps(payload).encode(),
             delivery_mode=DeliveryMode.PERSISTENT,
         )
         await self.exchange.publish(
