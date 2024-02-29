@@ -1,8 +1,8 @@
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.idref_document_type_converter import (
     IdrefDocumentTypeConverter,
@@ -48,9 +48,11 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             return await OpenEditionReferencesConverter().convert(raw_data)
         if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
             return await PerseeReferencesConverter().convert(raw_data)
+
         return None
 
-    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference:
+    @AbstractReferencesConverter.validate_reference
+    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference | None:
         new_ref = Reference()
         dict_payload: dict = raw_data.payload
         uri = raw_data.source_identifier
@@ -70,14 +72,19 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         new_ref.subjects.extend(
             await self._get_or_create_concepts_by_uri(concept_informations)
         )
+
         for document_type in dict_payload["type"]:
             uri_type, label = IdrefDocumentTypeConverter().convert(document_type)
             new_ref.document_type.append(
                 await self._get_or_create_document_type_by_uri(uri_type, label)
             )
+
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
+
+        new_ref.harvester = "Idref"
         new_ref.hash = self._hash(dict_payload)
         new_ref.source_identifier = uri
+
         return new_ref
 
     def _hash_keys(self):

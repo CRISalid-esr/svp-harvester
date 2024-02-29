@@ -72,7 +72,7 @@ class ReferencesTable {
                     "source": capitalizeFirstLetter(harvesting.harvester),
                     "identifier": reference.source_identifier,
                     "status": capitalizeFirstLetter(referenceEvent.type),
-                    "title": reference.titles[0].value,
+                    "title": reference.titles && reference.titles[0] ? reference.titles[0].value : "No title",
                     "data": "<pre>" + prettyPrintJson.toHtml(reference) + "</pre>"
                 };
                 data.push(row);
