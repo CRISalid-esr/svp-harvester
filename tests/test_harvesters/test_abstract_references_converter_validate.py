@@ -157,7 +157,6 @@ async def test_reference_without_harvester_raises_exception(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_reference_with_abstract_value_none_raises_exception(
     reference_with_abstract_value_none,
 ):
@@ -170,7 +169,7 @@ async def test_reference_with_abstract_value_none_raises_exception(
     """
 
     async def decorated_function(self):
-        reference_with_abstract_value_none.abstracts = None
+        reference_with_abstract_value_none.__dict__["abstracts"] = None
         return reference_with_abstract_value_none
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
@@ -179,7 +178,7 @@ async def test_reference_with_abstract_value_none_raises_exception(
     with pytest.raises(AssertionError) as exc_info:
         await function_with_decorator(AbstractReferencesConverter)
 
-    assert exc_info.match("harvester should be set on reference")
+    assert exc_info.match("abstracts should be set on reference")
 
 
 @pytest.mark.asyncio
