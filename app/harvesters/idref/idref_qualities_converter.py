@@ -10,6 +10,7 @@ class IdrefQualitiesConverter:
 
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
+        "cur": Contribution.Role.UNKNOWN,
     }
 
     @staticmethod
@@ -20,6 +21,6 @@ class IdrefQualitiesConverter:
         :return: loc role value
         """
         if quality not in IdrefQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown science plus quality: {quality}")
+            logger.warning(f"Unknown idref quality: {quality}")
             return Contribution.Role.UNKNOWN.value
         return IdrefQualitiesConverter.ROLES_MAPPING[quality].value

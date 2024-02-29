@@ -11,7 +11,6 @@ class SciencePlusQualitiesConverter:
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
         "ctb": Contribution.Role.CONTRIBUTOR,
-        "cur": Contribution.Role.UNKNOWN,
     }
 
     @staticmethod
@@ -22,6 +21,6 @@ class SciencePlusQualitiesConverter:
         :return: loc role value
         """
         if quality not in SciencePlusQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown science plus quality: {quality}")
+            logger.warning(f"Unknown science plus quality: {quality} {len(quality)}")
             return Contribution.Role.UNKNOWN.value
         return SciencePlusQualitiesConverter.ROLES_MAPPING[quality].value
