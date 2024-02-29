@@ -1,6 +1,8 @@
+from typing import List
 from pydantic import BaseModel, ConfigDict
 
 from app.models.contributor import Contributor
+from app.models.organization import Organization
 
 
 class Contribution(BaseModel):
@@ -15,3 +17,5 @@ class Contribution(BaseModel):
     contributor: Contributor
 
     role: str
+
+    affiliations: List[Organization]

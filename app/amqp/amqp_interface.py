@@ -6,19 +6,15 @@ from aio_pika import ExchangeType
 from app.amqp.amqp_message_processor import AMQPMessageProcessor
 from app.settings.app_settings import AppSettings
 
-PREFETCH_COUNT = 50
 
 DEFAULT_RESULT_TIMEOUT = 600
 
 
+# pylint: disable=too-many-instance-attributes
 class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
-    WAIT_BEFORE_SHUTDOWN = 30
-    TASKS_PARALLELISM_LIMIT = 100
     INNER_TASKS_QUEUE_LENGTH = 10000
-    EXCHANGE = "publications"
-    KEYS = ["task.entity.references.retrieval"]
 
     def __init__(self, settings: AppSettings):
         """Init AMQP Connexion class"""
@@ -29,6 +25,7 @@ class AMQPInterface:
         self.pika_connexion: aio_pika.abc.AbstractRobustConnection | None = None
         self.inner_tasks_queue: asyncio.Queue | None = None
         self.message_processing_workers: list[asyncio.Task] | None = None
+        self.keys = [self.settings.amqp_retrieval_routing_key]
 
     async def connect(self):
         """Connect to AMQP queue"""
@@ -45,7 +42,8 @@ class AMQPInterface:
         """Stop listening to AMQP queue"""
         try:
             await asyncio.wait_for(
-                self.inner_tasks_queue.join(), timeout=self.WAIT_BEFORE_SHUTDOWN
+                self.inner_tasks_queue.join(),
+                timeout=self.settings.amqp_wait_before_shutdown,
             )
         finally:
             for worker in self.message_processing_workers:
@@ -56,7 +54,7 @@ class AMQPInterface:
     async def _attach_message_processing_workers(self):
         self.message_processing_workers = []
         self.inner_tasks_queue = asyncio.Queue(maxsize=self.INNER_TASKS_QUEUE_LENGTH)
-        for worker_id in range(self.TASKS_PARALLELISM_LIMIT):
+        for worker_id in range(self.settings.amqp_task_parallelism_limit):
             processor = await self._message_processor()
             self.message_processing_workers.append(
                 asyncio.create_task(
@@ -83,17 +81,19 @@ class AMQPInterface:
         :return: None
         """
         self.pika_exchange = await self.pika_channel.declare_exchange(
-            self.EXCHANGE,
+            self.settings.amqp_exchange_name,
             ExchangeType.TOPIC,
         )
 
     async def _bind_queue(self) -> None:
         # Bind service message queue to publication exchange
-        await self.pika_channel.set_qos(prefetch_count=PREFETCH_COUNT)
+        await self.pika_channel.set_qos(
+            prefetch_count=self.settings.amqp_prefetch_count
+        )
         self.pika_queue = await self.pika_channel.declare_queue(
             self.settings.amqp_queue_name, durable=True
         )
-        for key in self.KEYS:
+        for key in self.keys:
             await self.pika_queue.bind(self.pika_exchange, routing_key=key)
 
     async def _connect(self) -> None:

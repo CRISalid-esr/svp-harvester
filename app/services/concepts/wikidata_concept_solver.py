@@ -1,88 +1,153 @@
-from typing import Tuple
+import json
+import re
+from typing import List
+
 import aiohttp
-from rdflib import Graph
-import rdflib
+from loguru import logger
+from rdflib import Literal
+
 from app.db.models.concept import Concept as DbConcept
-from app.services.concepts.concept_solver_rdf import ConceptSolverRdf
+from app.db.models.label import Label as DbLabel
+from app.services.concepts.concept_informations import ConceptInformations
+from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.dereferencing_error import DereferencingError
 
 
-class WikidataConceptSolver(ConceptSolverRdf):
+class WikidataConceptSolver(ConceptSolver):
     """
     Wikidata concept solver
     """
 
-    async def solve(self, concept_id: str) -> DbConcept:
+    async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """
         Solves a Wikidata concept from a concept id
-        :param concept_id: concept id
+        :param concept_informations: concept informations
         :return: Concept
         """
-        wikidata_url, wikidata_uri = await self._build_url_from_concept_id_or_uri(
-            concept_id
-        )
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(2))
+                timeout=aiohttp.ClientTimeout(total=float(10))
             ) as session:
-                async with session.get(wikidata_url) as response:
+                async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
-                            "Endpoint returned status "
-                            + f"{response.status} while dereferencing "
-                            + f"{wikidata_uri}"
+                            f"Endpoint returned status {response.status} "
+                            f"while dereferencing Wikidata concept "
+                            f"{concept_informations.uri} "
+                            f"from url {concept_informations.url}"
                         )
-                    xml = (await response.text()).strip()
-                    concept_graph = Graph().parse(data=xml)
-                    concept = DbConcept(uri=wikidata_uri)
-                    # See if there is a owl:sameAs concept in the graph, if so, use it
-                    same_as = concept_graph.objects(
-                        rdflib.term.URIRef(wikidata_uri), rdflib.OWL.sameAs
-                    )
-                    new_concept_id = None
-                    for same in same_as:
-                        new_concept_id = str(same)
-                        break
-                    if new_concept_id:
-                        _, wikidata_uri = await self._build_url_from_concept_id_or_uri(
-                            new_concept_id
-                        )
-
-                    [  # pylint: disable=expression-not-assigned
-                        self._add_labels(
-                            concept=concept, labels=list(label[0]), preferred=label[1]
-                        )
-                        for label in self._get_labels(concept_graph, wikidata_uri)
+                    json_response = await response.json()
+                    concept_data: json = json_response["entities"][
+                        concept_informations.code
                     ]
+                    concept = DbConcept(uri=concept_informations.uri)
 
+                    self._add_labels(
+                        concept=concept,
+                        labels=[
+                            Literal(pair["value"], lang=pair["language"])
+                            for language_value_pairs in self._alt_labels(
+                                concept_data
+                            ).values()
+                            for pair in language_value_pairs
+                        ],
+                        preferred=False,
+                    )
+                    self._add_labels(
+                        concept=concept,
+                        labels=[
+                            Literal(pair["value"], lang=pair["language"])
+                            for pair in self._pref_labels(concept_data).values()
+                        ],
+                        preferred=True,
+                    )
                     return concept
 
         except aiohttp.ClientError as error:
+            logger.error(
+                f"Endpoint failure while dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
+            )
             raise DereferencingError(
-                f"Endpoint failure while dereferencing {wikidata_uri} with message {error}"
-            ) from error
-        except rdflib.exceptions.ParserError as error:
-            raise DereferencingError(
-                f"Error while parsing xml from {wikidata_uri} with message {error}"
+                f"Endpoint failure while dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             ) from error
         except Exception as error:
+            logger.error(
+                f"Exception failure dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
+            )
             raise DereferencingError(
-                f"Unknown error while dereferencing {wikidata_uri} with message {error}"
+                f"Exception failure dereferencing {concept_informations.uri}"
+                f"at url {concept_informations.url} with message {error}"
             ) from error
 
-    async def _build_url_from_concept_id_or_uri(
-        self, concept_id: str
-    ) -> Tuple[str, str]:
-        """
-        Builds a URL from a Wikidata uri
-        :param concept_id: concept id or uri
-        :return: URL, URI
-        """
-        concept_id = concept_id.replace("https://www.wikidata.org/wiki/", "")
+    def _alt_labels(self, concept_data: json) -> List[str]:
+        return concept_data.get("aliases", {})
 
-        wikidata_uri = f"http://www.wikidata.org/entity/{concept_id}"
-        wikidata_url = (
-            f"https://www.wikidata.org/wiki/Special:EntityData/{concept_id}.ttl"
+    # pylint: disable=unused-argument
+    def _pref_labels(self, concept_data: json) -> List[str]:
+        return concept_data.get("labels", {})
+
+    def _add_labels(self, concept: DbConcept, labels: dict, preferred: bool = True):
+        def interesting_languages(language):
+            return language in self.settings.concept_languages or language is None
+
+        if len(labels) == 0:
+            return
+        if preferred:
+            preferred_labels = [
+                label for label in labels if interesting_languages(label.language)
+            ]
+            for label in preferred_labels:
+                self._add_label(concept, label, preferred)
+
+        else:
+            alt_labels = [
+                label for label in labels if interesting_languages(label.language)
+            ]
+            for label in alt_labels:
+                self._add_label(concept, label, preferred)
+
+    def _add_label(self, concept: DbConcept, label: Literal, preferred: bool):
+        concept.labels.append(
+            DbLabel(
+                value=label.value,
+                language=label.language,
+                preferred=preferred,
+            )
         )
 
-        return wikidata_url, wikidata_uri
+    def complete_information(
+        self,
+        concept_informations: ConceptInformations,
+    ) -> None:
+        """
+        Ensure uri/code consistency and set URL
+        :param concept_informations: concept informations
+        :return: None
+        """
+        if concept_informations.code is None and concept_informations.uri is None:
+            raise DereferencingError(
+                f"Neither code nor uri provided for {concept_informations}"
+            )
+        if concept_informations.uri is not None:
+            concept_informations.code = re.sub(
+                r"https?://www.wikidata.org/(wiki|entity)/",
+                "",
+                concept_informations.uri,
+            )
+        if concept_informations.code is not None:
+            concept_informations.uri = (
+                f"http://www.wikidata.org/entity/{concept_informations.code}"
+            )
+        assert (
+            concept_informations.uri is not None
+        ), "Concept URI should not be None at this point"
+        assert (
+            concept_informations.code is not None
+        ), "Concept code should not be None at this point"
+        concept_informations.url = (
+            "https://www.wikidata.org/wiki/Special:EntityData/"
+            f"{concept_informations.code}.json"
+        )

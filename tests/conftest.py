@@ -10,9 +10,11 @@ from starlette.testclient import TestClient
 
 from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
+from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from tests.fixtures.common import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.pydantic_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.db_entity_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
@@ -22,6 +24,7 @@ from tests.fixtures.scanr_api_docs_fixtures import *  # pylint: disable=unused-i
 from tests.fixtures.science_plus_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.sudoc_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.idref_sparql_endpoint_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
+from tests.fixtures.jel_sparql_endpoint_concepts_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.retrieval_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.harvesting_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.reference_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
@@ -30,7 +33,7 @@ from tests.fixtures.open_edition_doc_fixtures import *  # pylint: disable=unused
 from tests.fixtures.open_alex_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.persee_rdf_docs_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 from tests.fixtures.wikidata_concept_solver import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
-
+from tests.fixtures.organizations_fixtures import *  # pylint: disable=unused-import, wildcard-import, unused-wildcard-import
 
 environ["APP_ENV"] = "TEST"
 
@@ -75,7 +78,9 @@ async def fixture_async_session() -> AsyncGenerator[AsyncSession, None]:
     await engine.dispose()
 
 
-def fake_idref_concept_solver(concept_id: str):
+def fake_idref_concept_solver(
+    concept_informations: ConceptInformations,
+):
     """
     Fake idref concept solver for tests
     Raises DereferencingError except for a specific concept id
@@ -83,9 +88,9 @@ def fake_idref_concept_solver(concept_id: str):
     :param concept_id: concept id to solve
     :return: fake concept
     """
-    if concept_id == "http://www.idref.fr/allowed_concept_for_tests/id":
+    if concept_informations.uri == "http://www.idref.fr/123456789X/id":
         return DbConcept(
-            uri="http://www.idref.fr/allowed_concept_for_tests/id",
+            uri="http://www.idref.fr/123456789X/id",
             labels=[
                 Label(
                     value="Idref concept allowed for test",
@@ -113,11 +118,52 @@ def fake_idref_concept_solver(concept_id: str):
     raise DereferencingError("Idref concept dereferencing not allowed during tests")
 
 
+def fake_jel_sparql_concept_solver(concept_id: str):
+    """
+    Fake Jel sparql concept solver for tests
+    Raises DereferencingError except for a specific concept id
+
+    :param concept_id: concept id to solve
+    :return: fake concept
+    """
+    if concept_id == "http://zbw.eu/beta/external_identifiers/jel#TEST":
+        return DbConcept(
+            uri="http://zbw.eu/beta/external_identifiers/jel#TEST",
+            labels=[
+                Label(value="Test concept", language="en", preferred=True),
+                Label(value="Concept de test", language="fr", preferred=True),
+                Label(value="Test concept alternative", language="en", preferred=False),
+                Label(
+                    value="Concept de test alternatif", language="fr", preferred=False
+                ),
+            ],
+        )
+    raise DereferencingError("Jel concept dereferencing not allowed during tests")
+
+
+def fake_idref_concept_uri_solver(concept_informations: ConceptInformations):
+    """
+    Fake idref concept solver for tests
+
+    :param concept_id: concept id to solve
+    :return: fake uri
+    """
+    pass
+
+
 @pytest.fixture(name="mock_idref_concept_solver", autouse=True)
 def fixture_mock_idref_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
     with mock.patch.object(IdRefConceptSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_idref_concept_solver
+        yield mock_solve
+
+
+@pytest.fixture(name="mock_sparql_jel_concept_solver", autouse=True)
+def fixture_mock_sparql_jel_concept_solver():
+    """Hal harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(SparqlJelConceptSolver, "solve") as mock_solve:
+        mock_solve.side_effect = fake_jel_sparql_concept_solver
         yield mock_solve
 
 

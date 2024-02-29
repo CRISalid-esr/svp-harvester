@@ -5,22 +5,27 @@ from dataclasses import dataclass
 from functools import wraps
 from typing import List, AsyncGenerator
 
+from loguru import logger
 from sqlalchemy.exc import IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
+from app.db.daos.organization_dao import OrganizationDAO
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
 from app.db.models.document_type import DocumentType
 from app.db.models.label import Label
+from app.db.models.organization import Organization
 from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.organizations.merge_organization import merge_organization
+from app.services.organizations.organization_factory import OrganizationFactory
 
 
 class AbstractReferencesConverter(ABC):
@@ -37,6 +42,16 @@ class AbstractReferencesConverter(ABC):
         "document_type",
         "contributions",
     ]
+
+    @dataclass(frozen=True)
+    class OrganizationInformations:
+        """
+        Informations about an organization
+        """
+
+        name: str | None = None
+        identifier: str | None = None
+        source: str | None = None
 
     @dataclass
     class ContributionInformations:
@@ -280,19 +295,25 @@ class AbstractReferencesConverter(ABC):
         # Look for the concept in the database
         async with async_session() as session:
             async with session.begin_nested():
+                # First we resolve the uri of the concept
+                ConceptFactory.complete_information(concept_informations)
                 concept = await ConceptDAO(session).get_concept_by_uri(
                     concept_informations.uri
                 )
                 # If the concept is not in the database, try to create it by dereferencing the uri
                 if concept is None:
                     try:
-                        concept = await ConceptFactory.solve(
-                            concept_id=concept_informations.uri,
-                            concept_source=concept_informations.source,
-                        )
-                        concept_informations.uri = concept.uri
+                        concept = await ConceptFactory.solve(concept_informations)
                     # If the dereferencing fails, create a concept with the uri and the label
-                    except DereferencingError:
+                    except DereferencingError as error:
+                        logger.error(
+                            "Dereferencing failure for concept "
+                            f"{concept_informations.uri} with error  : {error}"
+                        )
+                        assert concept_informations.label is not None, (
+                            f"Could not create concept with uri {concept_informations.uri} "
+                            "without any label"
+                        )
                         concept = Concept(uri=concept_informations.uri)
                         concept.labels.append(
                             Label(
@@ -398,3 +419,78 @@ class AbstractReferencesConverter(ABC):
                 db_contributor.name
             ]
         db_contributor.name = name
+
+    async def _organizations(
+        self, organization_informations: List[OrganizationInformations]
+    ) -> AsyncGenerator[Organization, None]:
+        # Get all the organizations from the database, or create if they do not exist
+        organizations_identifiers_cache = {}
+        for organization_information in organization_informations:
+            identifier = organization_information.identifier
+            assert identifier is not None, "No identifier provided for organization"
+            db_organization = organizations_identifiers_cache.get(identifier)
+            if db_organization is None:
+                db_organization = await self._get_or_create_organization_by_identifier(
+                    organization_informations=organization_information
+                )
+                organizations_identifiers_cache[identifier] = db_organization
+
+            yield db_organization
+
+    async def _get_or_create_organization_by_identifier(
+        self,
+        organization_informations: OrganizationInformations,
+        new_attempt: bool = False,
+    ):
+        async with async_session() as session:
+            async with session.begin_nested():
+                organization = await OrganizationDAO(
+                    session
+                ).get_organization_by_source_identifier(
+                    identifier=organization_informations.identifier
+                )
+
+                if organization is None:
+                    try:
+                        organization = await OrganizationFactory.solve(
+                            organization_id=organization_informations.identifier,
+                            organization_source=organization_informations.source,
+                        )
+
+                        same_organization = await OrganizationDAO(
+                            session
+                        ).get_organization_by_identifiers(organization.identifiers)
+                        if same_organization is not None and len(
+                            same_organization.identifiers
+                        ) != len(organization.identifiers):
+                            print("Need to merge organizations")
+                            logger.warning("Need to merge organizations")
+                            organization = merge_organization(
+                                same_organization, organization
+                            )
+
+                    except DereferencingError:
+                        organization = Organization(
+                            source=organization_informations.source,
+                            source_identifier=organization_informations.identifier,
+                            name=organization_informations.name,
+                        )
+                    session.add(organization)
+                    try:
+                        await session.commit()
+                    except IntegrityError as error:
+                        assert new_attempt is False, (
+                            f"Unique identifier {organization_informations.identifier} violation "
+                            "for organization cannot occur twice "
+                            f"during organization creation : {error}"
+                        )
+                        await session.rollback()
+                        organization = (
+                            await self._get_or_create_organization_by_identifier(
+                                organization_informations=organization_informations,
+                                new_attempt=True,
+                            )
+                        )
+                else:
+                    await session.refresh(organization)
+        return organization

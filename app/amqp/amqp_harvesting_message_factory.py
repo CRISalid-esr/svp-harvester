@@ -12,21 +12,20 @@ class AMQPHarvestingMessageFactory(AbstractAMQPMessageFactory):
     """Factory for building AMQP messages related to harvesting states."""
 
     def _build_routing_key(self) -> str:
-        return "event.references.harvesting.state"
+        return self.settings.amqp_harvesting_event_routing_key
 
     async def _build_payload(self) -> dict[str, Any]:
         assert "id" in self.content, "Harvesting id is required"
         async with async_session() as session:
-            async with session.begin():
-                harvesting: DbHarvesting = await HarvestingDAO(
-                    session
-                ).get_harvesting_extended_info_by_id(self.content.get("id"))
-                harvesting_representation: HarvestingModel = (
-                    HarvestingModel.model_validate(harvesting)
-                )
-                entity_representation: EntityModel = EntityModel.model_validate(
-                    harvesting.retrieval.entity
-                )
-            return harvesting_representation.model_dump(
-                exclude={"id": True, "reference_events": True}
-            ) | {"entity": entity_representation.model_dump(exclude={"id": True})}
+            harvesting: DbHarvesting = await HarvestingDAO(
+                session
+            ).get_harvesting_extended_info_by_id(self.content.get("id"))
+            harvesting_representation: HarvestingModel = HarvestingModel.model_validate(
+                harvesting
+            )
+            entity_representation: EntityModel = EntityModel.model_validate(
+                harvesting.retrieval.entity
+            )
+        return harvesting_representation.model_dump(
+            exclude={"id": True, "reference_events": True}
+        ) | {"entity": entity_representation.model_dump(exclude={"id": True})}

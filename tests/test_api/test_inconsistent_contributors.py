@@ -11,7 +11,6 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_fetch_references_contributions_history(  # pylint: disable=too-many-statements, too-many-locals
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,

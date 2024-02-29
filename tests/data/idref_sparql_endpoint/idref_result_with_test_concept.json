@@ -39,7 +39,7 @@
         },
         "subject_uri": {
           "type": "uri",
-          "value": "http://www.idref.fr/allowed_concept_for_tests/id"
+          "value": "http://www.idref.fr/123456789X/id"
         },
         "subject_label": {
           "type": "literal",

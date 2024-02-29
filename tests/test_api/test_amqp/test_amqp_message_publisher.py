@@ -28,7 +28,7 @@ async def test_publish_harvesting_status(
     expected_sent_message_payload = {
         "harvester": "idref",
         "state": "running",
-        "error": None,
+        "error": [],
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
             "name": "John Doe",
@@ -76,12 +76,15 @@ async def test_publish_created_reference(
                 "subjects": [
                     {
                         "uri": "http://uri",
+                        "dereferenced": False,
                         "pref_labels": [{"value": "label", "language": "fr"}],
                         "alt_labels": [],
                     }
                 ],
                 "document_type": [],
                 "contributions": [],
+                "issued": None,
+                "created": None,
             },
         },
         "entity": {
@@ -90,7 +93,7 @@ async def test_publish_created_reference(
         },
     }
 
-    expected_sent_message_routing_key = "event.references.reference.event"
+    expected_sent_message_routing_key = "event.references.reference.created"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         str(expected_sent_message_payload).encode(),
