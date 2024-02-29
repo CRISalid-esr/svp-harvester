@@ -106,6 +106,7 @@ class Control {
       })
       .catch((error) => {
         console.log(error);
+        this.form.retrieveFinished();
       });
   }
 
