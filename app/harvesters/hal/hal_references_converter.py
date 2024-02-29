@@ -54,6 +54,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "wosId_s": "wos",
     }
 
+    @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
         Convert raw data from HAL to a normalised Reference object
@@ -90,7 +91,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
         await self._add_organization(json_payload, new_ref)
         new_ref.hash = self._hash(json_payload)
-        new_ref.harvester = "hal"
+        new_ref.harvester = "HAL"
         new_ref.source_identifier = raw_data.source_identifier
         return new_ref
 
