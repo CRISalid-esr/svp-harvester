@@ -26,7 +26,7 @@ else:  # pragma: no cover
         SQLALCHEMY_DATABASE_URL,
         future=True,
         echo=False,
-        pool_size=100,
+        pool_size=settings.db_pool_size,
         max_overflow=2000,
         pool_timeout=60,
     )

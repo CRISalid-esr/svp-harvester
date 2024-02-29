@@ -71,6 +71,7 @@ class AppSettings(BaseSettings):
     db_password: str = "secret"
     db_host: str = "localhost"
     db_port: int = 5432
+    db_pool_size: int = 100
 
     scanr_es_host: str = "https://host_name.com/"
     scanr_es_user: str = "johndoe"
