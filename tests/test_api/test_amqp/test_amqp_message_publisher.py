@@ -1,5 +1,5 @@
 """Test AMQP publishing capabilities."""
-
+import json
 from unittest.mock import Mock
 
 import pytest
@@ -10,6 +10,7 @@ from app.amqp.amqp_message_publisher import AMQPMessagePublisher
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_publish_harvesting_status(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -37,7 +38,7 @@ async def test_publish_harvesting_status(
     expected_sent_message_routing_key = "event.references.harvesting.state"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        str(expected_sent_message_payload).encode(),
+        json.dumps(expected_sent_message_payload).encode(),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(
@@ -47,6 +48,7 @@ async def test_publish_harvesting_status(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_publish_created_reference(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -96,7 +98,7 @@ async def test_publish_created_reference(
     expected_sent_message_routing_key = "event.references.reference.created"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        str(expected_sent_message_payload).encode(),
+        json.dumps(expected_sent_message_payload).encode(),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(
@@ -106,6 +108,7 @@ async def test_publish_created_reference(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_publish_retrieval_error(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -144,7 +147,7 @@ async def test_publish_retrieval_error(
     expected_sent_message_routing_key = "event.references.retrieval.error"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        str(expected_sent_message_payload).encode(),
+        json.dumps(expected_sent_message_payload).encode(),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(
