@@ -19,6 +19,9 @@ class Form {
     );
     this.runRetrievalButton =
       this.formElement.querySelector("#run-retrieval-btn");
+    this.stopRetrievalButton = this.formElement.querySelector(
+      "#stop-retrieval-btn"
+    );
     this.clearFormButton = this.formElement.querySelector("#clear-form-btn");
     this.handleReferenceTypesSelect();
     this.handleEventTypesSelect();
@@ -28,10 +31,16 @@ class Form {
     this.renewAddIdentifierControl();
     this.addSubmitListener();
     this.addClearFormListener();
+    this.addStopRetrievalListener();
     this.addNameInputListener();
     this.sessionStorage = new SessionStorage(this);
     this.fillWithSessionStorage();
     this.updateSubmitButtonState();
+  }
+
+  retrieveFinished() {
+    this.hideButton(this.stopRetrievalButton);
+    this.showButton(this.runRetrievalButton);
   }
 
   fillWithSessionStorage() {
@@ -72,12 +81,23 @@ class Form {
     );
   }
 
+  handleStopRetrieval() {
+    this.rootElement.dispatchEvent(new CustomEvent("entity_cancel"));
+  }
+
   addSubmitListener() {
     this.formElement.addEventListener("submit", this.handleSubmit.bind(this));
   }
 
   addClearFormListener() {
     this.clearFormButton.addEventListener("click", this.clearForm.bind(this));
+  }
+
+  addStopRetrievalListener() {
+    this.stopRetrievalButton.addEventListener(
+      "click",
+      this.handleStopRetrieval.bind(this)
+    );
   }
 
   clearForm() {
@@ -97,6 +117,8 @@ class Form {
   handleSubmit(event) {
     event.preventDefault();
     event.stopPropagation();
+    this.hideButton(this.runRetrievalButton);
+    this.showButton(this.stopRetrievalButton);
     const entitySubmitEvent = new CustomEvent("entity_submit", {
       detail: {
         identifiers: this.getIdentifierFieldsContent(true),
@@ -108,6 +130,14 @@ class Form {
       },
     });
     this.rootElement.dispatchEvent(entitySubmitEvent);
+  }
+
+  hideButton(element) {
+    element.classList.add("d-none");
+  }
+
+  showButton(element) {
+    element.classList.remove("d-none");
   }
 
   renewAddIdentifierControl() {
