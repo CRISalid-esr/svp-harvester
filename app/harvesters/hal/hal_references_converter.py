@@ -53,7 +53,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "swhidId_s": "swhid",
         "wosId_s": "wos",
     }
-      
+
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult) -> Reference:
         """
