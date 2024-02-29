@@ -50,7 +50,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             role = role.split("/")[-1]
             contribution_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
-                    role=SudocQualitiesConverter.convert(role),
+                    role=self._convert_role(role),
                     identifier=str(identifier),
                     name=str(name),
                     rank=None,
@@ -58,6 +58,16 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             )
 
         async for contribution in self._contributions(
-            contribution_informations=contribution_informations, source="sudoc"
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
         ):
             yield contribution
+
+    def _get_source(self):
+        return "sudoc"
+
+    def _resolve_contributor(self, identifier):
+        pass
+
+    def _convert_role(self, role):
+        return SudocQualitiesConverter.convert(role)

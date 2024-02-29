@@ -1,4 +1,3 @@
-from loguru import logger
 from rdflib import FOAF
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
@@ -79,11 +78,30 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             new_ref.document_type.append(
                 await self._get_or_create_document_type_by_uri(uri_type, label)
             )
+
+        async for contribution in self._contributions(
+            contribution_informations=await self.get_contributors(dict_payload),
+            source="idref",
+        ):
+            new_ref.contributions.append(contribution)
+
+        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
+        new_ref.hash = self._hash(dict_payload)
+        new_ref.source_identifier = uri
+        return new_ref
+
+    async def get_contributors(self, dict_payload):
+        """
+        Retrieves contributor information from the given dictionary payload.
+
+        :params dict_payload: The dictionary payload containing author and role information.
+
+        :return: A list of ContributionInformations objects.
+        """
         contributor_informations = []
         for contributor in dict_payload["author"]:
             contributor = contributor.replace("/id", ".rdf")
             contributor = contributor.replace("http://", "https://")
-            logger.debug(f"Fetching contributor {contributor}")
             graph = await RdfResolver().fetch(contributor)
             contributor_name = ""
             for name in graph.objects(contributor, FOAF.name):
@@ -97,15 +115,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
                     rank=None,
                 )
             )
-        async for contribution in self._contributions(
-            contribution_informations=contributor_informations, source="idref"
-        ):
-            new_ref.contributions.append(contribution)
 
-        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
-        new_ref.hash = self._hash(dict_payload)
-        new_ref.source_identifier = uri
-        return new_ref
+        return contributor_informations
 
     def _hash_keys(self):
         return ["uri", "role", "title", "type", "altLabel", "subject"]

@@ -24,6 +24,7 @@ class SudocQualitiesConverter:
         "aft": Contribution.Role.UNKNOWN,
         "ive": Contribution.Role.UNKNOWN,
         "ctg": Contribution.Role.UNKNOWN,
+        "ill": Contribution.Role.UNKNOWN,
     }
 
     @staticmethod
