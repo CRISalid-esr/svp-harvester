@@ -56,6 +56,7 @@ class Contribution(Base):
         STAGE_MANAGER = "Stage Manager"
         WRITER_OF_ACCOMPANYING_MATERIAL = "Writer Of Accompanying Material"
         WRITER_OF_INTRODUCTION = "Writer Of Introduction"
+        WITNESS = "Witness"
         OTHER = "Other"
         UNKNOWN = "Unknown"
 
@@ -83,10 +84,10 @@ class Contribution(Base):
         nullable=False, index=True, default=Role.AUTHOR.value
     )
 
-    affiliations: Mapped[List["app.db.models.organization.Organization"]] = (
-        relationship(
-            "app.db.models.organization.Organization",
-            secondary=affiliations_table,
-            lazy="joined",
-        )
+    affiliations: Mapped[
+        List["app.db.models.organization.Organization"]
+    ] = relationship(
+        "app.db.models.organization.Organization",
+        secondary=affiliations_table,
+        lazy="joined",
     )
