@@ -88,7 +88,6 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         ):
             new_ref.contributions.append(contribution)
 
-
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
         new_ref.harvester = "Idref"
@@ -106,7 +105,9 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         :return: A list of ContributionInformations objects.
         """
         contributor_informations = []
-        for contributor in dict_payload["author"]:
+        for contributor in dict_payload.get("author", []):
+            if contributor == "":
+                continue
             contributor = contributor.replace("/id", ".rdf")
             contributor = contributor.replace("http://", "https://")
             graph = await RdfResolver().fetch(contributor)
