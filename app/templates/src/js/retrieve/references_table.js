@@ -68,14 +68,6 @@ class ReferencesTable {
         for (const harvesting of harvestings) {
             for (const referenceEvent of harvesting.reference_events) {
                 const reference = referenceEvent.reference;
-                const row = [
-                    "",
-                    capitalizeFirstLetter(harvesting.harvester),
-                    reference.source_identifier,
-                    capitalizeFirstLetter(referenceEvent.type),
-                    reference.titles && reference.titles[0] ? reference.titles[0].value : "No title available",
-                    "<pre>" + prettyPrintJson.toHtml(reference) + "</pre>"
-                ];
                 const row = {
                     "source": capitalizeFirstLetter(harvesting.harvester),
                     "identifier": reference.source_identifier,
