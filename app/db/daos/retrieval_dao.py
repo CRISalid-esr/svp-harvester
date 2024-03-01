@@ -1,7 +1,7 @@
 import datetime
 from typing import List, Tuple
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -16,6 +16,7 @@ from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 from app.db.models.reference import Reference
 from app.models.people import Person
+from app.utilities.string_utilities import split_string
 
 
 # pylint: disable=not-callable, duplicate-code
@@ -153,7 +154,10 @@ class RetrievalDAO(AbstractDAO):
         )
 
         if entity and entity.name:
-            stmt = stmt.where(entity_id.c.name == entity.name)
+            names = split_string(entity.name)
+            stmt = stmt.filter(
+                and_(*[entity_id.c.name.like(f"%{name}%") for name in names])
+            )
         if date_start:
             stmt = stmt.where(Harvesting.timestamp >= date_start)
         if date_end:
