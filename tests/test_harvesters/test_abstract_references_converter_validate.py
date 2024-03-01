@@ -103,7 +103,9 @@ async def test_reference_without_title_raises_exception(reference_without_title)
         decorated_function
     )
     with pytest.raises(AssertionError) as exc_info:
-        await function_with_decorator(AbstractReferencesConverter)
+        await function_with_decorator(
+            AbstractReferencesConverter, new_ref=reference_without_title
+        )
 
     assert exc_info.match("titles should be set on reference")
 
