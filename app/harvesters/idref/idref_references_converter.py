@@ -1,15 +1,8 @@
-from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
-from app.db.models.reference_identifier import ReferenceIdentifier
-from app.db.models.subtitle import Subtitle
-from app.db.models.title import Title
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
-)
-from app.harvesters.idref.idref_document_type_converter import (
-    IdrefDocumentTypeConverter,
 )
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
@@ -26,7 +19,6 @@ from app.harvesters.rdf_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
-from app.services.concepts.concept_informations import ConceptInformations
 
 
 class IdrefReferencesConverter(AbstractReferencesConverter):
