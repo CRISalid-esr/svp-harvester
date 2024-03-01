@@ -3,8 +3,8 @@ from xml.etree import ElementTree
 from loguru import logger
 
 from app.db.models.abstract import Abstract
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -124,70 +124,70 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             ) from error
 
 
-def _title(self, root: ElementTree):
-    title = self._get_term(root, "title")
-    language = self._language(root)
-    return Title(value=title, language=language)
+    def _title(self, root: ElementTree):
+        title = self._get_term(root, "title")
+        language = self._language(root)
+        return Title(value=title, language=language)
 
 
-def _language(self, root: ElementTree):
-    return self._get_term(root, "language")
+    def _language(self, root: ElementTree):
+        return self._get_term(root, "language")
 
 
-def _abstracts(self, root: ElementTree):
-    # Sometimes we have abstract or description.
-    # Is the same ? In Dublic Core, Abstract is a sub property of Description
-    abstract = self._get_terms(root, "abstract")
-    if len(abstract) == 0:
-        abstract = self._get_terms(root, "description")
-        if len(abstract) != 0:
-            logger.warning("Description found instead of abstract")
-    if len(abstract) == 0:
-        yield
-    for value, attrib in abstract:
-        # check if language defined, If not then we take the language of the document
-        try:
+    def _abstracts(self, root: ElementTree):
+        # Sometimes we have abstract or description.
+        # Is the same ? In Dublic Core, Abstract is a sub property of Description
+        abstract = self._get_terms(root, "abstract")
+        if len(abstract) == 0:
+            abstract = self._get_terms(root, "description")
+            if len(abstract) != 0:
+                logger.warning("Description found instead of abstract")
+        if len(abstract) == 0:
+            yield
+        for value, attrib in abstract:
+            # check if language defined, If not then we take the language of the document
+            try:
+                language = attrib[f"{self.W3_NAMESPACE}lang"]
+            except KeyError:
+                language = self._language(root)
+            yield Abstract(value=value, language=language)
+
+
+    async def _subjects(self, root: ElementTree):
+        subjects = self._get_terms(root, "subject")
+        language = self._language(root)
+        for subject in subjects:
+            label, attrib = subject
             language = attrib[f"{self.W3_NAMESPACE}lang"]
-        except KeyError:
-            language = self._language(root)
-        yield Abstract(value=value, language=language)
-
-
-async def _subjects(self, root: ElementTree):
-    subjects = self._get_terms(root, "subject")
-    language = self._language(root)
-    for subject in subjects:
-        label, attrib = subject
-        language = attrib[f"{self.W3_NAMESPACE}lang"]
-        yield await self._get_or_create_concept_by_label(
-            ConceptInformations(
-                label=label,
-                language=language,
+            yield await self._get_or_create_concept_by_label(
+                ConceptInformations(
+                    label=label,
+                    language=language,
+                )
             )
-        )
 
 
-async def _document_type(self, root: ElementTree):
-    document_type = self._get_term(root, "type")
-    uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
-    return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
+    async def _document_type(self, root: ElementTree):
+        document_type = self._get_term(root, "type")
+        uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
+        return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
 
-def hash_keys(self) -> list[str]:
-    return [
-        "title",
-        "abstract",
-        "type",
-        "language",
-        "identifier",
-        "subject",
-        "type",
-    ]
+    def hash_keys(self) -> list[str]:
+        return [
+            "title",
+            "abstract",
+            "type",
+            "language",
+            "identifier",
+            "subject",
+            "type",
+        ]
 
 
-def _create_dict(self, root: ElementTree):
-    new_dict = {}
-    for term in self.hash_keys():
-        new_dict[term] = self._get_terms(root, term)
+    def _create_dict(self, root: ElementTree):
+        new_dict = {}
+        for term in self.hash_keys():
+            new_dict[term] = self._get_terms(root, term)
 
-    return new_dict
+        return new_dict
