@@ -1,11 +1,11 @@
 from typing import AsyncGenerator
 
 import rdflib
-from rdflib import DCTERMS, RDF, Literal, URIRef
+from rdflib import DCTERMS, RDF, Literal, URIRef, Graph
 
 from app.db.models.document_type import DocumentType
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
@@ -30,7 +30,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
         pub_graph: Graph = raw_data.payload
-        await self._add_contributions(pub_graph, new_ref)
 
     def _add_reference_identifiers(self, pub_graph, uri):
         yield ReferenceIdentifier(value=uri, type="uri")
