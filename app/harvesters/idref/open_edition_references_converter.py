@@ -144,7 +144,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         if len(abstract) == 0:
             abstract = self._get_terms(root, "description")
             if len(abstract) != 0:
-                logger.warning("Description found instead of abstract")
+                logger.debug("Description found instead of abstract")
         if len(abstract) == 0:
             yield
         for value, attrib in abstract:
