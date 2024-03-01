@@ -40,13 +40,10 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
 
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
-            
+
         new_ref.harvester = "Idref.Abes"
         async for contribution in self._add_contributions(pub_graph, uri):
             new_ref.contributions.append(contribution)
-
-        new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
-        return new_ref
 
     def hash(self, raw_data: RdfRawResult) -> str:
         pub_graph: Graph = raw_data.payload
