@@ -120,9 +120,9 @@ class AbstractReferencesConverter(ABC):
 
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
-            new_ref = await func(self, *args, **kwargs)
-
-            assert new_ref.source_identifier is not None, (
+            ref = kwargs["new_ref"]
+            await func(self, *args, **kwargs)
+            assert ref.source_identifier is not None, (
                 f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
                 f" Source identifier should be set on reference"
             )
@@ -130,37 +130,53 @@ class AbstractReferencesConverter(ABC):
             failed_fields = []
             for field in self.reference_non_empty_lists_fields:
                 if (
-                    not isinstance(getattr(new_ref, field), list)
-                    or len(getattr(new_ref, field)) == 0
+                    not isinstance(getattr(ref, field), list)
+                    or len(getattr(ref, field)) == 0
                 ):
                     failed_fields.append(field)
             for field in self.reference_non_blank_string_fields:
                 if (
-                    not isinstance(getattr(new_ref, field), str)
-                    or not getattr(new_ref, field).strip()
+                    not isinstance(getattr(ref, field), str)
+                    or not getattr(ref, field).strip()
                 ):
                     failed_fields.append(field)
             for field in self.reference_not_null_fields:
-                if getattr(new_ref, field) is None:
+                if getattr(ref, field) is None:
                     failed_fields.append(field)
 
             if failed_fields:
                 assert False, (
                     f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
-                    f" for reference: {new_ref.source_identifier}."
+                    f" for reference: {ref.source_identifier}."
                     f" {', '.join(failed_fields)} should be set on reference"
                 )
-            return new_ref
 
         return wrapper
 
+    def build(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+        """
+        Build a Normalised Reference object with basic information
+        :param raw_data: Raw data from harvester source
+        :return: Normalised Reference object with basic information
+        """
+        new_ref = Reference()
+        new_ref.harvester = self._harvester()
+        new_ref.source_identifier = str(raw_data.source_identifier)
+        new_ref.hash = self._hash(raw_data.payload)
+        return new_ref
+
+    @abstractmethod
+    def _harvester(self) -> str:
+        raise NotImplementedError
+
     @validate_reference
     @abstractmethod
-    async def convert(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+    async def convert(self, raw_data: AbstractHarvesterRawResult, new_ref: Reference):
         """
-        Converts raw data from harvester source to a Normalised Reference object
+        Populates raw data from harvester source to the normalised Reference object
         :param raw_data: Raw data from harvester source
-        :return: Normalised Reference object
+        :param reference: Reference object
+        :return: Normalised Reference object with basic information
         """
 
     def _hash(self, raw_data: dict):

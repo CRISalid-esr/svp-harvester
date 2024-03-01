@@ -26,6 +26,7 @@ def fixture_scanr_api_publication_with_author_dupe_cleaned_response(
     return scanr_api_docs_from_publication_for_authors_dupe["hits"]["hits"]
 
 
+@pytest.mark.current
 async def test_convert(scanr_api_publication_cleaned_response):
     """
     Test that the converter will return normalised references
@@ -33,7 +34,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     """
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_identifier = "nnt2019lysem032"
+    expected_identifier = "KHToPYsB9owg1fG7YUfI"
     expected_titles = {
         None: "Sécurité adaptative et énergétiquement efficace dans l’Internet des Objets"
     }
@@ -56,14 +57,16 @@ async def test_convert(scanr_api_publication_cleaned_response):
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        assert test_reference.source_identifier == expected_identifier
+        assert test_reference.harvester == "ScanR"
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = {title.language: title.value for title in test_reference.titles}
         test_abstracts = {
             abstract.language: abstract.value for abstract in test_reference.abstracts
         }
 
-        assert test_reference.source_identifier == expected_identifier
         assert test_titles == expected_titles
         assert test_abstracts == expected_abstracts
         assert test_reference.document_type[0].uri == expected_document_type["uri"]
@@ -74,6 +77,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         )
 
 
+@pytest.mark.current
 async def test_convert_with_default_dupe(
     scanr_api_publication_with_dupe_cleaned_response,
 ):
@@ -83,7 +87,7 @@ async def test_convert_with_default_dupe(
     """
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_identifier = "nnt2019lysem032"
+    expected_identifier = "KHToPYsB9owg1fG7YUfI"
     expected_titles = {
         "fr": "Sécurité adaptative et énergétiquement efficace dans l’Internet des Objets"
     }
@@ -99,18 +103,20 @@ async def test_convert_with_default_dupe(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        assert test_reference.source_identifier == expected_identifier
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = {title.language: title.value for title in test_reference.titles}
         test_abstracts = {
             abstract.language: abstract.value for abstract in test_reference.abstracts
         }
 
-        assert test_reference.source_identifier == expected_identifier
         assert test_titles == expected_titles
         assert test_abstracts == expected_abstracts
 
 
+@pytest.mark.current
 async def test_same_contributor_with_different_roles(
     scanr_api_publication_for_author_dupe_cleaned_response,
 ):
@@ -125,7 +131,9 @@ async def test_same_contributor_with_different_roles(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
         # Create a dictionary to count the occurrences of each contributor source_identifier
         contributor_roles = {}
 
