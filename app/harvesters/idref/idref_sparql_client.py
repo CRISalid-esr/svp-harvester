@@ -72,6 +72,7 @@ class IdrefSparqlClient:
                     publications[pub] = {
                         "uri": pub,
                         "role": result.get("role", {}).get("value", ""),
+                        "author": [],
                         "title": [],
                         "note": [],
                         "type": [],
@@ -80,7 +81,7 @@ class IdrefSparqlClient:
                         "doi": result.get("doi", {}).get("value", ""),
                     }
                 # replace by a loop
-                for key in ["type", "title", "altLabel", "note"]:
+                for key in ["type", "title", "altLabel", "note", "author"]:
                     if (
                         result.get(key, {}).get("value", "")
                         not in publications[pub][key]
