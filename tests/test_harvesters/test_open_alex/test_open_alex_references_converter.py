@@ -19,7 +19,11 @@ async def test_convert(open_alex_api_work: dict):
     expected_subjects = ["Test concept", "Concept de test", "Concepto de test"]
     expected_id = "https://openalex.org/W2023271753"
     expected_source_contributor = "open_alex"
-    expected_contributors_name = ["Chengteh Lee", "Weitao Yang", "Robert G. Parr"]
+    expected_contributors_name_rank = {
+        "Chengteh Lee": 1,
+        "Weitao Yang": 2,
+        "Robert G. Parr": 3,
+    }
 
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
@@ -45,10 +49,14 @@ async def test_convert(open_alex_api_work: dict):
             assert label.value in expected_subjects
     assert len(test_reference.subjects) == 1
     assert test_reference.source_identifier == expected_id
-    assert len(test_reference.contributions) == len(expected_contributors_name)
+    assert len(test_reference.contributions) == len(expected_contributors_name_rank)
     for contribution in test_reference.contributions:
-        assert contribution.contributor.name in expected_contributors_name
+        assert contribution.contributor.name in expected_contributors_name_rank
         assert contribution.contributor.source == expected_source_contributor
+        assert (
+            contribution.rank
+            == expected_contributors_name_rank[contribution.contributor.name]
+        )
     assert any(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers
