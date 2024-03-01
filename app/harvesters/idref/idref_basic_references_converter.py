@@ -20,6 +20,9 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
     a complete Reference object without the help of a secondary converter
     """
 
+    def _harvester(self) -> str:
+        return "Idref"
+
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: SparqlRawResult, new_ref: Reference) -> None:
         dict_payload: dict = raw_data.payload
@@ -48,5 +51,5 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
-    def _hash_keys(self):
+    def hash_keys(self):
         return ["uri", "role", "title", "type", "altLabel", "subject"]

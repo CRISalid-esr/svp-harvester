@@ -162,7 +162,7 @@ class AbstractReferencesConverter(ABC):
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
-        new_ref.hash = self._hash(raw_data)
+        new_ref.hash = self.hash(raw_data)
         return new_ref
 
     @abstractmethod
@@ -179,12 +179,17 @@ class AbstractReferencesConverter(ABC):
         :return: Normalised Reference object with basic information
         """
 
-    def _hash(self, raw_data: AbstractHarvesterRawResult) -> str:
+    def hash(self, raw_data: AbstractHarvesterRawResult) -> str:
+        """
+        Hashes harvesting result paylod to track changes
+        :param raw_data: Raw data from harvester source
+        :return: a hash of the payload
+        """
         payload = raw_data.payload
         reduced_dic: dict = dict(
             zip(
-                self._hash_keys(),
-                [payload[k] for k in self._hash_keys() if k in payload],
+                self.hash_keys(),
+                [payload[k] for k in self.hash_keys() if k in payload],
             )
         )
         string_to_hash = ""
@@ -195,7 +200,12 @@ class AbstractReferencesConverter(ABC):
                 string_to_hash += str(values)
         return hashlib.sha256(string_to_hash.encode()).hexdigest()
 
-    def _hash_keys(self) -> list[str]:
+    def hash_keys(self) -> list[str]:
+        """
+        For the most simple case where data to hash are a dictionary,
+        returns the keys of the dictionary to include in change detection
+        :return: a list of keys
+        """
         raise NotImplementedError
 
     async def _get_or_create_contributor_by_name(

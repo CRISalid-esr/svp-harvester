@@ -70,8 +70,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Idref"
 
-    def _hash(self, raw_data):
-        return self.secondary_converter._hash(raw_data)
+    def hash(self, raw_data):
+        return self.secondary_converter.hash(raw_data)
 
-    def _hash_keys(self):
-        return self.secondary_converter._hash_keys()
+    def hash_keys(self):
+        return self.secondary_converter.hash_keys()

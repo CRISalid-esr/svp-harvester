@@ -58,8 +58,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
         new_ref.harvester = "Idref.OpenEdition"
 
-    def _hash(self, raw_data: RdfRawResult):
-        return super()._hash(self._create_dict(self._get_root_data(raw_data.payload)))
+    def hash(self, raw_data: RdfRawResult):
+        return super().hash(self._create_dict(self._get_root_data(raw_data.payload)))
 
     def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
         for identifier in self._get_terms(root, "identifier"):
@@ -173,7 +173,7 @@ async def _document_type(self, root: ElementTree):
     return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
 
-def _hash_keys(self) -> list[str]:
+def hash_keys(self) -> list[str]:
     return [
         "title",
         "abstract",
@@ -187,7 +187,7 @@ def _hash_keys(self) -> list[str]:
 
 def _create_dict(self, root: ElementTree):
     new_dict = {}
-    for term in self._hash_keys():
+    for term in self.hash_keys():
         new_dict[term] = self._get_terms(root, term)
 
     return new_dict

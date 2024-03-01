@@ -237,7 +237,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         uri, label = HalDocumentTypeConverter().convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    def _hash_keys(self):
+    def hash_keys(self):
         return [
             "docid",
             "citationRef_s",

@@ -40,7 +40,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
 
-    def _hash(self, raw_data: RdfRawResult) -> str:
+    def hash(self, raw_data: RdfRawResult) -> str:
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
         graph_as_dict = {

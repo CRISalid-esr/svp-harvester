@@ -50,7 +50,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
-        new_ref.hash = self._hash(json_payload)
+        new_ref.hash = self.hash(json_payload)
 
     def _harvester(self) -> str:
         return "ScanR"
@@ -100,7 +100,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    def _hash_keys(self):
+    def hash_keys(self):
         # This listing is independant of PUBLICATIONS_DEFAULT_FIELDS
         # in ScanRApiQueryBuilder
         # pylint: disable=duplicate-code

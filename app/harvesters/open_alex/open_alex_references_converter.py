@@ -125,7 +125,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         value = json_payload.get(key, default)
         return value if value is not None else default
 
-    def _hash_keys(self) -> list[str]:
+    def hash_keys(self) -> list[str]:
         return [
             "id",
             "title",
