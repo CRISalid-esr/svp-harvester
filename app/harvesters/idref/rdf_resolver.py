@@ -1,3 +1,5 @@
+from xml.sax import SAXParseException
+
 from rdflib import Graph
 from rdflib.exceptions import ParserError
 
@@ -24,7 +26,7 @@ class RdfResolver:
         try:
             graph = Graph().parse(data=response_text, format=output_format)
             return graph
-        except ParserError as error:
+        except (ParserError, SAXParseException) as error:
             raise UnexpectedFormatException(
                 f"Error while parsing the RDF from {document_uri} : {response_text}"
             ) from error
