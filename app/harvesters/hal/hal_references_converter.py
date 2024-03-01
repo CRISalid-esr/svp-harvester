@@ -79,7 +79,18 @@ class HalReferencesConverter(AbstractReferencesConverter):
             new_ref.abstracts.append(abstract)
             for abstract in self._abstracts(json_payload)
         ]
-        new_ref.document_type.append(await self._document_type(json_payload))
+
+        document_types_from_payload = set(
+            json_payload.get(document_type)
+            for document_type in ("docType_s", "docSubType_s")
+        )
+        document_types_from_payload.discard(None)
+        document_types_from_payload.discard("NULL")
+
+        for document_type in document_types_from_payload:
+            validated_document_type = await self._document_type(document_type)
+            new_ref.document_type.append(validated_document_type)
+
         async for subject in self._concepts(json_payload):
             # Concept from hal may be repeated, avoid duplicates
             if subject.id is None or subject.id not in list(
@@ -233,8 +244,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         return organizations
 
     async def _document_type(self, raw_data):
-        code_document_type = raw_data.get("docType_s", None)
-        uri, label = HalDocumentTypeConverter().convert(code_document_type)
+        uri, label = HalDocumentTypeConverter().convert(raw_data)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
     def hash_keys(self):
