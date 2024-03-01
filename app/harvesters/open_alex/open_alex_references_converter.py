@@ -63,6 +63,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
         contribution_informations = []
+        rank_count = 1
         for author_object in self._value_from_key(
             json_payload, "authorships", default=[]
         ):
@@ -74,9 +75,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                     role=Contribution.Role.AUTHOR.value,
                     identifier=id_open_alex,
                     name=name,
-                    rank=None,
+                    rank=rank_count,
                 )
             )
+            rank_count += 1
         async for contribution in self._contributions(
             contribution_informations=contribution_informations,
             source="open_alex",
