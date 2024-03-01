@@ -107,29 +107,37 @@ class AbstractHarvester(ABC):
         try:
             result: AbstractHarvesterRawResult
             async for result in self.fetch_results():
-                if result is None or result == "end":
-                    break
-                new_ref = await self.converter.convert(result)
-                if new_ref is None:
-                    continue
-                old_ref = await references_recorder.exists(new_ref=new_ref)
-                if old_ref is not None:
-                    existing_references.append(old_ref)
-                reference_event: Optional[
-                    ReferenceEvent
-                ] = await self._handle_converted_result(
-                    new_ref=new_ref,
-                    old_ref=old_ref,
-                    references_recorder=references_recorder,
-                )
-                if reference_event is not None:
-                    await self._put_in_queue(
-                        {
-                            "type": "ReferenceEvent",
-                            "id": reference_event.id,
-                            "change": reference_event.type,
-                        }
+                try:
+                    if result is None or result == "end":
+                        break
+                    new_ref = await self.converter.convert(result)
+                    if new_ref is None:
+                        continue
+                    old_ref = await references_recorder.exists(new_ref=new_ref)
+                    if old_ref is not None:
+                        existing_references.append(old_ref)
+                    reference_event: Optional[ReferenceEvent] = (
+                        await self._handle_converted_result(
+                            new_ref=new_ref,
+                            old_ref=old_ref,
+                            references_recorder=references_recorder,
+                        )
                     )
+                    if reference_event is not None:
+                        await self._put_in_queue(
+                            {
+                                "type": "ReferenceEvent",
+                                "id": reference_event.id,
+                                "change": reference_event.type,
+                            }
+                        )
+                except UnexpectedFormatException as error:
+                    # If an UnexpectedFormatException bubbles up to this point
+                    # it means that the one reference could not be converted
+                    # but the harvester can continue to deliver results
+                    # so we handle and continue
+                    await self.handle_error(error)
+                    continue
             await self._register_deleted_references(
                 existing_references=existing_references,
                 previous_references=previous_references,
