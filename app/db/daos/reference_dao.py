@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 from sqlalchemy import or_, select, func
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, noload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
@@ -93,6 +93,13 @@ class ReferenceDAO(AbstractDAO):
         """
         query = (
             select(Reference)
+            .options(noload(Reference.contributions))
+            .options(noload(Reference.titles))
+            .options(noload(Reference.subtitles))
+            .options(noload(Reference.identifiers))
+            .options(noload(Reference.abstracts))
+            .options(noload(Reference.document_type))
+            .options(noload(Reference.reference_events))
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
             # where there is no reference event
