@@ -15,6 +15,7 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
     HARVESTER = "HAL"
 
     TYPES_MAPPING = {
+        # HAL docType_s
         "ART": (f"{RDF_BIBO}Article", "Article"),
         "COMM": (f"{RDF_SPAR}ConferencePaper", "Conference Paper"),
         "COUV": (f"{RDF_BIBO}Chapter", "Chapter"),
@@ -64,4 +65,24 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
         "REPORT_GMAST": (f"{RDF_COAR}c_93fc", "Report"),
         "REPORT_COOR": (f"{RDF_COAR}c_93fc", "Report"),
         "REPORT_RETABINT": (f"{RDF_COAR}c_93fc", "Report"),
+        # HAL docSubType_s
+        "PHOTOGRAPHY": (f"{RDF_SPAR}StillImage", "Still Image"),
+        "RESREPORT": (f"{RDF_COAR}c_18ws", "Research Report"),
+        "BOOKREVIEW": (f"{RDF_SPAR}BookReview", "Book Review"),
+        "ARTREV": (f"{RDF_SPAR}ReviewArticle", "Review Article"),
+        "ILLUSTRATION": (f"{RDF_SPAR}StillImage", "Still Image"),
+        "TECHREPORT": (f"{RDF_SPAR}TechnicalReport", "Technical Report"),
+        "GRAPHICS": (f"{RDF_SPAR}StillImage", "Still Image"),
+        "WORKINGPAPER": (f"{RDF_SPAR}WorkingPaper", "Working Paper"),
+        "DATAPAPER": (f"{RDF_COAR}c_beb9", "Data Paper"),
+        "FUNDREPORT": (f"{RDF_SPAR}Report", "Report"),
+        "PREPRINT": (f"{RDF_SPAR}Preprint", "Preprint"),
+        "EXPERTREPORT": (f"{RDF_SPAR}Report", "Report"),
+        "SYNTOUV": (f"{RDF_BIBO}Book", "Book"),
+        "CRIT": (f"{RDF_BIBO}Book", "Book"),
+        "MANUAL": (f"{RDF_BIBO}Manual", "Manual"),
+        "DRAWING": (f"{RDF_SPAR}StillImage", "Still Image"),
+        "GRAVURE": (f"{RDF_SPAR}StillImage", "Still Image"),
+        "DICTIONARY": (f"{RDF_SPAR}ReferenceBook", "Reference Book"),
+        "DMP": (f"{RDF_SPAR}DataMangementPlan", "Data Management Plan"),
     }
