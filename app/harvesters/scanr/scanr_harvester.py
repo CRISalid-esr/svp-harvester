@@ -67,7 +67,7 @@ class ScanrHarvester(AbstractHarvester):
             async for doc in client.perform_search(client.Indexes.PUBLICATIONS):
                 yield RawResult(
                     payload=doc,
-                    source_identifier=doc.get("_id"),
+                    source_identifier=doc["_source"].get("id"),
                     formatter_name=ScanrHarvester.FORMATTER_NAME,
                 )
 

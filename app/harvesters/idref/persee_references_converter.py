@@ -4,8 +4,8 @@ import rdflib
 from rdflib import DCTERMS, RDF, Literal, URIRef
 
 from app.db.models.document_type import DocumentType
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
@@ -21,15 +21,14 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
 
     RDF_BIBO = "http://purl.org/ontology/bibo/"
 
+    def _harvester(self) -> str:
+        return "Idref"
+
     @AbesRDFReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference | None:
-        new_ref = await super().convert(raw_data)
-        if new_ref is None:
-            return None
-
-        new_ref.harvester = "Idref.Persee"
-
-        return new_ref
+    async def convert(
+        self, raw_data: RdfHarvesterRawResult, new_ref: Reference
+    ) -> None:
+        await super().convert(raw_data=raw_data, new_ref=new_ref)
 
     def _add_reference_identifiers(self, pub_graph, uri):
         yield ReferenceIdentifier(value=uri, type="uri")

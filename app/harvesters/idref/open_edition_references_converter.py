@@ -3,8 +3,8 @@ from xml.etree import ElementTree
 from loguru import logger
 
 from app.db.models.abstract import Abstract
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -32,38 +32,36 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     W3_NAMESPACE = "{http://www.w3.org/XML/1998/namespace}"
     TERMS = "{http://purl.org/dc/terms/}"
 
+    def __init__(self):
+        self.tree_root: ElementTree = None
+
+    def _harvester(self) -> str:
+        return "Idref"
+
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfRawResult) -> Reference | None:
-        new_ref: Reference = Reference()
+    async def convert(self, raw_data: RdfRawResult, new_ref: Reference) -> None:
+        new_ref.titles.append(self._title(self._get_root(raw_data)))
 
-        new_ref.source_identifier = raw_data.source_identifier
-        try:
-            root: ElementTree = self._get_root_data(raw_data.payload)
-        except AttributeError as error:
-            raise UnexpectedFormatException(
-                f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
-            ) from error
-        new_ref.titles.append(self._title(root))
-
-        for abstract in self._abstracts(root):
+        for abstract in self._abstracts(self._get_root(raw_data)):
             new_ref.abstracts.append(abstract)
 
-        async for subject in self._subjects(root):
+        async for subject in self._subjects(self._get_root(raw_data)):
             if subject.id is None or subject.id not in list(
                 map(lambda s: s.id, new_ref.subjects)
             ):
                 new_ref.subjects.append(subject)
 
-        for identifier in self._reference_identifier(root):
+        for identifier in self._reference_identifier(self._get_root(raw_data)):
             new_ref.identifiers.append(identifier)
 
-        new_ref.document_type.append(await self._document_type(root))
+        new_ref.document_type.append(
+            await self._document_type(self._get_root(raw_data))
+        )
 
-        await self._add_contributions(new_ref, root)
+        await self._add_contributions(new_ref, self._get_root(raw_data))
 
-        new_ref.harvester = "Idref.OpenEdition"
-        new_ref.hash = self._hash(self._create_dict(root))
-        return new_ref
+    def hash(self, raw_data: RdfRawResult):
+        return self._hash_dict(self._create_dict(self._get_root(raw_data)))
 
     def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
         for identifier in self._get_terms(root, "identifier"):
@@ -114,13 +112,22 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             (term.text, term.attrib) for term in root.findall(f"{self.TERMS}{term}")
         ]
 
-    def _get_root_data(self, root):
-        return (
-            root.find(f"{self.BASE_DOMAIN}GetRecord")
-            .find(f"{self.BASE_DOMAIN}record")
-            .find(f"{self.BASE_DOMAIN}metadata")
-            .find(f"{self.NAMESPACE}qualifieddc")
-        )
+    def _get_root(self, raw_data: RdfRawResult):
+        if self.tree_root is None:
+            try:
+                root = raw_data.payload
+                return (
+                    root.find(f"{self.BASE_DOMAIN}GetRecord")
+                    .find(f"{self.BASE_DOMAIN}record")
+                    .find(f"{self.BASE_DOMAIN}metadata")
+                    .find(f"{self.NAMESPACE}qualifieddc")
+                )
+            except AttributeError as error:
+                raise UnexpectedFormatException(
+                    "Unexpected format for OAI Open Edition response "
+                    f"for {raw_data.source_identifier}"
+                ) from error
+        return self.tree_root
 
     def _title(self, root: ElementTree):
         title = self._get_term(root, "title")
@@ -166,7 +173,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    def _hash_keys(self) -> list[str]:
+    def hash_keys(self) -> list[str]:
         return [
             "title",
             "abstract",
@@ -179,7 +186,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def _create_dict(self, root: ElementTree):
         new_dict = {}
-        for term in self._hash_keys():
+        for term in self.hash_keys():
             new_dict[term] = self._get_terms(root, term)
 
         return new_dict

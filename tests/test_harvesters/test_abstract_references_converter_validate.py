@@ -96,14 +96,16 @@ async def test_reference_without_title_raises_exception(reference_without_title)
     :param reference_without_title: A reference without title
     """
 
-    async def decorated_function(self):
+    async def decorated_function(self, new_ref):
         return reference_without_title
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
     with pytest.raises(AssertionError) as exc_info:
-        await function_with_decorator(AbstractReferencesConverter)
+        await function_with_decorator(
+            AbstractReferencesConverter, new_ref=reference_without_title
+        )
 
     assert exc_info.match("titles should be set on reference")
 
@@ -120,14 +122,16 @@ async def test_reference_without_identifier_raises_exception(
     :param reference_without_identifier: A reference without identifier
     """
 
-    async def decorated_function(self):
-        return reference_without_identifier
+    async def decorated_function(self, new_ref):
+        return None
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
     with pytest.raises(AssertionError) as exc_info:
-        await function_with_decorator(AbstractReferencesConverter)
+        await function_with_decorator(
+            AbstractReferencesConverter, new_ref=reference_without_identifier
+        )
 
     assert exc_info.match("Source identifier should be set on reference")
 
@@ -144,14 +148,16 @@ async def test_reference_without_harvester_raises_exception(
     :param reference_without_harvester: A reference without identifier
     """
 
-    async def decorated_function(self):
-        return reference_without_harvester
+    async def decorated_function(self, new_ref):
+        return None
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
     with pytest.raises(AssertionError) as exc_info:
-        await function_with_decorator(AbstractReferencesConverter)
+        await function_with_decorator(
+            AbstractReferencesConverter, new_ref=reference_without_harvester
+        )
 
     assert exc_info.match("harvester should be set on reference")
 
@@ -168,15 +174,16 @@ async def test_reference_with_abstract_value_none_raises_exception(
     :param reference_with_abstract_value_none: A reference without identifier
     """
 
-    async def decorated_function(self):
+    async def decorated_function(self, new_ref):
         reference_with_abstract_value_none.__dict__["abstracts"] = None
-        return reference_with_abstract_value_none
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
     with pytest.raises(AssertionError) as exc_info:
-        await function_with_decorator(AbstractReferencesConverter)
+        await function_with_decorator(
+            AbstractReferencesConverter, new_ref=reference_with_abstract_value_none
+        )
 
     assert exc_info.match("abstracts should be set on reference")
 
@@ -193,12 +200,14 @@ async def test_reference_with_all_fields_does_not_raise_exception(
     :param reference_with_all_fields:
     """
 
-    async def decorated_function(self):
-        return reference_with_all_fields
+    async def decorated_function(self, new_ref):
+        return None
 
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
-    result = await function_with_decorator(AbstractReferencesConverter)
+    await function_with_decorator(
+        AbstractReferencesConverter, new_ref=reference_with_all_fields
+    )
 
-    assert result == reference_with_all_fields
+    assert True, "No exception should be raised"
