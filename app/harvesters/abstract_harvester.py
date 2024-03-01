@@ -105,23 +105,32 @@ class AbstractHarvester(ABC):
         )
         existing_references: list[Reference] = []
         try:
-            result: AbstractHarvesterRawResult
-            async for result in self.fetch_results():
-                try:
-                    if result is None or result == "end":
-                        break
-                    new_ref = await self.converter.convert(result)
-                    if new_ref is None:
-                        continue
-                    old_ref = await references_recorder.exists(new_ref=new_ref)
-                    if old_ref is not None:
-                        existing_references.append(old_ref)
-                    reference_event: Optional[ReferenceEvent] = (
-                        await self._handle_converted_result(
-                            new_ref=new_ref,
-                            old_ref=old_ref,
-                            references_recorder=references_recorder,
-                        )
+            raw_data: AbstractHarvesterRawResult
+            async for raw_data in self.fetch_results():
+                if raw_data is None or raw_data == "end":
+                    break
+                new_ref = self.converter.build(raw_data)
+                if new_ref is None:
+                    continue
+                old_ref = await references_recorder.exists(new_ref=new_ref)
+                if old_ref is not None:
+                    existing_references.append(old_ref)
+                if (old_ref is None) or (new_ref.hash != old_ref.hash):
+                    await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
+                reference_event: Optional[
+                    ReferenceEvent
+                ] = await self._handle_converted_result(
+                    new_ref=new_ref,
+                    old_ref=old_ref,
+                    references_recorder=references_recorder,
+                )
+                if reference_event is not None:
+                    await self._put_in_queue(
+                        {
+                            "type": "ReferenceEvent",
+                            "id": reference_event.id,
+                            "change": reference_event.type,
+                        }
                     )
                     if reference_event is not None:
                         await self._put_in_queue(

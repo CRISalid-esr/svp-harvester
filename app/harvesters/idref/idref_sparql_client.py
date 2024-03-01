@@ -43,6 +43,8 @@ class IdrefSparqlClient:
         DataSources.OPEN_EDITION: [
             "http://journals.openedition.org/",
             "https://journals.openedition.org/",
+            "http://books.openedition.org/",
+            "https://books.openedition.org/",
         ],
         DataSources.PERSEE: [
             "http://data.persee.fr/",
@@ -72,6 +74,7 @@ class IdrefSparqlClient:
                     publications[pub] = {
                         "uri": pub,
                         "role": result.get("role", {}).get("value", ""),
+                        "author": [],
                         "title": [],
                         "note": [],
                         "type": [],
@@ -80,7 +83,7 @@ class IdrefSparqlClient:
                         "doi": result.get("doi", {}).get("value", ""),
                     }
                 # replace by a loop
-                for key in ["type", "title", "altLabel", "note"]:
+                for key in ["type", "title", "altLabel", "note", "author"]:
                     if (
                         result.get(key, {}).get("value", "")
                         not in publications[pub][key]

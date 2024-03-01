@@ -37,7 +37,10 @@ class IdrefHarvester(AbstractHarvester):
     """
 
     SUDOC_URL_SUFFIX = "http://www.sudoc.fr/"
-    OPEN_EDITION_SUFFIX = re.compile(r"https?://journals\.openedition\.org/")
+    # It can be journals or books
+    OPEN_EDITION_SUFFIX = re.compile(
+        r"https?://(?:journals|books)\.openedition\.org/.*"
+    )
     SCIENCE_PLUS_URL_SUFFIX = "http://hub.abes.fr/"
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
     PERSEE_URL_SUFFIX = "http://data.persee.fr/"

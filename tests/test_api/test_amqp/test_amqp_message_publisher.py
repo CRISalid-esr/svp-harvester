@@ -10,7 +10,6 @@ from app.amqp.amqp_message_publisher import AMQPMessagePublisher
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_publish_harvesting_status(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -48,7 +47,6 @@ async def test_publish_harvesting_status(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_publish_created_reference(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -108,7 +106,6 @@ async def test_publish_created_reference(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_publish_retrieval_error(
     async_session: AsyncSession,
     mocked_message: Mock,

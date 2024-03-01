@@ -1,13 +1,15 @@
 import hashlib
 from abc import abstractmethod
+from loguru import logger
 
 import rdflib
-from rdflib import Graph, Literal, DCTERMS
+from rdflib import FOAF, Graph, Literal, DCTERMS, Namespace
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (
     RdfHarvesterRawResult as RdfRawResult,
 )
@@ -18,12 +20,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     Converts raw data from ABES RDF to a normalised Reference object
     """
 
-    @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfRawResult) -> Reference | None:
-        new_ref = Reference()
+    async def convert(self, raw_data: RdfRawResult, new_ref: Reference) -> None:
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
-        new_ref.source_identifier = str(uri)
 
         [  # pylint: disable=expression-not-assigned
             new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
@@ -35,18 +34,20 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         ]
 
         [  # pylint: disable=expression-not-assigned
-            new_ref.identifiers.append(document_idenfier)
-            for document_idenfier in self._add_reference_identifiers(pub_graph, uri)
+            new_ref.identifiers.append(document_identifier)
+            for document_identifier in self._add_reference_identifiers(pub_graph, uri)
         ]
 
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
 
         new_ref.harvester = "Idref.Abes"
-        new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
-        return new_ref
+        async for contribution in self._add_contributions(pub_graph, uri):
+            new_ref.contributions.append(contribution)
 
-    def _hash_from_rdf_graph(self, pub_graph: Graph, uri: str) -> str:
+    def hash(self, raw_data: RdfRawResult) -> str:
+        pub_graph: Graph = raw_data.payload
+        uri = raw_data.source_identifier
         graph_as_dict = {
             str(p): str(o)
             for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))
@@ -69,3 +70,51 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     @abstractmethod
     async def _document_type(self, pub_graph, uri):
         raise NotImplementedError()
+
+    @abstractmethod
+    def _convert_role(self, role):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _resolve_contributor(self, identifier):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_source(self):
+        raise NotImplementedError()
+
+    async def _add_contributions(self, pub_graph, uri):
+        contribution_informations = []
+        marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
+        query = f"""
+                        SELECT ?predicate ?object 
+                        WHERE {{
+                            ?subject ?predicate ?object .
+                            FILTER(STRSTARTS(STR(?predicate), "{str(marcrel)}")).
+                        }}
+                    """
+        results = pub_graph.query(query)
+        for role, identifier in results:
+            try:
+                role = role.split("/")[-1]
+                graph = await RdfResolver().fetch(self._resolve_contributor(identifier))
+                contributor_name = ""
+                for name in graph.objects(identifier, FOAF.name):
+                    contributor_name = name
+                contribution_informations.append(
+                    AbstractReferencesConverter.ContributionInformations(
+                        role=self._convert_role(role),
+                        identifier=identifier,
+                        name=contributor_name,
+                        rank=None,
+                    )
+                )
+            except ValueError as e:
+                logger.warning(f"Error while fetching contributor: {e}")
+                continue
+
+        async for contribution in self._contributions(
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
+        ):
+            yield contribution

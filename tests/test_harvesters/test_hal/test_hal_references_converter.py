@@ -1,3 +1,5 @@
+from email.contentmanager import raw_data_manager
+
 import pytest
 
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
@@ -10,7 +12,6 @@ def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
     return hal_api_docs_for_researcher["response"]["docs"]
 
 
-@pytest.mark.asyncio
 async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
     converter_under_tests = HalReferencesConverter()
@@ -41,7 +42,9 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        assert test_reference.source_identifier == expected_docid
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = [title.value for title in test_reference.titles]
         test_subtitles = [subtitles.value for subtitles in test_reference.subtitles]
@@ -55,7 +58,6 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
         assert test_subjects == expected_subjects
         assert test_subtitles == expected_subtitles
         assert test_abstracts == expected_abstracts
-        assert test_reference.source_identifier == expected_docid
         assert len(test_reference.contributions) == expected_contributors_number
         assert test_reference.contributions[0].role == expected_contributor_role
         assert (
@@ -79,7 +81,6 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             )
 
 
-@pytest.mark.asyncio
 async def test_convert_with_date_inconsistency(
     hal_api_docs_with_date_inconsistency, caplog
 ):
@@ -89,7 +90,8 @@ async def test_convert_with_date_inconsistency(
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
-        reference = await converter_under_tests.convert(result)
+        reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=reference)
         assert reference.issued is None
         assert reference.created is None
         assert "Could not parse date" in caplog.text
