@@ -33,7 +33,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     TERMS = "{http://purl.org/dc/terms/}"
 
     def __init__(self):
-        self.treeRoot: ElementTree = None
+        self.tree_root: ElementTree = None
 
     def _harvester(self) -> str:
         return "Idref"
@@ -113,7 +113,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         ]
 
     def _get_root(self, raw_data: RdfRawResult):
-        if self.treeRoot is None:
+        if self.tree_root is None:
             try:
                 root = ElementTree.fromstring(raw_data.payload)
                 return (
@@ -124,9 +124,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                 )
             except AttributeError as error:
                 raise UnexpectedFormatException(
-                    f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
+                    "Unexpected format for OAI Open Edition response "
+                    f"for {raw_data.source_identifier}"
                 ) from error
-        return self.treeRoot
+        return self.tree_root
 
     def _title(self, root: ElementTree):
         title = self._get_term(root, "title")
