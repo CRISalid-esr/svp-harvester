@@ -4,7 +4,6 @@ from app.harvesters.idref.persee_references_converter import PerseeReferencesCon
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     """
     GIVEN a PerseeReferencesConverter instance and a Persee RDF result for a document
