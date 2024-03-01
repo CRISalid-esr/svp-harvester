@@ -1,13 +1,15 @@
 import hashlib
 from abc import abstractmethod
+from loguru import logger
 
 import rdflib
-from rdflib import Graph, Literal, DCTERMS
+from rdflib import FOAF, Graph, Literal, DCTERMS, Namespace
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (
     RdfHarvesterRawResult as RdfRawResult,
 )
@@ -43,6 +45,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             new_ref.document_type.append(document_type)
 
         new_ref.harvester = "Idref.Abes"
+        async for contribution in self._add_contributions(pub_graph, uri):
+            new_ref.contributions.append(contribution)
+
         new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
         return new_ref
 
@@ -69,3 +74,51 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     @abstractmethod
     async def _document_type(self, pub_graph, uri):
         raise NotImplementedError()
+
+    @abstractmethod
+    def _convert_role(self, role):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _resolve_contributor(self, identifier):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_source(self):
+        raise NotImplementedError()
+
+    async def _add_contributions(self, pub_graph, uri):
+        contribution_informations = []
+        marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
+        query = f"""
+                        SELECT ?predicate ?object 
+                        WHERE {{
+                            ?subject ?predicate ?object .
+                            FILTER(STRSTARTS(STR(?predicate), "{str(marcrel)}")).
+                        }}
+                    """
+        results = pub_graph.query(query)
+        for role, identifier in results:
+            try:
+                role = role.split("/")[-1]
+                graph = await RdfResolver().fetch(self._resolve_contributor(identifier))
+                contributor_name = ""
+                for name in graph.objects(identifier, FOAF.name):
+                    contributor_name = name
+                contribution_informations.append(
+                    AbstractReferencesConverter.ContributionInformations(
+                        role=self._convert_role(role),
+                        identifier=identifier,
+                        name=contributor_name,
+                        rank=None,
+                    )
+                )
+            except ValueError as e:
+                logger.warning(f"Error while fetching contributor: {e}")
+                continue
+
+        async for contribution in self._contributions(
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
+        ):
+            yield contribution

@@ -17,7 +17,7 @@ class PerseeQualitiesConverter:
     @staticmethod
     def convert(quality: str) -> str:
         """
-        Conver persee role value to loc role value
+        Convert persee role value to loc role value
         :param quality: persee role value
         :return: loc role value
         """

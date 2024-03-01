@@ -1,3 +1,4 @@
+from rdflib import FOAF
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -8,10 +9,12 @@ from app.harvesters.idref.idref_document_type_converter import (
     IdrefDocumentTypeConverter,
 )
 from app.harvesters.idref.idref_harvester import IdrefHarvester
+from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -79,6 +82,12 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
                 await self._get_or_create_document_type_by_uri(uri_type, label)
             )
 
+        async for contribution in self._contributions(
+            contribution_informations=await self.get_contributors(dict_payload),
+            source="idref",
+        ):
+            new_ref.contributions.append(contribution)
+
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
         new_ref.harvester = "Idref"
@@ -86,6 +95,36 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         new_ref.source_identifier = uri
 
         return new_ref
+
+    async def get_contributors(self, dict_payload):
+        """
+        Retrieves contributor information from the given dictionary payload.
+
+        :params dict_payload: The dictionary payload containing author and role information.
+
+        :return: A list of ContributionInformations objects.
+        """
+        contributor_informations = []
+        for contributor in dict_payload.get("author", []):
+            if contributor == "":
+                continue
+            contributor = contributor.replace("/id", ".rdf")
+            contributor = contributor.replace("http://", "https://")
+            graph = await RdfResolver().fetch(contributor)
+            contributor_name = ""
+            for name in graph.objects(contributor, FOAF.name):
+                contributor_name = name
+            role = dict_payload["role"].split("/")[-1]
+            contributor_informations.append(
+                AbstractReferencesConverter.ContributionInformations(
+                    role=IdrefQualitiesConverter.convert(role),
+                    identifier=contributor,
+                    name=contributor_name,
+                    rank=None,
+                )
+            )
+
+        return contributor_informations
 
     def _hash_keys(self):
         return ["uri", "role", "title", "type", "altLabel", "subject"]
