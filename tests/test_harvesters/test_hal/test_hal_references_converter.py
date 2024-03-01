@@ -12,7 +12,6 @@ def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
     return hal_api_docs_for_researcher["response"]["docs"]
 
 
-@pytest.mark.current
 async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
     converter_under_tests = HalReferencesConverter()
@@ -82,7 +81,6 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             )
 
 
-@pytest.mark.current
 async def test_convert_with_date_inconsistency(
     hal_api_docs_with_date_inconsistency, caplog
 ):

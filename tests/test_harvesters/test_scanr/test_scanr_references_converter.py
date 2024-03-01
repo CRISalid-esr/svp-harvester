@@ -26,7 +26,6 @@ def fixture_scanr_api_publication_with_author_dupe_cleaned_response(
     return scanr_api_docs_from_publication_for_authors_dupe["hits"]["hits"]
 
 
-@pytest.mark.current
 async def test_convert(scanr_api_publication_cleaned_response):
     """
     Test that the converter will return normalised references
@@ -77,7 +76,6 @@ async def test_convert(scanr_api_publication_cleaned_response):
         )
 
 
-@pytest.mark.current
 async def test_convert_with_default_dupe(
     scanr_api_publication_with_dupe_cleaned_response,
 ):
@@ -116,7 +114,6 @@ async def test_convert_with_default_dupe(
         assert test_abstracts == expected_abstracts
 
 
-@pytest.mark.current
 async def test_same_contributor_with_different_roles(
     scanr_api_publication_for_author_dupe_cleaned_response,
 ):
