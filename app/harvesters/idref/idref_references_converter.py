@@ -1,3 +1,5 @@
+from rdflib import FOAF
+from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -5,10 +7,12 @@ from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
 )
 from app.harvesters.idref.idref_harvester import IdrefHarvester
+from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -56,6 +60,43 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
             self.secondary_converter = PerseeReferencesConverter()
         assert self.secondary_converter, f"Unknown formatter {raw_data.formatter_name}"
+
+
+    @AbstractReferencesConverter.validate_reference
+    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference | None:
+        new_ref = Reference()
+        dict_payload: dict = raw_data.payload
+        uri = raw_data.source_identifier
+
+        for title in dict_payload["title"]:
+            new_ref.titles.append(Title(value=title, language="fr"))
+        for subtitle in dict_payload["altLabel"]:
+            new_ref.subtitles.append(Subtitle(value=subtitle, language="fr"))
+        for abstract in dict_payload["note"]:
+            new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
+        concept_informations = [
+            ConceptInformations(
+                uri=subject.get("uri"), label=subject.get("label"), language="fr"
+            )
+            for subject in dict_payload["subject"].values()
+        ]
+        new_ref.subjects.extend(
+            await self._get_or_create_concepts_by_uri(concept_informations)
+        )
+
+        for document_type in dict_payload["type"]:
+            uri_type, label = IdrefDocumentTypeConverter().convert(document_type)
+            new_ref.document_type.append(
+                await self._get_or_create_document_type_by_uri(uri_type, label)
+            )
+
+        async for contribution in self._contributions(
+            contribution_informations=await self.get_contributors(dict_payload),
+            source="idref",
+        ):
+            new_ref.contributions.append(contribution)
+
+        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
     def _harvester(self) -> str:
         return "Idref"
