@@ -15,6 +15,7 @@ class OpenEditionDocumentTypeConverter:
         "introduction": (f"{RDF_BIBO}Chapter", "Chapter"),
         "review": (f"{RDF_BIBO}Article", "Article"),
         "archaelogical note": (f"{RDF_BIBO}Note", "Note"),
+        "chapter": (f"{RDF_BIBO}Chapter", "Chapter"),
     }
 
     UKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unkown", "Uknown")
