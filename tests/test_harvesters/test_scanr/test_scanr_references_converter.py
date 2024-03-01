@@ -53,7 +53,9 @@ async def test_convert(scanr_api_publication_cleaned_response):
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
         test_reference = converter_under_tests.build(raw_data=result)
@@ -98,7 +100,9 @@ async def test_convert_with_default_dupe(
 
     for doc in scanr_api_publication_with_dupe_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
         test_reference = converter_under_tests.build(raw_data=result)
@@ -125,7 +129,9 @@ async def test_same_contributor_with_different_roles(
 
     for doc in scanr_api_publication_for_author_dupe_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
         test_reference = converter_under_tests.build(raw_data=result)
