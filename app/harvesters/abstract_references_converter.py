@@ -162,7 +162,7 @@ class AbstractReferencesConverter(ABC):
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
-        new_ref.hash = self._hash(raw_data.payload)
+        new_ref.hash = self._hash(raw_data)
         return new_ref
 
     @abstractmethod
@@ -179,11 +179,12 @@ class AbstractReferencesConverter(ABC):
         :return: Normalised Reference object with basic information
         """
 
-    def _hash(self, raw_data: dict):
+    def _hash(self, raw_data: AbstractHarvesterRawResult) -> str:
+        payload = raw_data.payload
         reduced_dic: dict = dict(
             zip(
                 self._hash_keys(),
-                [raw_data[k] for k in self._hash_keys() if k in raw_data],
+                [payload[k] for k in self._hash_keys() if k in payload],
             )
         )
         string_to_hash = ""

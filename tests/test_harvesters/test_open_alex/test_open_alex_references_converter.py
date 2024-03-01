@@ -7,7 +7,6 @@ from app.harvesters.open_alex.open_alex_references_converter import (
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_convert(open_alex_api_work: dict):
     """Test that the converter will return normalised references"""
     converter_under_tests = OpenAlexReferencesConverter()
@@ -37,8 +36,8 @@ async def test_convert(open_alex_api_work: dict):
     expected_reference_identifier_ignored = ["mag"]
 
     test_reference = converter_under_tests.build(raw_data=result)
-
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
     assert test_reference.source_identifier == expected_id
     assert test_reference.harvester == "OpenAlex"
     assert test_reference.titles[0].value == expected_title

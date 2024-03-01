@@ -19,11 +19,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     """
 
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfRawResult) -> Reference | None:
-        new_ref = Reference()
+    async def convert(self, raw_data: RdfRawResult, new_ref: Reference) -> None:
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
-        new_ref.source_identifier = str(uri)
 
         [  # pylint: disable=expression-not-assigned
             new_ref.titles.append(title) for title in self._titles(pub_graph, uri)
@@ -35,18 +33,16 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         ]
 
         [  # pylint: disable=expression-not-assigned
-            new_ref.identifiers.append(document_idenfier)
-            for document_idenfier in self._add_reference_identifiers(pub_graph, uri)
+            new_ref.identifiers.append(document_identifier)
+            for document_identifier in self._add_reference_identifiers(pub_graph, uri)
         ]
 
         async for document_type in self._document_type(pub_graph, uri):
             new_ref.document_type.append(document_type)
 
-        new_ref.harvester = "Idref.Abes"
-        new_ref.hash = self._hash_from_rdf_graph(pub_graph, uri)
-        return new_ref
-
-    def _hash_from_rdf_graph(self, pub_graph: Graph, uri: str) -> str:
+    def _hash(self, raw_data: RdfRawResult) -> str:
+        pub_graph: Graph = raw_data.payload
+        uri = raw_data.source_identifier
         graph_as_dict = {
             str(p): str(o)
             for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))

@@ -32,17 +32,12 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     W3_NAMESPACE = "{http://www.w3.org/XML/1998/namespace}"
     TERMS = "{http://purl.org/dc/terms/}"
 
-    @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfRawResult) -> Reference | None:
-        new_ref: Reference = Reference()
+    def _harvester(self) -> str:
+        return "Idref"
 
-        new_ref.source_identifier = raw_data.source_identifier
-        try:
-            root: ElementTree = self._get_root_data(raw_data.payload)
-        except AttributeError as error:
-            raise UnexpectedFormatException(
-                f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
-            ) from error
+    @AbstractReferencesConverter.validate_reference
+    async def convert(self, raw_data: RdfRawResult, new_ref: Reference) -> None:
+        root: ElementTree = self._get_root_data(raw_data.payload)
         new_ref.titles.append(self._title(root))
 
         for abstract in self._abstracts(root):
@@ -62,8 +57,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         await self._add_contributions(new_ref, root)
 
         new_ref.harvester = "Idref.OpenEdition"
-        new_ref.hash = self._hash(self._create_dict(root))
-        return new_ref
+
+    def _hash(self, raw_data: RdfRawResult):
+        return super()._hash(self._create_dict(self._get_root_data(raw_data.payload)))
 
     def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
         for identifier in self._get_terms(root, "identifier"):
@@ -115,71 +111,83 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         ]
 
     def _get_root_data(self, root):
-        return (
-            root.find(f"{self.BASE_DOMAIN}GetRecord")
-            .find(f"{self.BASE_DOMAIN}record")
-            .find(f"{self.BASE_DOMAIN}metadata")
-            .find(f"{self.NAMESPACE}qualifieddc")
+        try:
+            return (
+                root.find(f"{self.BASE_DOMAIN}GetRecord")
+                .find(f"{self.BASE_DOMAIN}record")
+                .find(f"{self.BASE_DOMAIN}metadata")
+                .find(f"{self.NAMESPACE}qualifieddc")
+            )
+        except AttributeError as error:
+            raise UnexpectedFormatException(
+                f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
+            ) from error
+
+
+def _title(self, root: ElementTree):
+    title = self._get_term(root, "title")
+    language = self._language(root)
+    return Title(value=title, language=language)
+
+
+def _language(self, root: ElementTree):
+    return self._get_term(root, "language")
+
+
+def _abstracts(self, root: ElementTree):
+    # Sometimes we have abstract or description.
+    # Is the same ? In Dublic Core, Abstract is a sub property of Description
+    abstract = self._get_terms(root, "abstract")
+    if len(abstract) == 0:
+        abstract = self._get_terms(root, "description")
+        if len(abstract) != 0:
+            logger.warning("Description found instead of abstract")
+    if len(abstract) == 0:
+        yield
+    for value, attrib in abstract:
+        # check if language defined, If not then we take the language of the document
+        try:
+            language = attrib[f"{self.W3_NAMESPACE}lang"]
+        except KeyError:
+            language = self._language(root)
+        yield Abstract(value=value, language=language)
+
+
+async def _subjects(self, root: ElementTree):
+    subjects = self._get_terms(root, "subject")
+    language = self._language(root)
+    for subject in subjects:
+        label, attrib = subject
+        language = attrib[f"{self.W3_NAMESPACE}lang"]
+        yield await self._get_or_create_concept_by_label(
+            ConceptInformations(
+                label=label,
+                language=language,
+            )
         )
 
-    def _title(self, root: ElementTree):
-        title = self._get_term(root, "title")
-        language = self._language(root)
-        return Title(value=title, language=language)
 
-    def _language(self, root: ElementTree):
-        return self._get_term(root, "language")
+async def _document_type(self, root: ElementTree):
+    document_type = self._get_term(root, "type")
+    uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
+    return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    def _abstracts(self, root: ElementTree):
-        # Sometimes we have abstract or description.
-        # Is the same ? In Dublic Core, Abstract is a sub property of Description
-        abstract = self._get_terms(root, "abstract")
-        if len(abstract) == 0:
-            abstract = self._get_terms(root, "description")
-            if len(abstract) != 0:
-                logger.warning("Description found instead of abstract")
-        if len(abstract) == 0:
-            yield
-        for value, attrib in abstract:
-            # check if language defined, If not then we take the language of the document
-            try:
-                language = attrib[f"{self.W3_NAMESPACE}lang"]
-            except KeyError:
-                language = self._language(root)
-            yield Abstract(value=value, language=language)
 
-    async def _subjects(self, root: ElementTree):
-        subjects = self._get_terms(root, "subject")
-        language = self._language(root)
-        for subject in subjects:
-            label, attrib = subject
-            language = attrib[f"{self.W3_NAMESPACE}lang"]
-            yield await self._get_or_create_concept_by_label(
-                ConceptInformations(
-                    label=label,
-                    language=language,
-                )
-            )
+def _hash_keys(self) -> list[str]:
+    return [
+        "title",
+        "abstract",
+        "type",
+        "language",
+        "identifier",
+        "subject",
+        "type",
+    ]
 
-    async def _document_type(self, root: ElementTree):
-        document_type = self._get_term(root, "type")
-        uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
-        return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    def _hash_keys(self) -> list[str]:
-        return [
-            "title",
-            "abstract",
-            "type",
-            "language",
-            "identifier",
-            "subject",
-            "type",
-        ]
+def _create_dict(self, root: ElementTree):
+    new_dict = {}
+    for term in self._hash_keys():
+        new_dict[term] = self._get_terms(root, term)
 
-    def _create_dict(self, root: ElementTree):
-        new_dict = {}
-        for term in self._hash_keys():
-            new_dict[term] = self._get_terms(root, term)
-
-        return new_dict
+    return new_dict

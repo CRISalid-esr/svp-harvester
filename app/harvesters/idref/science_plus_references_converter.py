@@ -18,14 +18,16 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     Converts raw data from SciencePlus to a normalised Reference object
     """
 
-    @AbesRDFReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfHarvesterRawResult) -> Reference:
-        new_ref = await super().convert(raw_data)
+    def _harvester(self) -> str:
+        return "Idref"
 
+    @AbesRDFReferencesConverter.validate_reference
+    async def convert(
+        self, raw_data: RdfHarvesterRawResult, new_ref: Reference
+    ) -> None:
+        await super().convert(raw_data=raw_data, new_ref=new_ref)
         if raw_data.doi:
             new_ref.identifiers.append(self._add_doi_identifier(raw_data.doi))
-        new_ref.harvester = "idref.SciencePlus"
-        return new_ref
 
     def _titles(self, pub_graph, uri):
         title: Literal

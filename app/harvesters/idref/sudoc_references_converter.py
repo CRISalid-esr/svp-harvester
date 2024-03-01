@@ -16,6 +16,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     Converts raw data from Sudoc to a normalised Reference object
     """
 
+    def _harvester(self) -> str:
+        return "Idref"
+
     def _titles(self, pub_graph, uri):
         title: Literal
         for title in pub_graph.objects(rdflib.term.URIRef(uri), DC.title):
