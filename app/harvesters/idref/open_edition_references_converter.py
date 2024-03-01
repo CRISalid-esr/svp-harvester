@@ -123,16 +123,13 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                 f"Unexpected format for OAI Open Edition response for {raw_data.source_identifier}"
             ) from error
 
-
     def _title(self, root: ElementTree):
         title = self._get_term(root, "title")
         language = self._language(root)
         return Title(value=title, language=language)
 
-
     def _language(self, root: ElementTree):
         return self._get_term(root, "language")
-
 
     def _abstracts(self, root: ElementTree):
         # Sometimes we have abstract or description.
@@ -152,7 +149,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                 language = self._language(root)
             yield Abstract(value=value, language=language)
 
-
     async def _subjects(self, root: ElementTree):
         subjects = self._get_terms(root, "subject")
         language = self._language(root)
@@ -166,12 +162,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                 )
             )
 
-
     async def _document_type(self, root: ElementTree):
         document_type = self._get_term(root, "type")
         uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
-
 
     def hash_keys(self) -> list[str]:
         return [
@@ -183,7 +177,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             "subject",
             "type",
         ]
-
 
     def _create_dict(self, root: ElementTree):
         new_dict = {}
