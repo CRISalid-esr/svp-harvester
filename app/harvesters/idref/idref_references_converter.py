@@ -1,5 +1,3 @@
-from rdflib import FOAF
-from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -7,12 +5,10 @@ from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
 )
 from app.harvesters.idref.idref_harvester import IdrefHarvester
-from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
-from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )

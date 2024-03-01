@@ -1,7 +1,7 @@
 from typing import AsyncGenerator
 
 import rdflib
-from rdflib import DCTERMS, RDF, Literal, URIRef, Graph
+from rdflib import DCTERMS, RDF, Literal, URIRef
 
 from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
