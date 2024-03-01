@@ -33,7 +33,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     """
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_identifier = "KHToPYsB9owg1fG7YUfI"
+    expected_identifier = "nnt2019lysem032"
     expected_titles = {
         None: "Sécurité adaptative et énergétiquement efficace dans l’Internet des Objets"
     }
@@ -85,7 +85,7 @@ async def test_convert_with_default_dupe(
     """
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_identifier = "KHToPYsB9owg1fG7YUfI"
+    expected_identifier = "nnt2019lysem032"
     expected_titles = {
         "fr": "Sécurité adaptative et énergétiquement efficace dans l’Internet des Objets"
     }
