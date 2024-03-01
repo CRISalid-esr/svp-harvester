@@ -13,9 +13,6 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.harvesters.hal.hal_document_subtype_converter import (
-    HalDocumentSubtypeConverter,
-)
 from app.harvesters.hal.hal_document_type_converter import HalDocumentTypeConverter
 from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
@@ -82,11 +79,17 @@ class HalReferencesConverter(AbstractReferencesConverter):
             new_ref.abstracts.append(abstract)
             for abstract in self._abstracts(json_payload)
         ]
-        new_ref.document_type.append(await self._document_type(json_payload))
 
-        document_subtype = json_payload.get("docSubType_s", None)
-        if document_subtype:
-            new_ref.document_type.append(await self._document_subtype(document_subtype))
+        document_types_from_payload = set(
+            json_payload.get(document_type)
+            for document_type in ("docType_s", "docSubType_s")
+        )
+        document_types_from_payload.discard(None)
+        document_types_from_payload.discard("NULL")
+
+        for document_type in document_types_from_payload:
+            validated_document_type = await self._document_type(document_type)
+            new_ref.document_type.append(validated_document_type)
 
         async for subject in self._concepts(json_payload):
             # Concept from hal may be repeated, avoid duplicates
@@ -242,12 +245,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         return organizations
 
     async def _document_type(self, raw_data):
-        code_document_type = raw_data.get("docType_s", None)
-        uri, label = HalDocumentTypeConverter().convert(code_document_type)
-        return await self._get_or_create_document_type_by_uri(uri, label)
-
-    async def _document_subtype(self, raw_data):
-        uri, label = HalDocumentSubtypeConverter().convert(raw_data)
+        uri, label = HalDocumentTypeConverter().convert(raw_data)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
     def _hash_keys(self):
