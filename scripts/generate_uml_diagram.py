@@ -9,6 +9,7 @@ from app.db.models import (
     document_type,
     entity,
     harvesting,
+    harvesting_error,
     identifier,
     label,
     reference_literal_field,
