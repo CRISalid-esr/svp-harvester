@@ -19,7 +19,12 @@ async def test_open_edition_convert_for_rfd_result(
     :return: None
     """
     converter_under_tests = OpenEditionReferencesConverter()
-    result = await converter_under_tests.convert(open_edition_rdf_result_for_doc)
+    test_reference = converter_under_tests.build(
+        raw_data=open_edition_rdf_result_for_doc
+    )
+    await converter_under_tests.convert(
+        raw_data=open_edition_rdf_result_for_doc, new_ref=test_reference
+    )
     expected_french_title = "Les émeutes entre hindous et musulmans (partie 2)"
     expected_french_abstract_beginning = (
         "Si le caractère très ancien et les facteurs religieux des émeutes"
@@ -29,17 +34,17 @@ async def test_open_edition_convert_for_rfd_result(
         "10.4000/conflits.756",
     ]
 
-    assert result.source_identifier == str(
+    assert test_reference.source_identifier == str(
         open_edition_rdf_result_for_doc.source_identifier
     )
-    assert len(result.titles) == 1
-    assert expected_french_title in [title.value for title in result.titles]
+    assert len(test_reference.titles) == 1
+    assert expected_french_title in [title.value for title in test_reference.titles]
     assert any(
         abstract.value.startswith(expected_french_abstract_beginning)
-        for abstract in result.abstracts
+        for abstract in test_reference.abstracts
     )
     assert any(
         identifier.value in expected_reference_identifier
-        for identifier in result.identifiers
+        for identifier in test_reference.identifiers
     )
-    assert result.document_type[0].label == "Article"
+    assert test_reference.document_type[0].label == "Article"

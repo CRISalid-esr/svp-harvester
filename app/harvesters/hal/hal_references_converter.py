@@ -55,14 +55,14 @@ class HalReferencesConverter(AbstractReferencesConverter):
     }
 
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: JsonRawResult) -> Reference:
+    async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
         """
         Convert raw data from HAL to a normalised Reference object
         :param raw_data: raw data from HAL
-        :return: Reference object
+        :param new_ref: Reference object
+        :return: None
         """
         json_payload = raw_data.payload
-        new_ref = Reference()
         [  # pylint: disable=expression-not-assigned
             new_ref.identifiers.append(identifier)
             for identifier in self._identifiers(json_payload)
@@ -90,10 +90,9 @@ class HalReferencesConverter(AbstractReferencesConverter):
         new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
         new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
         await self._add_organization(json_payload, new_ref)
-        new_ref.hash = self._hash(json_payload)
-        new_ref.harvester = "HAL"
-        new_ref.source_identifier = raw_data.source_identifier
-        return new_ref
+
+    def _harvester(self) -> str:
+        return "HAL"
 
     def _identifiers(self, raw_data):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
@@ -238,7 +237,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         uri, label = HalDocumentTypeConverter().convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    def _hash_keys(self):
+    def hash_keys(self):
         return [
             "docid",
             "citationRef_s",

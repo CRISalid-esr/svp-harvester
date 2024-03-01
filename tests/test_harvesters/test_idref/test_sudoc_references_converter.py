@@ -22,15 +22,20 @@ async def test_convert_for_rdf_result(
     expected_french_abstract_beginning = (
         "Le présent dossier aborde la participation de cette agriculture urbaine "
     )
-    result = await converter_under_tests.convert(sudoc_rdf_result_for_doc)
-    assert result.source_identifier == str(sudoc_rdf_result_for_doc.source_identifier)
-    # assert that there are two titles
-    assert len(result.titles) == 2
-    # assert that the expected french title is one of the titles at any position
-    assert expected_french_title in [title.value for title in result.titles]
-    # expect that one of the abstacts begins with the expected french abstract beginning
+    test_reference = converter_under_tests.build(raw_data=sudoc_rdf_result_for_doc)
+    assert test_reference.source_identifier == str(
+        sudoc_rdf_result_for_doc.source_identifier
+    )
+    await converter_under_tests.convert(
+        raw_data=sudoc_rdf_result_for_doc, new_ref=test_reference
+    )
+    assert len(test_reference.titles) == 2
+    assert expected_french_title in [title.value for title in test_reference.titles]
     assert any(
         abstract.value.startswith(expected_french_abstract_beginning)
-        for abstract in result.abstracts
+        for abstract in test_reference.abstracts
     )
-    assert result.identifiers[0].value == sudoc_rdf_result_for_doc.source_identifier
+    assert (
+        test_reference.identifiers[0].value
+        == sudoc_rdf_result_for_doc.source_identifier
+    )

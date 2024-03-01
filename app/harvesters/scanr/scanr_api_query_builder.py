@@ -30,7 +30,7 @@ class ScanRApiQueryBuilder:
 
     PERSON_DEFAULT_FIELDS = ["id", "externalIds", "domains", "affiliations", "fullName"]
 
-    # This listing is independant from _hash_keys in ScanrReferencesConverter
+    # This listing is independant from hash_keys in ScanrReferencesConverter
     # pylint: disable=duplicate-code
     PUBLICATIONS_DEFAULT_FIELDS = [
         "id",
