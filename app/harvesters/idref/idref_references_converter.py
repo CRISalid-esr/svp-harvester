@@ -45,8 +45,6 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         await self.secondary_converter.convert(raw_data=raw_data, new_ref=new_ref)
 
     def _build_secondary_converter(self, raw_data):
-        if self.secondary_converter:
-            return
         if raw_data.formatter_name == IdrefHarvester.Formatters.SUDOC_RDF.value:
             self.secondary_converter = SudocReferencesConverter()
         if raw_data.formatter_name == IdrefHarvester.Formatters.SCIENCE_PLUS_RDF.value:
