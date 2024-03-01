@@ -1,6 +1,6 @@
 import datetime
 from typing import List
-from sqlalchemy import or_, select, func
+from sqlalchemy import and_, or_, select, func
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -14,6 +14,7 @@ from app.db.models.retrieval import Retrieval
 from app.db.models.title import Title
 from app.models.people import Person
 from app.models.reference_summary import ReferenceSummary
+from app.utilities.string_utilities import split_string
 
 
 # pylint: disable=not-callable
@@ -157,7 +158,10 @@ class ReferenceDAO(AbstractDAO):
         )
 
         if entity and entity.name:
-            query = query.where(Entity.name == entity.name)
+            names = split_string(entity.name)
+            query = query.filter(
+                and_(*[entity_id.c.name.like(f"%{name}%") for name in names])
+            )
         if date_start:
             query = query.where(Harvesting.timestamp >= date_start)
         if date_end:
