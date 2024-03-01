@@ -7,7 +7,9 @@ from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
-from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.json_harvester_raw_result import (
+    JsonHarvesterRawResult as JsonRawResult,
+)
 from app.harvesters.open_alex.open_alex_document_type_converter import (
     OpenAlexDocumentTypeConverter,
 )
@@ -22,14 +24,14 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
     REFERENCE_IDENTIFIERS_IGNORE = ["mag"]
 
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: JsonHarvesterRawResult) -> Reference:
+    async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
         """
-        Convert raw data from OpenAlex to a normalised Reference object
-        :param raw_data: raw data from OpenAlex
-        :return: Reference object
+        Convert raw data from Scanr to a normalised Reference object
+        :param raw_data: raw data from Scanr
+        :param new_ref: Reference object
+        :return: None
         """
         json_payload = raw_data.payload
-        new_ref = Reference()
 
         language = json_payload.get("language", None)
         new_ref.titles.append(self._title(json_payload, language))
@@ -46,11 +48,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         async for reference_identifier in self._add_reference_identifiers(json_payload):
             new_ref.identifiers.append(reference_identifier)
 
-        new_ref.source_identifier = raw_data.source_identifier
-
-        new_ref.harvester = "OpenAlex"
-        new_ref.hash = self._hash(json_payload)
-        return new_ref
+    def _harvester(self) -> str:
+        return "OpenAlex"
 
     async def _add_reference_identifiers(self, json_payload: dict) -> str:
         try:
@@ -128,7 +127,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         value = json_payload.get(key, default)
         return value if value is not None else default
 
-    def _hash_keys(self) -> list[str]:
+    def hash_keys(self) -> list[str]:
         return [
             "id",
             "title",

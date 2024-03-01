@@ -39,8 +39,11 @@ async def test_convert(open_alex_api_work: dict):
 
     expected_reference_identifier_ignored = ["mag"]
 
-    test_reference = await converter_under_tests.convert(result)
+    test_reference = converter_under_tests.build(raw_data=result)
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
+    assert test_reference.source_identifier == expected_id
+    assert test_reference.harvester == "OpenAlex"
     assert test_reference.titles[0].value == expected_title
     assert expected_abstract in test_reference.abstracts[0].value
     assert test_reference.document_type[0].label == expected_document_type
@@ -48,7 +51,6 @@ async def test_convert(open_alex_api_work: dict):
         for label in concept.labels:
             assert label.value in expected_subjects
     assert len(test_reference.subjects) == 1
-    assert test_reference.source_identifier == expected_id
     assert len(test_reference.contributions) == len(expected_contributors_name_rank)
     for contribution in test_reference.contributions:
         assert contribution.contributor.name in expected_contributors_name_rank

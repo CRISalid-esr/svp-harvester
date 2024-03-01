@@ -39,6 +39,7 @@ class HalApiQueryBuilder:
         "authFullNameFormIDPersonIDIDHal_fs",
         "authQuality_s",
         "docType_s",
+        "docSubType_s",
         "publicationDate_tdate",
         "producedDate_tdate",
         "citationFull_s",

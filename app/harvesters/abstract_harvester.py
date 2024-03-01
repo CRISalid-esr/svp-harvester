@@ -105,16 +105,18 @@ class AbstractHarvester(ABC):
         )
         existing_references: list[Reference] = []
         try:
-            result: AbstractHarvesterRawResult
-            async for result in self.fetch_results():
-                if result is None or result == "end":
+            raw_data: AbstractHarvesterRawResult
+            async for raw_data in self.fetch_results():
+                if raw_data is None or raw_data == "end":
                     break
-                new_ref = await self.converter.convert(result)
+                new_ref = self.converter.build(raw_data)
                 if new_ref is None:
                     continue
                 old_ref = await references_recorder.exists(new_ref=new_ref)
                 if old_ref is not None:
                     existing_references.append(old_ref)
+                if (old_ref is None) or (new_ref.hash != old_ref.hash):
+                    await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
                 reference_event: Optional[
                     ReferenceEvent
                 ] = await self._handle_converted_result(
@@ -130,6 +132,21 @@ class AbstractHarvester(ABC):
                             "change": reference_event.type,
                         }
                     )
+                    if reference_event is not None:
+                        await self._put_in_queue(
+                            {
+                                "type": "ReferenceEvent",
+                                "id": reference_event.id,
+                                "change": reference_event.type,
+                            }
+                        )
+                except UnexpectedFormatException as error:
+                    # If an UnexpectedFormatException bubbles up to this point
+                    # it means that the one reference could not be converted
+                    # but the harvester can continue to deliver results
+                    # so we handle and continue
+                    await self.handle_error(error)
+                    continue
             await self._register_deleted_references(
                 existing_references=existing_references,
                 previous_references=previous_references,

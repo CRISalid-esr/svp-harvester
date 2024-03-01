@@ -20,14 +20,13 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
     IDENTIFIERS_TO_IGNORE = ["scanr"]
 
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: JsonRawResult) -> Reference:
+    async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
         """
-        Convert raw data from ScanR to a normalised Reference object
-        :param raw_data: raw data from ScanR
-        :return: Reference object
+        Convert raw data from Scanr to a normalised Reference object
+        :param raw_data: raw data from Scanr
+        :param new_ref: Reference object
+        :return: None
         """
-        new_ref = Reference()
-
         json_payload = raw_data.payload
 
         title = json_payload["_source"].get("title")
@@ -51,10 +50,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
-        new_ref.hash = self._hash(json_payload)
-        new_ref.harvester = "ScanR"
-        new_ref.source_identifier = json_payload["_source"].get("id")
-        return new_ref
+    def _harvester(self) -> str:
+        return "ScanR"
 
     def _add_identifiers(self, json_payload: dict) -> ReferenceIdentifier:
         external_ids = json_payload["_source"].get("externalIds", [])
@@ -101,7 +98,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    def _hash_keys(self):
+    def hash_keys(self):
         # This listing is independant of PUBLICATIONS_DEFAULT_FIELDS
         # in ScanRApiQueryBuilder
         # pylint: disable=duplicate-code

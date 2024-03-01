@@ -53,17 +53,21 @@ async def test_convert(scanr_api_publication_cleaned_response):
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        assert test_reference.source_identifier == expected_identifier
+        assert test_reference.harvester == "ScanR"
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = {title.language: title.value for title in test_reference.titles}
         test_abstracts = {
             abstract.language: abstract.value for abstract in test_reference.abstracts
         }
 
-        assert test_reference.source_identifier == expected_identifier
         assert test_titles == expected_titles
         assert test_abstracts == expected_abstracts
         assert test_reference.document_type[0].uri == expected_document_type["uri"]
@@ -96,17 +100,20 @@ async def test_convert_with_default_dupe(
 
     for doc in scanr_api_publication_with_dupe_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        assert test_reference.source_identifier == expected_identifier
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = {title.language: title.value for title in test_reference.titles}
         test_abstracts = {
             abstract.language: abstract.value for abstract in test_reference.abstracts
         }
 
-        assert test_reference.source_identifier == expected_identifier
         assert test_titles == expected_titles
         assert test_abstracts == expected_abstracts
 
@@ -122,10 +129,14 @@ async def test_same_contributor_with_different_roles(
 
     for doc in scanr_api_publication_for_author_dupe_cleaned_response:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
         # Create a dictionary to count the occurrences of each contributor source_identifier
         contributor_roles = {}
 
