@@ -49,7 +49,43 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
                 await self._get_or_create_document_type_by_uri(uri_type, label)
             )
 
+        async for contribution in self._contributions(
+            contribution_informations=await self.get_contributors(dict_payload),
+            source="idref",
+        ):
+            new_ref.contributions.append(contribution)
+
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
     def hash_keys(self):
         return ["uri", "role", "title", "type", "altLabel", "subject"]
+
+    async def get_contributors(self, dict_payload):
+        """
+        Retrieves contributor information from the given dictionary payload.
+
+        :params dict_payload: The dictionary payload containing author and role information.
+
+        :return: A list of ContributionInformations objects.
+        """
+        contributor_informations = []
+        for contributor in dict_payload.get("author", []):
+            if contributor == "":
+                continue
+            contributor = contributor.replace("/id", ".rdf")
+            contributor = contributor.replace("http://", "https://")
+            graph = await RdfResolver().fetch(contributor)
+            contributor_name = ""
+            for name in graph.objects(contributor, FOAF.name):
+                contributor_name = name
+            role = dict_payload["role"].split("/")[-1]
+            contributor_informations.append(
+                AbstractReferencesConverter.ContributionInformations(
+                    role=IdrefQualitiesConverter.convert(role),
+                    identifier=contributor,
+                    name=contributor_name,
+                    rank=None,
+                )
+            )
+
+        return contributor_informations
