@@ -61,7 +61,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         await self._add_contributions(new_ref, self._get_root(raw_data))
 
     def hash(self, raw_data: RdfRawResult):
-        return super().hash(self._create_dict(self._get_root(raw_data)))
+        return self._hash_dict(self._create_dict(self._get_root(raw_data)))
 
     def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
         for identifier in self._get_terms(root, "identifier"):
@@ -115,7 +115,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     def _get_root(self, raw_data: RdfRawResult):
         if self.tree_root is None:
             try:
-                root = ElementTree.fromstring(raw_data.payload)
+                root = raw_data.payload
                 return (
                     root.find(f"{self.BASE_DOMAIN}GetRecord")
                     .find(f"{self.BASE_DOMAIN}record")

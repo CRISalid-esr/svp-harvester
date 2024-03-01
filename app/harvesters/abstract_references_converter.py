@@ -186,6 +186,9 @@ class AbstractReferencesConverter(ABC):
         :return: a hash of the payload
         """
         payload = raw_data.payload
+        return self._hash_dict(payload)
+
+    def _hash_dict(self, payload: dict):
         reduced_dic: dict = dict(
             zip(
                 self.hash_keys(),
