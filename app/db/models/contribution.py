@@ -58,6 +58,7 @@ class Contribution(Base):
         WRITER_OF_INTRODUCTION = "Writer Of Introduction"
         WITNESS = "Witness"
         OTHER = "Other"
+        RESPONDANT = "Respondant"
         UNKNOWN = "Unknown"
 
     __tablename__ = "contributions"
