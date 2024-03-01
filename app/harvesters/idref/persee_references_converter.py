@@ -29,7 +29,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
-        pub_graph: Graph = raw_data.payload
 
     def _add_reference_identifiers(self, pub_graph, uri):
         yield ReferenceIdentifier(value=uri, type="uri")

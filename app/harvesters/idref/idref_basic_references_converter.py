@@ -1,3 +1,5 @@
+from rdflib import FOAF
+
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -7,6 +9,8 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.idref.idref_document_type_converter import (
     IdrefDocumentTypeConverter,
 )
+from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )

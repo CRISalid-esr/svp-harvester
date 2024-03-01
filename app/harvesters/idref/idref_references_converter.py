@@ -61,43 +61,6 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
             self.secondary_converter = PerseeReferencesConverter()
         assert self.secondary_converter, f"Unknown formatter {raw_data.formatter_name}"
 
-
-    @AbstractReferencesConverter.validate_reference
-    async def _convert_from_idref(self, raw_data: SparqlRawResult) -> Reference | None:
-        new_ref = Reference()
-        dict_payload: dict = raw_data.payload
-        uri = raw_data.source_identifier
-
-        for title in dict_payload["title"]:
-            new_ref.titles.append(Title(value=title, language="fr"))
-        for subtitle in dict_payload["altLabel"]:
-            new_ref.subtitles.append(Subtitle(value=subtitle, language="fr"))
-        for abstract in dict_payload["note"]:
-            new_ref.abstracts.append(Abstract(value=abstract, language="fr"))
-        concept_informations = [
-            ConceptInformations(
-                uri=subject.get("uri"), label=subject.get("label"), language="fr"
-            )
-            for subject in dict_payload["subject"].values()
-        ]
-        new_ref.subjects.extend(
-            await self._get_or_create_concepts_by_uri(concept_informations)
-        )
-
-        for document_type in dict_payload["type"]:
-            uri_type, label = IdrefDocumentTypeConverter().convert(document_type)
-            new_ref.document_type.append(
-                await self._get_or_create_document_type_by_uri(uri_type, label)
-            )
-
-        async for contribution in self._contributions(
-            contribution_informations=await self.get_contributors(dict_payload),
-            source="idref",
-        ):
-            new_ref.contributions.append(contribution)
-
-        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
-
     def _harvester(self) -> str:
         return "Idref"
 
