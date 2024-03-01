@@ -50,8 +50,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
-        new_ref.hash = self.hash(json_payload)
-
     def _harvester(self) -> str:
         return "ScanR"
 
