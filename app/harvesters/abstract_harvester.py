@@ -133,17 +133,9 @@ class AbstractHarvester(ABC):
                                 "change": reference_event.type,
                             }
                         )
-                        if reference_event is not None:
-                            await self._put_in_queue(
-                                {
-                                    "type": "ReferenceEvent",
-                                    "id": reference_event.id,
-                                    "change": reference_event.type,
-                                }
-                            )
                 except UnexpectedFormatException as error:
                     # If an UnexpectedFormatException bubbles up to this point
-                    # it means that the one reference could not be converted
+                    # it means that one of the references could not be converted
                     # but the harvester can continue to deliver results
                     # so we handle and continue
                     await self.handle_error(error)
