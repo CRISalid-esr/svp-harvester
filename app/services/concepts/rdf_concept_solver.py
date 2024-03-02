@@ -27,7 +27,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         # pylint: disable=duplicate-code
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(15))
+                timeout=aiohttp.ClientTimeout(total=float(2))
             ) as session:
                 async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
