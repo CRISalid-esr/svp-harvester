@@ -26,7 +26,7 @@ class AMQPMessagePublisher:
         if routing_key is None:
             return
         message = aio_pika.Message(
-            json.dumps(payload).encode(),
+            json.dumps(payload, default=str).encode(),
             delivery_mode=DeliveryMode.PERSISTENT,
         )
         await self.exchange.publish(
