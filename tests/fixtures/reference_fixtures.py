@@ -1,3 +1,4 @@
+import isodate
 import pytest_asyncio
 
 from app.db.models.concept import Concept as DbConcept
@@ -20,6 +21,8 @@ async def fixture_reference_db_model() -> DbReference:
         version=0,
         titles=[Title(value="title", language="fr")],
         subtitles=[Subtitle(value="subtitle", language="fr")],
+        issued=isodate.parse_datetime("2017-01-01T00:00:00"),
+        created=isodate.parse_datetime("2018-02-02T10:00:00"),
     )
     reference.subjects.append(
         DbConcept(
