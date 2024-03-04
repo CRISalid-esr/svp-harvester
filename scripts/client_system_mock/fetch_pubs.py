@@ -26,7 +26,8 @@ def _parse_args():
 
 
 def _publish_requests(args):
-    harvesters = os.getenv("HARVESTERS", "idref,scanr,hal,openalex").split(",")
+    # harvesters = os.getenv("HARVESTERS", "idref,scanr,hal,openalex").split(",")
+    harvesters = os.getenv("HARVESTERS", "scanr,hal").split(",")
     credentials = pika.PlainCredentials(
         os.getenv("AMQP_USER", "guest"), os.getenv("AMQP_PASSWORD", "guest")
     )
