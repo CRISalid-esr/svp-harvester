@@ -24,6 +24,7 @@ class Contribution(Base):
         ANALYST = "Analyst"
         CORRESPONDENT_AUTHOR = "Correspondent Author"
         CONTRIBUTOR = "Contributor"
+        CURATOR = "Curator"
         ANNOTATOR = "Annotator"
         COMPILER = "Compiler"
         COMPOSER = "Composer"
