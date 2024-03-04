@@ -59,6 +59,7 @@ class Contribution(Base):
         WITNESS = "Witness"
         OTHER = "Other"
         RESPONDANT = "Respondant"
+        RAPPORTEUR = "Rapporteur"
         UNKNOWN = "Unknown"
 
     __tablename__ = "contributions"
