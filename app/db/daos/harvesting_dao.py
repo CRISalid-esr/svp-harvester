@@ -1,5 +1,5 @@
 from sqlalchemy import func, or_, update, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, raiseload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
@@ -43,7 +43,9 @@ class HarvestingDAO(AbstractDAO):
         :param harvesting_id: id of the harvesting
         :return: the harvesting or None if not found
         """
-        return await self.db_session.get(DbHarvesting, harvesting_id)
+        return await self.db_session.get(
+            DbHarvesting, harvesting_id, options=[raiseload("*")]
+        )
 
     async def get_harvesting_extended_info_by_id(
         self, harvesting_id

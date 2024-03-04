@@ -1,4 +1,5 @@
 from sqlalchemy import and_, select
+from sqlalchemy.orm import raiseload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.entity import Entity
@@ -18,7 +19,9 @@ class EntityDAO(AbstractDAO):
         :param entity_id: id of the entity
         :return: the entity or None if not found
         """
-        return await self.db_session.get(Entity, entity_id)
+        return await self.db_session.get(
+            Entity, entity_id, options=[raiseload(Entity.retrievals)]
+        )
 
     async def take_or_create_identifier(
         self, entity: Entity, identifier_type: str, identifier_value: str
@@ -33,8 +36,12 @@ class EntityDAO(AbstractDAO):
         :return: None
         """
         # search if the identifier of given type and value exists in the whole table
-        query = select(Identifier).where(
-            Identifier.type == identifier_type, Identifier.value == identifier_value
+        query = (
+            select(Identifier)
+            .where(
+                Identifier.type == identifier_type, Identifier.value == identifier_value
+            )
+            .options(raiseload("*"))
         )
         identifier_of_same_type_and_value = (
             (await self.db_session.execute(query)).unique().scalar_one_or_none()

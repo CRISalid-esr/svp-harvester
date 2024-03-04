@@ -149,7 +149,11 @@ class RetrievalDAO(AbstractDAO):
                 onclause=DocumentType.id
                 == references_document_type_table.c.document_type_id,
             )
-            .where(Reference.harvester.in_(filter_harvester["harvester"]))
+            .where(
+                func.lower(Reference.harvester).in_(
+                    [func.lower(h) for h in filter_harvester["harvester"]]
+                )
+            )
             .group_by(Retrieval.id, entity_id.c.name)
         )
 
@@ -162,5 +166,4 @@ class RetrievalDAO(AbstractDAO):
             stmt = stmt.where(Harvesting.timestamp >= date_start)
         if date_end:
             stmt = stmt.where(Harvesting.timestamp <= date_end)
-
         return await self.db_session.execute(stmt)
