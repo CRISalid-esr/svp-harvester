@@ -60,6 +60,15 @@ class ReferenceEventDAO(AbstractDAO):
         stmt = (
             select(ReferenceEvent)
             .options(
+                joinedload(ReferenceEvent.reference).joinedload(Reference.contributions)
+            )
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
+            )
+            .options(
+                joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
+            )
+            .options(
                 joinedload(ReferenceEvent.harvesting)
                 .joinedload(Harvesting.retrieval)
                 .joinedload(Retrieval.entity)
