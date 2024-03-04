@@ -33,6 +33,8 @@ class Contributor(Base):
         ARRAY(String), nullable=False, default=[]
     )
     # partial unique index on source and name when source_identifier is null
+
+    # partial unique index on source and source_identifier when source_identifier is not null
     __table_args__ = (
         Index(
             "unique_name_per_source_if_no_identifier",
@@ -40,9 +42,6 @@ class Contributor(Base):
             "name",
             postgresql_where=(source_identifier.is_(None)),
         ),
-    )
-    # partial unique index on source and source_identifier when source_identifier is not null
-    __table_args__ = (
         Index(
             "unique_source_identifier_per_source",
             "source",
