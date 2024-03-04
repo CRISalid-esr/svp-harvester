@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import String, UniqueConstraint
+from sqlalchemy import String, Index
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -33,4 +33,20 @@ class Contributor(Base):
         ARRAY(String), nullable=False, default=[]
     )
 
-    __table_args__ = (UniqueConstraint("source", "source_identifier", "name"),)
+    # partial unique index on source and name when source_identifier is null
+    # partial unique index on source and source_identifier when source_identifier is not null
+    __table_args__ = (
+        Index(
+            "unique_name_per_source_if_no_identifier",
+            "source",
+            "name",
+            postgresql_where=(source_identifier.is_(None)),
+        ),
+        Index(
+            "unique_source_identifier_per_source",
+            "source",
+            "source_identifier",
+            unique=True,
+            postgresql_where=(source_identifier.isnot(None)),
+        ),
+    )
