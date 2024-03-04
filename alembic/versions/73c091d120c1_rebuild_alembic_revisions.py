@@ -1,8 +1,8 @@
 """Rebuild alembic revisions
 
-Revision ID: b272f63e0548
+Revision ID: 73c091d120c1
 Revises: 
-Create Date: 2024-02-22 06:42:33.192416
+Create Date: 2024-03-04 13:14:22.312602
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'b272f63e0548'
+revision: str = '73c091d120c1'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,12 +34,13 @@ def upgrade() -> None:
     sa.Column('source_identifier', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('name_variants', postgresql.ARRAY(sa.String()), nullable=False),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('source', 'source_identifier')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_contributors_name'), 'contributors', ['name'], unique=False)
     op.create_index(op.f('ix_contributors_source'), 'contributors', ['source'], unique=False)
     op.create_index(op.f('ix_contributors_source_identifier'), 'contributors', ['source_identifier'], unique=False)
+    op.create_index('unique_name_per_source_if_no_identifier', 'contributors', ['source', 'name'], unique=False, postgresql_where=sa.text('source_identifier IS NULL'))
+    op.create_index('unique_source_identifier_per_source', 'contributors', ['source', 'source_identifier'], unique=True, postgresql_where=sa.text('source_identifier IS NOT NULL'))
     op.create_table('document_types',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('uri', sa.String(), nullable=False),
@@ -282,6 +283,8 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_document_types_uri'), table_name='document_types')
     op.drop_index(op.f('ix_document_types_id'), table_name='document_types')
     op.drop_table('document_types')
+    op.drop_index('unique_source_identifier_per_source', table_name='contributors', postgresql_where=sa.text('source_identifier IS NOT NULL'))
+    op.drop_index('unique_name_per_source_if_no_identifier', table_name='contributors', postgresql_where=sa.text('source_identifier IS NULL'))
     op.drop_index(op.f('ix_contributors_source_identifier'), table_name='contributors')
     op.drop_index(op.f('ix_contributors_source'), table_name='contributors')
     op.drop_index(op.f('ix_contributors_name'), table_name='contributors')
