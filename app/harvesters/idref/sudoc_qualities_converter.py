@@ -10,21 +10,21 @@ class SudocQualitiesConverter:
 
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
-        "trl": Contribution.Role.UNKNOWN,
-        "opn": Contribution.Role.UNKNOWN,
+        "trl": Contribution.Role.TRANSLATOR,
+        "opn": Contribution.Role.OPPONENT,
         "ths": Contribution.Role.UNKNOWN,
         "pra": Contribution.Role.UNKNOWN,
-        "edt": Contribution.Role.UNKNOWN,
+        "edt": Contribution.Role.EDITOR,
         "pbd": Contribution.Role.UNKNOWN,
         "aui": Contribution.Role.UNKNOWN,
         "clb": Contribution.Role.UNKNOWN,
-        "fmo": Contribution.Role.UNKNOWN,
+        "fmo": Contribution.Role.FORMER_OWNER,
         "dnr": Contribution.Role.UNKNOWN,
-        "cur": Contribution.Role.UNKNOWN,
+        "cur": Contribution.Role.CURATOR,
         "aft": Contribution.Role.UNKNOWN,
-        "ive": Contribution.Role.UNKNOWN,
-        "ctg": Contribution.Role.UNKNOWN,
-        "ill": Contribution.Role.UNKNOWN,
+        "ive": Contribution.Role.INTERVIEWEE,
+        "ctg": Contribution.Role.CARTOGRAPHER,
+        "ill": Contribution.Role.ILLUSTRATOR,
     }
 
     @staticmethod

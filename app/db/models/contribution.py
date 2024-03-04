@@ -24,6 +24,7 @@ class Contribution(Base):
         ANALYST = "Analyst"
         CORRESPONDENT_AUTHOR = "Correspondent Author"
         CONTRIBUTOR = "Contributor"
+        CURATOR = "Curator"
         ANNOTATOR = "Annotator"
         COMPILER = "Compiler"
         COMPOSER = "Composer"
@@ -58,6 +59,8 @@ class Contribution(Base):
         WRITER_OF_INTRODUCTION = "Writer Of Introduction"
         WITNESS = "Witness"
         OTHER = "Other"
+        OPPONENT = "Opponent"
+        FORMER_OWNER = "Former Owner"
         RESPONDANT = "Respondant"
         UNKNOWN = "Unknown"
 
