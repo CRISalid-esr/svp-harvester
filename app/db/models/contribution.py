@@ -62,6 +62,7 @@ class Contribution(Base):
         OPPONENT = "Opponent"
         FORMER_OWNER = "Former Owner"
         RESPONDANT = "Respondant"
+        RAPPORTEUR = "Rapporteur"
         UNKNOWN = "Unknown"
 
     __tablename__ = "contributions"
