@@ -65,6 +65,11 @@ class SvpHarvester(FastAPI):
 
     @logger.catch(reraise=True)
     async def check_db_connexion(self) -> None:
+        """
+        Check database connexion at boot time
+        to help ensure container startup order
+        :return: None
+        """
         logger.info("Checking database connexion readiness")
         async with async_session() as session:
             try:
@@ -72,7 +77,8 @@ class SvpHarvester(FastAPI):
                 logger.info("Database connexion is ready")
             except ConnectionRefusedError as error:
                 logger.error(
-                    f"Cannot connect to database : ConnectionRefusedError, will retry in 1 second : {error}"
+                    "Cannot connect to database : ConnectionRefusedError, "
+                    f"will retry in 1 second : {error}"
                 )
                 await asyncio.sleep(1)
                 await self.check_db_connexion()
