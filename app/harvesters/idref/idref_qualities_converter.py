@@ -10,7 +10,7 @@ class IdrefQualitiesConverter:
 
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
-        "cur": Contribution.Role.UNKNOWN,
+        "cur": Contribution.Role.CURATOR,
     }
 
     @staticmethod
