@@ -40,6 +40,7 @@ class Contributor(Base):
             "unique_name_per_source_if_no_identifier",
             "source",
             "name",
+            unique=True,
             postgresql_where=(source_identifier.is_(None)),
         ),
         Index(
