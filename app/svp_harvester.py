@@ -11,6 +11,7 @@ from starlette.staticfiles import StaticFiles
 from app.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
+from app.api.routes.healthness import router as healthness_router
 from app.config import get_app_settings
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
@@ -33,6 +34,8 @@ class SvpHarvester(FastAPI):
         self.include_router(
             api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
         )
+
+        self.include_router(healthness_router, prefix="/health")
 
         self.mount(
             "/static", StaticFiles(directory="./app/static", html=True), name="static"
