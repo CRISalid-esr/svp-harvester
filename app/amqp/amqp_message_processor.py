@@ -129,7 +129,8 @@ class AMQPMessageProcessor:
             while True:
                 result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
                 logger.debug(f"Got result {result} for retrieval: {retrieval.id}")
-                await self.publisher.publish(result)
+                asyncio.create_task(self.publisher.publish(result))
+                await asyncio.sleep(0)
         except asyncio.TimeoutError:
             message = f"Retrieval {retrieval.id} results timeout"
             logger.warning(message)
