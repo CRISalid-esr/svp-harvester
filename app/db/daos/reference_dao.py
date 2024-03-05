@@ -12,7 +12,7 @@ from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 from app.db.models.title import Title
-from app.models.people import Person
+from app.db.models.person import Person
 from app.models.reference_summary import ReferenceSummary
 from app.utilities.string_utilities import split_string
 
@@ -54,6 +54,7 @@ class ReferenceDAO(AbstractDAO):
         # that are not of "deleted" type
         query = (
             select(Reference)
+            .options(raiseload("*"))
             .join(ReferenceEvent)
             .join(
                 subquery, ReferenceEvent.harvesting_id == subquery.c.max_harvesting_id
@@ -94,13 +95,7 @@ class ReferenceDAO(AbstractDAO):
         """
         query = (
             select(Reference)
-            .options(raiseload(Reference.contributions))
-            .options(raiseload(Reference.titles))
-            .options(raiseload(Reference.subtitles))
-            .options(raiseload(Reference.identifiers))
-            .options(raiseload(Reference.abstracts))
-            .options(raiseload(Reference.document_type))
-            .options(raiseload(Reference.reference_events))
+            .options(raiseload("*"))
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
             # where there is no reference event
@@ -130,7 +125,6 @@ class ReferenceDAO(AbstractDAO):
         :return: References
         """
         date_start, date_end = date_interval
-
         if entity:
             entity_id = EntityDAO(self.db_session).entity_filter_subquery(entity)
         else:
@@ -159,7 +153,9 @@ class ReferenceDAO(AbstractDAO):
             .filter(
                 ReferenceEvent.type.in_(filter_harvester["event_types"]),
                 Identifier.type.not_in(filter_harvester["nullify"]),
-                Reference.harvester.in_(filter_harvester["harvester"]),
+                func.lower(Reference.harvester).in_(
+                    [func.lower(h) for h in filter_harvester["harvester"]]
+                ),
             )
             .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
         )
