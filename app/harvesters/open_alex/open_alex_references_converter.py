@@ -128,8 +128,4 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         return value if value is not None else default
 
     def hash_keys(self) -> list[str]:
-        return [
-            "id",
-            "title",
-            "type",
-        ]
+        return ["id", "ids", "title", "type", "concepts", "authorships"]
