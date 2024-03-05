@@ -64,7 +64,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             return (
                 "https://scienceplus.abes.fr/sparql?query="
                 "define%20sql%3Adescribe-mode%20%22CBD%22%20%20"
-                f"DESCRIBE%20%3C{identifier}%3E&output=text%2Fplain"
+                f"DESCRIBE%20%3C{identifier}%3E&output=xml"
             )
         raise ValueError(
             f"Unknown contributor identifier for Sciece Plus: {identifier}"
