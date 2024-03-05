@@ -70,7 +70,6 @@ class SvpHarvester(FastAPI):
         to help ensure container startup order
         :return: None
         """
-  
         logger.info("Checking database connexion readiness")
         async with async_session() as session:
             try:
