@@ -5,12 +5,14 @@ from aiormq import AMQPConnectionError
 from fastapi import FastAPI
 from loguru import logger
 from pydantic import ValidationError
+from sqlalchemy import text
 from starlette.staticfiles import StaticFiles
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.config import get_app_settings
+from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
 
 
@@ -56,11 +58,31 @@ class SvpHarvester(FastAPI):
             **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
         )
         self.add_exception_handler(ValidationError, http422_error_handler)
+        self.add_event_handler("startup", self.check_db_connexion)
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
 
-    @logger.catch
+    @logger.catch(reraise=True)
+    async def check_db_connexion(self) -> None:
+        logger.info("Checking database connexion readiness")
+        async with async_session() as session:
+            try:
+                await session.execute(text("SELECT 1"))
+                logger.info("Database connexion is ready")
+            except ConnectionRefusedError as error:
+                logger.error(
+                    f"Cannot connect to database : ConnectionRefusedError, will retry in 1 second : {error}"
+                )
+                await asyncio.sleep(1)
+                await self.check_db_connexion()
+            except Exception as error:
+                logger.error(
+                    "Cannot connect to database : Unknown error, will not retry"
+                )
+                raise error
+
+    @logger.catch(reraise=True)
     async def open_rabbitmq_connexion(self) -> None:  # pragma: no cover
         """Init AMQP connexion at boot time"""
         try:
