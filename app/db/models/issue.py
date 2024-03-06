@@ -4,7 +4,6 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-import app.db.models.reference
 from app.db.session import Base
 
 
