@@ -1,4 +1,6 @@
 from typing import List
+
+from app.config import get_app_settings
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
@@ -48,10 +50,11 @@ class OrganizationFactory:
 
     @classmethod
     def _create_solver(cls, organization_source) -> OrganizationSolver:
+        settings = get_app_settings()
         if organization_source == "hal":
-            return HalOrganizationSolver()
+            return HalOrganizationSolver(timeout=settings.hal_organizations_timeout)
         if organization_source == "idref":
-            return IdrefOrganizationSolver()
+            return IdrefOrganizationSolver(timeout=settings.idref_organizations_timeout)
         if organization_source == "ror":
-            return RorOrganizationSolver()
+            return RorOrganizationSolver(timeout=settings.ror_organizations_timeout)
         raise ValueError(f"Unknown organization source: {organization_source}")

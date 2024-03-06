@@ -4,11 +4,16 @@ from typing import List
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 
+ORGANISATION_SOLVER_DEFAULT_TIMEOUT = 10
+
 
 class OrganizationSolver(ABC):
     """
     Abstract mother class for organization solvers
     """
+
+    def __init__(self, timeout: int = ORGANISATION_SOLVER_DEFAULT_TIMEOUT):
+        self.timeout = timeout
 
     @abstractmethod
     async def solve(self, organization_id: str) -> Organization:

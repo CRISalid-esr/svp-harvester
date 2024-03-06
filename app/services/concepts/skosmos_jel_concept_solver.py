@@ -13,8 +13,8 @@ class SkosmosJelConceptSolver(JelConceptSolver, RdfConceptSolver):
     def complete_information(self, concept_informations: ConceptInformations) -> None:
         """
         Builds Skosmos URL from a JEL URI
-        :param uri: JEL URI
-        :return: URI and URL
+        :param concept_informations: concept informations
+        :return: None
         """
         super().complete_information(concept_informations)
         url = (

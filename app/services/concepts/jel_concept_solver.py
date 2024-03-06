@@ -14,6 +14,8 @@ class JelConceptSolver(ConceptSolver, ABC):
         """
         Concept code from hal is a concatenation of type : G1.G12.G123
         Concatenate the JEL namespace with the last part of the concept id
+        :param concept_informations: concept informations
+        :return: None
         """
         if concept_informations.uri is None and concept_informations.code is not None:
             concept_code = concept_informations.code.rsplit(".", 1)[-1]
