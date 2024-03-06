@@ -9,7 +9,7 @@ class AbstractHashGenerator(ABC):
     """
 
     @abstractmethod
-    def hash_string(self, payload: ResultTypeT, hash_dict: dict) -> str:
+    def hash_string(self, payload: ResultTypeT, hash_keys: dict) -> str:
         """
         Generate the string to hash given payload using the provided hash dictionary.
 
@@ -21,4 +21,3 @@ class AbstractHashGenerator(ABC):
             str: The hashed string.
 
         """
-        raise NotImplementedError

@@ -9,7 +9,7 @@ class JsonHashGenerator(AbstractHashGenerator):
     Hasher for JsonHarvesterRawResult
     """
 
-    def hash_string(self, payload: dict, hash_dict: dict) -> str:
+    def hash_string(self, payload: dict, hash_keys: dict) -> str:
         """
         Hashes the values of the payload dictionary based on the keys specified in the hash_dict.
 
@@ -22,7 +22,7 @@ class JsonHashGenerator(AbstractHashGenerator):
 
         """
         hash_string = ""
-        for key in hash_dict:
+        for key in hash_keys:
             obj = payload.get(key, "")
             obj_sorted = self._sort_element(obj)
             hash_string += str(obj_sorted)

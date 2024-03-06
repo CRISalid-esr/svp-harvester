@@ -1,3 +1,4 @@
+from typing import Generator
 from xml.etree import ElementTree
 
 from loguru import logger
@@ -16,9 +17,7 @@ from app.harvesters.idref.open_edition_document_type_converter import (
 from app.harvesters.idref.open_edition_qualities_converter import (
     OpenEditionQualitiesConverter,
 )
-from app.harvesters.rdf_harvester_raw_result import (
-    RdfHarvesterRawResult as RdfRawResult,
-)
+from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
 
 
@@ -39,7 +38,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         return "Idref"
 
     @AbstractReferencesConverter.validate_reference
-    async def convert(self, raw_data: RdfRawResult, new_ref: Reference) -> None:
+    async def convert(
+        self, raw_data: XMLHarvesterRawResult, new_ref: Reference
+    ) -> None:
         new_ref.titles.append(self._title(self._get_root(raw_data)))
 
         for abstract in self._abstracts(self._get_root(raw_data)):
@@ -60,10 +61,12 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
         await self._add_contributions(new_ref, self._get_root(raw_data))
 
-    def hash(self, raw_data: RdfRawResult):
+    def hash(self, raw_data: XMLHarvesterRawResult):
         return self._hash_dict(self._create_dict(self._get_root(raw_data)))
 
-    def _reference_identifier(self, root: ElementTree) -> ReferenceIdentifier:
+    def _reference_identifier(
+        self, root: ElementTree
+    ) -> Generator[ReferenceIdentifier, None, None]:
         for identifier in self._get_terms(root, "identifier"):
             if identifier[1]["scheme"] == "URI":
                 yield ReferenceIdentifier(
@@ -112,7 +115,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             (term.text, term.attrib) for term in root.findall(f"{self.TERMS}{term}")
         ]
 
-    def _get_root(self, raw_data: RdfRawResult):
+    def _get_root(self, raw_data: XMLHarvesterRawResult):
         if self.tree_root is None:
             try:
                 root = raw_data.payload
@@ -175,13 +178,13 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def hash_keys(self) -> list[str]:
         return [
-            "title",
-            "abstract",
-            "type",
-            "language",
-            "identifier",
-            "subject",
-            "type",
+            "dcterms:title",
+            "dcterms:abstract",
+            "dcterms:type",
+            "dcterms:language",
+            "dcterms:identifier",
+            "dcterms:subject",
+            "dcterms:type",
         ]
 
     def _create_dict(self, root: ElementTree):

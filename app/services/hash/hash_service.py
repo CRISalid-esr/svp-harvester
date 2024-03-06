@@ -2,6 +2,7 @@ import hashlib
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.services.hash.asbtract_hash_generator import AbstractHashGenerator
 from app.services.hash.json_hash_generator import JsonHashGenerator
+from app.services.hash.xml_hash_generator import XMLHashGenerator
 
 
 class HashService:
@@ -30,6 +31,8 @@ class HashService:
         """
         if raw_data_class_name == "JsonHarvesterRawResult":
             return JsonHashGenerator()
+        if raw_data_class_name == "XMLHarvesterRawResult":
+            return XMLHashGenerator()
         # elif raw_data_class_name == "RdfRawResult":
         #     return RdfHasher()
         else:
