@@ -1,7 +1,11 @@
 import hashlib
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
+from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.sparql_harvester_raw_result import SparqlHarvesterRawResult
+from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.hash.asbtract_hash_generator import AbstractHashGenerator
 from app.services.hash.json_hash_generator import JsonHashGenerator
+from app.services.hash.sparql_hash_generator import SparqlHashGenerator
 from app.services.hash.xml_hash_generator import XMLHashGenerator
 
 
@@ -19,7 +23,7 @@ class HashService:
         :param hash_dict: the hash dict
         :return: the hash
         """
-        hasher = self._get_hash_generator(raw_data.__class__.__name__)
+        hasher = self._get_hash_generator(raw_data)
         hash_string = hasher.hash_string(raw_data.payload, hash_dict)
         return hashlib.sha256(hash_string.encode("utf-8")).hexdigest()
 
@@ -29,10 +33,12 @@ class HashService:
         :param raw_data_class_name: the class name of the raw data
         :return: the correct hasher
         """
-        if raw_data_class_name == "JsonHarvesterRawResult":
+        if isinstance(raw_data_class_name, JsonHarvesterRawResult):
             return JsonHashGenerator()
-        if raw_data_class_name == "XMLHarvesterRawResult":
+        if isinstance(raw_data_class_name, XMLHarvesterRawResult):
             return XMLHashGenerator()
+        if isinstance(raw_data_class_name, SparqlHarvesterRawResult):
+            return SparqlHashGenerator()
         # elif raw_data_class_name == "RdfRawResult":
         #     return RdfHasher()
         else:
