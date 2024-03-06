@@ -7,6 +7,8 @@ from app.db.models.concept import Concept as DbConcept
 from app.db.models.label import Label as DbLabel
 from app.services.concepts.concept_informations import ConceptInformations
 
+DEFAULT_CONCEPTS_TIMEOUT = 10
+
 
 class ConceptSolver(ABC):
     """
@@ -14,8 +16,9 @@ class ConceptSolver(ABC):
     """
 
     # fetch app settings in constructor
-    def __init__(self):
+    def __init__(self, timeout: int = DEFAULT_CONCEPTS_TIMEOUT):
         self.settings = get_app_settings()
+        self.timeout = timeout
 
     @abstractmethod
     def complete_information(self, concept_informations: ConceptInformations) -> str:

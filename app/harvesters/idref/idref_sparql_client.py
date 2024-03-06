@@ -8,9 +8,14 @@ from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpoint
 
 DATA_IDREF_FR_URL = "https://data.idref.fr/sparql"
 
+IDREF_SPARQL_DEFAULT_TIMEOUT = 20
+
 
 class IdrefSparqlClient:
     """Async client for data.idref.fr SPARQL API, wrapper around aiosparql"""
+
+    def __init__(self, timeout: int = IDREF_SPARQL_DEFAULT_TIMEOUT):
+        self.timeout = timeout
 
     class DataSources(Enum):
         """Typology of data sources for which data.idref.fr gathers data"""
@@ -149,5 +154,5 @@ class IdrefSparqlClient:
         return SPARQLClient(
             DATA_IDREF_FR_URL,
             connector=aiohttp.TCPConnector(limit=0),
-            timeout=aiohttp.ClientTimeout(total=300),
+            timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
         )
