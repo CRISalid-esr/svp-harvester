@@ -46,7 +46,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         idref_url, idref_uri = self._build_url_from_organization_id(organization_id)
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(2))
+                timeout=aiohttp.ClientTimeout(total=float(self.timeout))
             ) as session:
                 async with session.get(idref_url) as response:
                     if not 200 <= response.status < 300:

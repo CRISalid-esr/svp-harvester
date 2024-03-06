@@ -57,15 +57,19 @@ class ConceptFactory:
     def _create_solver(
         cls, concept_source: ConceptInformations.ConceptSources
     ) -> ConceptSolver:
+        settings = get_app_settings()
         if concept_source == ConceptInformations.ConceptSources.IDREF:
-            return IdRefConceptSolver()
+            return IdRefConceptSolver(timeout=settings.idref_concepts_timeout)
         if concept_source == ConceptInformations.ConceptSources.WIKIDATA:
-            return WikidataConceptSolver()
+            return WikidataConceptSolver(timeout=settings.wikidata_concepts_timeout)
         if concept_source == ConceptInformations.ConceptSources.JEL:
-            setting = get_app_settings()
-            if setting.svp_jel_proxy_url is not None:
-                return SparqlJelConceptSolver()
-            return SkosmosJelConceptSolver()
+            if settings.svp_jel_proxy_url is not None:
+                return SparqlJelConceptSolver(
+                    timeout=settings.sparql_jel_concepts_timeout
+                )
+            return SkosmosJelConceptSolver(
+                timeout=settings.skosmos_jel_concepts_timeout
+            )
         # add more sources here
         # if no solver is found, raise an exception
         raise ValueError(f"Unknown concept source {concept_source}")

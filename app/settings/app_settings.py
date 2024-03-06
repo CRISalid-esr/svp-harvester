@@ -86,3 +86,13 @@ class AppSettings(BaseSettings):
     }
 
     svp_jel_proxy_url: str | None = None
+
+    idref_sudoc_timeout: int = 30
+    idref_concepts_timeout: int = 30
+    wikidata_concepts_timeout: int = 10
+    sparql_jel_concepts_timeout: int = 2
+    skosmos_jel_concepts_timeout: int = 20
+    idref_sparql_timeout: int = 10
+    hal_organizations_timeout: int = 10
+    idref_organizations_timeout: int = 10
+    ror_organizations_timeout: int = 10

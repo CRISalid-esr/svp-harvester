@@ -8,6 +8,7 @@ from loguru import logger
 import uritools
 from rdflib import URIRef
 
+from app.config import get_app_settings
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -63,6 +64,7 @@ class IdrefHarvester(AbstractHarvester):
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         # pylint: disable=too-many-branches, too-many-statements
+        settings = get_app_settings()
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
             idref: str = (await self._get_entity()).get_identifier("idref")
@@ -82,7 +84,9 @@ class IdrefHarvester(AbstractHarvester):
         num_sudoc_waiting_queries = 0
 
         if self.SUDOC_ENABLED:
-            async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
+            async for doc in IdrefSparqlClient(
+                timeout=settings.idref_sparql_timeout
+            ).fetch_publications(builder.build()):
                 coro = self._secondary_query_process(doc)
                 # Temporary semi-sequential implementation
                 # Sudoc server does not support parallel querying beyond 5 parallel requests
@@ -126,7 +130,9 @@ class IdrefHarvester(AbstractHarvester):
                     if pub:
                         yield pub
         else:
-            async for doc in IdrefSparqlClient().fetch_publications(builder.build()):
+            async for doc in IdrefSparqlClient(
+                timeout=settings.idref_sparql_timeout
+            ).fetch_publications(builder.build()):
                 if doc["secondary_source"] == "SUDOC":
                     continue
                 coro = self._secondary_query_process(doc)
@@ -224,7 +230,8 @@ class IdrefHarvester(AbstractHarvester):
         document_uri = re.sub(r"/id$", ".rdf", uri)
         # with regular expression, replace "http://" by "https://" in document_uri
         document_uri = re.sub(r"^http://", "https://", document_uri)
-        client = RdfResolver()
+        settings = get_app_settings()
+        client = RdfResolver(timeout=settings.idref_sudoc_timeout)
         pub = await client.fetch(document_uri, output_format="xml")
         return RdfResult(
             payload=pub,

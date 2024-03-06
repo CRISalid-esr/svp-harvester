@@ -8,12 +8,14 @@ from app.harvesters.exceptions.unexpected_format_exception import (
 )
 from app.harvesters.idref.resolver_http_client import ResolverHTTPClient
 
+DEFAULT_RDF_TIMEOUT = 30
+
 
 class RdfResolver:
     """Async client for HAL API"""
 
-    def __init__(self):
-        self.http_client = ResolverHTTPClient()
+    def __init__(self, timeout: int = DEFAULT_RDF_TIMEOUT):
+        self.http_client = ResolverHTTPClient(timeout=timeout)
 
     async def fetch(self, document_uri: str, output_format: str = "xml") -> Graph:
         """

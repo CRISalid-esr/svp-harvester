@@ -26,7 +26,7 @@ class WikidataConceptSolver(ConceptSolver):
         """
         try:
             async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(10))
+                timeout=aiohttp.ClientTimeout(total=float(self.timeout))
             ) as session:
                 async with session.get(concept_informations.url) as response:
                     if not 200 <= response.status < 300:
