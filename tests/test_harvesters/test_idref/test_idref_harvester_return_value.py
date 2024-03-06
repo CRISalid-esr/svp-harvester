@@ -102,7 +102,7 @@ async def test_idref_harvester_finds_sudoc_doc(
     reference_recorder_register_mock.assert_called_once()
     _, arg = reference_recorder_register_mock.call_args
     reference: Reference = arg["new_ref"]
-    assert len(reference.titles) == 1
+    assert len(reference.titles) == 2
     assert (
         reference.titles[0].value
         == "Agriculture des métropoles  : voie d'avenir ou cache-misère ?"
