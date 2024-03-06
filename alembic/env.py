@@ -23,6 +23,8 @@ from app.db.models import (
     title,
     document_type,
     harvesting_error,
+    issue,
+    journal,
 )
 from app.db.session import Base
 
@@ -49,6 +51,8 @@ def _register_models_for_migrations():
         document_type,
         harvesting_error,
         reference_identifier,
+        issue,
+        journal,
     )
 
 
