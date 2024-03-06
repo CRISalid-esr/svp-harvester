@@ -13,6 +13,7 @@ from app.db.session import Base
 # temporary imports
 from app.db.models.contribution import Contribution  # pylint: disable=unused-import
 from app.db.models.contributor import Contributor  # pylint: disable=unused-import
+from app.db.models.issue import Issue  # pylint: disable=unused-import
 from app.db.models.organization import Organization  # pylint: disable=unused-import
 from app.db.models.title import Title  # pylint: disable=unused-import
 from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
