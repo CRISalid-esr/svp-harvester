@@ -8,22 +8,22 @@ from app.harvesters.idref.open_edition_references_converter import (
 
 @pytest.mark.asyncio
 async def test_open_edition_convert_for_rfd_result(
-    open_edition_rdf_result_for_doc,
+    open_edition_xml_result_for_doc,
 ):
     """
     GIVEN a OpenEditionReferencesConverter instance and a Open Edition XML result for a document
     WHEN the convert method is called
     THEN it should return a Reference instance with the expected values
 
-    :param: open_edition_rdf_result_for_doc: a Open Edition RDF result for a document
+    :param: open_edition_xml_result_for_doc: a Open Edition RDF result for a document
     :return: None
     """
     converter_under_tests = OpenEditionReferencesConverter()
     test_reference = converter_under_tests.build(
-        raw_data=open_edition_rdf_result_for_doc
+        raw_data=open_edition_xml_result_for_doc
     )
     await converter_under_tests.convert(
-        raw_data=open_edition_rdf_result_for_doc, new_ref=test_reference
+        raw_data=open_edition_xml_result_for_doc, new_ref=test_reference
     )
     expected_french_title = "Les émeutes entre hindous et musulmans (partie 2)"
     expected_french_abstract_beginning = (
@@ -35,7 +35,7 @@ async def test_open_edition_convert_for_rfd_result(
     ]
 
     assert test_reference.source_identifier == str(
-        open_edition_rdf_result_for_doc.source_identifier
+        open_edition_xml_result_for_doc.source_identifier
     )
     assert len(test_reference.titles) == 1
     assert expected_french_title in [title.value for title in test_reference.titles]
