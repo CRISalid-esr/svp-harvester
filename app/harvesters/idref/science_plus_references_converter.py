@@ -75,3 +75,6 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
 
     def _get_source(self):
         return "science_plus"
+
+    def hash_keys(self) -> list[str]:
+        return [DCTERMS.title, DCTERMS.abstract, RDF.type]

@@ -73,3 +73,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
                     lng = lng.value
                     break
             yield Title(value=title.value, language=lng)
+
+    def hash_keys(self) -> list[str]:
+        return [RDF.type, DCTERMS.title, DCTERMS.abstract]

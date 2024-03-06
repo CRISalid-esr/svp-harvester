@@ -1,5 +1,6 @@
 import json
 from typing import Any
+from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
 from app.services.hash.asbtract_hash_generator import AbstractHashGenerator
 
@@ -9,7 +10,7 @@ class JsonHashGenerator(AbstractHashGenerator):
     Hasher for JsonHarvesterRawResult
     """
 
-    def hash_string(self, payload: dict, hash_keys: dict) -> str:
+    def hash_string(self, raw_data: JsonHarvesterRawResult, hash_keys: dict) -> str:
         """
         Hashes the values of the payload dictionary based on the keys specified in the hash_dict.
 
@@ -21,6 +22,7 @@ class JsonHashGenerator(AbstractHashGenerator):
             str: The hashed string generated from the values of the payload dictionary.
 
         """
+        payload = raw_data.payload
         hash_string = ""
         for key in hash_keys:
             obj = payload.get(key, "")

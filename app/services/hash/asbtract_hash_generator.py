@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
-from app.harvesters.abstract_harvester_raw_result import ResultTypeT
+from app.harvesters.abstract_harvester_raw_result import (
+    AbstractHarvesterRawResult,
+)
 
 
 class AbstractHashGenerator(ABC):
@@ -9,7 +11,7 @@ class AbstractHashGenerator(ABC):
     """
 
     @abstractmethod
-    def hash_string(self, payload: ResultTypeT, hash_keys: dict) -> str:
+    def hash_string(self, raw_data: AbstractHarvesterRawResult, hash_keys: dict) -> str:
         """
         Generate the string to hash given payload using the provided hash dictionary.
 

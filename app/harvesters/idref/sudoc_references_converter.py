@@ -1,5 +1,5 @@
 import rdflib
-from rdflib import DC, Literal
+from rdflib import DC, DCTERMS, Literal
 
 from app.db.models.reference import Reference
 from app.db.models.title import Title
@@ -82,3 +82,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
     def _convert_role(self, role):
         return SudocQualitiesConverter.convert(role)
+
+    def hash_keys(self):
+        return [
+            DC.title,
+            DC.type,
+            DCTERMS.abstract,
+        ]
