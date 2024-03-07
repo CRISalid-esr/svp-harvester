@@ -87,6 +87,8 @@ class AppSettings(BaseSettings):
 
     svp_jel_proxy_url: str | None = None
 
+    scopus_api_key: str = "None"
+
     idref_sudoc_timeout: int = 30
     idref_concepts_timeout: int = 30
     wikidata_concepts_timeout: int = 10

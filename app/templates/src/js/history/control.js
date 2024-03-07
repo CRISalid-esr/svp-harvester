@@ -19,7 +19,7 @@ class Control {
                     identifiers: [],
                     name: "",
                     eventTypes: ['created', 'updated', 'deleted', 'unchanged'],
-                    harvesters: ['hal', 'idref', 'openalex', 'scanr'],
+                    harvesters: ['hal', 'idref', 'openalex', 'scanr', 'scopus'],
                     dateRange: [new Date().toISOString().split('T')[0], undefined],
                     textSearch: undefined
                 }
