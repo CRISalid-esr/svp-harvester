@@ -35,7 +35,7 @@ class SparqlJelConceptSolver(JelConceptSolver):
         return SPARQLClient(
             settings.svp_jel_proxy_url,
             connector=aiohttp.TCPConnector(limit=0),
-            timeout=aiohttp.ClientTimeout(total=300),
+            timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
         )
 
     async def solve(self, concept_informations: ConceptInformations) -> DbConcept:

@@ -36,6 +36,12 @@ def fixture_persee_rdf_xml_for_hash_2(_base_path) -> Graph:
     return _persee_rdf_graph_from_file(_base_path, "persee_document_for_hash_2")
 
 
+@pytest.fixture(name="persee_rdf_graph_for_person")
+def fixture_persee_rdf_graph_for_person(_base_path) -> Graph:
+    """Rdf graph from persee Person rdf file"""
+    return _persee_rdf_graph_from_file(_base_path, "persee_person")
+
+
 def _persee_rdf_graph_from_file(base_path, file_name) -> Graph:
     file_path = f"data/persee_rdf/{file_name}.rdf"
     return _rdf_graph_from_xml_file(base_path, file_path)

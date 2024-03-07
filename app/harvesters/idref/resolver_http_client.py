@@ -8,8 +8,9 @@ class ResolverHTTPClient:
     Generic HTTP client for resolving URIs
     """
 
-    def __init__(self):
+    def __init__(self, timeout: int = 30):
         self.connector = aiohttp.TCPConnector(limit=0)
+        self.timeout = timeout
 
     async def get(self, document_url: str) -> str:
         """
@@ -20,7 +21,8 @@ class ResolverHTTPClient:
         """
         try:
             async with aiohttp.ClientSession(
-                connector=self.connector, timeout=aiohttp.ClientTimeout(total=300)
+                connector=self.connector,
+                timeout=aiohttp.ClientTimeout(total=self.timeout),
             ) as session:
                 async with session.get(document_url) as resp:
                     if resp.status == 200:

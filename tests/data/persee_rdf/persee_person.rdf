@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:schema="http://schema.org/"
+    xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+    <rdf:Description rdf:about="http://data.persee.fr/authority/214267#Person">
+        <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+        <rdfs:label>Christian Hottin</rdfs:label>
+        <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb13502592s#foaf:Person" />
+        <owl:sameAs rdf:resource="http://www.isni.org/000000012125370X" />
+        <owl:sameAs rdf:resource="http://viaf.org/viaf/27222668" />
+        <owl:sameAs rdf:resource="http://www.idref.fr/057648816/id" />
+        <foaf:name>Christian Hottin</foaf:name>
+        <foaf:familyName>Hottin</foaf:familyName>
+        <foaf:givenName>Christian</foaf:givenName>
+        <schema:birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1971</schema:birthDate>
+        <foaf:page rdf:resource="https://www.persee.fr/authority/214267" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/authority/214267">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">
+            2021-09-24BST10:48:50</dcterms:modified>
+        <rdfs:label xml:lang="fr">Hottin, Christian (1971-...)</rdfs:label>
+        <dcterms:license>Etalab v2.0 (https://www.etalab.gouv.fr/licence-ouverte-open-licence)</dcterms:license>
+        <dcterms:creator rdf:resource="http://data.persee.fr/UMS_Persee/" />
+        <skos:prefLabel xml:lang="fr">Hottin, Christian (1971-...)</skos:prefLabel>
+        <foaf:focus rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/gazar_0016-5522_2008_num_211_3_4494#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/gazar_0016-5522_2006_num_202_2_3817#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/bec_0373-6237_2013_num_171_2_464636_t13_0587_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/lha_1627-4970_2005_num_10_1_1015#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/lha_1627-4970_2006_num_11_1_1033#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/bec_0373-6237_2005_num_163_2_463767_t1_0560_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/lha_1627-4970_2001_num_1_1_867#Web">
+        <marcrel:trl rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <dcterms:contributor rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2003_num_5_1_939_t1_0157_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2005_num_10_1_1023_t1_0149_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2005_num_9_1_1006_t1_0164_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2005_num_10_1_1023_t1_0151_0000_3#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2005_num_10_1_1023_t1_0156_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description
+        rdf:about="http://data.persee.fr/doc/lha_1627-4970_2006_num_11_1_1039_t1_0155_0000_2#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/lha_1627-4970_2007_num_13_1_1067#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:about="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web">
+        <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+        <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="b57245432">
+        <marcrel:lse rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    </rdf:Description>
+</rdf:RDF>
