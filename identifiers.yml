@@ -19,3 +19,6 @@
 - key: pubmed
   label: PubMed
   priority: 6
+- key: scopus_eid
+  label: ScopusEID
+  priority: 7
