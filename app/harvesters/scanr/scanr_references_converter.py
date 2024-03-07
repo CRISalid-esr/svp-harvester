@@ -10,6 +10,7 @@ from app.harvesters.scanr.scanr_document_type_converter import (
     ScanrDocumentTypeConverter,
 )
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
+from app.services.hash.hash_key import HashKey
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
@@ -103,14 +104,14 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         # in ScanRApiQueryBuilder
         # pylint: disable=duplicate-code
         return [
-            "id",
-            "title",
-            "summary",
-            "type",
-            "productionType",
-            "publicationDate",
-            "domains",
-            "affiliations",
-            "authors",
-            "externalIds",
+            HashKey("id"),
+            HashKey("title"),
+            HashKey("summary"),
+            HashKey("type"),
+            HashKey("productionType"),
+            HashKey("publicationDate"),
+            HashKey("domains"),
+            HashKey("affiliations"),
+            HashKey("authors"),
+            HashKey("externalIds"),
         ]

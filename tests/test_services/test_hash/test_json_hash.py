@@ -5,6 +5,7 @@ from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.open_alex.open_alex_references_converter import (
     OpenAlexReferencesConverter,
 )
+from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 from app.services.hash.hash_service import HashService
 
 
@@ -85,10 +86,10 @@ async def test_json_scanr_hash(scanr_api_doc_hash_1: dict, scanr_api_doc_hash_2:
     )
     hash_service = HashService()
     hash_1 = hash_service.hash(
-        raw_data=raw_data_1, hash_dict=OpenAlexReferencesConverter().hash_keys()
+        raw_data=raw_data_1, hash_dict=ScanrReferencesConverter().hash_keys()
     )
     hash_2 = hash_service.hash(
-        raw_data=raw_data_2, hash_dict=OpenAlexReferencesConverter().hash_keys()
+        raw_data=raw_data_2, hash_dict=ScanrReferencesConverter().hash_keys()
     )
 
     assert hash_1 == hash_2

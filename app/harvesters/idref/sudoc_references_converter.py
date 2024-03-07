@@ -12,6 +12,7 @@ from app.harvesters.idref.sudoc_document_type_converter import (
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.harvesters.idref.sudoc_qualities_converter import SudocQualitiesConverter
+from app.services.hash.hash_key import HashKey
 from app.utilities.string_utilities import remove_after_separator
 
 
@@ -85,7 +86,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
     def hash_keys(self):
         return [
-            DC.title,
-            DC.type,
-            DCTERMS.abstract,
+            HashKey(DC.title),
+            HashKey(DC.type),
+            HashKey(DCTERMS.abstract),
         ]

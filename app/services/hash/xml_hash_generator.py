@@ -1,6 +1,7 @@
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 
 from app.services.hash.asbtract_hash_generator import AbstractHashGenerator
+from app.services.hash.hash_key import HashKey
 
 
 class XMLHashGenerator(AbstractHashGenerator):
@@ -15,13 +16,17 @@ class XMLHashGenerator(AbstractHashGenerator):
         "qdc": "http://www.bl.uk/namespaces/oai_dcq/",
     }
 
-    def hash_string(self, raw_data: XMLHarvesterRawResult, hash_keys: dict) -> str:
+    def hash_string(
+        self, raw_data: XMLHarvesterRawResult, hash_keys: list[HashKey]
+    ) -> str:
         payload = raw_data.payload
         string_to_hash = ""
         for key in hash_keys:
-            a = sorted(
-                [node.text for node in payload.findall(f".//{key}", self.NAMESPACE)]
-            )
-            string_to_hash += ";".join(a)
+            terms = [
+                node.text for node in payload.findall(f".//{key.value}", self.NAMESPACE)
+            ]
+            if key.sorted:
+                terms.sort()
+            string_to_hash += ";".join(terms)
 
         return string_to_hash

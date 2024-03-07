@@ -19,6 +19,7 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 
 
 class OpenEditionReferencesConverter(AbstractReferencesConverter):
@@ -178,13 +179,13 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def hash_keys(self) -> list[str]:
         return [
-            "dcterms:title",
-            "dcterms:abstract",
-            "dcterms:type",
-            "dcterms:language",
-            "dcterms:identifier",
-            "dcterms:subject",
-            "dcterms:type",
+            HashKey("dcterms:title"),
+            HashKey("dcterms:abstract"),
+            HashKey("dcterms:type"),
+            HashKey("dcterms:language"),
+            HashKey("dcterms:identifier"),
+            HashKey("dcterms:subject"),
+            HashKey("dcterms:type"),
         ]
 
     def _create_dict(self, root: ElementTree):

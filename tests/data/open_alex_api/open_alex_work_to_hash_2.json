@@ -55,24 +55,24 @@
     "authorships": [
         {
             "author_position": "first",
+            "author": {
+                "id": "https://openalex.org/A5049788468",
+                "display_name": "Chengteh Lee",
+                "orcid": null
+            },
             "institutions": [
                 {
                     "id": "https://openalex.org/I114027177",
                     "display_name": "University of North Carolina at Chapel Hill",
                     "ror": "https://ror.org/0130frc33",
                     "country_code": "US",
+                    "type": "education",
                     "lineage": [
                         "https://openalex.org/I114027177",
                         "https://openalex.org/I4210158053"
-                    ],
-                    "type": "education"
+                    ]
                 }
             ],
-            "author": {
-                "id": "https://openalex.org/A5049788468",
-                "display_name": "Chengteh Lee",
-                "orcid": null
-            },
             "countries": [
                 "US"
             ],

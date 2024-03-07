@@ -34,7 +34,6 @@ async def test_rdf_sudoc_hash(sudoc_rdf_graph_for_hash_1, sudoc_rdf_graph_for_ha
     )
 
     assert hash_1 == hash_2
-    # assert 1 == 2
 
 
 @pytest.mark.asyncio
