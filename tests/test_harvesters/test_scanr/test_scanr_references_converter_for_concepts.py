@@ -25,7 +25,10 @@ def fixture_scanr_api_publication_cleaned_dupe_sudoc_and_keywords_response(
     scanr_publication_doc_with_identical_sudoc_and_keywords_domains,
 ):
     """Return the list of dictionaries references from scanr response"""
-    return scanr_publication_doc_with_identical_sudoc_and_keywords_domains["hits"]["hits"]
+    return scanr_publication_doc_with_identical_sudoc_and_keywords_domains["hits"][
+        "hits"
+    ]
+
 
 @pytest.fixture(name="scanr_publication_doc_with_sudoc_domains")
 def fixture_scanr_publication_doc_with_sudoc_domains(
@@ -56,7 +59,8 @@ async def test_convert_publication_with_keywords(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_subjects = [
             (label.language, label.value)
@@ -79,7 +83,8 @@ async def test_convert_publication_with_identical_keywords(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_subjects = [
             (label.language, label.value)
@@ -102,7 +107,8 @@ async def test_convert_publication_with_sudoc(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_subjects = [
             (label.language, label.value)
@@ -125,7 +131,8 @@ async def test_convert_publication_with_identical_sudoc_andkeywords(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_subjects = [
             (label.language, label.value)
@@ -148,7 +155,8 @@ async def test_convert_publication_with_wikidata(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = await converter_under_tests.convert(result)
+        test_reference = converter_under_tests.build(raw_data=result)
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_subjects = [
             (label.language, label.value)
