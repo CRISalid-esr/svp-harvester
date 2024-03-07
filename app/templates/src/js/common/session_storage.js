@@ -1,3 +1,5 @@
+import env from "../env";
+
 class SessionStorage {
   KEY_NAME = "name";
   KEY_EVENT_TYPE = "#event-type-select";
@@ -8,7 +10,7 @@ class SessionStorage {
     "idref",
     "orcid",
     "researcherid",
-    "scopusid",
+    "scopus_eid",
     "arxiv",
     "pubmed",
   ];
@@ -30,7 +32,14 @@ class SessionStorage {
   }
 
   fillForm() {
-    this.KEYS_IDENTIFIER.forEach((key) => {
+    let keys = this.KEYS_IDENTIFIER;
+    if (env.identifiers) {
+      keys = Object.keys(env.identifiers).map(
+        (key) => env.identifiers[key].key
+      );
+    }
+
+    keys.forEach((key) => {
       const value = this.getItem(key);
       if (value) {
         this.form.addIdentifierField({
