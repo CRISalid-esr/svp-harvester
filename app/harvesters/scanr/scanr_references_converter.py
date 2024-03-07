@@ -30,7 +30,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         "keyword": None,
     }
 
-    async def convert(self, raw_data: JsonRawResult) -> Reference:
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
         """
