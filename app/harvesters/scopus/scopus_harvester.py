@@ -53,7 +53,6 @@ class ScopusHarvester(AbstractHarvester):
         )
 
         builder.set_query(identifier_type, identifier_value)
-        logger.debug(builder.build())
         async for doc in ScopusClient().fetch(builder.build()):
             if doc is None:
                 continue

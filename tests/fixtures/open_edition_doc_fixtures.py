@@ -4,6 +4,7 @@ import pytest
 
 from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
+from tests.fixtures.common import _et_from_xml_file
 
 
 @pytest.fixture(name="open_edition_xml_result_for_doc")
@@ -43,14 +44,3 @@ def fixture_open_edition_xml_for_hash_2(_base_path) -> str:
 def _open_edition_et_xml_from_file(base_path, file_name) -> ET:
     file_path = f"data/open_edition/{file_name}.xml"
     return _et_from_xml_file(base_path, file_path)
-
-
-def _et_from_xml_file(base_path, file_path) -> ET:
-    input_data = _xml_file_content(base_path, file_path)
-    return ET.fromstring(input_data)
-
-
-def _xml_file_content(base_path, file_path):
-    file = pathlib.Path(base_path / file_path)
-    with open(file, encoding="utf-8") as xml_file:
-        return xml_file.read()

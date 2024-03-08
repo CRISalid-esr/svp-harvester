@@ -88,6 +88,7 @@ class AppSettings(BaseSettings):
     svp_jel_proxy_url: str | None = None
 
     scopus_api_key: str = "None"
+    scopus_inst_token: str = "None"
 
     idref_sudoc_timeout: int = 30
     idref_concepts_timeout: int = 30
@@ -98,3 +99,4 @@ class AppSettings(BaseSettings):
     hal_organizations_timeout: int = 10
     idref_organizations_timeout: int = 10
     ror_organizations_timeout: int = 10
+    scopus_organizations_timeout: int = 10
