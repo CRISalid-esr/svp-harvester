@@ -127,9 +127,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    # TODO: Refacto the concept_cache method. The concept_id is at None in cases where the type is "keyword".
-    #  Make a method who deduplicate on two phases: fist with the couple type and code, then for those where type is "keyword" aka code is None, deduplicate on the label and language.
-
     async def _concepts(self, domains):
         subjects_with_source = []
         subjects_without_source = []
@@ -173,11 +170,12 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 ]
 
             if any(
-                self.duplicate_or_almost(concept_label, label_to_compare_to)
+                self._duplicate_or_almost(concept_label, label_to_compare_to)
                 for label_to_compare_to in labels_to_compare_to
             ):
                 logger.debug(
-                    f"Concept {concept_label} already mentioned in Scanr results with a source among {labels_with_source}"
+                    f"Concept {concept_label} already mentioned in Scanr results with a source "
+                    f"among {labels_with_source}"
                 )
                 continue
             labels_with_source.setdefault(concept_language, []).append(concept_label)
@@ -233,7 +231,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             "externalIds",
         ]
 
-    def duplicate_or_almost(self, compared_label, compared_to_label):
+    def _duplicate_or_almost(self, compared_label, compared_to_label):
         if compared_label == compared_to_label:
             return True
         compared_label_norm = normalize_string(compared_label)
