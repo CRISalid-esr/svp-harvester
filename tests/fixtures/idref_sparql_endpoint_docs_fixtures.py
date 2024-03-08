@@ -3,6 +3,30 @@ import pytest
 from tests.fixtures.common import _json_data_from_file
 
 
+@pytest.fixture(name="idref_pub_converted_1")
+def fixture_idref_pub_converted_1(_base_path) -> dict:
+    """
+    Generate a Idref publication converted from a Idref Sparql endpoint response
+
+    :return: Idref publication converted from a Idref Sparql endpoint response
+    """
+    return _idref_sparql_endpoint_json_results_from_file(
+        _base_path, "idref_result_with_idref_doc_1"
+    )
+
+
+@pytest.fixture(name="idref_pub_converted_2")
+def fixture_idref_pub_converted_2(_base_path) -> dict:
+    """
+    Generate a Idref publication converted from a Idref Sparql endpoint response
+
+    :return: Idref publication converted from a Idref Sparql endpoint response
+    """
+    return _idref_sparql_endpoint_json_results_from_file(
+        _base_path, "idref_result_with_idref_doc_2"
+    )
+
+
 @pytest.fixture(name="idref_sparql_endpoint_results_with_idref_pubs")
 def fixture_idref_sparql_endpoint_results_with_idref_pubs(_base_path) -> dict:
     """

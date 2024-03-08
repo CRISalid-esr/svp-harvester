@@ -35,7 +35,6 @@ async def test_orphan_titles_deletion(async_session: AsyncSession):
     assert title is None
 
 
-@pytest.mark.current
 async def test_reference_with_issue_and_journal(async_session: AsyncSession):
     """
     GIVEN a reference with an issue and a journal
@@ -83,7 +82,6 @@ async def test_reference_with_issue_and_journal(async_session: AsyncSession):
     await async_session.delete(reference)
 
 
-@pytest.mark.current
 async def test_issue_is_deleted_when_journal_is_deleted(async_session: AsyncSession):
     """
     GIVEN a reference with an issue and a journal
@@ -137,7 +135,6 @@ async def test_issue_is_deleted_when_journal_is_deleted(async_session: AsyncSess
     assert reference.issue is None
 
 
-@pytest.mark.current
 async def test_reference_is_not_deleted_when_issue_is_deleted(
     async_session: AsyncSession,
 ):
@@ -195,7 +192,6 @@ async def test_reference_is_not_deleted_when_issue_is_deleted(
     assert journal is not None
 
 
-@pytest.mark.current
 async def test_journal_and_issue_not_deleted_when_reference_deleted(
     async_session: AsyncSession,
 ):

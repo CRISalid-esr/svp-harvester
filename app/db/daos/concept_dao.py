@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import raiseload
+from sqlalchemy.orm import raiseload, joinedload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.concept import Concept
@@ -36,7 +36,12 @@ class ConceptDAO(AbstractDAO):
         :param uri: uri of the concept
         :return: the concept or None if not found
         """
-        query = select(Concept).where(Concept.uri == uri).options(raiseload("*"))
+        query = (
+            select(Concept)
+            .where(Concept.uri == uri)
+            .options(raiseload("*"))
+            .options(joinedload(Concept.labels))
+        )
         return await self.db_session.scalar(query)
 
     async def get_concepts_by_uri(self, uris: list[str]) -> list[Concept]:
