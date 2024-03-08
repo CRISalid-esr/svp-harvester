@@ -5,6 +5,7 @@ from typing import Tuple
 from rdflib import OWL, Graph, term
 
 import aiohttp
+from app.services.organizations.organization_data_class import OrganizationInformations
 import app.services.organizations.organization_factory as organization_factory
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
@@ -22,7 +23,9 @@ class IdrefOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = []
     IDENTITY_SAVE = ["hal", "isni", "viaf", "ror"]
 
-    async def solve(self, organization_id: str) -> Organization:
+    async def solve(
+        self, organization_information: OrganizationInformations
+    ) -> Organization:
         """
         Solves an organization from an organization id
         :param organization_id: id of the organization
@@ -31,7 +34,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         raise NotImplementedError("IdrefOrganizationSolver.solve")
 
     async def solve_identities(
-        self, organization_id: str, seen: List[str]
+        self, organization_information: OrganizationInformations, seen: List[str]
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """
         Solves the identities of an organization and search for more identifiers
@@ -40,10 +43,16 @@ class IdrefOrganizationSolver(OrganizationSolver):
         """
 
         # Add the idref identifier
-        new_identifiers = [OrganizationIdentifier(type="idref", value=organization_id)]
+        new_identifiers = [
+            OrganizationIdentifier(
+                type="idref", value=organization_information.identifier
+            )
+        ]
         seen.append("idref")
         # Search for more identifiers
-        idref_url, idref_uri = self._build_url_from_organization_id(organization_id)
+        idref_url, idref_uri = self._build_url_from_organization_id(
+            organization_information.identifier
+        )
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(self.timeout))
@@ -70,7 +79,10 @@ class IdrefOrganizationSolver(OrganizationSolver):
                                     identifiers,
                                     seen,
                                 ) = await organization_factory.OrganizationFactory.solve_identities(
-                                    identifier, source, seen
+                                    OrganizationInformations(
+                                        identifier=identifier, source=source
+                                    ),
+                                    seen,
                                 )
                                 new_identifiers.extend(identifiers)
                             elif source in self.IDENTITY_SAVE:
