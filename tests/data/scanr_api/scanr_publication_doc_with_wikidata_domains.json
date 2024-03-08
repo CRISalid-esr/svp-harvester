@@ -78,7 +78,7 @@
           "domains": [
             {
               "label": {
-                "default": "Efficacité énergétique"
+                "default": "Va être remplacé lors du déréférencement"
               },
               "code": "test_id",
               "type": "wikidata",

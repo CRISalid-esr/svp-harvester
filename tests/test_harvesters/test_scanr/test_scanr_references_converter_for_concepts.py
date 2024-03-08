@@ -74,9 +74,22 @@ async def test_convert_publication_with_keywords(
 async def test_convert_publication_with_identical_keywords(
     scanr_publication_doc_with_identical_keywords_domains,
 ):
+    """
+    GIVEN a publication with free keywords very similar to wikidata keywords
+    WHEN the publication is converted
+    THEN the very similar free keywords are eliminated
+    and only the wikidata keywords are kept
+    :param scanr_publication_doc_with_identical_keywords_domains:
+    :return:
+    """
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_subjects = [(None, "Efficacité énergétique")]
+    expected_subjects = [
+        ("en", "Test concept"),
+        ("fr", "Concept de test"),
+        ("es", "Concepto de test"),
+        (None, "Efficacité énergétique"),
+    ]
 
     for doc in scanr_publication_doc_with_identical_keywords_domains:
         result = JsonHarvesterRawResult(
