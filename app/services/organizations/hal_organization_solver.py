@@ -2,6 +2,7 @@ import asyncio
 from typing import List
 
 import aiohttp
+from app.services.organizations.organization_data_class import OrganizationInformations
 
 import app.services.organizations.organization_factory as organization_factory
 from app.db.models.organization import Organization
@@ -37,31 +38,37 @@ class HalOrganizationSolver(OrganizationSolver):
         "department": "research_team_group",
     }
 
-    async def solve(self, organization_id: str) -> Organization:
+    async def solve(
+        self, organization_information: OrganizationInformations
+    ) -> Organization:
         """
         Solves an organization from an organization id, with deep search
-        :param organization_id: id of the organization
+        :param organization_information.identifier: id of the organization
         :return: Organization
         """
         try:
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=float(self.timeout))
             ) as session:
-                async with session.get(self.URL.format(organization_id)) as response:
+                async with session.get(
+                    self.URL.format(organization_information.identifier)
+                ) as response:
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
                             f"Endpoint returned status {response.status}"
-                            f" while dereferencing HAL organization {organization_id}"
+                            f" while dereferencing HAL organization {organization_information.identifier}"
                         )
                     data = await response.json()
                     org = Organization(
                         source="hal",
-                        source_identifier=organization_id,
+                        source_identifier=organization_information.identifier,
                         name=data["response"]["docs"][0]["name_s"],
                         type=self.TYPE_MAPPING[data["response"]["docs"][0]["type_s"]],
                     )
                     org.identifiers.append(
-                        OrganizationIdentifier(type="hal", value=organization_id)
+                        OrganizationIdentifier(
+                            type="hal", value=organization_information.identifier
+                        )
                     )
                     seen = ["hal"]
                     new_identifiers = []
@@ -74,8 +81,9 @@ class HalOrganizationSolver(OrganizationSolver):
                                 identifiers,
                                 seen,
                             ) = await organization_factory.OrganizationFactory.solve_identities(
-                                code,
-                                source,
+                                OrganizationInformations(
+                                    identifier=code, source=source
+                                ),
                                 seen,
                             )
                             new_identifiers.extend(identifiers)
@@ -94,16 +102,16 @@ class HalOrganizationSolver(OrganizationSolver):
         except aiohttp.ClientError as error:
             raise DereferencingError(
                 "Endpoint failure while dereferencing HAL"
-                f" organization {organization_id} with message {error}"
+                f" organization {organization_information.identifier} with message {error}"
             ) from error
         except asyncio.TimeoutError as error:
             raise DereferencingError(
                 "Timeout while dereferencing HAL"
-                f" organization {organization_id} with message {error}"
+                f" organization {organization_information.identifier} with message {error}"
             ) from error
 
     async def solve_identities(
-        self, organization_id: str, seen
+        self, organization_information: OrganizationInformations, seen
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """
         Solves the identities of an organization
