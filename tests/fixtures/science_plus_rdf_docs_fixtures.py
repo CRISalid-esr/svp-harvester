@@ -8,7 +8,9 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as Rdf
 
 
 @pytest.fixture(name="science_plus_rdf_result_for_doc")
-def fixture_science_plus_rdf_result_for_doc(science_plus_rdf_graph_for_doc) -> RdfResult:
+def fixture_science_plus_rdf_result_for_doc(
+    science_plus_rdf_graph_for_doc,
+) -> RdfResult:
     """Rdf result from science plus wrapped in a RdfHarvesterRawResult"""
     return RdfResult(
         payload=science_plus_rdf_graph_for_doc,
@@ -24,6 +26,22 @@ def fixture_science_plus_rdf_result_for_doc(science_plus_rdf_graph_for_doc) -> R
 def fixture_science_plus_rdf_graph_for_doc(_base_path) -> Graph:
     """Rdf graph from science plus rdf file"""
     return _science_plus_rdf_graph_from_file(_base_path, "science_plus_document")
+
+
+@pytest.fixture(name="science_plus_rdf_graph_for_hash_1")
+def fixture_science_plus_rdf_graph_for_hash_1(_base_path) -> Graph:
+    """Rdf graph from science plus rdf file"""
+    return _science_plus_rdf_graph_from_file(
+        _base_path, "science_plus_document_for_hash_1"
+    )
+
+
+@pytest.fixture(name="science_plus_rdf_graph_for_hash_2")
+def fixture_science_plus_rdf_graph_for_hash_2(_base_path) -> Graph:
+    """Rdf graph from science plus rdf file"""
+    return _science_plus_rdf_graph_from_file(
+        _base_path, "science_plus_document_for_hash_2"
+    )
 
 
 @pytest.fixture(name="science_plus_rdf_xml_for_doc")

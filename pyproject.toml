@@ -6,7 +6,7 @@ authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
 license = "Cecill"
 readme = "README.md"
 repository = "https://github.com/CRISalid-esr/svp-harvester"
-documentation = ""
+documentation = "https://svp-harvester.readthedocs.io/en/latest/harvesters/hal.html"
 packages = [{ include = "svp_harvester" }]
 
 [tool.poetry.dependencies]
@@ -25,6 +25,7 @@ aiosparql = "^0.12.0"
 rdflib = "^7.0.0"
 uritools = "^4.0.2"
 elasticsearch = {version = "7.12.1", extras = ["async"]}
+strsim = "^0.0.3"
 
 [tool.poetry.group.development]
 optional = true

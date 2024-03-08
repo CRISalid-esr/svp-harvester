@@ -1,4 +1,5 @@
 import re
+import unicodedata
 
 
 def remove_after_separator(value: str, separator: str):
@@ -19,3 +20,14 @@ def split_string(s: str):
     list_string = re.sub(" +", " ", list_string)
     list_string = list_string.split(" ")
     return list_string
+
+
+def normalize_string(s: str):
+    """
+    Normalize a string by replacing spaces by underscores and accents by their non-accented
+    version whith unicodedata.normalize, and lowercasing the string.
+    """
+    s = s.replace(" ", "_")
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("utf-8")
+    s = s.lower()
+    return s
