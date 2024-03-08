@@ -75,7 +75,37 @@
               "Attaques et contre-mesures matérielles"
             ]
           },
-          "domains": [],
+          "domains": [
+            {
+              "label": {
+                "default": "Va être remplacé lors du déréférencement"
+              },
+              "code": "test_id",
+              "type": "wikidata",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Efficacité énergétique"
+              },
+              "type": "keyword",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Concept test"
+              },
+              "type": "keyword",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Test concept"
+              },
+              "type": "keyword",
+              "count": 3
+            }
+          ],
           "affiliations": [
             {
               "id": "200017711F",

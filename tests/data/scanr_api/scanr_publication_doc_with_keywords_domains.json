@@ -75,7 +75,15 @@
               "Attaques et contre-mesures matérielles"
             ]
           },
-          "domains": [],
+          "domains": [
+            {
+              "label": {
+                "default": "Efficacité énergétique"
+              },
+              "type": "keyword",
+              "count": 3
+            }
+          ],
           "affiliations": [
             {
               "id": "200017711F",
