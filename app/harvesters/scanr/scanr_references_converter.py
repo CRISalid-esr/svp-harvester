@@ -16,10 +16,12 @@ from app.harvesters.scanr.scanr_document_type_converter import (
 )
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 from app.utilities.string_utilities import normalize_string
 
 LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.3
 JARO_WINKLER_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.16
+
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
@@ -219,16 +221,16 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         # in ScanRApiQueryBuilder
         # pylint: disable=duplicate-code
         return [
-            "id",
-            "title",
-            "summary",
-            "type",
-            "productionType",
-            "publicationDate",
-            "domains",
-            "affiliations",
-            "authors",
-            "externalIds",
+            HashKey("id"),
+            HashKey("title"),
+            HashKey("summary"),
+            HashKey("type"),
+            HashKey("productionType"),
+            HashKey("publicationDate"),
+            HashKey("domains"),
+            HashKey("affiliations"),
+            HashKey("authors"),
+            HashKey("externalIds"),
         ]
 
     def _duplicate_or_almost(self, compared_label, compared_to_label):

@@ -1,0 +1,652 @@
+{
+    "title": "Development of the Colle-Salvetti correlation-energy formula into a functional of the electron density",
+    "id": "https://openalex.org/W2023271753",
+    "doi": "https://doi.org/10.1103/physrevb.37.785",
+    "display_name": "Development of the Colle-Salvetti correlation-energy formula into a functional of the electron density",
+    "publication_year": 1988,
+    "publication_date": "1988-01-15",
+    "ids": {
+        "mag": "2023271753",
+        "pmid": "https://pubmed.ncbi.nlm.nih.gov/9944570",
+        "openalex": "https://openalex.org/W2023271753",
+        "doi": "https://doi.org/10.1103/physrevb.37.785"
+    },
+    "language": "en",
+    "primary_location": {
+        "is_oa": false,
+        "landing_page_url": "https://doi.org/10.1103/physrevb.37.785",
+        "pdf_url": null,
+        "source": {
+            "id": "https://openalex.org/S4210190682",
+            "display_name": "Physical review",
+            "issn_l": "2469-9896",
+            "issn": [
+                "2469-9896"
+            ],
+            "is_oa": true,
+            "is_in_doaj": true,
+            "host_organization": "https://openalex.org/P4310320261",
+            "host_organization_name": "American Physical Society",
+            "host_organization_lineage": [
+                "https://openalex.org/P4310320261"
+            ],
+            "host_organization_lineage_names": [
+                "American Physical Society"
+            ],
+            "type": "journal"
+        },
+        "license": null,
+        "version": null,
+        "is_accepted": false,
+        "is_published": false
+    },
+    "type": "article",
+    "type_crossref": "journal-article",
+    "indexed_in": [
+        "crossref",
+        "pubmed"
+    ],
+    "open_access": {
+        "is_oa": true,
+        "oa_status": "green",
+        "oa_url": "https://cdr.lib.unc.edu/downloads/p2677460w",
+        "any_repository_has_fulltext": true
+    },
+    "authorships": [
+        {
+            "author_position": "first",
+            "author": {
+                "id": "https://openalex.org/A5049788468",
+                "display_name": "Chengteh Lee",
+                "orcid": null
+            },
+            "institutions": [
+                {
+                    "id": "https://openalex.org/I114027177",
+                    "display_name": "University of North Carolina at Chapel Hill",
+                    "ror": "https://ror.org/0130frc33",
+                    "country_code": "US",
+                    "type": "education",
+                    "lineage": [
+                        "https://openalex.org/I114027177",
+                        "https://openalex.org/I4210158053"
+                    ]
+                }
+            ],
+            "countries": [
+                "US"
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Chengteh Lee",
+            "raw_affiliation_string": "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514",
+            "raw_affiliation_strings": [
+                "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514"
+            ]
+        },
+        {
+            "author_position": "middle",
+            "author": {
+                "id": "https://openalex.org/A5019365851",
+                "display_name": "Weitao Yang",
+                "orcid": "https://orcid.org/0000-0001-5576-2828"
+            },
+            "institutions": [
+                {
+                    "id": "https://openalex.org/I114027177",
+                    "display_name": "University of North Carolina at Chapel Hill",
+                    "ror": "https://ror.org/0130frc33",
+                    "country_code": "US",
+                    "type": "education",
+                    "lineage": [
+                        "https://openalex.org/I114027177",
+                        "https://openalex.org/I4210158053"
+                    ]
+                }
+            ],
+            "countries": [
+                "US"
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Weitao Yang",
+            "raw_affiliation_string": "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514",
+            "raw_affiliation_strings": [
+                "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514"
+            ]
+        },
+        {
+            "author_position": "last",
+            "author": {
+                "id": "https://openalex.org/A5009013437",
+                "display_name": "Robert G. Parr",
+                "orcid": null
+            },
+            "institutions": [
+                {
+                    "id": "https://openalex.org/I114027177",
+                    "display_name": "University of North Carolina at Chapel Hill",
+                    "ror": "https://ror.org/0130frc33",
+                    "country_code": "US",
+                    "type": "education",
+                    "lineage": [
+                        "https://openalex.org/I114027177",
+                        "https://openalex.org/I4210158053"
+                    ]
+                }
+            ],
+            "countries": [
+                "US"
+            ],
+            "is_corresponding": false,
+            "raw_author_name": "Robert G. Parr",
+            "raw_affiliation_string": "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514",
+            "raw_affiliation_strings": [
+                "Department of Chemistry, University of North Carolina, Chapel Hill, North Carolina 27514"
+            ]
+        }
+    ],
+    "countries_distinct_count": 1,
+    "institutions_distinct_count": 1,
+    "corresponding_author_ids": [],
+    "corresponding_institution_ids": [],
+    "apc_list": null,
+    "apc_paid": null,
+    "has_fulltext": true,
+    "fulltext_origin": "ngrams",
+    "cited_by_count": 86661,
+    "cited_by_percentile_year": {
+        "min": 99,
+        "max": 100
+    },
+    "biblio": {
+        "volume": "37",
+        "issue": "2",
+        "first_page": "785",
+        "last_page": "789"
+    },
+    "is_retracted": false,
+    "is_paratext": false,
+    "keywords": [
+        {
+            "keyword": "electron density",
+            "score": 0.4958
+        },
+        {
+            "keyword": "colle-salvetti",
+            "score": 0.25
+        },
+        {
+            "keyword": "correlation-energy",
+            "score": 0.25
+        }
+    ],
+    "concepts": [
+        {
+            "id": "https://openalex.org/test_id2",
+            "wikidata": "https://www.wikidata.org/wiki/test_id2",
+            "display_name": "Kinetic energy2",
+            "level": 2,
+            "score": 0.72443604
+        },
+        {
+            "id": "https://openalex.org/test_id",
+            "wikidata": "https://www.wikidata.org/wiki/test_id",
+            "display_name": "Kinetic energy",
+            "level": 2,
+            "score": 0.72443604
+        }
+    ],
+    "mesh": [],
+    "locations_count": 3,
+    "locations": [
+        {
+            "is_oa": false,
+            "landing_page_url": "https://doi.org/10.1103/physrevb.37.785",
+            "pdf_url": null,
+            "source": {
+                "id": "https://openalex.org/S4210190682",
+                "display_name": "Physical review",
+                "issn_l": "2469-9896",
+                "issn": [
+                    "2469-9896"
+                ],
+                "is_oa": true,
+                "is_in_doaj": true,
+                "host_organization": "https://openalex.org/P4310320261",
+                "host_organization_name": "American Physical Society",
+                "host_organization_lineage": [
+                    "https://openalex.org/P4310320261"
+                ],
+                "host_organization_lineage_names": [
+                    "American Physical Society"
+                ],
+                "type": "journal"
+            },
+            "license": null,
+            "version": null,
+            "is_accepted": false,
+            "is_published": false
+        },
+        {
+            "is_oa": true,
+            "landing_page_url": "https://cdr.lib.unc.edu/downloads/p2677460w",
+            "pdf_url": "https://cdr.lib.unc.edu/downloads/p2677460w",
+            "source": {
+                "id": "https://openalex.org/S4306401075",
+                "display_name": "Carolina Digital Repository (University of North Carolina at Chapel Hill)",
+                "issn_l": null,
+                "issn": null,
+                "is_oa": true,
+                "is_in_doaj": false,
+                "host_organization": "https://openalex.org/I114027177",
+                "host_organization_name": "University of North Carolina at Chapel Hill",
+                "host_organization_lineage": [
+                    "https://openalex.org/I114027177"
+                ],
+                "host_organization_lineage_names": [
+                    "University of North Carolina at Chapel Hill"
+                ],
+                "type": "repository"
+            },
+            "license": null,
+            "version": "submittedVersion",
+            "is_accepted": false,
+            "is_published": false
+        },
+        {
+            "is_oa": false,
+            "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/9944570",
+            "pdf_url": null,
+            "source": {
+                "id": "https://openalex.org/S4306525036",
+                "display_name": "PubMed",
+                "issn_l": null,
+                "issn": null,
+                "is_oa": false,
+                "is_in_doaj": false,
+                "host_organization": "https://openalex.org/I1299303238",
+                "host_organization_name": "National Institutes of Health",
+                "host_organization_lineage": [
+                    "https://openalex.org/I1299303238"
+                ],
+                "host_organization_lineage_names": [
+                    "National Institutes of Health"
+                ],
+                "type": "repository"
+            },
+            "license": null,
+            "version": null,
+            "is_accepted": false,
+            "is_published": false
+        }
+    ],
+    "best_oa_location": {
+        "is_oa": true,
+        "landing_page_url": "https://cdr.lib.unc.edu/downloads/p2677460w",
+        "pdf_url": "https://cdr.lib.unc.edu/downloads/p2677460w",
+        "source": {
+            "id": "https://openalex.org/S4306401075",
+            "display_name": "Carolina Digital Repository (University of North Carolina at Chapel Hill)",
+            "issn_l": null,
+            "issn": null,
+            "is_oa": true,
+            "is_in_doaj": false,
+            "host_organization": "https://openalex.org/I114027177",
+            "host_organization_name": "University of North Carolina at Chapel Hill",
+            "host_organization_lineage": [
+                "https://openalex.org/I114027177"
+            ],
+            "host_organization_lineage_names": [
+                "University of North Carolina at Chapel Hill"
+            ],
+            "type": "repository"
+        },
+        "license": null,
+        "version": "submittedVersion",
+        "is_accepted": false,
+        "is_published": false
+    },
+    "sustainable_development_goals": [
+        {
+            "id": "https://metadata.un.org/sdg/7",
+            "display_name": "Affordable and clean energy",
+            "score": 0.9
+        }
+    ],
+    "grants": [],
+    "referenced_works_count": 10,
+    "referenced_works": [
+        "https://openalex.org/W1624531027",
+        "https://openalex.org/W1964611365",
+        "https://openalex.org/W1998015449",
+        "https://openalex.org/W1999478965",
+        "https://openalex.org/W2001434363",
+        "https://openalex.org/W2006001940",
+        "https://openalex.org/W2018622673",
+        "https://openalex.org/W2020463519",
+        "https://openalex.org/W2030687437",
+        "https://openalex.org/W2160338282"
+    ],
+    "related_works": [
+        "https://openalex.org/W1987725348",
+        "https://openalex.org/W2744631406",
+        "https://openalex.org/W1966487078",
+        "https://openalex.org/W72890892",
+        "https://openalex.org/W1991887739",
+        "https://openalex.org/W2361462359",
+        "https://openalex.org/W2118416871",
+        "https://openalex.org/W1996705268",
+        "https://openalex.org/W1990058716",
+        "https://openalex.org/W2068492597"
+    ],
+    "ngrams_url": "https://api.openalex.org/works/W2023271753/ngrams",
+    "abstract_inverted_index": {
+        "329": [
+            12
+        ],
+        "A": [
+            0
+        ],
+        "correlation-energy": [
+            1
+        ],
+        "formula": [
+            2,
+            41
+        ],
+        "due": [
+            3
+        ],
+        "to": [
+            4
+        ],
+        "Colle": [
+            5
+        ],
+        "and": [
+            6,
+            28,
+            45,
+            65,
+            81,
+            86
+        ],
+        "Salvetti": [
+            7
+        ],
+        "[Theor.": [
+            8
+        ],
+        "Chim.": [
+            9
+        ],
+        "Acta": [
+            10
+        ],
+        "37,": [
+            11
+        ],
+        "(1975)],": [
+            13
+        ],
+        "in": [
+            14,
+            22
+        ],
+        "which": [
+            15
+        ],
+        "the": [
+            16,
+            25,
+            32,
+            43,
+            55,
+            62,
+            96
+        ],
+        "correlation": [
+            17,
+            63,
+            66,
+            101
+        ],
+        "energy": [
+            18,
+            64
+        ],
+        "density": [
+            19,
+            27,
+            35,
+            44
+        ],
+        "is": [
+            20,
+            37,
+            90
+        ],
+        "expressed": [
+            21
+        ],
+        "terms": [
+            23
+        ],
+        "of": [
+            24,
+            31,
+            51,
+            77,
+            83
+        ],
+        "electron": [
+            26
+        ],
+        "a": [
+            29,
+            40,
+            75,
+            104
+        ],
+        "Laplacian": [
+            30
+        ],
+        "second-order": [
+            33
+        ],
+        "Hartree-Fock": [
+            34
+        ],
+        "matrix,": [
+            36
+        ],
+        "restated": [
+            38
+        ],
+        "as": [
+            39
+        ],
+        "involving": [
+            42
+        ],
+        "local": [
+            46,
+            56
+        ],
+        "kinetic-energy": [
+            47,
+            57
+        ],
+        "density.": [
+            48
+        ],
+        "On": [
+            49
+        ],
+        "insertion": [
+            50
+        ],
+        "gradient": [
+            52
+        ],
+        "expansions": [
+            53
+        ],
+        "for": [
+            54,
+            61
+        ],
+        "density,": [
+            58
+        ],
+        "density-functional": [
+            59
+        ],
+        "formulas": [
+            60
+        ],
+        "potential": [
+            67
+        ],
+        "are": [
+            68
+        ],
+        "then": [
+            69
+        ],
+        "obtained.": [
+            70
+        ],
+        "Through": [
+            71
+        ],
+        "numerical": [
+            72
+        ],
+        "calculations": [
+            73
+        ],
+        "on": [
+            74
+        ],
+        "number": [
+            76
+        ],
+        "atoms,": [
+            78
+        ],
+        "positive": [
+            79
+        ],
+        "ions,": [
+            80
+        ],
+        "molecules,": [
+            82
+        ],
+        "both": [
+            84
+        ],
+        "open-": [
+            85
+        ],
+        "closed-shell": [
+            87
+        ],
+        "type,": [
+            88
+        ],
+        "it": [
+            89
+        ],
+        "demonstrated": [
+            91
+        ],
+        "that": [
+            92
+        ],
+        "these": [
+            93
+        ],
+        "formulas,": [
+            94,
+            99
+        ],
+        "like": [
+            95
+        ],
+        "original": [
+            97
+        ],
+        "Colle-Salvetti": [
+            98
+        ],
+        "give": [
+            100
+        ],
+        "energies": [
+            102
+        ],
+        "within": [
+            103
+        ],
+        "few": [
+            105
+        ],
+        "percent.": [
+            106
+        ]
+    },
+    "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W2023271753",
+    "counts_by_year": [
+        {
+            "year": 2023,
+            "cited_by_count": 4196
+        },
+        {
+            "year": 2022,
+            "cited_by_count": 4256
+        },
+        {
+            "year": 2021,
+            "cited_by_count": 4405
+        },
+        {
+            "year": 2020,
+            "cited_by_count": 4405
+        },
+        {
+            "year": 2019,
+            "cited_by_count": 4308
+        },
+        {
+            "year": 2018,
+            "cited_by_count": 4375
+        },
+        {
+            "year": 2017,
+            "cited_by_count": 4404
+        },
+        {
+            "year": 2016,
+            "cited_by_count": 4453
+        },
+        {
+            "year": 2015,
+            "cited_by_count": 4549
+        },
+        {
+            "year": 2014,
+            "cited_by_count": 4572
+        },
+        {
+            "year": 2013,
+            "cited_by_count": 4352
+        },
+        {
+            "year": 2012,
+            "cited_by_count": 4289
+        }
+    ],
+    "updated_date": "2024-01-23T07:50:23.647371",
+    "created_date": "2016-06-24"
+}

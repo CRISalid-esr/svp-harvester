@@ -19,6 +19,7 @@ from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -249,19 +250,19 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
     def hash_keys(self):
         return [
-            "docid",
-            "citationRef_s",
-            "citationFull_s",
-            "en_title_s",
-            "en_keyword_s",
-            "en_abstract_s",
-            "authIdForm_i",
-            "authFullNameFormIDPersonIDIDHal_fs",
-            "authIdHasStructure_fs",
-            "labStructId_i",
-            "docType_s",
-            "publicationDate_tdate",
-            "producedDate_tdate",
+            HashKey("docid"),
+            HashKey("citationRef_s"),
+            HashKey("citationFull_s"),
+            HashKey("en_title_s"),
+            HashKey("en_keyword_s"),
+            HashKey("en_abstract_s"),
+            HashKey("authIdForm_i"),
+            HashKey("authFullNameFormIDPersonIDIDHal_fs"),
+            HashKey("authIdHasStructure_fs"),
+            HashKey("labStructId_i"),
+            HashKey("docType_s"),
+            HashKey("publicationDate_tdate"),
+            HashKey("producedDate_tdate"),
         ]
 
     def _keys_by_pattern(self, pattern: str, data: dict) -> list[str]:

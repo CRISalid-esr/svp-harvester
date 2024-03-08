@@ -14,6 +14,7 @@ from app.harvesters.open_alex.open_alex_document_type_converter import (
     OpenAlexDocumentTypeConverter,
 )
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
@@ -127,9 +128,12 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         value = json_payload.get(key, default)
         return value if value is not None else default
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self) -> list[HashKey]:
         return [
-            "id",
-            "title",
-            "type",
+            HashKey("id"),
+            HashKey("ids"),
+            HashKey("title"),
+            HashKey("type"),
+            HashKey("concepts"),
+            HashKey("authorships", sorted=False),
         ]

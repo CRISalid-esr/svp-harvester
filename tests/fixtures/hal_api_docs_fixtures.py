@@ -3,6 +3,26 @@ import pytest
 from tests.fixtures.common import _json_data_from_file
 
 
+@pytest.fixture(name="hal_api_doc_for_hash_1")
+def fixture_hal_api_doc_for_hash_1(_base_path) -> dict:
+    """
+    Generate a HAL API response for a researcher in JSON format
+    :param _base_path: test data directory base
+    :return: HAL API response for one researcher in JSON format
+    """
+    return _hal_api_json_data_from_file(_base_path, "doc_for_hash_1")
+
+
+@pytest.fixture(name="hal_api_doc_for_hash_2")
+def fixture_hal_api_doc_for_hash_2(_base_path) -> dict:
+    """
+    Generate a HAL API response for a researcher in JSON format
+    :param _base_path: test data directory base
+    :return: HAL API response for one researcher in JSON format
+    """
+    return _hal_api_json_data_from_file(_base_path, "doc_for_hash_2")
+
+
 @pytest.fixture(name="hal_api_docs_for_researcher")
 def fixture_hal_api_docs_for_researcher(_base_path) -> dict:
     """

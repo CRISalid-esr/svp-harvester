@@ -1,5 +1,5 @@
 import rdflib
-from rdflib import DC, Literal
+from rdflib import DC, DCTERMS, Literal
 
 from app.db.models.reference import Reference
 from app.db.models.title import Title
@@ -12,6 +12,7 @@ from app.harvesters.idref.sudoc_document_type_converter import (
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.harvesters.idref.sudoc_qualities_converter import SudocQualitiesConverter
+from app.services.hash.hash_key import HashKey
 from app.utilities.string_utilities import remove_after_separator
 
 
@@ -82,3 +83,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
     def _convert_role(self, role):
         return SudocQualitiesConverter.convert(role)
+
+    def hash_keys(self):
+        return [
+            HashKey(DC.title),
+            HashKey(DC.type),
+            HashKey(DCTERMS.abstract),
+        ]
