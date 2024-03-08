@@ -18,6 +18,9 @@ from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.services.concepts.concept_informations import ConceptInformations
 from app.utilities.string_utilities import normalize_string
 
+LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.3
+JARO_WINKLER_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.16
+
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
     """
@@ -246,5 +249,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             compared_label_norm, compared_to_label_norm
         )
 
-        duplicate = levenshtein_dist < 0.3 and jaro_winkler_dist < 0.16
-        return duplicate
+        return (
+            levenshtein_dist < LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD
+            and jaro_winkler_dist < JARO_WINKLER_CONCEPT_LABELS_SIMILARITY_THRESHOLD
+        )
