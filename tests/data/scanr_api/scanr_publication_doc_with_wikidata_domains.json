@@ -75,7 +75,16 @@
               "Attaques et contre-mesures matérielles"
             ]
           },
-          "domains": [],
+          "domains": [
+            {
+              "label": {
+                "default": "Va être remplacé lors du déréférencement"
+              },
+              "code": "test_id",
+              "type": "wikidata",
+              "count": 3
+            }
+          ],
           "affiliations": [
             {
               "id": "200017711F",

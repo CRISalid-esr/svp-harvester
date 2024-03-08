@@ -75,7 +75,23 @@
               "Attaques et contre-mesures matérielles"
             ]
           },
-          "domains": [],
+          "domains": [
+            {
+              "label": {
+                "fr": "Efficacité énergétique"
+              },
+              "code": "012345678",
+              "type": "sudoc",
+              "count": 3
+            },
+            {
+              "label": {
+                "default": "Efficacité énergétique"
+              },
+              "type": "keyword",
+              "count": 3
+            }
+          ],
           "affiliations": [
             {
               "id": "200017711F",

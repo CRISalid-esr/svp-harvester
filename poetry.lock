@@ -2233,6 +2233,17 @@ anyio = ">=3.4.0,<5"
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
 
 [[package]]
+name = "strsim"
+version = "0.0.3"
+description = "A library implementing different string similarity and distance measures"
+optional = false
+python-versions = "*"
+files = [
+    {file = "strsim-0.0.3-py3-none-any.whl", hash = "sha256:e5cf287392f906f0c6338dba8173ba9a05d8c3c173a74082c91220421d64d9fc"},
+    {file = "strsim-0.0.3.tar.gz", hash = "sha256:250cf1f698eceb00856cb368a417790d5f951bdc6329a799d89c6f6b85e41bcb"},
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -2664,4 +2675,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "af6594e1db397bb81d0d518ba5cf521fdfd47be9599e9591d1a1057c92c1690b"
+content-hash = "a4b80f673132ec18234453a033cf71150f3f8352b44a1794a5a18a07d6741a71"

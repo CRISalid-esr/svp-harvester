@@ -75,7 +75,16 @@
               "Attaques et contre-mesures matérielles"
             ]
           },
-          "domains": [],
+          "domains": [
+            {
+              "label": {
+                "default": "Internet des objets"
+              },
+              "code": "146775570",
+              "type": "sudoc",
+              "count": 2
+            }
+          ],
           "affiliations": [
             {
               "id": "200017711F",
