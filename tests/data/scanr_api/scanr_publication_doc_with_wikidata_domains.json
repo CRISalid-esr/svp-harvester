@@ -80,7 +80,7 @@
               "label": {
                 "default": "Efficacité énergétique"
               },
-              "code": "Q1234",
+              "code": "test_id",
               "type": "wikidata",
               "count": 3
             }

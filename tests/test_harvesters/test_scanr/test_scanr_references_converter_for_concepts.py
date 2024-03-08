@@ -148,7 +148,11 @@ async def test_convert_publication_with_wikidata(
 ):
     converter_under_tests = ScanrReferencesConverter()
 
-    expected_subjects = [(None, "Efficacité énergétique")]
+    expected_subjects = [
+        ("en", "Test concept"),
+        ("fr", "Concept de test"),
+        ("es", "Concepto de test"),
+    ]
 
     for doc in scanr_publication_doc_with_wikidata_domains:
         result = JsonHarvesterRawResult(

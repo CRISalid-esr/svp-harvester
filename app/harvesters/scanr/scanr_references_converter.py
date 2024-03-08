@@ -1,5 +1,8 @@
 from loguru import logger
+from similarity.jarowinkler import JaroWinkler
+from similarity.normalized_levenshtein import NormalizedLevenshtein
 
+from app.config import get_app_settings
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -13,6 +16,7 @@ from app.harvesters.scanr.scanr_document_type_converter import (
 )
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.services.concepts.concept_informations import ConceptInformations
+from app.utilities.string_utilities import normalize_string
 
 
 class ScanrReferencesConverter(AbstractReferencesConverter):
@@ -29,6 +33,11 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         "sudoc": ConceptInformations.ConceptSources.IDREF,
         "keyword": None,
     }
+
+    def __init__(self):
+        super().__init__()
+        self.normalized_levenstein = NormalizedLevenshtein()
+        self.jaro_winkler = JaroWinkler()
 
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
@@ -127,7 +136,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 subjects_with_source.append(subject)
             else:
                 subjects_without_source.append(subject)
-        labels_with_source = []
+        labels_with_source = {}
         for subject in subjects_with_source:
             concept_id = subject.get("code")
 
@@ -137,46 +146,63 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             label_dict = subject.get("label", {})
             concept_label, concept_language = self._get_concept_label(label_dict)
 
-            concept_db = await self._get_or_create_concept_by_uri(
+            db_concept = await self._get_or_create_concept_by_uri(
                 ConceptInformations(
-                    uri=concept_id,
+                    code=concept_id,
                     label=concept_label,
                     language=concept_language,
                     source=concept_source,
                 )
             )
-            labels_with_source.extend(concept_db.pref_labels)
-            labels_with_source.extend(concept_db.alt_labels)
-            yield concept_db
+            for label in db_concept.labels:
+                labels_with_source.setdefault(label.language, []).append(label.value)
+            yield db_concept
 
         for subject in subjects_without_source:
             label_dict = subject.get("label", {})
             concept_label, concept_language = self._get_concept_label(label_dict)
+            labels_to_compare_to = []
+            if concept_language is not None and concept_language in labels_with_source:
+                labels_to_compare_to = labels_with_source[concept_language]
+            else:
+                labels_to_compare_to = [
+                    label for labels in labels_with_source.values() for label in labels
+                ]
 
-            if concept_label in labels_with_source:
+            if any(
+                self.duplicate_or_almost(concept_label, label_to_compare_to)
+                for label_to_compare_to in labels_to_compare_to
+            ):
+                logger.debug(
+                    f"Concept {concept_label} already mentioned in Scanr results with a source among {labels_with_source}"
+                )
                 continue
-            concept_db = await self._get_or_create_concept_by_label(
+            labels_with_source.setdefault(concept_language, []).append(concept_label)
+            db_concept = await self._get_or_create_concept_by_label(
                 ConceptInformations(
                     label=concept_label,
                     language=concept_language,
                 )
             )
-            yield concept_db
+            yield db_concept
 
     @staticmethod
     def _get_concept_source(concept_type):
         if concept_type not in ScanrReferencesConverter.SOURCE_MAPPING:
             logger.warning(f"Unknown Scanr subject type: {concept_type}")
 
-        concept_source = ScanrReferencesConverter.SOURCE_MAPPING.get(concept_type)
-
-        return concept_source
+        return ScanrReferencesConverter.SOURCE_MAPPING.get(concept_type, None)
 
     def _get_concept_label(self, label_dict):
-        concept_label = label_dict.get(self.PREFERRED_LANGUAGE)
-        if concept_label is not None:
-            concept_language = self.PREFERRED_LANGUAGE
-        else:
+        settings = get_app_settings()
+        concept_label = None
+        concept_language = None
+        for langage in settings.concept_languages:
+            concept_label = label_dict.get(langage)
+            if concept_label is not None:
+                concept_language = langage
+                break
+        if concept_label is None:
             concept_label, concept_language = self._get_non_default_label(label_dict)
         return concept_label, concept_language
 
@@ -203,3 +229,22 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             "authors",
             "externalIds",
         ]
+
+    def duplicate_or_almost(self, compared_label, compared_to_label):
+        if compared_label == compared_to_label:
+            return True
+        compared_label_norm = normalize_string(compared_label)
+        compared_to_label_norm = normalize_string(compared_to_label)
+        if compared_label_norm == compared_to_label_norm:
+            return True
+
+        levenshtein_dist = self.normalized_levenstein.distance(
+            compared_label_norm, compared_to_label_norm
+        )
+
+        jaro_winkler_dist = self.jaro_winkler.distance(
+            compared_label_norm, compared_to_label_norm
+        )
+
+        duplicate = levenshtein_dist < 0.3 and jaro_winkler_dist < 0.16
+        return duplicate

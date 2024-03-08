@@ -72,14 +72,16 @@ def fixture_scanr_publication_doc_with_identical_keywords_concepts(_base_path) -
 
 
 @pytest.fixture(name="scanr_publication_doc_with_identical_sudoc_and_keywords_domains")
-def fixture_scanr_publication_doc_identical_sudoc_and_keywords_domains(_base_path) -> dict:
+def fixture_scanr_publication_doc_with_identical_sudoc_and_keywords_domains(
+    _base_path,
+) -> dict:
     """
     Generate a SCANR API response for a person in JSON format
     :param _base_path: test data directory base
     :return: SCANR API response for one researcher in JSON format
     """
     return _scanr_api_json_data_from_file(
-        _base_path, "scanr_publication_doc_identical_sudoc_and_keywords_domains"
+        _base_path, "scanr_publication_doc_with_identical_sudoc_and_keywords_domains"
     )
 
 
