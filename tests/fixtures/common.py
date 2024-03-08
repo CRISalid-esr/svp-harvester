@@ -1,3 +1,4 @@
+import xml.etree.ElementTree as ET
 import json
 import pathlib
 
@@ -26,3 +27,14 @@ def _person_json_data_from_file(base_path, person) -> dict:
 
 def _person_from_json_data(input_data) -> PydanticPerson:
     return PydanticPerson(**input_data)
+
+
+def _et_from_xml_file(base_path, file_path) -> ET:
+    input_data = _xml_file_content(base_path, file_path)
+    return ET.fromstring(input_data)
+
+
+def _xml_file_content(base_path, file_path):
+    file = pathlib.Path(base_path / file_path)
+    with open(file, encoding="utf-8") as xml_file:
+        return xml_file.read()

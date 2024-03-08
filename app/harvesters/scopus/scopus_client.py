@@ -1,7 +1,6 @@
 from typing import Generator
 import xml.etree.ElementTree as ET
 import aiohttp
-from loguru import logger
 
 
 from app.config import get_app_settings
@@ -37,7 +36,7 @@ class ScopusClient:
                 headers={"Accept": "application/xml"},
             ) as session:
                 async with session.get(
-                    f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}",
+                    f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}&insttoken={self.settings.scopus_inst_token}&view=COMPLETE",
                 ) as resp:
                     if resp.status == 200:
                         xml = await resp.text()
