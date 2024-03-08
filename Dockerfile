@@ -7,6 +7,8 @@ RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 
 FROM python:3.10
 
+RUN apt update && apt install netcat-traditional -y
+
 WORKDIR /code
 
 ENV PYTHONDONTWRITEBYTECODE 1
