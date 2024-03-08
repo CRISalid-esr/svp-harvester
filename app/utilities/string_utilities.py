@@ -24,7 +24,7 @@ def split_string(s: str):
 
 def normalize_string(s: str):
     """
-    Normalize a string by replaces alle kinds off spaces by underscores, replacing accents by their non-accented
+    Normalize a string by replacing spaces by underscores and accents by their non-accented
     version whith unicodedata.normalize, and lowercasing the string.
     """
     s = s.replace(" ", "_")
