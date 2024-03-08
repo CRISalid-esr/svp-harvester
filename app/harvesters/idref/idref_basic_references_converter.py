@@ -15,6 +15,7 @@ from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 
 
 class IdrefBasicReferencesConverter(AbstractReferencesConverter):
@@ -62,7 +63,14 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
     def hash_keys(self):
-        return ["uri", "role", "title", "type", "altLabel", "subject"]
+        return [
+            HashKey("uri"),
+            HashKey("role"),
+            HashKey("title"),
+            HashKey("type"),
+            HashKey("altLabel"),
+            HashKey("subject"),
+        ]
 
     async def get_contributors(self, dict_payload):
         """
