@@ -12,6 +12,7 @@ from app.harvesters.idref.abes_rdf_references_converter import (
 )
 from app.harvesters.idref.persee_qualities_converter import PerseeQualitiesConverter
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
+from app.services.hash.hash_key import HashKey
 
 
 class PerseeReferencesConverter(AbesRDFReferencesConverter):
@@ -73,3 +74,10 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
                     lng = lng.value
                     break
             yield Title(value=title.value, language=lng)
+
+    def hash_keys(self) -> list[str]:
+        return [
+            HashKey(RDF.type),
+            HashKey(DCTERMS.title),
+            HashKey(DCTERMS.abstract),
+        ]

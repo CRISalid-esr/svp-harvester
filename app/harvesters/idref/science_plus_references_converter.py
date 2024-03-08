@@ -14,6 +14,7 @@ from app.harvesters.idref.science_plus_qualities_converter import (
     SciencePlusQualitiesConverter,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
+from app.services.hash.hash_key import HashKey
 
 
 class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
@@ -75,3 +76,10 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
 
     def _get_source(self):
         return "science_plus"
+
+    def hash_keys(self) -> list[str]:
+        return [
+            HashKey(DCTERMS.title),
+            HashKey(DCTERMS.abstract),
+            HashKey(RDF.type),
+        ]

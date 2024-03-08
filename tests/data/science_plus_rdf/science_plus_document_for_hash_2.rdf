@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+	xmlns:vivo="http://vivoweb.org/ontology/core#"
+	xmlns:hub="http://hub.abes.fr/namespace/" >
+  <rdf:Description rdf:about="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/w">
+  <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/C10001" />
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Article" />
+    <dcterms:isPartOf rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/w" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/environnement" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/metropolisation" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/metropolization" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/periurbanisation" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/periurbanization" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/durabilite" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/environment" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/sustainability" />
+    <dcterms:title xml:lang="en">Another fake title in english</dcterms:title>
+    <dcterms:title xml:lang="fr">Marges urbaines, marges rurales entre Santiago du Chili et Valparaíso</dcterms:title>
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/m/web" />
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/m/print" />
+    <vivo:relatedBy rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/authorship/2" />
+    <vivo:relatedBy rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/authorship/1" />
+    <dcterms:abstract xml:lang="fr">La Cordillère de la Côte, entre Santiago du Chili et Valparaíso a vu son accessibilité s’améliorer rapidement, donnant aux populations urbaines accès à un espace jusqu’alors isolé. L’expansion métropolitaine de Santiago et la croissance économique en font un espace à conquérir. Sa conquête est principalement le fait des acteurs privés, aussi bien les entrepreneurs agricoles, immobiliers et touristiques que les nouveaux résidents. Cette conquête marginalise socialement les populations locales. En l’absence d’un projet de territoire unifié, la marge apparaît comme un espace où tout est encore possible, mais avec des conséquences négatives sur la durabilité métropolitaine.</dcterms:abstract>
+    <dcterms:abstract xml:lang="en">Urban fringes, rural fringes between Santiago de Chile and Valparaíso. The Cordillera de la Costa, between Santiago de Chile and Valparaíso, has seen its accessibility improve rapidly, giving urban populations access to a space that was hitherto remote. The metropolitan expansion of Santiago and economic growth make it a space to conquer. Its conquest is mainly the work of actions of the private sphere, as much agricultural entrepreneurs, property companies and tourist firms as new private residents. The process as a whole socially marginalizes local populations. In the absence of a unified regional land plan, the fringe appears as a space where anything is still possible, but with negative consequences for urban sustainability.</dcterms:abstract>
+    <hub:articleType rdf:resource="http://hub.abes.fr/cairn/periodical/cairn_typeart/articlederevue" />
+    <hub:publisher-id>AUTR_045_0207</hub:publisher-id>
+  </rdf:Description>
+</rdf:RDF>

@@ -24,6 +24,7 @@ from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawRes
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.hash.hash_service import HashService
 from app.services.organizations.merge_organization import merge_organization
 from app.services.organizations.organization_factory import OrganizationFactory
 
@@ -162,7 +163,7 @@ class AbstractReferencesConverter(ABC):
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
-        new_ref.hash = self.hash(raw_data)
+        new_ref.hash = HashService().hash(raw_data, self.hash_keys())
         return new_ref
 
     @abstractmethod
