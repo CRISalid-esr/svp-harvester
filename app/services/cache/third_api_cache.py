@@ -46,6 +46,15 @@ class ThirdApiCache:
 
     @staticmethod
     async def set(api_name: str, key: str, value: Any) -> None:
+        """
+        Set a value in the cache
+
+        :param api_name: name of the API, used as a prefix for the key
+            and to retrieve the caching duration from settings
+        :param key: key to store the value in the cache
+        :param value: value to store in the cache (must be pickle-able)
+        :return: None
+        """
         settings = get_app_settings()
         if not settings.third_api_caching_enabled:
             return None
