@@ -3,10 +3,10 @@ from typing import List
 
 import aiohttp
 
-import app.services.organizations.organization_factory as organization_factory
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.organizations import organization_factory
 from app.services.organizations.organization_solver import OrganizationSolver
 
 

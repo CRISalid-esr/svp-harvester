@@ -5,6 +5,10 @@ from app.config import get_app_settings
 
 
 class RedisPool:
+    """
+    Singleton for aioredis connection pool
+    """
+
     _instance = None
 
     class Connexion:
@@ -38,9 +42,19 @@ class RedisPool:
             )
 
     def get_connection(self) -> aioredis.Redis:
+        """
+        Get a connection from the pool as context manager
+
+        :return: a connection to Redis
+        """
         return RedisPool.Connexion(conn=aioredis.Redis(connection_pool=self.pool))
 
     async def check_ready(self) -> bool:
+        """
+        Check if Redis is ready without raising an exception
+
+        :return: True if Redis is ready, False otherwise
+        """
         try:
             async with self.get_connection() as conn:
                 await conn.ping()

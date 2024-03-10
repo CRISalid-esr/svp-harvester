@@ -9,8 +9,19 @@ from app.redis.redis_pool import RedisPool
 
 
 class ThirdApiCache:
+    """
+    Cache provider with time to live for third party API results
+    """
+
     @staticmethod
     async def get(api_name: str, key: str) -> Any:
+        """
+        Get a value from the cache
+        :param api_name: name of the API, used as a prefix for the key
+            and to retrieve the caching duration from settings
+        :param key: key to retrieve the value from the cache
+        :return: an unmarshalled value from the cache, or None if not found
+        """
         settings = get_app_settings()
         if not settings.third_api_caching_enabled:
             return None
@@ -22,7 +33,8 @@ class ThirdApiCache:
                         return pickle.loads(value)
                     except pickle.UnpicklingError:
                         logger.error(
-                            f"Cannot unpickle value from Redis for {api_name}:{key}, will not use it"
+                            f"Cannot unpickle value from Redis for {api_name}:{key}, "
+                            f"will not use it"
                         )
                         return None
         except aioredis.exceptions.ConnectionError as e:
