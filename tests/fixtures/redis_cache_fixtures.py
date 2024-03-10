@@ -38,7 +38,7 @@ def fixture_redis_cache_set_mock():
 
 @pytest.fixture(name="redis_cache_expire_mock")
 def fixture_redis_cache_expire_mock():
-    async def fake_redis_expire(name: str, expiration_time: int):
+    async def fake_redis_expire(name: str, time: int):
         """
         Fake redis expire
         :param name: name

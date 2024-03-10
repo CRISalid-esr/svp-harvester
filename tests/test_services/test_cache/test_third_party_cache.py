@@ -46,7 +46,8 @@ async def test_third_party_cache():
     """
     Test that ThirdApiCache returns a rdflib graph
     """
-
+    settings = get_app_settings()
+    settings.third_api_caching_enabled = True
     cache = ThirdApiCache()
     value = await cache.get(
         api_name="sudoc_publications", key="https://www.sudoc.fr/070266875.rdf"
