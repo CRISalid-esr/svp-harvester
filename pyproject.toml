@@ -26,6 +26,7 @@ rdflib = "^7.0.0"
 uritools = "^4.0.2"
 elasticsearch = {version = "7.12.1", extras = ["async"]}
 strsim = "^0.0.3"
+aioredis = "^2.0.1"
 
 [tool.poetry.group.development]
 optional = true

@@ -89,6 +89,7 @@ class AppSettings(BaseSettings):
     svp_jel_proxy_url: str | None = None
 
     idref_sudoc_timeout: int = 30
+    idref_science_plus_timeout: int = 30
     idref_concepts_timeout: int = 30
     wikidata_concepts_timeout: int = 10
     sparql_jel_concepts_timeout: int = 2
@@ -97,3 +98,15 @@ class AppSettings(BaseSettings):
     hal_organizations_timeout: int = 10
     idref_organizations_timeout: int = 10
     ror_organizations_timeout: int = 10
+
+    third_api_caching_enabled: bool = True
+    third_api_default_caching_duration: int = 24 * 3600
+    redis_url: str = "redis://localhost:6379"
+    redis_max_connections: int = 1000
+
+    sudoc_publications_caching_duration: int = 15 * 24 * 3600
+    science_plus_publications_caching_duration: int = 15 * 24 * 3600
+    persee_publications_caching_duration: int = 15 * 24 * 3600
+    open_edition_publications_caching_duration: int = 15 * 24 * 3600
+    idref_concepts_publications_caching_duration: int = 90 * 24 * 3600
+    wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600
