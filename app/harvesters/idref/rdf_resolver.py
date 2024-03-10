@@ -12,7 +12,9 @@ DEFAULT_RDF_TIMEOUT = 30
 
 
 class RdfResolver:
-    """Async client for HAL API"""
+    """
+    Async RDF Resolver for various RDF sources
+    """
 
     def __init__(self, timeout: int = DEFAULT_RDF_TIMEOUT):
         self.http_client = ResolverHTTPClient(timeout=timeout)

@@ -52,3 +52,5 @@ class TestAppSettings(AppSettings):
     logger_sink: ClassVar[str | TextIO] = sys.stderr
 
     model_config = SettingsConfigDict(env_file=".test.env", extra="ignore")
+
+    third_api_caching_enabled: bool = False
