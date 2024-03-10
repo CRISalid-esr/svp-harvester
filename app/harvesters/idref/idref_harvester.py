@@ -30,6 +30,7 @@ from app.harvesters.xml_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
 )
+from app.services.cache.third_api_cache import ThirdApiCache
 
 
 class IdrefHarvester(AbstractHarvester):
@@ -183,8 +184,10 @@ class IdrefHarvester(AbstractHarvester):
 
         document_uri = re.sub(r"#Web$", "", uri)
         document_uri = re.sub(r"^http://", "https://", document_uri)
-        client = RdfResolver()
-        pub = await client.fetch(document_uri, output_format="xml")
+        pub = await ThirdApiCache.get("persee_publications", document_uri)
+        if pub is None:
+            pub = await RdfResolver().fetch(document_uri, output_format="xml")
+            await ThirdApiCache.set("persee_publications", uri, pub)
         return RdfResult(
             payload=pub,
             source_identifier=URIRef(uri),
@@ -204,8 +207,10 @@ class IdrefHarvester(AbstractHarvester):
                 f"Invalid OpenEdition URI from Idref SPARQL endpoint: {uri}"
             )
         assert self.OPEN_EDITION_SUFFIX.match(uri), f"Invalid OpenEdition Id {uri}"
-        client = OpenEditionResolver()
-        pub = await client.fetch(uri)
+        pub = await ThirdApiCache.get("open_edition_publications", uri)
+        if pub is None:
+            pub = await OpenEditionResolver().fetch(uri)
+            await ThirdApiCache.set("open_edition_publications", uri, pub)
         return XmlResult(
             payload=pub,
             source_identifier=URIRef(uri),
@@ -231,8 +236,12 @@ class IdrefHarvester(AbstractHarvester):
         # with regular expression, replace "http://" by "https://" in document_uri
         document_uri = re.sub(r"^http://", "https://", document_uri)
         settings = get_app_settings()
-        client = RdfResolver(timeout=settings.idref_sudoc_timeout)
-        pub = await client.fetch(document_uri, output_format="xml")
+        pub = await ThirdApiCache.get("sudoc_publications", document_uri)
+        if pub is None:
+            pub = await RdfResolver(timeout=settings.idref_sudoc_timeout).fetch(
+                document_uri, output_format="xml"
+            )
+            await ThirdApiCache.set("sudoc_publications", document_uri, pub)
         return RdfResult(
             payload=pub,
             source_identifier=URIRef(uri),
@@ -272,7 +281,6 @@ class IdrefHarvester(AbstractHarvester):
         :param doc: the publication doc
         :return: the publication details
         """
-        client = RdfResolver()
         uri: str | None = doc.get("uri", "")
         assert uri.startswith(self.SCIENCE_PLUS_URL_SUFFIX), "Invalid SciencePlus Id"
         if not uritools.isuri(uri):
@@ -285,7 +293,15 @@ class IdrefHarvester(AbstractHarvester):
         }
         # concatenate encoded params to query suffix
         query_uri = f"{self.SCIENCE_PLUS_QUERY_SUFFIX}?{urllib.parse.urlencode(params)}"
-        pub = await client.fetch(query_uri, output_format="xml")
+        pub = None
+        settings = get_app_settings()
+        if settings.third_api_caching_enabled:
+            pub = await ThirdApiCache.get("science_plus_publications", query_uri)
+        if pub is None:
+            client = RdfResolver(timeout=settings.idref_science_plus_timeout)
+            pub = await client.fetch(query_uri, output_format="xml")
+            await ThirdApiCache.set("science_plus_publications", query_uri, pub)
+
         doi = doc.get("doi", None)
         return RdfResult(
             payload=pub,

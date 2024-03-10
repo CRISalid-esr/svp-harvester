@@ -46,7 +46,6 @@ def fixture_scanr_publication_doc_with_wikidata_domains(
     return scanr_publication_doc_with_wikidata_domains["hits"]["hits"]
 
 
-@pytest.mark.current
 async def test_convert_publication_with_keywords(
     scanr_publication_doc_with_keywords_domains,
 ):
@@ -70,7 +69,6 @@ async def test_convert_publication_with_keywords(
         assert test_subjects == expected_subjects
 
 
-@pytest.mark.current
 async def test_convert_publication_with_identical_keywords(
     scanr_publication_doc_with_identical_keywords_domains,
 ):
@@ -107,7 +105,6 @@ async def test_convert_publication_with_identical_keywords(
         assert test_subjects == expected_subjects
 
 
-@pytest.mark.current
 async def test_convert_publication_with_sudoc(
     scanr_publication_doc_with_sudoc_domains,
 ):
@@ -131,7 +128,6 @@ async def test_convert_publication_with_sudoc(
         assert test_subjects == expected_subjects
 
 
-@pytest.mark.current
 async def test_convert_publication_with_identical_sudoc_andkeywords(
     scanr_publication_doc_with_identical_sudoc_and_keywords_domains,
 ):
@@ -155,7 +151,6 @@ async def test_convert_publication_with_identical_sudoc_andkeywords(
         assert test_subjects == expected_subjects
 
 
-@pytest.mark.current
 async def test_convert_publication_with_wikidata(
     scanr_publication_doc_with_wikidata_domains,
 ):
