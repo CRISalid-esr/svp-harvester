@@ -6,13 +6,16 @@ from rdflib import OWL, Graph, term
 
 import aiohttp
 from app.services.organizations.organization_data_class import OrganizationInformations
-import app.services.organizations.organization_factory as organization_factory
+from app.services.organizations import (  # pylint: disable=cyclic-import
+    organization_factory,
+)
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.organizations.organization_solver import OrganizationSolver
 
 
+# pylint: disable=duplicate-code
 class IdrefOrganizationSolver(OrganizationSolver):
     """
     Hal organization solver

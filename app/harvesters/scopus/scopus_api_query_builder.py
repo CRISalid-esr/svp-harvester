@@ -2,6 +2,7 @@ from enum import Enum
 from urllib.parse import urlencode
 
 
+# pylint: disable=duplicate-code
 class ScopusQueryBuilder:
     """
     This class is responsible for building the query to be sent to Scopu API.

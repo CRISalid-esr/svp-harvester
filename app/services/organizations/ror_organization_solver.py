@@ -9,6 +9,7 @@ from app.services.organizations.organization_data_class import OrganizationInfor
 from app.services.organizations.organization_solver import OrganizationSolver
 
 
+# pylint: disable=duplicate-code
 class RorOrganizationSolver(OrganizationSolver):
     """
     Ror organization solver
@@ -56,7 +57,8 @@ class RorOrganizationSolver(OrganizationSolver):
                     if not 200 <= response.status < 300:
                         raise timeout(
                             f"Endpoint returned status {response.status}"
-                            f" while dereferencing ROR organization {organization_information.identifier}"
+                            f" while dereferencing ROR organization"
+                            f" {organization_information.identifier}"
                         )
                     data = await response.json()
                     for identifier, source in self.IDENTITY_SAVE.items():
@@ -73,7 +75,7 @@ class RorOrganizationSolver(OrganizationSolver):
                             seen.append(source)
             return new_identifiers, seen
 
-        # If the request fails, return the new identifiers with only the idref identifier
+        # If the request fails, return the new identifiers with only the ror identifier
         except aiohttp.ClientError:
             return new_identifiers, seen
         except asyncio.TimeoutError:
