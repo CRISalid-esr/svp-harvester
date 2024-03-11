@@ -13,6 +13,7 @@ from app.harvesters.scopus.scopus_document_type_converter import (
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.db.models.contribution import Contribution
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.organizations.organization_data_class import OrganizationInformations
 
 
@@ -103,9 +104,6 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
 
         affiliations = self._get_affiliation(entry)
 
-        logger.debug(f"Affiliations: {affiliations}")
-        logger.debug(f"Contributor Affiliation: {contributor_affiliation}")
-
         async for contribution in self._contributions(
             contribution_informations=contributions, source="scopus"
         ):
@@ -162,6 +160,19 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Scopus"
 
-    # TODO Completar, con nuevo hash ?
     def hash_keys(self) -> list[str]:
-        return []
+        return [
+            HashKeyXML("prism:url", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("dc:identifier", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("dc:title", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("dc:description", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("default:subtype", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("prism:coverDate", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("prism:doi", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("prism:issn", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("default:authkeywords", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML("default:affiliation", namespace=ScopusClient.NAMESPACE),
+            HashKeyXML(
+                "default:author", namespace=ScopusClient.NAMESPACE, sorted=False
+            ),
+        ]

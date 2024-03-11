@@ -1,7 +1,7 @@
 from typing import Generator
 import xml.etree.ElementTree as ET
 import aiohttp
-
+import rdflib
 
 from app.config import get_app_settings
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
@@ -16,7 +16,7 @@ class ScopusClient:
 
     NAMESPACE = {
         "default": "http://www.w3.org/2005/Atom",
-        "dc": "http://purl.org/dc/elements/1.1/",
+        "dc": rdflib.DC,
         "opensearch": "http://a9.com/-/spec/opensearch/1.1/",
         "prism": "http://prismstandard.org/namespaces/basic/2.0/",
         "atom": "http://www.w3.org/2005/Atom",
@@ -35,9 +35,11 @@ class ScopusClient:
                 connector=aiohttp.TCPConnector(limit=None),
                 headers={"Accept": "application/xml"},
             ) as session:
-                async with session.get(
-                    f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}&insttoken={self.settings.scopus_inst_token}&view=COMPLETE",
-                ) as resp:
+                query = (
+                    f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}"
+                    f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE"
+                )
+                async with session.get(query) as resp:
                     if resp.status == 200:
                         xml = await resp.text()
                         root = ET.fromstring(xml)

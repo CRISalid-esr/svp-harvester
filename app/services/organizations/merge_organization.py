@@ -9,7 +9,6 @@ def merge_organization(organization: Organization, organization_to_merge: Organi
     :param organization_to_merge: the organization to merge
     :return: the merged organization
     """
-    # TODO Merge the identifiers without duplicate values
     organization.identifiers = list(
         set(organization.identifiers + organization_to_merge.identifiers)
     )
