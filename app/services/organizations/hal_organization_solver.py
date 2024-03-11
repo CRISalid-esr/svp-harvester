@@ -7,10 +7,13 @@ from app.services.organizations.organization_data_class import OrganizationInfor
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.concepts.dereferencing_error import DereferencingError
-from app.services.organizations import organization_factory
+from app.services.organizations import (  # pylint: disable=cyclic-import
+    organization_factory,
+)
 from app.services.organizations.organization_solver import OrganizationSolver
 
 
+# pylint: disable=duplicate-code
 class HalOrganizationSolver(OrganizationSolver):
     """
     Hal organization solver
@@ -56,7 +59,8 @@ class HalOrganizationSolver(OrganizationSolver):
                     if not 200 <= response.status < 300:
                         raise DereferencingError(
                             f"Endpoint returned status {response.status}"
-                            f" while dereferencing HAL organization {organization_information.identifier}"
+                            f" while dereferencing HAL organization"
+                            f" {organization_information.identifier}"
                         )
                     data = await response.json()
                     org = Organization(

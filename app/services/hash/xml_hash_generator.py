@@ -34,8 +34,8 @@ class XMLHashGenerator(AbstractHashGenerator):
             return ";".join([self._to_string(e) for e in element])
         if element.text is not None:
             return element.text
-        else:
-            return ";".join([self._to_string(child) for child in element])
+
+        return ";".join([self._to_string(child) for child in element])
 
     def _sort_element(self, element: list[Element] | Element | str):
         if isinstance(element, str):
