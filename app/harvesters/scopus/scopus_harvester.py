@@ -1,6 +1,5 @@
 from typing import AsyncGenerator
 
-from loguru import logger
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.scopus.scopus_api_query_builder import ScopusQueryBuilder
 from app.harvesters.scopus.scopus_client import ScopusClient

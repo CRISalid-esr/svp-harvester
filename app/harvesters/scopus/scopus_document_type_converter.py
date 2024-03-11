@@ -10,15 +10,32 @@ class ScopusDocumentTypeConverter(AbstractDocumentTypeConverter):
 
     HARVESTER = "Scopus"
 
+    BIBO_NAMESPACE = "http://purl.org/ontology/bibo/"
+    FABIO_NAMESPACE = "http://purl.org/spar/fabio/"
+    COAR_NAMESPACE = "http://purl.org/coar/resource_type/"
+
     TYPES_MAPPING = {
-        "ed": ("http://data.crisalid.org/ref/document_types/unknown", "Editorial"),
-        "ar": ("http://data.crisalid.org/ref/document_types/unknown", "Article"),
-        "re": ("http://data.crisalid.org/ref/document_types/unknown", "Review"),
-        "ch": ("http://data.crisalid.org/ref/document_types/unknown", "Book Chapter"),
+        "ar": (f"{BIBO_NAMESPACE}Article", "Article"),
+        "ed": (f"{FABIO_NAMESPACE}Editorial", "Editorial"),
+        "re": (f"{FABIO_NAMESPACE}ReviewPaper", "Review"),
+        "ch": (f"{BIBO_NAMESPACE}Chapter", "Chapter"),
+        "bk": (f"{BIBO_NAMESPACE}Book", "Book"),
+        "er": (f"{FABIO_NAMESPACE}Erratum", "Erratum"),
+        "le": (f"{BIBO_NAMESPACE}Letter", "Letter"),
+        "ot": (f"{COAR_NAMESPACE}c_1843", "Other"),
+        "no": ("http://data.crisalid.org/ref/document_types/unknown", "Note"),
+        "sh": ("http://data.crisalid.org/ref/document_types/unknown", "Short Survey"),
+        "dp": ("http://data.crisalid.org/ref/document_types/unknown", "Data Paper"),
+        "aip": (
+            "http://data.crisalid.org/ref/document_types/unknown",
+            "Article in Press",
+        ),
         "cp": (
             "http://data.crisalid.org/ref/document_types/unknown",
             "Conference Paper",
         ),
-        "bk": ("http://data.crisalid.org/ref/document_types/unknown", "Book"),
-        "er": ("http://data.crisalid.org/ref/document_types/unknown", "Erratum"),
+        "cr": (
+            "http://data.crisalid.org/ref/document_types/unknown",
+            "Conference Review",
+        ),
     }
