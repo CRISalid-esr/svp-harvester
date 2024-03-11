@@ -54,6 +54,7 @@ class AppSettings(BaseSettings):
     amqp_task_parallelism_limit: int = 50
     amqp_exchange_name: str = "publications"
     amqp_prefetch_count: int = 50
+    amqp_consumer_ack_timeout: int = 43200000
     amqp_retrieval_routing_key: str = "task.entity.references.retrieval"
     amqp_reference_event_routing_key: str = "event.references.reference.*"
     amqp_harvesting_event_routing_key: str = "event.references.harvesting.state"
@@ -91,6 +92,7 @@ class AppSettings(BaseSettings):
     scopus_inst_token: str = "None"
 
     idref_sudoc_timeout: int = 30
+    idref_science_plus_timeout: int = 30
     idref_concepts_timeout: int = 30
     wikidata_concepts_timeout: int = 10
     sparql_jel_concepts_timeout: int = 2
@@ -100,3 +102,16 @@ class AppSettings(BaseSettings):
     idref_organizations_timeout: int = 10
     ror_organizations_timeout: int = 10
     scopus_organizations_timeout: int = 10
+
+
+    third_api_caching_enabled: bool = True
+    third_api_default_caching_duration: int = 24 * 3600
+    redis_url: str = "redis://localhost:6379"
+    redis_max_connections: int = 1000
+
+    sudoc_publications_caching_duration: int = 15 * 24 * 3600
+    science_plus_publications_caching_duration: int = 15 * 24 * 3600
+    persee_publications_caching_duration: int = 15 * 24 * 3600
+    open_edition_publications_caching_duration: int = 15 * 24 * 3600
+    idref_concepts_publications_caching_duration: int = 90 * 24 * 3600
+    wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600

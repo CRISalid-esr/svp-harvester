@@ -1,0 +1,44 @@
+{
+  "head": {
+    "link": [],
+    "vars": [
+      "pub",
+      "role",
+      "type",
+      "title",
+      "altLabel",
+      "note",
+      "subject_uri",
+      "subject_label"
+    ]
+  },
+  "results": {
+    "distinct": false,
+    "ordered": true,
+    "bindings": [
+      {
+        "pub": {
+          "type": "uri",
+          "value": "http://www.sudoc.fr/070266875/id"
+        },
+        "role": {
+          "type": "uri",
+          "value": "http://id.loc.gov/vocabulary/relators/pbd"
+        },
+        "type": {
+          "type": "uri",
+          "value": "http://purl.org/ontology/bibo/Book"
+        },
+        "subject_uri": {
+          "type": "uri",
+          "value": "http://www.idref.fr/02722368X/id"
+        },
+        "subject_label": {
+          "type": "literal",
+          "xml:lang": "fr",
+          "value": "Agriculture -- Aspect \u00e9conomique"
+        }
+      }
+    ]
+  }
+}
