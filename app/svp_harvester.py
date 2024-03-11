@@ -15,6 +15,7 @@ from app.api.routes.healthness import router as healthness_router
 from app.config import get_app_settings
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
+from app.redis.redis_pool import RedisPool
 
 
 class SvpHarvester(FastAPI):
@@ -62,6 +63,8 @@ class SvpHarvester(FastAPI):
         )
         self.add_exception_handler(ValidationError, http422_error_handler)
         self.add_event_handler("startup", self.check_db_connexion)
+        if settings.third_api_caching_enabled:
+            self.add_event_handler("startup", self.check_redis_connexion)
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
@@ -90,6 +93,25 @@ class SvpHarvester(FastAPI):
                     "Cannot connect to database : Unknown error, will not retry"
                 )
                 raise error
+
+    @logger.catch(reraise=True)
+    async def check_redis_connexion(self) -> None:
+        """
+        Check Redis connexion at boot time
+        to help ensure container startup order
+        :return: None
+        """
+        logger.info("Checking Redis connexion readiness")
+        try:
+            if await RedisPool().check_ready():
+                logger.info("Redis connexion is ready")
+            else:
+                logger.error("Cannot connect to redis, will retry in 1 second")
+                await asyncio.sleep(1)
+                await self.check_redis_connexion()
+        except Exception as error:
+            logger.error("Cannot connect to Redis : Unknown error, will not retry")
+            raise error
 
     @logger.catch(reraise=True)
     async def open_rabbitmq_connexion(self) -> None:  # pragma: no cover

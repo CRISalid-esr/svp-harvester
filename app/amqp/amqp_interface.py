@@ -6,7 +6,6 @@ from aio_pika import ExchangeType
 from app.amqp.amqp_message_processor import AMQPMessageProcessor
 from app.settings.app_settings import AppSettings
 
-
 DEFAULT_RESULT_TIMEOUT = 600
 
 
@@ -91,7 +90,9 @@ class AMQPInterface:
             prefetch_count=self.settings.amqp_prefetch_count
         )
         self.pika_queue = await self.pika_channel.declare_queue(
-            self.settings.amqp_queue_name, durable=True
+            self.settings.amqp_queue_name,
+            durable=True,
+            arguments={"x-consumer-timeout": self.settings.amqp_consumer_ack_timeout},
         )
         for key in self.keys:
             await self.pika_queue.bind(self.pika_exchange, routing_key=key)
