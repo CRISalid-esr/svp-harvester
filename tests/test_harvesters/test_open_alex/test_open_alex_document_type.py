@@ -11,7 +11,7 @@ def test_known_open_alex_document_type():
     """
     document_type = "article"
     convert = OpenAlexDocumentTypeConverter().convert(document_type)
-    assert convert == ("Article URI", "Article")
+    assert convert == ("http://purl.org/ontology/bibo/Article", "Article")
 
 
 def test_unknown_open_alex_document_type(caplog):
