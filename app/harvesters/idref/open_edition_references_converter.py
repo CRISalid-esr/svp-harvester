@@ -164,7 +164,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         language = self._language(root)
         for subject in subjects:
             label, attrib = subject
-            language = attrib[f"{self.W3_NAMESPACE}lang"]
+            try:
+                language = attrib[f"{self.W3_NAMESPACE}lang"]
+            except KeyError:
+                language = None
             yield await self._get_or_create_concept_by_label(
                 ConceptInformations(
                     label=label,
