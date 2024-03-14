@@ -12,7 +12,7 @@ class SudocDocumentTypeConverter(AbstractDocumentTypeConverter):
 
     HARVESTER = "Sudoc"
 
-    TYPES_MAPPING = TYPES_MAPPING = {
+    TYPES_MAPPING = {
         f"{RDF_BIBO}Book": (f"{RDF_BIBO}Book", "Book"),
         f"{RDF_BIBO}Thesis": (f"{RDF_BIBO}Thesis", "Thesis"),
     }
