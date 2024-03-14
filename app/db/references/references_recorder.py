@@ -135,4 +135,7 @@ class ReferencesRecorder:
                 new_ref.document_type = [
                     await session.merge(doc_type) for doc_type in new_ref.document_type
                 ]
+                new_ref.subjects = [
+                    await session.merge(subject) for subject in new_ref.subjects
+                ]
                 session.add(new_ref)
