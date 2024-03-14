@@ -15,7 +15,7 @@ class SudocQualitiesConverter:
         "ths": Contribution.Role.THESIS_ADVISOR,
         "pra": Contribution.Role.PRAESES,
         "edt": Contribution.Role.EDITOR,
-        "pbd": Contribution.Role.PUBLISHOR_DIRECTOR,
+        "pbd": Contribution.Role.PUBLISHER_DIRECTOR,
         "aui": Contribution.Role.AUTHOR_OF_INTRODUCTION,
         "clb": Contribution.Role.CONTRIBUTOR,
         "fmo": Contribution.Role.FORMER_OWNER,
