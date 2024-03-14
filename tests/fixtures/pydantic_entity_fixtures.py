@@ -6,7 +6,7 @@ from tests.fixtures.common import _person_from_json_data, _person_json_data_from
 
 @pytest.fixture(name="person_without_identifiers")
 def fixture_person_without_identifiers(
-        person_without_identifiers_json,
+    person_without_identifiers_json,
 ) -> PydanticPerson:
     """
     Generate a person with only first name and last name in Pydantic format
@@ -27,7 +27,7 @@ def fixture_person_without_identifiers_json(_base_path) -> dict:
 
 @pytest.fixture(name="person_with_name_and_orcid")
 def fixture_person_with_name_and_orcid(
-        person_with_name_and_orcid_json,
+    person_with_name_and_orcid_json,
 ) -> PydanticPerson:
     """
     Generate a person with first name, last name and ORCID in Pydantic format
@@ -48,7 +48,7 @@ def fixture_person_with_name_and_orcid_json(_base_path) -> dict:
 
 @pytest.fixture(name="person_with_name_and_idref")
 def fixture_person_with_name_and_idref(
-        person_with_name_and_idref_json,
+    person_with_name_and_idref_json,
 ) -> PydanticPerson:
     """
     Generate a person with first name, last name and IDREF in Pydantic format
@@ -69,7 +69,7 @@ def fixture_person_with_name_and_idref_json(_base_path) -> dict:
 
 @pytest.fixture(name="person_with_name_and_id_hal_i")
 def fixture_person_with_name_and_id_hal_i(
-        person_with_name_and_id_hal_i_json,
+    person_with_name_and_id_hal_i_json,
 ) -> PydanticPerson:
     """
     Generate a person with first name, last name and ID_HAL_I in Pydantic format
@@ -90,13 +90,24 @@ def fixture_person_with_name_and_id_hal_i_json(_base_path) -> dict:
 
 @pytest.fixture(name="person_with_name_and_id_hal_s")
 def fixture_person_with_name_and_id_hal_s(
-        person_with_name_and_id_hal_s_json,
+    person_with_name_and_id_hal_s_json,
 ) -> PydanticPerson:
     """
     Generate a person with first name, last name and ID_HAL_I in Pydantic format
     :return: person with first name, last name and ID_HAL_I  in Pydantic format
     """
     return _person_from_json_data(person_with_name_and_id_hal_s_json)
+
+
+@pytest.fixture(name="person_with_name_and_scopus_eid")
+def fixture_person_with_name_and_scopus_eid(
+    person_with_name_and_scopus_eid_json,
+) -> PydanticPerson:
+    """
+    Generate a person with first name, last name and EID in Pydantic format
+    :return: person with first name, last name and EID in Pydantic format
+    """
+    return _person_from_json_data(person_with_name_and_scopus_eid_json)
 
 
 @pytest.fixture(name="person_with_name_and_id_hal_s_json")
@@ -119,3 +130,13 @@ def fixture_person_with_name_and_unknown_identifier_type_json(_base_path) -> dic
     return _person_json_data_from_file(
         _base_path, "person_with_name_and_unknown_identifier_type"
     )
+
+
+@pytest.fixture(name="person_with_name_and_scopus_eid_json")
+def fixture_person_with_name_and_scopus_eid_json(_base_path) -> dict:
+    """
+    Generate a person with first name, last name and EID in Json format
+    :param _base_path: test data directory base
+    :return: person with first name, last name and EID in Json format
+    """
+    return _person_json_data_from_file(_base_path, "person_with_name_and_scopus_eid")

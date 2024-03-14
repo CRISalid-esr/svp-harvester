@@ -65,3 +65,15 @@ def fixture_person_with_name_and_id_hal_i_s_db_model() -> DbPerson:
             DbIdentifier(type="id_hal_s", value="john-doe"),
         ],
     )
+
+
+@pytest.fixture(name="person_with_name_and_scopus_eid_db_model")
+def fixture_person_with_name_and_scopus_eid() -> DbPerson:
+    """
+    Generate a person with first name, last name and scopus_eid in DB model format
+    :return: person with first name, last name and scopus_eid  in DB model format
+    """
+    return DbPerson(
+        name="John Doe",
+        identifiers=[DbIdentifier(type="scopus_eid", value="123456789")],
+    )
