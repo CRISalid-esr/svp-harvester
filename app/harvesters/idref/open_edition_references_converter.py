@@ -156,11 +156,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         if len(abstract) == 0:
             yield
         for value, attrib in abstract:
-            # check if language defined, If not then we take the language of the document
-            try:
-                language = attrib[f"{{{rdflib.XMLNS}}}lang"]
-            except KeyError:
-                language = self._language(root)
+            language = attrib.get(f"{{{rdflib.XMLNS}}}lang", self._language(root))
             yield Abstract(value=value, language=language)
 
     async def _subjects(self, root: ElementTree):
@@ -168,10 +164,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         language = self._language(root)
         for subject in subjects:
             label, attrib = subject
-            try:
-                language = attrib[f"{self.W3_NAMESPACE}lang"]
-            except KeyError:
-                language = None
+            language = attrib.get(f"{{{rdflib.XMLNS}}}lang", None)
             yield await self._get_or_create_concept_by_label(
                 ConceptInformations(
                     label=label,
