@@ -38,7 +38,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             )
 
     async def _document_type(self, pub_graph, uri):
-        for document_type in pub_graph.objects(rdflib.term.URIRef(uri), DC.type):
+        for document_type in pub_graph.objects(
+            rdflib.term.URIRef(uri), rdflib.RDF.type
+        ):
             uri, label = SudocDocumentTypeConverter().convert(str(document_type))
             yield await self._get_or_create_document_type_by_uri(uri, label)
 

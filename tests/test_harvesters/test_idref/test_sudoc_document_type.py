@@ -9,9 +9,9 @@ def test_known_sudoc_document_type():
     WHEN the document type converter is called
     THEN the document type is converted into the corresponding uri and label
     """
-    document_type = "Text"
+    document_type = "http://purl.org/ontology/bibo/Book"
     convert = SudocDocumentTypeConverter().convert(document_type)
-    assert convert == ("URI", "LABEL")
+    assert convert == ("http://purl.org/ontology/bibo/Book", "Book")
 
 
 def test_unknown_sudoc_document_type(caplog):
