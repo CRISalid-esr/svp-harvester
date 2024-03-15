@@ -16,7 +16,10 @@ class OrganizationSolver(ABC):
         self.timeout = timeout
 
     @abstractmethod
-    async def solve(self, organization_id: str) -> Organization:
+    async def solve(
+        self,
+        organization_information: OrganizationIdentifier,
+    ) -> Organization:
         """
         Solves an organization from an organization id
         :param organization_id: id of the organization
@@ -25,7 +28,9 @@ class OrganizationSolver(ABC):
 
     @abstractmethod
     async def solve_identities(
-        self, organization_id: str, seen: List[str]
+        self,
+        organization_information: OrganizationIdentifier,
+        seen: List[str],
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """
         Solves the identities of an organization

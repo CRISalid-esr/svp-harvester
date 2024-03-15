@@ -111,3 +111,19 @@ async def fixture_retrieval_db_model_for_person_with_id_hal_i_s(
     return await RetrievalDAO(async_session).create_retrieval(
         person_with_name_and_id_hal_i_s_db_model
     )
+
+
+@pytest_asyncio.fixture(name="retrieval_db_model_for_person_with_scopus_eid")
+async def fixture_retrieval_db_model_for_person_with_scopus_eid(
+    async_session, person_with_name_and_scopus_eid_db_model
+) -> DbRetrieval:
+    """
+    Generate a retrieval with a person with first name, last name and scopus_eid in DB model format
+
+    :param async_session: async db session
+    :param person_with_name_and_scopus_eid_db_model: person  in DB model format
+    :return: retrieval with a person with first name, last name and scopus_eid  in DB model format
+    """
+    return await RetrievalDAO(async_session).create_retrieval(
+        person_with_name_and_scopus_eid_db_model
+    )

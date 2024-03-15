@@ -1,4 +1,5 @@
 import hashlib
+
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
