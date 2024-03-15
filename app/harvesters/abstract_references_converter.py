@@ -26,6 +26,7 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.hash.hash_service import HashService
 from app.services.organizations.merge_organization import merge_organization
+from app.services.organizations.organization_data_class import OrganizationInformations
 from app.services.organizations.organization_factory import OrganizationFactory
 
 
@@ -43,16 +44,6 @@ class AbstractReferencesConverter(ABC):
         "document_type",
         "contributions",
     ]
-
-    @dataclass(frozen=True)
-    class OrganizationInformations:
-        """
-        Informations about an organization
-        """
-
-        name: str | None = None
-        identifier: str | None = None
-        source: str | None = None
 
     @dataclass
     class ContributionInformations:
@@ -484,8 +475,7 @@ class AbstractReferencesConverter(ABC):
                 if organization is None:
                     try:
                         organization = await OrganizationFactory.solve(
-                            organization_id=organization_informations.identifier,
-                            organization_source=organization_informations.source,
+                            organization_informations
                         )
 
                         same_organization = await OrganizationDAO(
@@ -494,8 +484,6 @@ class AbstractReferencesConverter(ABC):
                         if same_organization is not None and len(
                             same_organization.identifiers
                         ) != len(organization.identifiers):
-                            print("Need to merge organizations")
-                            logger.warning("Need to merge organizations")
                             organization = merge_organization(
                                 same_organization, organization
                             )

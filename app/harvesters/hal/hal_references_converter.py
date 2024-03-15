@@ -20,6 +20,7 @@ from app.harvesters.json_harvester_raw_result import (
 )
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.organizations.organization_data_class import OrganizationInformations
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -225,7 +226,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
     def _organizations_from_contributor(
         self, raw_data, id_contributor
-    ) -> List[AbstractReferencesConverter.OrganizationInformations]:
+    ) -> List[OrganizationInformations]:
         # Get the organizations informations of the contributor
         organizations = set()
 
@@ -238,9 +239,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
             org_id, org_name = org.split("_FacetSep_")
             organizations.add(
-                AbstractReferencesConverter.OrganizationInformations(
-                    name=org_name, identifier=org_id, source="hal"
-                )
+                OrganizationInformations(name=org_name, identifier=org_id, source="hal")
             )
         return organizations
 

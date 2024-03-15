@@ -1,0 +1,9 @@
+{
+  "name": "John Doe",
+  "identifiers": [
+    {
+      "type": "scopus_eid",
+      "value": "123456789"
+    }
+  ]
+}

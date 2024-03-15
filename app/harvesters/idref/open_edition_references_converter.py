@@ -2,6 +2,7 @@ from typing import Generator
 from xml.etree import ElementTree
 
 from loguru import logger
+import rdflib
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
@@ -19,7 +20,7 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.hash.hash_key import HashKey
+from app.services.hash.hash_key_xml import HashKeyXML
 
 
 class OpenEditionReferencesConverter(AbstractReferencesConverter):
@@ -27,10 +28,12 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     Convert the publication from the OpenEdition to a normalised Reference object
     """
 
-    BASE_DOMAIN = "{http://www.openarchives.org/OAI/2.0/}"
-    NAMESPACE = "{http://www.bl.uk/namespaces/oai_dcq/}"
-    W3_NAMESPACE = "{http://www.w3.org/XML/1998/namespace}"
-    TERMS = "{http://purl.org/dc/terms/}"
+    NAMESPACES = {
+        "dc": "http://purl.org/dc/elements/1.1/",
+        "dcterms": rdflib.DCTERMS,
+        "oai": "http://www.openarchives.org/OAI/2.0/",
+        "qdc": "http://www.bl.uk/namespaces/oai_dcq/",
+    }
 
     def __init__(self):
         self.tree_root: ElementTree = None
@@ -106,14 +109,15 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def _get_term(self, root: ElementTree, term: str):
         return (
-            root.find(f"{self.TERMS}{term}").text
-            if root.find(f"{self.TERMS}{term}") is not None
+            root.find(f"{{{rdflib.DCTERMS}}}{term}").text
+            if root.find(f"{{{rdflib.DCTERMS}}}{term}") is not None
             else None
         )
 
     def _get_terms(self, root: ElementTree, term: str):
         return [
-            (term.text, term.attrib) for term in root.findall(f"{self.TERMS}{term}")
+            (term.text, term.attrib)
+            for term in root.findall(f"{{{rdflib.DCTERMS}}}{term}")
         ]
 
     def _get_root(self, raw_data: XMLHarvesterRawResult):
@@ -121,10 +125,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             try:
                 root = raw_data.payload
                 return (
-                    root.find(f"{self.BASE_DOMAIN}GetRecord")
-                    .find(f"{self.BASE_DOMAIN}record")
-                    .find(f"{self.BASE_DOMAIN}metadata")
-                    .find(f"{self.NAMESPACE}qualifieddc")
+                    root.find(f"{{{self.NAMESPACES['oai']}}}GetRecord")
+                    .find(f"{{{self.NAMESPACES['oai']}}}record")
+                    .find(f"{{{self.NAMESPACES['oai']}}}metadata")
+                    .find(f"{{{self.NAMESPACES['qdc']}}}qualifieddc")
                 )
             except AttributeError as error:
                 raise UnexpectedFormatException(
@@ -152,11 +156,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         if len(abstract) == 0:
             yield
         for value, attrib in abstract:
-            # check if language defined, If not then we take the language of the document
-            try:
-                language = attrib[f"{self.W3_NAMESPACE}lang"]
-            except KeyError:
-                language = self._language(root)
+            language = attrib.get(f"{{{rdflib.XMLNS}}}lang", self._language(root))
             yield Abstract(value=value, language=language)
 
     async def _subjects(self, root: ElementTree):
@@ -164,10 +164,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         language = self._language(root)
         for subject in subjects:
             label, attrib = subject
-            try:
-                language = attrib[f"{self.W3_NAMESPACE}lang"]
-            except KeyError:
-                language = None
+            language = attrib.get(f"{{{rdflib.XMLNS}}}lang", None)
             yield await self._get_or_create_concept_by_label(
                 ConceptInformations(
                     label=label,
@@ -182,13 +179,13 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def hash_keys(self) -> list[str]:
         return [
-            HashKey("dcterms:title"),
-            HashKey("dcterms:abstract"),
-            HashKey("dcterms:type"),
-            HashKey("dcterms:language"),
-            HashKey("dcterms:identifier"),
-            HashKey("dcterms:subject"),
-            HashKey("dcterms:type"),
+            HashKeyXML("dcterms:title", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:abstract", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:language", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:identifier", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:subject", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
         ]
 
     def _create_dict(self, root: ElementTree):

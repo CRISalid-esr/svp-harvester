@@ -123,3 +123,17 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
     return await HarvestingDAO(async_session).create_harvesting(
         retrieval_db_model_for_person_with_id_hal_i_s, "hal", DbHarvesting.State.RUNNING
     )
+
+
+@pytest_asyncio.fixture(name="scopus_harvesting_db_model_scopus_eid")
+async def fixture_scopus_harvesting_db_model_scopus_eid(
+    async_session, retrieval_db_model_for_person_with_scopus_eid
+) -> DbHarvesting:
+    """
+    Generate a Scopus harvesting with a retrieval in DB model format for person with Scopus EID
+    """
+    return await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model_for_person_with_scopus_eid,
+        "scopus",
+        DbHarvesting.State.RUNNING,
+    )

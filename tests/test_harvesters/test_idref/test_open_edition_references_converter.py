@@ -1,4 +1,3 @@
-from loguru import logger
 import pytest
 
 from app.harvesters.idref.open_edition_references_converter import (

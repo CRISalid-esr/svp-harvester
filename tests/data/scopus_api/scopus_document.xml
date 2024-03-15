@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<search-results xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
+    xmlns:atom="http://www.w3.org/2005/Atom">
+    <opensearch:totalResults>17</opensearch:totalResults>
+    <opensearch:startIndex>0</opensearch:startIndex>
+    <opensearch:itemsPerPage>17</opensearch:itemsPerPage>
+    <opensearch:Query role="request" searchTerms="AU-ID(56968098400)" startPage="0" />
+    <link ref="self"
+        href="https://api.elsevier.com/content/search/scopus?start=0"
+        type="application/xml" />
+    <link ref="first"
+        href="https://api.elsevier.com/content/search/scopus?start=0"
+        type="application/xml" />
+    <entry>
+        <link ref="self" href="https://api.elsevier.com/content/abstract/scopus_id/85181667605" />
+        <link ref="author-affiliation"
+            href="https://api.elsevier.com/content/abstract/scopus_id/85181667605?field=author,affiliation" />
+        <link ref="scopus"
+            href="https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&amp;scp=85181667605&amp;origin=inward" />
+        <link ref="scopus-citedby"
+            href="https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&amp;scp=85181667605&amp;origin=inward" />
+        <prism:url>https://api.elsevier.com/content/abstract/scopus_id/85181667605</prism:url>
+        <dc:identifier>SCOPUS_ID:85181667605</dc:identifier>
+        <eid>2-s2.0-85181667605</eid>
+        <dc:title>Is musculoskeletal pain associated with increased muscle stiffness?</dc:title>
+        <dc:creator>Haueise A.</dc:creator>
+        <prism:publicationName>Clinical Physiology and Functional Imaging</prism:publicationName>
+        <prism:issn>14750961</prism:issn>
+        <prism:eIssn>1475097X</prism:eIssn>
+        <prism:pageRange />
+        <prism:coverDate>2024-01-01</prism:coverDate>
+        <prism:coverDisplayDate>2024</prism:coverDisplayDate>
+        <prism:doi>10.1111/cpf.12870</prism:doi>
+        <dc:description>Introduction and Aims: Approximately 21% of the world's</dc:description>
+        <citedby-count>0</citedby-count>
+        <affiliation>
+            <affiliation-url>https://api.elsevier.com/content/affiliation/affiliation_id/60078281</affiliation-url>
+            <afid>60078281</afid>
+            <affilname>Hochschule Furtwangen</affilname>
+            <affiliation-city>Furtwangen</affiliation-city>
+            <affiliation-country>Germany</affiliation-country>
+        </affiliation>
+        <affiliation>
+            <affiliation-url>https://api.elsevier.com/content/affiliation/affiliation_id/60028048</affiliation-url>
+            <afid>60028048</afid>
+            <affilname>CHU de Nantes</affilname>
+            <affiliation-city>Nantes</affiliation-city>
+            <affiliation-country>France</affiliation-country>
+        </affiliation>
+        <pubmed-id>38155545</pubmed-id>
+        <prism:aggregationType>Journal</prism:aggregationType>
+        <subtype>re</subtype>
+        <subtypeDescription>Review</subtypeDescription>
+        <author-count limit="100" total="4">4</author-count>
+        <author seq="1">
+            <author-url>https://api.elsevier.com/content/author/author_id/57539748900</author-url>
+            <authid>57539748900</authid>
+            <orcid>0000-0002-5201-3968</orcid>
+            <authname>Haueise A.</authname>
+            <surname>Haueise</surname>
+            <given-name>Andreas</given-name>
+            <initials>A.</initials>
+            <afid>60078281</afid>
+        </author>
+        <author seq="2">
+            <author-url>https://api.elsevier.com/content/author/author_id/56968098400</author-url>
+            <authid>56968098400</authid>
+            <orcid>0000-0001-7614-6389</orcid>
+            <authname>Le Sant G.</authname>
+            <surname>Le Sant</surname>
+            <given-name>Guillaume</given-name>
+            <initials>G.</initials>
+            <afid>60078281</afid>
+            <afid>60028048</afid>
+        </author>
+        <author seq="3">
+            <author-url>https://api.elsevier.com/content/author/author_id/57237942300</author-url>
+            <authid>57237942300</authid>
+            <orcid>0000-0002-7405-4584</orcid>
+            <authname>Eisele-Metzger A.</authname>
+            <surname>Eisele-Metzger</surname>
+            <given-name>Angelika</given-name>
+            <initials>A.</initials>
+            <afid>60028048</afid>
+            <afid>60078281</afid>
+        </author>
+        <author seq="4">
+            <author-url>https://api.elsevier.com/content/author/author_id/56173922800</author-url>
+            <authid>56173922800</authid>
+            <orcid>0000-0002-8522-8746</orcid>
+            <authname>Dieterich A.V.</authname>
+            <surname>Dieterich</surname>
+            <given-name>Angela V.</given-name>
+            <initials>A.V.</initials>
+            <afid>60028048</afid>
+        </author>
+        <authkeywords>imaging methods | muscle | musculoskeletal pain | shear wave elastography | stiffness</authkeywords>
+        <source-id>29702</source-id>
+        <fund-no>undefined</fund-no>
+        <openaccess>1</openaccess>
+        <openaccessFlag>true</openaccessFlag>
+    </entry>
+</search-results>
