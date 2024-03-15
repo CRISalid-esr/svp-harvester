@@ -110,7 +110,13 @@ class Form {
       "deleted",
       "unchanged",
     ]);
-    this.harvestersSelect.setValues(["scanr", "hal", "idref", "openalex"]);
+    this.harvestersSelect.setValues([
+      "scanr",
+      "hal",
+      "idref",
+      "openalex",
+      "scopus",
+    ]);
     this.updateSubmitButtonState();
   }
 

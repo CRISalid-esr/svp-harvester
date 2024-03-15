@@ -83,7 +83,13 @@ class HistoryForm {
       "deleted",
       "unchanged",
     ]);
-    this.harvestersSelect.setValues(["scanr", "hal", "idref", "openalex"]);
+    this.harvestersSelect.setValues([
+      "scanr",
+      "hal",
+      "idref",
+      "openalex",
+      "scopus",
+    ]);
   }
 
   removeAllIdentifierFields() {
