@@ -104,5 +104,7 @@ class Reference(Base, VersionedRecord):
         lazy="raise",
     )
 
+    page: Mapped[str] = mapped_column(nullable=True, index=True)
+
     issued: Mapped[datetime] = mapped_column(nullable=True, index=True)
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)

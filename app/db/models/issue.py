@@ -19,6 +19,7 @@ class Issue(Base):
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
 
+    titles: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False, default=[])
     volume: Mapped[str] = mapped_column(nullable=True, index=True)
     number: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False, default=[])
 
