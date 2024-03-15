@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from app.db.models.journal import Journal
+from app.models.journal import Journal
 
 
 class Issue(BaseModel):
@@ -20,4 +20,4 @@ class Issue(BaseModel):
     rights: str | None = None
     date: str | None = None
 
-    journal: Journal
+    journal: Journal 

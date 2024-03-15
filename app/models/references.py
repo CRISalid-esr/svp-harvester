@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from app.db.models.issue import Issue
+from app.models.issue import Issue
 from app.models.abstracts import Abstract
 from app.models.concepts import Concept
 from app.models.contribution import Contribution
