@@ -34,5 +34,11 @@ class Issue(Base):
 
     journal_id: Mapped[int] = mapped_column(ForeignKey("journals.id"))
     journal: Mapped["app.db.models.journal.Journal"] = relationship(
-        "app.db.models.journal.Journal", back_populates="issues", lazy="raise"
+        "app.db.models.journal.Journal",
+        back_populates="issues",
+        lazy="raise",
+        cascade="merge",
     )
+
+    def __repr__(self) -> str:
+        return f"Issue(id={self.id}, source={self.source}, source_identifier={self.source_identifier}, titles={self.titles}, volume={self.volume}, number={self.number}, rights={self.rights}, date={self.date})"

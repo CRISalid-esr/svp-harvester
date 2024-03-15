@@ -26,5 +26,4 @@ class IssueDAO(AbstractDAO):
             .where(Issue.source == source)
             .where(Issue.source_identifier == source_identifier)
         )
-        logger.debug(f"Query get_issue_by_source_identifier_and_source: {query}")
-        return await self.db_session.scalar(query)
+        return (await self.db_session.execute(query)).scalars().one_or_none()

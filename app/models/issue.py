@@ -20,4 +20,4 @@ class Issue(BaseModel):
     rights: str | None = None
     date: str | None = None
 
-    journal: Journal 
+    journal: Journal

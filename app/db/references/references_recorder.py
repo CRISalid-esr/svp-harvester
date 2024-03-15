@@ -138,4 +138,7 @@ class ReferencesRecorder:
                 new_ref.subjects = [
                     await session.merge(subject) for subject in new_ref.subjects
                 ]
+                if new_ref.issue:
+                    new_ref.issue = await session.merge(new_ref.issue)
+
                 session.add(new_ref)
