@@ -22,6 +22,7 @@ def with_api_informations():
     return {
         "api_host": get_app_settings().api_host,
         "api_path": f"{get_app_settings().api_prefix}/{get_app_settings().api_version}",
+        "institution_name": get_app_settings().institution_name,
     }
 
 
