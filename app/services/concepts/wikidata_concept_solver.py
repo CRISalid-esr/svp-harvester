@@ -37,9 +37,16 @@ class WikidataConceptSolver(ConceptSolver):
                             f"from url {concept_informations.url}"
                         )
                     json_response = await response.json()
-                    concept_data: json = json_response["entities"][
-                        concept_informations.code
-                    ]
+
+                    concept_data: json = json_response["entities"].get(
+                        concept_informations.code, None
+                    )
+
+                    # If the code is not found, it may be a redirect,
+                    # so we take the only entity in the response
+                    if concept_data is None and len(json_response["entities"]) == 1:
+                        concept_data = list(json_response["entities"].values())[0]
+
                     concept = DbConcept(uri=concept_informations.uri)
 
                     self._add_labels(

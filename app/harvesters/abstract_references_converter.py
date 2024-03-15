@@ -339,7 +339,7 @@ class AbstractReferencesConverter(ABC):
                     except DereferencingError as error:
                         logger.error(
                             "Dereferencing failure for concept "
-                            f"{concept_informations.uri} with error  : {error}"
+                            f"{concept_informations.uri} with error: {error}"
                         )
                         assert concept_informations.label is not None, (
                             f"Could not create concept with uri {concept_informations.uri} "
