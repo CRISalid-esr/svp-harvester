@@ -535,7 +535,6 @@ class AbstractReferencesConverter(ABC):
                     source=issue_informations.source,
                     source_identifier=issue_informations.source_identifier,
                 )
-                logger.warning(f"Issue found by source and source identifier: {issue}")
 
                 if issue is None:
                     issue = Issue(
@@ -578,9 +577,6 @@ class AbstractReferencesConverter(ABC):
                     source=journal_informations.source,
                     issn=journal_informations.issn,
                     eissn=journal_informations.eissn,
-                )
-                logger.debug(
-                    f"Journal found by issn/eissn: {journal} for {journal_informations}"
                 )
                 if journal is None:
                     journal = await JournalDAO(

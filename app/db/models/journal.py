@@ -30,6 +30,3 @@ class Journal(Base):
         cascade="all, delete",
         lazy="raise",
     )
-
-    def __repr__(self) -> str:
-        return f"Journal(id={self.id}, source={self.source}, source_identifier={self.source_identifier}), titles={self.titles}, publisher={self.publisher})"

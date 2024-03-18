@@ -1,4 +1,3 @@
-from loguru import logger
 from sqlalchemy import select
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.issue import Issue

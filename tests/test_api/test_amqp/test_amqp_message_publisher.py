@@ -1,9 +1,11 @@
 """Test AMQP publishing capabilities."""
+
 import json
 from unittest.mock import Mock
 
 import pytest
 from aio_pika import Exchange, DeliveryMode
+from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
@@ -83,6 +85,8 @@ async def test_publish_created_reference(
                 ],
                 "document_type": [],
                 "contributions": [],
+                "issue": None,
+                "page": None,
                 "issued": "2017-01-01 00:00:00",
                 "created": "2018-02-02 10:00:00",
             },

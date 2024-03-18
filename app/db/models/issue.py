@@ -37,8 +37,5 @@ class Issue(Base):
         "app.db.models.journal.Journal",
         back_populates="issues",
         lazy="raise",
-        cascade="merge",
+        cascade="merge, save-update",
     )
-
-    def __repr__(self) -> str:
-        return f"Issue(id={self.id}, source={self.source}, source_identifier={self.source_identifier}, titles={self.titles}, volume={self.volume}, number={self.number}, rights={self.rights}, date={self.date})"
