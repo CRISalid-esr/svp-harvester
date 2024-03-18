@@ -3,6 +3,8 @@ from typing import AsyncGenerator
 from app.db.models.abstract import Abstract
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
+from app.db.models.issue import Issue
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.db.models.reference_identifier import ReferenceIdentifier
@@ -15,6 +17,9 @@ from app.harvesters.open_alex.open_alex_document_type_converter import (
 )
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.string_utilities import normalize_string
 
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
@@ -49,8 +54,78 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         async for reference_identifier in self._add_reference_identifiers(json_payload):
             new_ref.identifiers.append(reference_identifier)
 
+        journal = await self._journal(json_payload)
+        if journal:
+            issue = await self._issue(json_payload, journal)
+            new_ref.issue = issue
+
+        new_ref.page = (
+            f"{json_payload.get('biblio', {}).get('first_page', '')}"
+            f"-{json_payload.get('biblio', {}).get('last_page', '')}"
+        )
+
     def _harvester(self) -> str:
         return "OpenAlex"
+
+    async def _journal(self, json_payload) -> Journal | None:
+        if json_payload.get("primary_location", {}) is None:
+            return None
+        if json_payload.get("primary_location", {}).get("source", {}) is None:
+            return None
+        if (
+            json_payload.get("primary_location", {}).get("source", {}).get("type", "")
+            != "journal"
+        ):
+            return None
+        title = (
+            json_payload.get("primary_location", {})
+            .get("source", {})
+            .get("display_name", "")
+        )
+        # TODO : There are two issn, and issn_l. Which one to use?
+        issn = (
+            json_payload.get("primary_location", {}).get("source", {}).get("issn_l", "")
+        )
+        source_identifier = (
+            json_payload.get("primary_location", {}).get("source", {}).get("id", "")
+        )
+        publisher = (
+            json_payload.get("primary_location", {})
+            .get("source", {})
+            .get("host_organization_name", "")
+        )
+        if source_identifier is None:
+            return None
+        journal = await self._get_or_create_journal(
+            JournalInformations(
+                source=self._harvester(),
+                source_identifier=source_identifier,
+                titles=[title],
+                issn=issn,
+                publisher=publisher,
+            )
+        )
+
+        return journal
+
+    async def _issue(self, json_payload, journal: Journal) -> Issue | None:
+        volume = json_payload.get("biblio", {}).get("volume", "")
+        number = json_payload.get("biblio", {}).get("issue", "")
+        source_identifier = (
+            normalize_string("-".join(journal.titles))
+            + f"-{volume}-{number}"
+            + f"-{self._harvester()}"
+        )
+        issue = await self._get_or_create_issue(
+            IssueInformations(
+                source=self._harvester(),
+                source_identifier=source_identifier,
+                journal=journal,
+                volume=volume,
+                number=number,
+            )
+        )
+        return issue
 
     async def _add_reference_identifiers(self, json_payload: dict) -> str:
         try:
