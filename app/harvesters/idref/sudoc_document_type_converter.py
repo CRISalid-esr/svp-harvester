@@ -8,11 +8,17 @@ class SudocDocumentTypeConverter(AbstractDocumentTypeConverter):
     Converts raw data from Sudoc to a normalised DocumentType object
     """
 
-    RDF_BIBO = "http://purl.org/ontology/bibo/"
-
     HARVESTER = "Sudoc"
 
+    RDF = AbstractDocumentTypeConverter.RDF
+
     TYPES_MAPPING = {
-        f"{RDF_BIBO}Book": (f"{RDF_BIBO}Book", "Book"),
-        f"{RDF_BIBO}Thesis": (f"{RDF_BIBO}Thesis", "Thesis"),
+        f"{RDF['BIBO']}Book": (
+            f"{RDF['BIBO']}Book",
+            "Book",
+        ),
+        f"{RDF['BIBO']}Thesis": (
+            f"{RDF['BIBO']}Thesis",
+            "Thesis",
+        ),
     }
