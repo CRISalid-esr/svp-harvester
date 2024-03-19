@@ -19,6 +19,7 @@ class Issue(Base):
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
 
+    titles: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False, default=[])
     volume: Mapped[str] = mapped_column(nullable=True, index=True)
     number: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False, default=[])
 
@@ -33,5 +34,8 @@ class Issue(Base):
 
     journal_id: Mapped[int] = mapped_column(ForeignKey("journals.id"))
     journal: Mapped["app.db.models.journal.Journal"] = relationship(
-        "app.db.models.journal.Journal", back_populates="issues", lazy="raise"
+        "app.db.models.journal.Journal",
+        back_populates="issues",
+        lazy="raise",
+        cascade="merge, save-update",
     )

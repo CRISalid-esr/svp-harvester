@@ -3,6 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
+from app.models.issue import Issue
 from app.models.abstracts import Abstract
 from app.models.concepts import Concept
 from app.models.contribution import Contribution
@@ -28,5 +29,7 @@ class Reference(BaseModel):
     subjects: List[Concept] = []
     document_type: List[DocumentType] = []
     contributions: List[Contribution] = []
+    issue: Issue | None = None
+    page: str | None = None
     issued: datetime | None = None
     created: datetime | None = None

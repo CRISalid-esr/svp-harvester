@@ -48,6 +48,14 @@ class HalApiQueryBuilder:
         "labStructId_i",
         "jel_s",
         "*Id_s",
+        "page_s",
+        "journalId_i",
+        "journalTitle_s",
+        "journalIssn_s",
+        "journalEissn_s",
+        "journalPublisher_s",
+        "issue_s",
+        "volume_s",
     ]
 
     DEFAULT_SORT_PARAMETER = "halId_s"
