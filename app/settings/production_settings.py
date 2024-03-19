@@ -16,3 +16,5 @@ class ProdAppSettings(AppSettings):
     logging_level: int = logging.INFO
 
     loguru_level: str = "INFO"
+
+    institution_name: str = "Please set the institution name in the settings file"

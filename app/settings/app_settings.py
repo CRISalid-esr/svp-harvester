@@ -115,3 +115,5 @@ class AppSettings(BaseSettings):
     open_edition_publications_caching_duration: int = 15 * 24 * 3600
     idref_concepts_publications_caching_duration: int = 90 * 24 * 3600
     wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600
+
+    institution_name: str = "XYZ University"

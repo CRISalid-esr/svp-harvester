@@ -2,8 +2,6 @@ from abc import ABC
 
 from loguru import logger
 
-UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
-
 
 class AbstractDocumentTypeConverter(ABC):
     """
@@ -11,6 +9,17 @@ class AbstractDocumentTypeConverter(ABC):
     """
 
     HARVESTER: str
+
+    RDF = {
+        "BIBO": "http://purl.org/ontology/bibo/",
+        "SPAR": "http://purl.org/spar/fabio/",
+        "COAR": "http://purl.org/coar/resource_type/",
+        "CERIF": "http://purl.org/cerif/frapo/",
+        "FRBR": "http://purl.org/vocab/frbr/core#",
+        "RDA": "http://rdaregistry.info/Elements/c/",
+    }
+
+    UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
 
     TYPES_MAPPING: dict[str, tuple[str, str]]
 
@@ -27,5 +36,5 @@ class AbstractDocumentTypeConverter(ABC):
         """
         if document_type not in self.types_mapping:
             logger.warning(f"Unknown {self.harvester} document type: {document_type}")
-            return UNKNOWN_CODE
-        return self.types_mapping[document_type]
+            return self.UNKNOWN_CODE
+        return self.TYPES_MAPPING[document_type]

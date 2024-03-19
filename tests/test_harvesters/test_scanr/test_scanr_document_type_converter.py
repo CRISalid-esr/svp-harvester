@@ -10,7 +10,7 @@ def test_known_scanr_document_type():
     THEN the corresponding uri and label are returned
     """
     document_type = "book-chapter"
-    convert = ScanrDocumentTypeConverter.convert(document_type)
+    convert = ScanrDocumentTypeConverter().convert(document_type)
     assert convert == (
         "http://purl.org/ontology/bibo/Chapter",
         "Chapter",
@@ -24,7 +24,7 @@ def test_unknown_scanr_document_type():
     THEN the corresponding uri and label are returned
     """
     document_type = "unknown"
-    convert = ScanrDocumentTypeConverter.convert(document_type)
+    convert = ScanrDocumentTypeConverter().convert(document_type)
     assert convert == (
         "http://data.crisalid.org/ref/document_types/unknown",
         "Unknown",
