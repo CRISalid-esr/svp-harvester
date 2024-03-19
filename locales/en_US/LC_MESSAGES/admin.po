@@ -200,7 +200,7 @@ msgstr "ScanR"
 #: app/templates/retrieve.html.jinja:129
 #, fuzzy
 msgid "harvester_scopus_option_label"
-msgstr "ScanR"
+msgstr "Scopus"
 
 #: app/templates/collection_history.html.jinja:113
 #: app/templates/publication_history.html.jinja:120
