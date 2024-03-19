@@ -24,3 +24,5 @@ class DevAppSettings(AppSettings):
     logger_sink: ClassVar[str | TextIO] = sys.stderr
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    institution_name: str = "XYZ University (développement)"

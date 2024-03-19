@@ -23,7 +23,6 @@ LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.3
 JARO_WINKLER_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.16
 
 
-
 class ScanrReferencesConverter(AbstractReferencesConverter):
     """
     Converts raw data from ScanR to a normalised Reference object
@@ -126,7 +125,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         return processed_items
 
     async def _document_type(self, code_document_type: str):
-        uri, label = ScanrDocumentTypeConverter.convert(code_document_type)
+        uri, label = ScanrDocumentTypeConverter().convert(
+            document_type=code_document_type
+        )
         return await self._get_or_create_document_type_by_uri(uri, label)
 
     async def _concepts(self, domains):
