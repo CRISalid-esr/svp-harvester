@@ -51,6 +51,10 @@ async def test_convert(scanr_api_publication_cleaned_response):
     }
     expected_reference_identifiers = ["2019lysem032", "tel-02966640"]
 
+    expected_publisher = "De Gruyter"
+    expected_journal_title = "Central European Journal of Public Policy"
+    expected_issn = "1802-4866"
+
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["_source"].get("id"),
@@ -76,6 +80,9 @@ async def test_convert(scanr_api_publication_cleaned_response):
             identifier.value in expected_reference_identifiers
             for identifier in test_reference.identifiers
         )
+        assert test_reference.issue.journal.publisher == expected_publisher
+        assert expected_journal_title in test_reference.issue.journal.titles
+        assert test_reference.issue.journal.issn == expected_issn
 
 
 async def test_convert_with_default_dupe(
