@@ -9,6 +9,8 @@ from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
+from app.db.models.journal import Journal
+
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -20,7 +22,10 @@ from app.harvesters.json_harvester_raw_result import (
 )
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.string_utilities import normalize_string
 
 
 class HalReferencesConverter(AbstractReferencesConverter):
@@ -102,10 +107,65 @@ class HalReferencesConverter(AbstractReferencesConverter):
         await self._add_contributions(json_payload, new_ref)
         new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
         new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
+        new_ref.page = json_payload.get("page_s", None)
+        journal = await self._journal(json_payload)
+
+        if journal:
+            issue = await self._issue(json_payload, journal)
+            new_ref.issue = issue
         await self._add_organization(json_payload, new_ref)
 
     def _harvester(self) -> str:
         return "HAL"
+
+    async def _journal(self, raw_data) -> Journal | None:
+        title = raw_data.get("journalTitle_s", None)
+        issn = raw_data.get("journalIssn_s", None)
+        eissn = raw_data.get("journalEissn_s", None)
+        publisher = raw_data.get("journalPublisher_s", None)
+        source_identifier = raw_data.get("journalId_i", None)
+
+        if source_identifier is None:
+            return None
+        journal = await self._get_or_create_journal(
+            JournalInformations(
+                source=self._harvester(),
+                source_identifier=str(source_identifier),
+                eissn=eissn,
+                issn=issn,
+                publisher=publisher,
+                titles=[title],
+            )
+        )
+        if publisher is not None and journal.publisher is None:
+            journal.publisher = publisher
+        if title is not None and (title not in journal.titles):
+            journal.titles.append(title)
+        return journal
+
+    async def _issue(self, raw_data, journal: Journal) -> None:
+        volume = raw_data.get("volume_s", None)
+        numbers = raw_data.get("issue_s", [])
+        source_identifier = (
+            normalize_string("-".join(journal.titles))
+            + f"-{volume}-{'-'.join(numbers)}"
+            + f"-{self._harvester()}"
+        )
+        issue = await self._get_or_create_issue(
+            IssueInformations(
+                source=self._harvester(),
+                source_identifier=source_identifier,
+                journal=journal,
+                volume=volume,
+                number=numbers,
+            )
+        )
+        if volume is not None and (volume != issue.volume):
+            issue.volume = volume
+        for number in numbers:
+            if number not in issue.number:
+                issue.number.append(number)
+        return issue
 
     def _identifiers(self, raw_data):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):

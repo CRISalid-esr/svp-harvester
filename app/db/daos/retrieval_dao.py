@@ -7,6 +7,7 @@ from sqlalchemy.orm import joinedload
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
+from app.db.models.issue import Issue
 from app.db.models.references_document_type import references_document_type_table
 from app.db.models.document_type import DocumentType
 from app.db.models.entity import Entity
@@ -75,6 +76,11 @@ class RetrievalDAO(AbstractDAO):
                     joinedload(ReferenceEvent.reference).joinedload(
                         Reference.subjects, innerjoin=False
                     )
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference)
+                    .joinedload(Reference.issue, innerjoin=False)
+                    .options(joinedload(Issue.journal, innerjoin=False))
                 )
             )
             .where(Retrieval.id == retrieval_id)

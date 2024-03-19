@@ -11,11 +11,15 @@ from sqlalchemy.exc import IntegrityError
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
+from app.db.daos.issue_dao import IssueDAO
+from app.db.daos.journal_dao import JournalDAO
 from app.db.daos.organization_dao import OrganizationDAO
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
 from app.db.models.document_type import DocumentType
+from app.db.models.issue import Issue
+from app.db.models.journal import Journal
 from app.db.models.label import Label
 from app.db.models.organization import Organization
 from app.db.models.reference import Reference
@@ -25,6 +29,8 @@ from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.hash.hash_service import HashService
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.merge_organization import merge_organization
 from app.services.organizations.organization_data_class import OrganizationInformations
 from app.services.organizations.organization_factory import OrganizationFactory
@@ -513,3 +519,92 @@ class AbstractReferencesConverter(ABC):
                 else:
                     await session.refresh(organization)
         return organization
+
+    async def _get_or_create_issue(
+        self, issue_informations: IssueInformations, new_attempt: bool = False
+    ):
+        """
+        Try to get an issue by source and source identifier.
+        If not found, create it.
+        """
+        async with async_session() as session:
+            async with session.begin_nested():
+                issue = await IssueDAO(
+                    session
+                ).get_issue_by_source_and_source_identifier(
+                    source=issue_informations.source,
+                    source_identifier=issue_informations.source_identifier,
+                )
+
+                if issue is None:
+                    issue = Issue(
+                        source=issue_informations.source,
+                        source_identifier=issue_informations.source_identifier,
+                        journal=issue_informations.journal,
+                        journal_id=issue_informations.journal.id,
+                        titles=issue_informations.titles,
+                        volume=issue_informations.volume,
+                        number=issue_informations.number,
+                        date=issue_informations.date,
+                        rights=issue_informations.rights,
+                    )
+                    session.add(issue)
+                    try:
+                        await session.commit()
+                    except IntegrityError as error:
+                        assert new_attempt is False, (
+                            f"Unique source and source identifier violation "
+                            "for issue cannot occur twice "
+                            f"during issue creation : {error}"
+                        )
+                        await session.rollback()
+                        issue = await self._get_or_create_issue(
+                            issue_informations=issue_informations, new_attempt=True
+                        )
+        return issue
+
+    async def _get_or_create_journal(
+        self, journal_informations: JournalInformations, new_attempt: bool = False
+    ) -> Journal:
+        """
+        Try to get a journal by source and issn/eissn.
+        If not found, try to get by source and source_identifier.
+        If not found, create it.
+        """
+        async with async_session() as session:
+            async with session.begin_nested():
+                journal = await JournalDAO(session).get_journal_by_source_issn_or_eissn(
+                    source=journal_informations.source,
+                    issn=journal_informations.issn,
+                    eissn=journal_informations.eissn,
+                )
+                if journal is None:
+                    journal = await JournalDAO(
+                        session
+                    ).get_journal_by_source_identifier_and_source(
+                        source=journal_informations.source,
+                        source_identifier=journal_informations.source_identifier,
+                    )
+                if journal is None:
+                    journal = Journal(
+                        source=journal_informations.source,
+                        source_identifier=journal_informations.source_identifier,
+                        eissn=journal_informations.eissn,
+                        issn=journal_informations.issn,
+                        publisher=journal_informations.publisher,
+                        titles=journal_informations.titles,
+                    )
+                    session.add(journal)
+                    try:
+                        await session.commit()
+                    except IntegrityError as error:
+                        assert new_attempt is False, (
+                            f"Unique source and source identifier violation "
+                            "for journal cannot occur twice "
+                            f"during journal creation : {error}"
+                        )
+                        await session.rollback()
+                        journal = await self._get_or_create_journal(
+                            journal_informations=journal_informations, new_attempt=True
+                        )
+        return journal
