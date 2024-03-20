@@ -3,6 +3,7 @@ from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting
+from app.db.models.issue import Issue
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
@@ -68,7 +69,11 @@ class ReferenceEventDAO(AbstractDAO):
             .options(
                 joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
             )
-            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.issue))
+            .options(
+                joinedload(ReferenceEvent.reference)
+                .joinedload(Reference.issue)
+                .joinedload(Issue.journal)
+            )
             .options(
                 joinedload(ReferenceEvent.harvesting)
                 .joinedload(Harvesting.retrieval)
