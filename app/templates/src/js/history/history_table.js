@@ -212,11 +212,13 @@ function formatSourceData(harvesting_state) {
             return `<span class='badge ${MAPPING_COLOR_EVENT[event[0]]}'>${event[1]}</span>`;
         }).join(' ');
 
+        const preloader = data.state === "running" ? `<div class="spinner-border spinner-border-sm spinner-inline float-right" role="status"></div>` : '';
+
         return `<span class="badge badge-pill ${classBadgeState}" 
                 data-bs-toggle="tooltip"
                 data-bs-html="true" 
                 data-bs-title="${eventBadges}">
-                    ${source} ${data.count}
+                    ${source} ${data.count} ${preloader}
                 </span>`;
 
     }).join(' ');
