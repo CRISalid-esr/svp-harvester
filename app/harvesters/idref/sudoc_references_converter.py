@@ -36,15 +36,6 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
 
-        # If we have an article, we need to get the journal and issue
-        if "Article" in [dc.label for dc in new_ref.document_type]:
-            async for biblio_graph, uri in self._get_bibliographic_resource(
-                pub_graph=raw_data.payload, uri=raw_data.source_identifier
-            ):
-                journal = await self._get_journal(biblio_graph, uri)
-                issue = await self._get_issue(journal)
-                new_ref.issue = issue
-
     def _harvester(self) -> str:
         return "Idref"
 
@@ -59,7 +50,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             # We only want the first appearance.
             break
 
-    async def _get_issue(self, journal) -> Issue:
+    async def _get_issue(self, biblio_graph, uri, journal) -> Issue:
         source_identifier = normalize_string("-".join(journal.titles)) + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(

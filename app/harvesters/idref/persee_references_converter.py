@@ -33,14 +33,19 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
-        if "Article" in [dc.label for dc in new_ref.document_type]:
-            async for biblio_graph, uri in self._get_bibliographic_resource(
-                pub_graph=raw_data.payload, uri=raw_data.source_identifier
-            ):
-                journal = await self._get_journal(biblio_graph, uri)
-                if not journal:
-                    break
-                new_ref.issue = await self._get_issue(biblio_graph, uri, journal)
+        new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
+
+    def _page(self, pub_graph, uri):
+        page = ""
+        for page_start in pub_graph.objects(
+            rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).pageStart
+        ):
+            page += page_start.value
+        for page_start in pub_graph.objects(
+            rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).pageEnd
+        ):
+            page += "-" + page_start.value
+        return page if page else None
 
     async def _get_journal(self, biblio_graph, uri):
         # Check we are dealing with an issue in the first place
@@ -88,16 +93,16 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             )
         )
 
-    async def _get_issue(self, biblio_graphs, uri, journal):
+    async def _get_issue(self, biblio_graph, uri, journal):
         source_identifier = uri
         number = None
-        for number in biblio_graphs.objects(
+        for number in biblio_graph.objects(
             rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).issue
         ):
             number = number.value
             break
         volume = None
-        for volume in biblio_graphs.objects(
+        for volume in biblio_graph.objects(
             rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).volume
         ):
             volume = volume.value
