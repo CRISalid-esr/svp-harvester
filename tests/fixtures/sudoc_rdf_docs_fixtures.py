@@ -23,6 +23,12 @@ def fixture_sudoc_rdf_graph_for_doc(_base_path) -> Graph:
     return _sudoc_rdf_graph_from_file(_base_path, "document")
 
 
+@pytest.fixture(name="sudoc_rdf_result_for_journal")
+def fixture_sudoc_rdf_result_for_journal(_base_path) -> Graph:
+    """Rdf graph from sudoc journal rdf file"""
+    return _sudoc_rdf_graph_from_file(_base_path, "journal")
+
+
 @pytest.fixture(name="sudoc_rdf_graph_for_hash_1")
 def fixture_sudoc_rdf_graph_for_hash_1(_base_path) -> Graph:
     """Rdf graph from sudoc rdf file"""
