@@ -2,6 +2,8 @@ from xml.etree.ElementTree import Element
 import isodate
 from loguru import logger
 from app.db.models.abstract import Abstract
+from app.db.models.issue import Issue
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
@@ -14,7 +16,10 @@ from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.db.models.contribution import Contribution
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key_xml import HashKeyXML
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.string_utilities import normalize_string
 
 
 class ScopusReferencesConverter(AbstractReferencesConverter):
@@ -23,7 +28,6 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
     """
 
     FIELD_NAME_IDENTIFIER = {
-        "prism:issn": "issn",
         "prism:doi": "doi",
         "default:pubmed-id": "pubmed",
     }
@@ -56,6 +60,58 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         issued = self._issued(entry)
         if issued is not None:
             new_ref.issued = issued
+
+        journal = await self._journal(entry)
+        if journal is not None:
+            issue = await self._issue(entry, journal)
+            new_ref.issue = issue
+
+        new_ref.page = (
+            self._get_element(entry, "prism:pageRange").text
+            if self._get_element(entry, "prism:pageRange") is not None
+            else None
+        )
+
+    async def _journal(self, entry: Element) -> Journal | None:
+        issn = self._get_element(entry, "prism:issn")
+        eissn = self._get_element(entry, "prism:eIssn")
+        title = self._get_element(entry, "prism:publicationName")
+        source_identifier = self._get_element(entry, "default:source-id")
+        if (issn is None and eissn is None) or (source_identifier is None):
+            return None
+
+        journal = await self._get_or_create_journal(
+            JournalInformations(
+                issn=f"{issn.text[:4]}-{issn.text[4:]}" if issn is not None else None,
+                eissn=(
+                    f"{eissn.text[:4]}-{eissn.text[4:]}" if eissn is not None else None
+                ),
+                titles=[title.text] if title is not None else [],
+                source=self._harvester(),
+                source_identifier=source_identifier.text,
+            )
+        )
+        return journal
+
+    async def _issue(self, entry: Element, journal: Journal) -> Issue:
+        volume = self._get_element(entry, "prism:volume")
+        number = self._get_element(entry, "prism:issueIdentifier")
+        source_identifier = (
+            normalize_string("-".join(journal.titles))
+            + f"-{volume.text if volume is not None else ''}-"
+            + f"{number.text if number is not None else ''}-"
+            + f"{self._harvester()}"
+        )
+        issue = await self._get_or_create_issue(
+            IssueInformations(
+                source=self._harvester(),
+                journal=journal,
+                volume=volume.text if volume is not None else None,
+                number=[number.text] if number is not None else [],
+                source_identifier=source_identifier,
+            )
+        )
+        return issue
 
     async def _concepts(self, entry: Element):
         concepts = self._get_element(entry, "default:authkeywords")
