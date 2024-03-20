@@ -1,3 +1,4 @@
+from math import exp
 import pytest
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
 
@@ -20,7 +21,7 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     )
 
     expected_abstract = "Introduction and Aims: Approximately 21% of the world's"
-    expected_identifier = ["10.1111/cpf.12870", "14750961", "38155545"]
+    expected_identifier = ["10.1111/cpf.12870", "38155545"]
     expected_document_type = "Review"
     expected_concepts = [
         "imaging methods",
@@ -37,6 +38,13 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     ]
     expected_affiliation = ["Hochschule Furtwangen", "CHU de Nantes"]
 
+    expected_page = "132-134"
+    expected_issn = "1111-2222"
+    expected_eissn = "3333-4444"
+    expected_journal_title = "Clinical Physiology and Functional Imaging"
+    expected_volume_issue = "12"
+    expected_number_issue = "1"
+
     assert test_reference.titles[0].value == expected_title
     assert test_reference.abstracts[0].value == expected_abstract
     for identifier in test_reference.identifiers:
@@ -50,3 +58,9 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
         assert contribution.role == "Author"
         for affiliation in contribution.affiliations:
             assert affiliation.name in expected_affiliation
+    assert test_reference.page == expected_page
+    assert test_reference.issue.journal.issn == expected_issn
+    assert test_reference.issue.journal.eissn == expected_eissn
+    assert expected_journal_title in test_reference.issue.journal.titles
+    assert test_reference.issue.volume == expected_volume_issue
+    assert expected_number_issue in test_reference.issue.number

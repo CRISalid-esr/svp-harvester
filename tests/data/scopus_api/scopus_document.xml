@@ -27,11 +27,13 @@
         <dc:title>Is musculoskeletal pain associated with increased muscle stiffness?</dc:title>
         <dc:creator>Haueise A.</dc:creator>
         <prism:publicationName>Clinical Physiology and Functional Imaging</prism:publicationName>
-        <prism:issn>14750961</prism:issn>
-        <prism:eIssn>1475097X</prism:eIssn>
-        <prism:pageRange />
+        <prism:issn>11112222</prism:issn>
+        <prism:eIssn>33334444</prism:eIssn>
+        <prism:pageRange>132-134</prism:pageRange>
         <prism:coverDate>2024-01-01</prism:coverDate>
         <prism:coverDisplayDate>2024</prism:coverDisplayDate>
+        <prism:volume>12</prism:volume>
+        <prism:issueIdentifier>1</prism:issueIdentifier>
         <prism:doi>10.1111/cpf.12870</prism:doi>
         <dc:description>Introduction and Aims: Approximately 21% of the world's</dc:description>
         <citedby-count>0</citedby-count>
