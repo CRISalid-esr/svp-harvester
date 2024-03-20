@@ -82,7 +82,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         )
         assert test_reference.issue.journal.publisher == expected_publisher
         assert expected_journal_title in test_reference.issue.journal.titles
-        assert test_reference.issue.journal.issn == expected_issn
+        assert expected_issn in test_reference.issue.journal.issn
 
 
 async def test_convert_with_default_dupe(

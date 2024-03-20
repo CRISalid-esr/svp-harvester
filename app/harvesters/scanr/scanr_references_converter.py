@@ -99,8 +99,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         issue = await self._get_or_create_issue(
             IssueInformations(
                 source=self._harvester(),
-                source_identifier=source_identifier,
                 journal=journal,
+                source_identifier=source_identifier,
             )
         )
         return issue
@@ -109,7 +109,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         if json_payload["_source"].get("source") == {}:
             return None
         title = json_payload["_source"].get("source").get("title")
-        issn = json_payload["_source"].get("source").get("journalIssns")[0]
+        issn = json_payload["_source"].get("source").get("journalIssns", [])
         publisher = json_payload["_source"].get("source").get("publisher")
         journal = await self._get_or_create_journal(
             JournalInformations(
