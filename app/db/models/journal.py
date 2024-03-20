@@ -18,8 +18,13 @@ class Journal(Base):
     source: Mapped[str] = mapped_column(nullable=False, index=True)
     source_identifier: Mapped[str] = mapped_column(nullable=False, index=True)
 
-    issn: Mapped[str] = mapped_column(nullable=True, index=True)
-    eissn: Mapped[str] = mapped_column(nullable=True, index=True)
+    issn: Mapped[List[str]] = mapped_column(
+        ARRAY(String), nullable=False, index=True, default=[]
+    )
+    eissn: Mapped[List[str]] = mapped_column(
+        ARRAY(String), nullable=False, index=True, default=[]
+    )
+    issn_l: Mapped[str] = mapped_column(nullable=True, index=True)
     publisher: Mapped[str] = mapped_column(nullable=True, index=False)
 
     titles: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False, default=[])

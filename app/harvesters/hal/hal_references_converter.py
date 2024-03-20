@@ -124,15 +124,14 @@ class HalReferencesConverter(AbstractReferencesConverter):
         eissn = raw_data.get("journalEissn_s", None)
         publisher = raw_data.get("journalPublisher_s", None)
         source_identifier = raw_data.get("journalId_i", None)
-
         if source_identifier is None:
             return None
         journal = await self._get_or_create_journal(
             JournalInformations(
                 source=self._harvester(),
                 source_identifier=str(source_identifier),
-                eissn=eissn,
-                issn=issn,
+                eissn=[eissn] if eissn is not None else [],
+                issn=[issn] if issn is not None else [],
                 publisher=publisher,
                 titles=[title],
             )

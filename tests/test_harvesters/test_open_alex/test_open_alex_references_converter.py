@@ -77,4 +77,4 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.issue.volume == expected_volume
     assert test_reference.issue.number == expected_issue_number
     assert test_reference.issue.journal.publisher == expected_publisher
-    assert test_reference.issue.journal.issn == expected_issn
+    assert expected_issn in test_reference.issue.journal.issn

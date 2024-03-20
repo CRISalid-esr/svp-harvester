@@ -77,31 +77,38 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             != "journal"
         ):
             return None
+        source_identifier = (
+            json_payload.get("primary_location", {}).get("source", {}).get("id", "")
+        )
+        if source_identifier is None:
+            return None
         title = (
             json_payload.get("primary_location", {})
             .get("source", {})
             .get("display_name", "")
         )
-        # TODO : There are two issn, and issn_l. Which one to use?
+        issn_l = (
+            json_payload.get("primary_location", {})
+            .get("source", {})
+            .get("issn_l", None)
+        )
         issn = (
-            json_payload.get("primary_location", {}).get("source", {}).get("issn_l", "")
+            json_payload.get("primary_location", {}).get("source", {}).get("issn", [])
         )
-        source_identifier = (
-            json_payload.get("primary_location", {}).get("source", {}).get("id", "")
-        )
+
         publisher = (
             json_payload.get("primary_location", {})
             .get("source", {})
             .get("host_organization_name", "")
         )
-        if source_identifier is None:
-            return None
+
         journal = await self._get_or_create_journal(
             JournalInformations(
                 source=self._harvester(),
+                issn=issn,
+                issn_l=issn_l,
                 source_identifier=source_identifier,
                 titles=[title],
-                issn=issn,
                 publisher=publisher,
             )
         )
@@ -119,10 +126,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         issue = await self._get_or_create_issue(
             IssueInformations(
                 source=self._harvester(),
-                source_identifier=source_identifier,
                 journal=journal,
                 volume=volume,
                 number=number,
+                source_identifier=source_identifier,
             )
         )
         return issue

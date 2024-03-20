@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy import select
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.journal import Journal
@@ -8,8 +9,12 @@ class JournalDAO(AbstractDAO):
     Data access object for journals
     """
 
-    async def get_journal_by_source_issn_or_eissn(
-        self, source: str, issn: str = None, eissn: str = None
+    async def get_journal_by_source_issn_or_eissn_or_issn_l(
+        self,
+        source: str,
+        issn: List[str] = None,
+        eissn: List[str] = None,
+        issn_l: str = None,
     ):
         """
         Get a journal by its source and issn or eissn
@@ -19,13 +24,19 @@ class JournalDAO(AbstractDAO):
         :param eissn: eissn of the journal
         :return: the journal or None if not found
         """
-        if issn is None and eissn is None:
+        if not issn and not eissn and issn_l is None:
             return None
+        if not issn:
+            issn = []
+        if not eissn:
+            eissn = []
         query = select(Journal).where(Journal.source == source)
-        if issn is not None:
-            query = query.where(Journal.issn == issn)
-        if eissn is not None:
-            query = query.where(Journal.eissn == eissn)
+        for issn_value in issn:
+            query = query.where(Journal.issn.any(issn_value))
+        for eissn_value in eissn:
+            query = query.where(Journal.eissn.any(eissn_value))
+        if issn_l is not None:
+            query = query.where(Journal.issn_l == str(issn_l))
         return (await self.db_session.execute(query)).scalars().one_or_none()
 
     async def get_journal_by_source_identifier_and_source(
