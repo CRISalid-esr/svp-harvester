@@ -157,6 +157,7 @@ class ReferenceDAO(AbstractDAO):
                     [func.lower(h) for h in filter_harvester["harvester"]]
                 ),
             )
+            .order_by(Harvesting.timestamp.desc())
             .group_by(Harvesting.timestamp, Reference.id, ReferenceEvent.type)
         )
 

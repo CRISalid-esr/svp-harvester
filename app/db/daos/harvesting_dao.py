@@ -4,6 +4,8 @@ from sqlalchemy.orm import joinedload, raiseload
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
 from app.db.models.identifier import Identifier
+from app.db.models.issue import Issue
+from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval as DbRetrieval
 
@@ -59,6 +61,12 @@ class HarvestingDAO(AbstractDAO):
         stmt = (
             select(DbHarvesting)
             .options(joinedload(DbHarvesting.retrieval))
+            .options(
+                joinedload(DbHarvesting.reference_events)
+                .joinedload(ReferenceEvent.reference)
+                .joinedload(Reference.issue)
+                .joinedload(Issue.journal)
+            )
             .where(DbHarvesting.id == harvesting_id)
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()

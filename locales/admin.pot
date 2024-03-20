@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-15 09:51+0000\n"
+"POT-Creation-Date: 2024-03-20 10:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,63 +177,69 @@ msgstr ""
 msgid "harvester_scanr_option_label"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:110
-#: app/templates/publication_history.html.jinja:117
+#: app/templates/collection_history.html.jinja:107
+#: app/templates/publication_history.html.jinja:114
+#: app/templates/retrieve.html.jinja:129
+msgid "harvester_scopus_option_label"
+msgstr ""
+
+#: app/templates/collection_history.html.jinja:113
+#: app/templates/publication_history.html.jinja:120
 msgid "harvesting_range_select_label"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:112
-#: app/templates/publication_history.html.jinja:119
+#: app/templates/collection_history.html.jinja:115
+#: app/templates/publication_history.html.jinja:122
 msgid "history_page_harvesting_range_select_help_text"
-msgstr ""
-
-#: app/templates/collection_history.html.jinja:118
-#: app/templates/publication_history.html.jinja:125
-msgid "harvesting_range_start_input_label"
 msgstr ""
 
 #: app/templates/collection_history.html.jinja:121
 #: app/templates/publication_history.html.jinja:128
+msgid "harvesting_range_start_input_label"
+msgstr ""
+
+#: app/templates/collection_history.html.jinja:124
+#: app/templates/publication_history.html.jinja:131
 msgid "harvesting_range_start_input_aria_label"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:122
-#: app/templates/publication_history.html.jinja:129
+#: app/templates/collection_history.html.jinja:125
+#: app/templates/publication_history.html.jinja:132
 msgid "harvesting_range_start_input_placeholder"
-msgstr ""
-
-#: app/templates/collection_history.html.jinja:126
-#: app/templates/publication_history.html.jinja:133
-msgid "harvesting_range_end_input_label"
-msgstr ""
-
-#: app/templates/collection_history.html.jinja:128
-#: app/templates/publication_history.html.jinja:135
-msgid "harvesting_range_end_input_arial_label"
 msgstr ""
 
 #: app/templates/collection_history.html.jinja:129
 #: app/templates/publication_history.html.jinja:136
-msgid "harvesting_range_end_input_placeholder"
+msgid "harvesting_range_end_input_label"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:136
-#: app/templates/publication_history.html.jinja:143
-#: app/templates/retrieve.html.jinja:158
-msgid "clear_form_button_label"
+#: app/templates/collection_history.html.jinja:131
+#: app/templates/publication_history.html.jinja:138
+msgid "harvesting_range_end_input_arial_label"
+msgstr ""
+
+#: app/templates/collection_history.html.jinja:132
+#: app/templates/publication_history.html.jinja:139
+msgid "harvesting_range_end_input_placeholder"
 msgstr ""
 
 #: app/templates/collection_history.html.jinja:139
 #: app/templates/publication_history.html.jinja:146
+#: app/templates/retrieve.html.jinja:161
+msgid "clear_form_button_label"
+msgstr ""
+
+#: app/templates/collection_history.html.jinja:142
+#: app/templates/publication_history.html.jinja:149
 msgid "history_page_launch_history_search_button"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:149
+#: app/templates/collection_history.html.jinja:152
 msgid "hide_empty_collection_results"
 msgstr ""
 
-#: app/templates/collection_history.html.jinja:159
-#: app/templates/publication_history.html.jinja:159
+#: app/templates/collection_history.html.jinja:162
+#: app/templates/publication_history.html.jinja:162
 msgid "history_page_search_result_panel_title"
 msgstr ""
 
@@ -318,59 +324,59 @@ msgstr ""
 msgid "retrieve_page_harvester_select_help_text"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:133
+#: app/templates/retrieve.html.jinja:136
 msgid "retrieve_page_reference_type_select_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:135
+#: app/templates/retrieve.html.jinja:138
 msgid "retrieve_page_reference_type_select_help_text"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:138
+#: app/templates/retrieve.html.jinja:141
 msgid "retrieve_page_reference_type_select_aria_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:140
+#: app/templates/retrieve.html.jinja:143
 msgid "retrieve_page_reference_type_article_option_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:142
-msgid "retrieve_page_reference_type_book_option_label"
-msgstr ""
-
 #: app/templates/retrieve.html.jinja:145
-msgid ""
-"\n"
-"              retrieve_page_reference_type_book_section_option_label"
+msgid "retrieve_page_reference_type_book_option_label"
 msgstr ""
 
 #: app/templates/retrieve.html.jinja:148
 msgid ""
 "\n"
+"              retrieve_page_reference_type_book_section_option_label"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:151
+msgid ""
+"\n"
 "              retrieve_page_reference_type_book_chapter_option_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:162
+#: app/templates/retrieve.html.jinja:165
 msgid "retrieve_page_launch_retrieval_button_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:167
+#: app/templates/retrieve.html.jinja:170
 msgid "retrieve_page_stop_retrieval_button_label"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:179
+#: app/templates/retrieve.html.jinja:182
 msgid ""
 "\n"
 "        retrieve_page_current_entity_card_title"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:187
+#: app/templates/retrieve.html.jinja:190
 msgid ""
 "\n"
 "        retrieve_page_collection_status_card_title"
 msgstr ""
 
-#: app/templates/retrieve.html.jinja:200
+#: app/templates/retrieve.html.jinja:203
 msgid "retrieve_page_search_result_panel_title"
 msgstr ""
 
