@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+
 import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -204,7 +205,9 @@ async def test_journal_and_issue_not_deleted_when_reference_deleted(
         source="source",
         source_identifier="source_identifier_1234",
         titles=["Fake scientific journal"],
-        issn="1234-5678",
+        issn=["1234-5678"],
+        eissn=["5678-1234"],
+        issn_l="1111-2222",
     )
     issue = Issue(
         source="source",
@@ -244,7 +247,9 @@ async def test_journal_and_issue_not_deleted_when_reference_deleted(
     assert issue.journal is not None
     assert issue.journal.id == journal_id
     assert issue.journal.titles == ["Fake scientific journal"]
-    assert issue.journal.issn == "1234-5678"
+    assert "1234-5678" in issue.journal.issn
+    assert "5678-1234" in issue.journal.eissn
+    assert issue.journal.issn_l == "1111-2222"
     assert issue.volume == "1"
     assert issue.number == ["1"]
     await async_session.delete(issue)
