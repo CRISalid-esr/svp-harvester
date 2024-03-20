@@ -1,7 +1,7 @@
 from typing import AsyncGenerator
 
 import rdflib
-from rdflib import DCTERMS, RDF, Literal, URIRef
+from rdflib import DCTERMS, RDF, Literal, Namespace, URIRef
 
 from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
@@ -13,6 +13,9 @@ from app.harvesters.idref.abes_rdf_references_converter import (
 from app.harvesters.idref.persee_qualities_converter import PerseeQualitiesConverter
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.hash.hash_key import HashKey
+from app.harvesters.idref.rdf_resolver import RdfResolver
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
 
 
 class PerseeReferencesConverter(AbesRDFReferencesConverter):
@@ -30,6 +33,94 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
+        if "Article" in [dc.label for dc in new_ref.document_type]:
+            async for biblio_graph, uri in self._get_bibliographic_resource(
+                pub_graph=raw_data.payload, uri=raw_data.source_identifier
+            ):
+                journal = await self._get_journal(biblio_graph, uri)
+                if not journal:
+                    break
+                new_ref.issue = await self._get_issue(biblio_graph, uri, journal)
+
+    async def _get_journal(self, biblio_graph, uri):
+        # Check we are dealing with an issue in the first place
+        label_type = []
+        for document_type_uri in biblio_graph.objects(
+            rdflib.term.URIRef(uri), RDF.type
+        ):
+            label = str(document_type_uri).rsplit("/", maxsplit=1)[-1]
+            label_type.append(label)
+        if "Issue" not in label_type:
+            return None
+
+        titles = []
+
+        issn_value = []
+        for issn in biblio_graph.objects(
+            rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).issn
+        ):
+            try:
+                issn_value.append(issn.value)
+            except AttributeError:
+                issn_value.append(str(issn).rsplit("/", maxsplit=1)[-1])
+        title_value = None
+        for title in biblio_graph.objects(rdflib.term.URIRef(uri), DCTERMS.title):
+            title_value = title.value
+        if title_value is not None:
+            titles.append(title_value)
+
+        publisher_value = None
+        for publisher in biblio_graph.objects(
+            rdflib.term.URIRef(uri), DCTERMS.publisher
+        ):
+            publisher_value = publisher.value
+
+        source_identifier = (
+            f"{'-'.join(titles)}-{'-'.join(issn_value)}-{publisher_value}-persee"
+        )
+        return await self._get_or_create_journal(
+            JournalInformations(
+                source="sudoc",
+                source_identifier=source_identifier,
+                issn=issn_value,
+                publisher=publisher_value,
+                titles=titles,
+            )
+        )
+
+    async def _get_issue(self, biblio_graphs, uri, journal):
+        source_identifier = uri
+        number = None
+        for number in biblio_graphs.objects(
+            rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).issue
+        ):
+            number = number.value
+            break
+        volume = None
+        for volume in biblio_graphs.objects(
+            rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).volume
+        ):
+            volume = volume.value
+            break
+        return await self._get_or_create_issue(
+            IssueInformations(
+                source="persee",
+                source_identifier=source_identifier,
+                journal=journal,
+                number=number,
+                volume=volume,
+            )
+        )
+
+    async def _get_bibliographic_resource(self, pub_graph, uri):
+        document: Literal
+        for document in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.isPartOf):
+            document_uri = str(document).replace("#Web", "#Print")
+            document = str(document).replace("#Web", "")
+            document = document.replace("http", "https")
+            document_graph = await RdfResolver().fetch(document)
+            yield document_graph, document_uri
+            break
 
     def _add_reference_identifiers(self, pub_graph, uri):
         yield ReferenceIdentifier(value=uri, type="uri")
