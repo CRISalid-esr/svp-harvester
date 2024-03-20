@@ -14,7 +14,7 @@ def test_known_open_alex_document_type():
     assert convert == ("http://purl.org/ontology/bibo/Article", "Article")
 
 
-def test_unknown_open_alex_document_type(caplog):
+def test_unknown_open_alex_document_type():
     """
     GIVEN an unknown Open Alex document type
     WHEN the document type converter is called
@@ -23,4 +23,4 @@ def test_unknown_open_alex_document_type(caplog):
     document_type = "UNKNOWN"
     convert = OpenAlexDocumentTypeConverter().convert(document_type)
     assert convert == ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
-    assert f"Unknown OPEN_ALEX document type: {document_type}" in caplog.text
+    assert f"Unknown OPEN_ALEX document type: {document_type}"

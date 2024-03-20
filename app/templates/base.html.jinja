@@ -8,7 +8,7 @@
   <meta name="generator" content="">
   {% block head %}
     <title>{% block head_title %}  head_title {% endblock %} - {% trans %}
-      application_name{% endtrans %}</title>
+      application_name{% endtrans %} | {{ institution_name }}</title>
   {% endblock %}
   <script src="/static/js/main.js"></script>
 </head>
@@ -16,7 +16,7 @@
 <header class="navbar sticky-top navbar-dark bg-custom-navbar flex-md-nowrap p-0 shadow">
   {% block header %}
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-center" href="/admin">{% trans %}
-      application_name{% endtrans %}</a>
+      application_name{% endtrans %} | {{ institution_name }}</a>
 
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button"
             data-bs-toggle="collapse"

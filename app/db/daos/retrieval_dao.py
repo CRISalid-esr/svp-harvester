@@ -160,6 +160,7 @@ class RetrievalDAO(AbstractDAO):
                     [func.lower(h) for h in filter_harvester["harvester"]]
                 )
             )
+            .order_by(Retrieval.timestamp.desc())
             .group_by(Retrieval.id, entity_id.c.name)
         )
 

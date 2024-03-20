@@ -174,7 +174,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     async def _document_type(self, root: ElementTree):
         document_type = self._get_term(root, "type")
-        uri, label = OpenEditionDocumentTypeConverter.convert(document_type)
+        uri, label = OpenEditionDocumentTypeConverter().convert(
+            document_type=document_type
+        )
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
     def hash_keys(self) -> list[str]:
