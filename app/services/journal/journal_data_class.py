@@ -1,3 +1,4 @@
+from typing import List
 from attr import dataclass
 
 
@@ -9,7 +10,8 @@ class JournalInformations:
 
     source: str
     source_identifier: str
-    eissn: str = None
-    issn: str = None
+    eissn: List[str] = []
+    issn: List[str] = []
+    issn_l: str = None
     publisher: str = None
     titles: list[str] = []

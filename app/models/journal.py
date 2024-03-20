@@ -11,8 +11,9 @@ class Journal(BaseModel):
     source: str
     source_identifier: str
 
-    issn: str | None = None
-    eissn: str | None = None
+    issn: list[str] = []
+    eissn: list[str] = []
+    issn_l: str | None = None
     publisher: str | None = None
 
     titles: list[str] = []

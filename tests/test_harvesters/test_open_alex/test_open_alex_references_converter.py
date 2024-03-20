@@ -39,6 +39,12 @@ async def test_convert(open_alex_api_work: dict):
 
     expected_reference_identifier_ignored = ["mag"]
 
+    expected_page = "785-789"
+    expected_volume = "37"
+    expected_issue_number = "2"
+    expected_publisher = "American Physical Society"
+    expected_issn = "2469-9896"
+
     test_reference = converter_under_tests.build(raw_data=result)
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
@@ -67,3 +73,8 @@ async def test_convert(open_alex_api_work: dict):
         identifier.type not in expected_reference_identifier_ignored
         for identifier in test_reference.identifiers
     )
+    assert test_reference.page == expected_page
+    assert test_reference.issue.volume == expected_volume
+    assert test_reference.issue.number == expected_issue_number
+    assert test_reference.issue.journal.publisher == expected_publisher
+    assert expected_issn in test_reference.issue.journal.issn
