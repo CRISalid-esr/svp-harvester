@@ -82,6 +82,10 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     def _get_source(self):
         raise NotImplementedError()
 
+    @abstractmethod
+    async def _get_issue(self, pub_graph, uri):
+        raise NotImplementedError()
+
     async def _add_contributions(self, pub_graph, uri):
         contribution_informations = []
         marcrel = Namespace("http://id.loc.gov/vocabulary/relators/")
