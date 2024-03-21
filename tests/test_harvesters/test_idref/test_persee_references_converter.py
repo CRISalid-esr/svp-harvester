@@ -23,6 +23,11 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     expected_title = "Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception"
     expected_document_type = "Document"
     expected_auth_name = "Christian Hottin"
+    expected_page = "103-113"
+    expected_issue = "1"
+    expected_volume = "18"
+    expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
+    expected_publisher = "Paris : Centre Gustave Glotz"
 
     test_reference = converter_under_tests.build(raw_data=persee_rdf_result_for_doc)
     assert test_reference.source_identifier == expected_source_identifier
@@ -39,3 +44,8 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     assert len(test_reference.contributions) == 1
     assert expected_auth_name == test_reference.contributions[0].contributor.name.value
     assert test_reference.identifiers[0].value == expected_source_identifier
+    assert test_reference.page == expected_page
+    assert expected_issue == test_reference.issue.number
+    assert expected_volume == test_reference.issue.volume
+    assert expected_journal_title in test_reference.issue.journal.titles
+    assert expected_publisher == test_reference.issue.journal.publisher

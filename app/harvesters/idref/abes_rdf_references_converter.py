@@ -44,6 +44,17 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._add_contributions(pub_graph, uri):
             new_ref.contributions.append(contribution)
 
+        if "Article" in [dc.label for dc in new_ref.document_type]:
+            async for biblio_graph, uri in self._get_bibliographic_resource(
+                pub_graph=raw_data.payload, uri=raw_data.source_identifier
+            ):
+                if not biblio_graph or not uri:
+                    continue
+                journal = await self._get_journal(biblio_graph, uri)
+                if not journal:
+                    continue
+                new_ref.issue = await self._get_issue(biblio_graph, uri, journal)
+
     def hash(self, raw_data: RdfRawResult) -> str:
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
@@ -52,6 +63,16 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))
         }
         return hashlib.sha256(str(graph_as_dict).encode()).hexdigest()
+
+    # pylint: disable=unused-argument
+    async def _get_bibliographic_resource(self, pub_graph, uri):
+        yield None, None
+
+    async def _get_issue(self, biblio_graph, uri, journal):
+        raise NotImplementedError()
+
+    async def _get_journal(self, biblio_graph, uri):
+        raise NotImplementedError()
 
     @abstractmethod
     def _titles(self, pub_graph, uri):
