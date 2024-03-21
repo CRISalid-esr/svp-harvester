@@ -1,0 +1,110 @@
+<!--ISSN = False-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:bibo="http://purl.org/ontology/bibo/" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dctype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:rdafrbr1="http://rdvocab.info/RDARelationshipsWEMI/"
+    xmlns:marcrel="http://id.loc.gov/vocabulary/relators/" xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:gr="http://purl.org/goodrelations/v1#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:isbd="http://iflastandards.info/ns/isbd/elements/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:rdafrbr2="http://RDVocab.info/uri/schema/FRBRentitiesRDA/"
+    xmlns:rdaelements="http://rdvocab.info/Elements/"
+    xmlns:rdac="http://rdaregistry.info/Elements/c/"
+    xmlns:rdau="http://rdaregistry.info/Elements/u/"
+    xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+    xmlns:rdae="http://rdaregistry.info/Elements/e/"
+    xmlns:rdam="http://rdaregistry.info/Elements/m/"
+    xmlns:rdai="http://rdaregistry.info/Elements/i/" xmlns:sudoc="http://www.sudoc.fr/ns/"
+    xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/" xmlns:fabio="http://purl.org/spar/fabio/"
+    xmlns:gn="http://www.geonames.org/ontology">
+    <bibo:Document rdf:about="http://www.sudoc.fr/037463764">
+        <foaf:primaryTopic rdf:resource="http://www.sudoc.fr/013451154/id"></foaf:primaryTopic>
+        <dcterms:identifier>037463764</dcterms:identifier>
+        <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"></dcterms:creator>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1983-01-01</dcterms:created>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">
+            2024-03-16T19:57:34</dcterms:modified>
+    </bibo:Document>
+    <bibo:Periodical rdf:about="http://www.sudoc.fr/013451154/id"><!--content
+        form (isbd), media type (rda)-->
+        <isbd:P1001>
+            <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/contentform/T1009">
+                <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+            </skos:Concept>
+        </isbd:P1001><!--rda:content
+        type-->
+        <rdau:P60049>
+            <skos:Concept rdf:about="http://rdaregistry.info/termList/RDAContentType/1020">
+                <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+            </skos:Concept>
+        </rdau:P60049>
+        <dc:type>Text</dc:type><!--media
+        type-->
+        <isbd:P1003>
+            <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/mediatype/T1010">
+                <skos:prefLabel xml:lang="en">unmediated</skos:prefLabel>
+            </skos:Concept>
+        </isbd:P1003><!--carrier
+        type-->
+        <rdau:P60048>
+            <skos:Concept rdf:about="http://rdaregistry.info/termList/RDACarrierType/1049">
+                <skos:prefLabel xml:lang="fr">volume</skos:prefLabel>
+                <skos:prefLabel xml:lang="en">volume</skos:prefLabel>
+            </skos:Concept>
+        </rdau:P60048>
+        <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/fra"></dcterms:language>
+        <gn:countryCode>FR</gn:countryCode>
+        <bibo:issn>1954-6009</bibo:issn>
+        <fabio:hasIssnL>1954-6009</fabio:hasIssnL>
+        <dc:title>Le Cabinet historique : revue mensuelle contenant, avec un texte et des pièces inédites, intéressantes ou peu connues, le catalogue général des manuscrits...</dc:title><!--rdau:P60597
+        : titre clé-->
+        <rdau:P60597>Le Cabinet historique</rdau:P60597><!--rdaelements
+        obsolète : voir rdam:P30003-->
+        <rdaelements:modeOfIssuance>
+            <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1003">
+                <skos:prefLabel xml:lang="en">Serial</skos:prefLabel>
+            </skos:Concept>
+        </rdaelements:modeOfIssuance><!--mode
+        of issuance-->
+        <rdam:P30003>
+            <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1003">
+                <skos:prefLabel xml:lang="en">Serial</skos:prefLabel>
+            </skos:Concept>
+        </rdam:P30003>
+        <dc:date>1854-1883</dc:date>
+        <dc:publisher>Paris : bureau du Cabinet historique , 1854-1883</dc:publisher>
+        <dc:publisher>Paris : bureau du Cabinet historique , 1854-1883</dc:publisher>
+        <dc:publisher>Paris : bureau du Cabinet historique , 1854-1883</dc:publisher>
+        <dc:format>22 cm</dc:format>
+        <skos:note>Comprend : [1ère série], tomes I-XXII (1854-1876) ; 2ème série, tomes I-IV
+            [XXIII-XXVI] (1877-1880) ; Nouvelle série, tomes I-III [XXVII-XXIX] (1881-1883)</skos:note>
+        <skos:note>Avec des prospectus</skos:note>
+        <skos:note>Tables : 1854-1860 in t. 6 ; 1854-1867 in t. 13 ; 1854-1883 (1 vol., 1905)</skos:note>
+        <dc:subject>Y I. Collections périodiques littéraires, revues -- 423</dc:subject>
+        <marcrel:edt>
+            <foaf:Person rdf:about="http://www.idref.fr/034355049/id">
+                <foaf:name>Paris, Louis (1802-1887 ; érudit)</foaf:name>
+            </foaf:Person>
+        </marcrel:edt>
+        <marcrel:edt>
+            <foaf:Person rdf:about="http://www.idref.fr/033982589/id">
+                <foaf:name>Robert, Ulysse (1845-1903)</foaf:name>
+            </foaf:Person>
+        </marcrel:edt><!--UNM
+        421 : a pour supplément-->
+        <rdau:P60281>
+            <bibo:Document rdf:about="http://www.sudoc.fr/019014562/id">
+                <dcterms:bibliographicCitation>Table des matières contenues dans le &quot;Cabinet
+                    historique&quot; / par Paulin Teste / Paris : É. Bouillon , 1905</dcterms:bibliographicCitation>
+            </bibo:Document>
+        </rdau:P60281><!--UNM
+        440/448 : devient/redevient-->
+        <rdau:P60306>
+            <bibo:Document rdf:about="http://www.sudoc.fr/037458426/id">
+                <dcterms:bibliographicCitation>Bulletin des bibliothèques et des archives / publié
+                    sous les auspices du Ministère de l&apos;instruction publique / Paris : H.
+                    Champion , 1884-1889</dcterms:bibliographicCitation>
+            </bibo:Document>
+        </rdau:P60306>
+    </bibo:Periodical>
+</rdf:RDF>

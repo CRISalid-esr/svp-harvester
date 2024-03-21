@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+
 import pickle
 from unittest import mock
 
@@ -144,7 +145,7 @@ async def test_idref_harvester_puts_sudoc_reponse_in_cache(
     )
     await harvester.run()
     idref_sparql_endpoint_client_mock_with_sudoc_not_cached_pub.assert_called_once()
-    rdf_resolver_mock.assert_called_once()
+    rdf_resolver_mock.assert_called()
     reference_recorder_register_mock.assert_called_once()
     redis_cache_get, redis_cache_set = redis_cache_mock
     redis_cache_get.assert_called_once()

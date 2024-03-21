@@ -8,7 +8,7 @@
       <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2016-06-13</dcterms:created>
       <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-04-24T12:38:56</dcterms:modified>
    </bibo:Document>
-   <bibo:Book rdf:about="http://www.sudoc.fr/193726130/id">
+   <bibo:Article rdf:about="http://www.sudoc.fr/193726130/id">
       <!--content form (isbd), media type (rda)-->
       <isbd:P1001>
          <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/contentform/T1009">
@@ -101,5 +101,5 @@
             <dcterms:bibliographicCitation>Problèmes d'Amérique latine  / La Documentation française / Paris : La Documentation française , 1965-</dcterms:bibliographicCitation>
          </bibo:Document>
       </dcterms:isPartOf>
-   </bibo:Book>
+   </bibo:Article>
 </rdf:RDF>

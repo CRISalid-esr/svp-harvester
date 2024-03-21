@@ -1,3 +1,4 @@
+from math import e
 import pytest
 
 from app.harvesters.idref.sudoc_references_converter import SudocReferencesConverter
@@ -22,6 +23,13 @@ async def test_convert_for_rdf_result(
     expected_french_abstract_beginning = (
         "Le présent dossier aborde la participation de cette agriculture urbaine "
     )
+
+    expected_document_type = "Article"
+
+    expected_journal_title = "Le Cabinet historique"
+    expected_issn = "1954-6009"
+    expected_issn_l = "1954-6009"
+
     test_reference = converter_under_tests.build(raw_data=sudoc_rdf_result_for_doc)
     assert test_reference.source_identifier == str(
         sudoc_rdf_result_for_doc.source_identifier
@@ -39,3 +47,7 @@ async def test_convert_for_rdf_result(
         test_reference.identifiers[0].value
         == sudoc_rdf_result_for_doc.source_identifier
     )
+    assert expected_document_type in [test_reference.document_type[0].label]
+    assert expected_journal_title in test_reference.issue.journal.titles
+    assert expected_issn in test_reference.issue.journal.issn
+    assert expected_issn_l == test_reference.issue.journal.issn_l
