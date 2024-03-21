@@ -573,10 +573,13 @@ class AbstractReferencesConverter(ABC):
         """
         async with async_session() as session:
             async with session.begin_nested():
-                journal = await JournalDAO(session).get_journal_by_source_issn_or_eissn(
+                journal = await JournalDAO(
+                    session
+                ).get_journal_by_source_issn_or_eissn_or_issn_l(
                     source=journal_informations.source,
                     issn=journal_informations.issn,
                     eissn=journal_informations.eissn,
+                    issn_l=journal_informations.issn_l,
                 )
                 if journal is None:
                     journal = await JournalDAO(
@@ -591,6 +594,7 @@ class AbstractReferencesConverter(ABC):
                         source_identifier=journal_informations.source_identifier,
                         eissn=journal_informations.eissn,
                         issn=journal_informations.issn,
+                        issn_l=journal_informations.issn_l,
                         publisher=journal_informations.publisher,
                         titles=journal_informations.titles,
                     )
