@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:bibo="http://purl.org/ontology/bibo/"
+	xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+	xmlns:hub="http://hub.abes.fr/namespace/" >
+  <rdf:Description rdf:about="http://hub.abes.fr/springer/periodical/10571/w">
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Journal" />
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/C10001" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/referentiel/springersubjectslabels/subject/neurosciences" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/referentiel/springersubjectslabels/subject/lifesciences" />
+    <dcterms:subject rdf:resource="http://scigraph.springernature.com/ontologies/product-market-codes/B" />
+    <dcterms:subject rdf:resource="http://scigraph.springernature.com/ontologies/product-market-codes/L16008" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/referentiel/springersubjectslabels/subject/biomedicine" />
+    <dcterms:subject rdf:resource="http://scigraph.springernature.com/ontologies/product-market-codes/L25066" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/referentiel/springersubjectslabels/subject/animalanatomymorphologyhistology" />
+    <dcterms:subject rdf:resource="http://scigraph.springernature.com/ontologies/product-market-codes/B18006" />
+    <dcterms:title>Cellular and Molecular Neurobiology</dcterms:title>
+    <bibo:shortTitle>Cell Mol Neurobiol</bibo:shortTitle>
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/springer/periodical/10571/m/web" />
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/springer/periodical/10571/m/print" />
+    <hub:publisher-id>10571</hub:publisher-id>
+  </rdf:Description>
+</rdf:RDF>
