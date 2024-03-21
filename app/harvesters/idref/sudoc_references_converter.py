@@ -59,7 +59,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             # We only want the first appearance.
             break
 
-    async def _get_issue(self, journal) -> Issue:
+    async def _get_issue(self, biblio_graph, uri, journal) -> Issue:
         source_identifier = normalize_string("-".join(journal.titles)) + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(

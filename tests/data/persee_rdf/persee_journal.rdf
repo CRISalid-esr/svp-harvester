@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:rdau="http://rdaregistry.info/Elements/u/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:persee="http://data.persee.fr/ontology/persee-ontology/"
+	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:bibo="http://purl.org/ontology/bibo/"
+	xmlns:rdam="http://rdaregistry.info/Elements/m/" >
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1651#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1637#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1638#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1640#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1641#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1642#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1643#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1644#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1645#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1647#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1649#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1650#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1652#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1654#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1655#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1656#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1657#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1658#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1659#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1660#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1661#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1662#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1663#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1664#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web">
+    <rdf:type rdf:resource="http://data.persee.fr/ontology/persee-ontology/Issue" />
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/Manifestation" />
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Issue" />
+    <dcterms:modified>2016-03-31 10:21:14.413</dcterms:modified>
+    <rdfs:label>Cahiers du Centre Gustave Glotz, 18, 2007. [online]</rdfs:label>
+    <rdau:electronicReproductionOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+    <foaf:depiction rdf:resource="https://www.persee.fr/renderIssueCoverThumbnail/ccgg_1016-9008_2007_num_18_1.jpg" />
+    <dcterms:title>Cahiers du Centre Gustave Glotz, 18, 2007.</dcterms:title>
+    <dcterms:license>Etalab v2.0 (https://www.etalab.gouv.fr/licence-ouverte-open-licence)</dcterms:license>
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/collection/ccgg_1016-9008#Web" />
+    <persee:dateOfPrintPublication rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2007</persee:dateOfPrintPublication>
+    <dcterms:publisher>PERSÉE : CNRS &amp; ENS de Lyon</dcterms:publisher>
+    <dcterms:identifier>https://www.persee.fr/issue/ccgg_1016-9008_2007_num_18_1</dcterms:identifier>
+    <dcterms:language>fr</dcterms:language>
+    <rdam:dateOfPublication>2014-09-24</rdam:dateOfPublication>
+    <rdam:mediaType>electronic</rdam:mediaType>
+    <dcterms:bibliographicCitation>Cahiers du Centre Gustave Glotz, 18, 2007. [En ligne] Disponible sur : https://www.persee.fr/issue/ccgg_1016-9008_2007_num_18_1</dcterms:bibliographicCitation>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1651#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1648#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1637#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1638#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1640#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1641#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1642#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1643#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1644#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1645#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1647#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1649#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1650#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1652#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1654#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1655#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1656#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1657#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1658#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1659#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1660#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1661#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1662#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1663#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1664#Print">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print">
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Issue" />
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/Manifestation" />
+    <rdfs:label>Cahiers du Centre Gustave Glotz, 18, 2007. [print]</rdfs:label>
+    <dcterms:title>Cahiers du Centre Gustave Glotz, 18, 2007.</dcterms:title>
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/collection/ccgg_1016-9008#Print" />
+    <dcterms:publisher>Paris : Centre Gustave Glotz</dcterms:publisher>
+    <bibo:issn rdf:resource="http://issn.org/resource/ISSN/1016-9008" />
+    <rdam:dateOfPublication rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">2007</rdam:dateOfPublication>
+    <rdam:mediaType>unmediated</rdam:mediaType>
+    <dcterms:bibliographicCitation>Cahiers du Centre Gustave Glotz, 18, 2007.</dcterms:bibliographicCitation>
+    <bibo:issue>1</bibo:issue>
+    <bibo:volume>18</bibo:volume>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1">
+    <rdf:type rdf:resource="http://purl.org/spar/biro/BibliographicRecord" />
+    <dcterms:modified>2021-08-27 01:41:36</dcterms:modified>
+    <rdfs:label>Cahiers du Centre Gustave Glotz, 18, 2007. [record]</rdfs:label>
+    <dcterms:license>Etalab v2.0 (https://www.etalab.gouv.fr/licence-ouverte-open-licence)</dcterms:license>
+    <dcterms:creator rdf:resource="http://data.persee.fr/UMS_Persee/" />
+    <skos:prefLabel>Cahiers du Centre Gustave Glotz, 18, 2007.</skos:prefLabel>
+    <foaf:focus rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/ccgg_1016-9008_2007_num_18_1_1648#Web">
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+  </rdf:Description>
+</rdf:RDF>
