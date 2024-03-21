@@ -69,6 +69,7 @@ class ReferenceEventDAO(AbstractDAO):
             .options(
                 joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
             )
+            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.issue))
             .options(
                 joinedload(ReferenceEvent.reference)
                 .joinedload(Reference.issue)

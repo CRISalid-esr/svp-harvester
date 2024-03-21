@@ -43,6 +43,7 @@ class ScanRApiQueryBuilder:
         "affiliations",
         "authors",
         "externalIds",
+        "source",
     ]
 
     def __init__(self):

@@ -51,7 +51,13 @@
             "hostType": "repository",
             "url": "https://theses.hal.science/tel-02966640/document"
           },
-          "source": {},
+          "source": {
+            "title": "Central European Journal of Public Policy",
+            "publisher": "De Gruyter",
+            "journalIssns": ["1802-4866"],
+            "isOa": true,
+            "isInDoaj": true
+          },
           "keywords": {
             "default": [
               "Déni de service",

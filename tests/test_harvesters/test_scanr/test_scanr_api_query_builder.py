@@ -128,6 +128,7 @@ def test_build_publication_query_with_idref(scanr_query_builder):
             "affiliations",
             "authors",
             "externalIds",
+            "source",
         ],
         "query": {"bool": {"must": [{"term": {"authors.person": "idref2556"}}]}},
         "sort": {"publicationDate": {"order": "desc"}},
