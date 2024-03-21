@@ -37,7 +37,9 @@ class JournalDAO(AbstractDAO):
             query = query.where(Journal.eissn.any(eissn_value))
         if issn_l is not None:
             query = query.where(Journal.issn_l == str(issn_l))
-        return (await self.db_session.execute(query)).scalars().one_or_none()
+
+        # Get the first result
+        return (await self.db_session.execute(query)).scalars().first()
 
     async def get_journal_by_source_identifier_and_source(
         self, source: str, source_identifier: str
