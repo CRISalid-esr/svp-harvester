@@ -4,6 +4,8 @@ from similarity.normalized_levenshtein import NormalizedLevenshtein
 
 from app.config import get_app_settings
 from app.db.models.abstract import Abstract
+from app.db.models.issue import Issue
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
@@ -17,6 +19,8 @@ from app.harvesters.scanr.scanr_document_type_converter import (
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
 from app.utilities.string_utilities import normalize_string
 
 LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.3
@@ -76,11 +80,53 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         await self._add_contributions(json_payload, new_ref)
 
+        journal = await self._journal(json_payload)
+
+        if journal:
+            issue = await self._issue(journal)
+            new_ref.issue = issue
+
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
     def _harvester(self) -> str:
         return "ScanR"
+
+    async def _issue(self, journal: Journal) -> Issue:
+        source_identifier = (
+            normalize_string("-".join(journal.titles)) + "-" + self._harvester()
+        )
+        issue = await self._get_or_create_issue(
+            IssueInformations(
+                source=self._harvester(),
+                journal=journal,
+                source_identifier=source_identifier,
+            )
+        )
+        return issue
+
+    async def _journal(self, json_payload: dict) -> Journal | None:
+        if json_payload["_source"].get("source") == {}:
+            return None
+        title = json_payload["_source"].get("source").get("title")
+        issn = json_payload["_source"].get("source").get("journalIssns", [])
+        publisher = json_payload["_source"].get("source").get("publisher")
+        journal = await self._get_or_create_journal(
+            JournalInformations(
+                source=self._harvester(),
+                source_identifier=str(issn)
+                + "-"
+                + str(normalize_string(title))
+                + "-"
+                + str(normalize_string(publisher))
+                + "-"
+                + self._harvester(),
+                issn=issn,
+                publisher=publisher,
+                titles=[title],
+            )
+        )
+        return journal
 
     def _add_identifiers(self, json_payload: dict) -> ReferenceIdentifier:
         external_ids = json_payload["_source"].get("externalIds", [])
