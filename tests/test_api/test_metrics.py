@@ -93,4 +93,4 @@ async def test_get_reference_events_by_day_and_type(
     data = response.json()
 
     recent_date_str = recent_date.strftime("%d-%m-%Y")
-    assert data == {recent_date_str: {"created": [4], "deleted": [2], "updated": [6]}}
+    assert data == {recent_date_str: {"created": 4, "deleted": 2, "updated": 6}}

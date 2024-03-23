@@ -98,6 +98,7 @@ class ReferenceEventDAO(AbstractDAO):
             select(
                 sqlalchemy.cast(Harvesting.timestamp, sqlalchemy.Date),
                 ReferenceEvent.type,
+                # pylint: disable=not-callable
                 func.count(ReferenceEvent.id).label("count"),
             )
             .join(Harvesting)

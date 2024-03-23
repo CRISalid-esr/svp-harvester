@@ -25,7 +25,7 @@ async def references_by_harvester() -> dict:
     """
     async with async_session() as session:
         metrics = await ReferenceDAO(session).get_references_by_harvester()
-    return {key: value for key, value in metrics}
+    return dict(list(metrics))
 
 
 @router.get("/reference_events/by_day_and_type")
