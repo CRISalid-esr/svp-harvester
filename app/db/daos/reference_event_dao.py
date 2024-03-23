@@ -1,4 +1,7 @@
-from sqlalchemy import select
+from datetime import datetime, timedelta
+
+import sqlalchemy
+from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -83,3 +86,26 @@ class ReferenceEventDAO(AbstractDAO):
             .where(ReferenceEvent.id == reference_event_id)
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
+
+    async def get_reference_events_by_day_and_type(self, past_days: int = 7) -> dict:
+        """
+        Get reference events count by day and type
+
+        :return: json representation of the reference events by day and type
+        """
+        start_time = datetime.today() - timedelta(days=past_days)
+        query = (
+            select(
+                sqlalchemy.cast(Harvesting.timestamp, sqlalchemy.Date),
+                ReferenceEvent.type,
+                func.count(ReferenceEvent.id).label("count"),
+            )
+            .join(Harvesting)
+            .where(Harvesting.timestamp > start_time)
+            .order_by(sqlalchemy.cast(Harvesting.timestamp, sqlalchemy.Date))
+            .group_by(
+                sqlalchemy.cast(Harvesting.timestamp, sqlalchemy.Date),
+                ReferenceEvent.type,
+            )
+        )
+        return await self.db_session.execute(query)
