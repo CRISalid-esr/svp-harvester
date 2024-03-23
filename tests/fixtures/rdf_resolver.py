@@ -12,6 +12,8 @@ def fixture_fake_rdf_resolver_fixture(
     persee_rdf_graph_for_person: Graph,
     sudoc_rdf_result_for_journal: Graph,
     persee_rdf_result_for_journal: Graph,
+    science_plus_rdf_result_for_journal: Graph,
+    science_plus_rdf_result_for_issue: Graph,
 ):
 
     def fake_rdf_resolver(document_uri: str, output_format: str = "xml") -> Graph:
@@ -30,6 +32,16 @@ def fixture_fake_rdf_resolver_fixture(
             return sudoc_rdf_result_for_journal
         if document_uri == "https://data.persee.fr/issue/hista_0992-2059_1998_num_42_1":
             return persee_rdf_result_for_journal
+        if (
+            document_uri
+            == "https://scienceplus.abes.fr/sparql?query=define+sql%3Adescribe-mode+%22CBD%22++DESCRIBE+%3Chttp%3A%2F%2Fhub.abes.fr%2Fspringer%2Fperiodical%2F10571%2Fw%3E&output=application%2Frdf%2Bxml"
+        ):
+            return science_plus_rdf_result_for_journal
+        if (
+            document_uri
+            == "https://scienceplus.abes.fr/sparql?query=define+sql%3Adescribe-mode+%22CBD%22++DESCRIBE+%3Chttp%3A%2F%2Fhub.abes.fr%2Fspringer%2Fperiodical%2F10571%2F1992%2Fvolume_12%2Fissue_1%2Fw%3E&output=application%2Frdf%2Bxml"
+        ):
+            return science_plus_rdf_result_for_issue
         raise DereferencingError(
             f"Rdf resolver fetch not allowed during tests for {document_uri}"
         )
