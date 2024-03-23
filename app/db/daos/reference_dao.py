@@ -206,3 +206,19 @@ class ReferenceDAO(AbstractDAO):
                 Title.value.like(f"%{text_search}%"),
             )
         )
+
+    async def get_references_by_harvester(self) -> dict:
+        """
+        Count the number of references  by harvester
+
+        :return:
+        """
+        query = (
+            select(
+                Reference.harvester,
+                func.count(Reference.id).label("count"),
+            )
+            .group_by(Reference.harvester)
+            .order_by(Reference.harvester)
+        )
+        return await self.db_session.execute(query)
