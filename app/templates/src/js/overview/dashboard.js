@@ -1,4 +1,13 @@
-import {ArcElement, Chart, DoughnutController, Legend, Tooltip} from "chart.js";
+import {
+    ArcElement,
+    BarController, BarElement,
+    CategoryScale,
+    Chart,
+    DoughnutController,
+    Legend,
+    LinearScale,
+    Tooltip
+} from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 
@@ -6,16 +15,23 @@ class Dashboard {
     constructor(env, rootElement) {
         this.env = env;
         this.rootElement = rootElement;
-        Chart.register(DoughnutController, ArcElement, Legend, ChartDataLabels, Tooltip);
+        Chart.register(BarController, BarElement, DoughnutController, ArcElement, Legend, ChartDataLabels, Tooltip, CategoryScale, LinearScale);
         Chart.defaults.font.size = 14;
     }
 
-    updateRetrievalByHarvester(fakeRetrievalByHarvesterData) {
+    updateRetrievalByHarvester(data) {
         const chartJsData = {
-            labels: Object.keys(fakeRetrievalByHarvesterData),
-            data: Object.values(fakeRetrievalByHarvesterData)
+            labels: Object.keys(data),
+            data: Object.values(data)
         }
         this.updateRetrievalByHarvesterChart(chartJsData);
+    }
+
+    updateReferenceEventsByDayAndType(data) {
+        const days_labels = Object.keys(data);
+        const chartJsDatasets = this.convertToDatasets(data);
+        this.updateReferenceEventsByDayAndTypeChart(chartJsDatasets, days_labels);
+
     }
 
     updateRetrievalByHarvesterChart(chartJsData) {
@@ -86,6 +102,60 @@ class Dashboard {
                 },
             },
         });
+    }
+
+    updateReferenceEventsByDayAndTypeChart(chartJsData, day_labels) {
+        const ctx = this.rootElement.querySelector("#reference-events-by-day-and-type");
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: day_labels,
+                datasets: chartJsData
+            },
+            options: {
+                layout: {
+                    padding: 50
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true
+                    }
+                }
+            }
+        });
+    }
+
+    convertToDatasets(data) {
+        let result = [];
+        const labelColors = {
+            "created": "rgb(75, 192, 192)",
+            "updated": "rgb(54, 162, 235)",
+            "deleted": "rgb(255, 99, 132)",
+            "unchanged": "rgb(255, 205, 86)"
+        }
+        for (const eventType in labelColors) {
+            result.push({
+                label: eventType,
+                data: Array(Object.keys(data).length).fill(0),
+                backgroundColor: labelColors[eventType]
+            });
+        }
+        let dateCount = 0;
+        for (let date in data) {
+            let events = data[date];
+            for (let eventType in events) {
+                const foundLabelIndex = result.findIndex(item => item.label === eventType);
+                if (foundLabelIndex !== -1)
+                    result[foundLabelIndex].data[dateCount] = events[eventType];
+
+            }
+            dateCount++;
+        }
+
+        return result;
     }
 }
 

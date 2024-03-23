@@ -40,6 +40,9 @@ class Client {
     async getReferencesByHarvesterMetrics() {
         return await this.axios.get(this.apiUrl() + "/metrics/references/by_harvester");
     }
+    async getReferenceEventsByDayAndTypeMetrics() {
+        return await this.axios.get(this.apiUrl() + "/metrics/reference_events/by_day_and_type");
+    }
 
     apiUrl() {
         return this.env.apiHost + this.env.apiPath;

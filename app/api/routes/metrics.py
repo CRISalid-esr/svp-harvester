@@ -46,6 +46,6 @@ async def references_by_day_and_type() -> dict:
         if date_str not in dict_tree:
             dict_tree[date_str] = {}
         if event_type not in dict_tree[date_str]:
-            dict_tree[date_str][event_type] = []
-        dict_tree[date_str][event_type].append(value)
+            dict_tree[date_str][event_type] = {}
+        dict_tree[date_str][event_type] = value
     return dict_tree

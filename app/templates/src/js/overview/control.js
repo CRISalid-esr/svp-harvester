@@ -10,8 +10,12 @@ class Control {
 
     loadData() {
         this.client.getReferencesByHarvesterMetrics().then((response) => {
-            const fakeRetrievalByHarvesterData = response.data
-            this.dashboard.updateRetrievalByHarvester(fakeRetrievalByHarvesterData);
+            this.dashboard.updateRetrievalByHarvester(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+        this.client.getReferenceEventsByDayAndTypeMetrics().then((response) => {
+            this.dashboard.updateReferenceEventsByDayAndType(response.data);
         }).catch((error) => {
             console.log(error);
         });
