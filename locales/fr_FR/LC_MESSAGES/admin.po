@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  SVP-Harvester\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-23 05:44+0000\n"
+"POT-Creation-Date: 2024-03-23 17:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -293,6 +293,14 @@ msgid "overview_page_overview_page_title"
 msgstr ""
 "Présentation de l'interface d'administration du service de collecte des "
 "références bibliographiques"
+
+#: app/templates/overview.html.jinja:9
+msgid "overview_charts_collected_references_title"
+msgstr ""
+
+#: app/templates/overview.html.jinja:17
+msgid "overview_charts_latests_streams_title"
+msgstr ""
 
 #: app/templates/publication_history.html.jinja:8
 #: app/templates/publication_history.html.jinja:10
