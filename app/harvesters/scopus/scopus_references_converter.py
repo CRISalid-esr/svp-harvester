@@ -82,9 +82,11 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
 
         journal = await self._get_or_create_journal(
             JournalInformations(
-                issn=f"{issn.text[:4]}-{issn.text[4:]}" if issn is not None else None,
+                issn=[f"{issn.text[:4]}-{issn.text[4:]}"] if issn is not None else None,
                 eissn=(
-                    f"{eissn.text[:4]}-{eissn.text[4:]}" if eissn is not None else None
+                    [f"{eissn.text[:4]}-{eissn.text[4:]}"]
+                    if eissn is not None
+                    else None
                 ),
                 titles=[title.text] if title is not None else [],
                 source=self._harvester(),

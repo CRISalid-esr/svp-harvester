@@ -25,7 +25,7 @@ class ScopusClient:
     def __init__(self) -> None:
         self.settings = get_app_settings()
 
-    async def fetch(self, query_string: str) -> Generator[dict, None, None]:
+    async def fetch(self, query_string: str, start=0) -> Generator[dict, None, None]:
         """
         Fetch the results from Scopus API
         """
@@ -37,7 +37,7 @@ class ScopusClient:
             ) as session:
                 query = (
                     f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}"
-                    f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE"
+                    f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE&start={start}"
                 )
                 async with session.get(query) as resp:
                     if resp.status == 200:
@@ -50,6 +50,12 @@ class ScopusClient:
                             yield
                         else:
                             for doc in root.findall(".//default:entry", self.NAMESPACE):
+                                yield doc
+
+                        # If there are more than 25 results, fetch the next 25 asynchrounously
+                        # as is the limit of the Scopus API
+                        if int(count) > start + 25:
+                            async for doc in self.fetch(query_string, start=start + 25):
                                 yield doc
                     else:
                         raise ExternalEndpointFailure(
