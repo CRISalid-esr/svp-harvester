@@ -55,4 +55,4 @@ class TestAppSettings(AppSettings):
 
     third_api_caching_enabled: bool = False
 
-    institution_name: str = "XYZ University (test)"
+    institution_name: str = "XYZ University • test"
