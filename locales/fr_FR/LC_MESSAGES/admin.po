@@ -17,8 +17,7 @@ msgstr ""
 #: app/templates/base.html.jinja:10 app/templates/base.html.jinja:18
 #, fuzzy
 msgid ""
-"\n"
-"      application_name"
+"application_name"
 msgstr "SoVisu+ Harvester"
 
 #: app/templates/base.html.jinja:53
