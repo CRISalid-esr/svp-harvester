@@ -22,6 +22,10 @@ async def test_science_plus_convert_for_rdf_result(
         "La Cordillère de la Côte, "
         "entre Santiago du Chili et Valparaíso a vu son accessibilité "
     )
+    expected_volume = "12"
+    expected_issue = "1"
+    expected_journal_title = "Cellular and Molecular Neurobiology"
+
     test_reference = converter_under_tests.build(
         raw_data=science_plus_rdf_result_for_doc
     )
@@ -41,3 +45,6 @@ async def test_science_plus_convert_for_rdf_result(
         abstract.value.startswith(expected_french_abstract_beginning)
         for abstract in test_reference.abstracts
     )
+    assert test_reference.issue.volume == expected_volume
+    assert test_reference.issue.number == expected_issue
+    assert expected_journal_title in test_reference.issue.journal.titles
