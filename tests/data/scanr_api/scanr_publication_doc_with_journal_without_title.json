@@ -1,0 +1,391 @@
+{
+  "took": 7,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 12.227409,
+    "hits": [
+      {
+        "_index": "scanr-publications-20240322",
+        "_id": "9DaSeI4BqgRIMCR9Iu7D",
+        "_score": "None",
+        "_ignored": [
+          "authors.affiliations.name.keyword"
+        ],
+        "_source": {
+          "id": "halhalshs-03877211",
+          "title": {
+            "default": "Au fondement de l’apprentissage des habiletés de taille : des référentiels interdisciplinaires destinés à l’interprétation archéologique",
+            "fr": "Au fondement de l’apprentissage des habiletés de taille : des référentiels interdisciplinaires destinés à l’interprétation archéologique"
+          },
+          "externalIds": [
+            {
+              "type": "hal",
+              "id": "halshs-03877211"
+            }
+          ],
+          "publicationDate": "2022-12-15T00:00:00",
+          "type": "journal-article",
+          "productionType": "publication",
+          "source": {
+            "publisher": "Société préhistorique française",
+            "journalIssns": [
+              "0249-7638",
+              "1760-7361"
+            ],
+            "isOa": false,
+            "isInDoaj": false
+          },
+          "affiliations": [
+            {
+              "id": "temps"
+            },
+            {
+              "id": "grid.4444.0"
+            },
+            {
+              "id": "bspf"
+            },
+            {
+              "id": "grid.17673.34"
+            },
+            {
+              "id": "inshs-cnrs"
+            },
+            {
+              "id": "ehess"
+            },
+            {
+              "id": "99539"
+            },
+            {
+              "id": "199212044",
+              "mainAddress": {
+                "address": "200 Avenue de la République",
+                "gps": {
+                  "lat": 48.902459,
+                  "lon": 2.213216
+                },
+                "postcode": "92000",
+                "city": "Nanterre",
+                "country": "France"
+              },
+              "label": {
+                "fr": "Université Paris Nanterre",
+                "default": "Université Paris Nanterre"
+              },
+              "acronym": {
+                "fr": "UPN",
+                "default": "UPN"
+              },
+              "kind": [
+                "Secteur public"
+              ],
+              "level": "Établissement public national à caractère scientifique culturel et professionnel (EPCSCP)",
+              "status": "active",
+              "isFrench": true,
+              "id_name": "199212044###Université Paris Nanterre"
+            },
+            {
+              "id": "180089013",
+              "mainAddress": {
+                "address": "3 Rue Michel-ange",
+                "gps": {
+                  "lat": 48.847606,
+                  "lon": 2.264027
+                },
+                "postcode": "75016",
+                "city": "Paris",
+                "country": "France"
+              },
+              "label": {
+                "fr": "Centre national de la recherche scientifique",
+                "en": "French National Centre for Scientific Research",
+                "default": "Centre national de la recherche scientifique French National Centre for Scientific Research"
+              },
+              "acronym": {
+                "fr": "CNRS",
+                "default": "CNRS"
+              },
+              "kind": [
+                "Secteur public"
+              ],
+              "level": "Établissement public administratif",
+              "status": "active",
+              "isFrench": true,
+              "id_name": "180089013###Centre national de la recherche scientifique French National Centre for Scientific Research"
+            },
+            {
+              "id": "202224230W",
+              "mainAddress": {
+                "address": "Allée de l'Université",
+                "gps": {
+                  "lat": 48.905146,
+                  "lon": 2.215519
+                },
+                "postcode": "92000",
+                "city": "Nanterre",
+                "country": "France"
+              },
+              "label": {
+                "fr": "Technologie et Ethnologie des Mondes PréhistoriqueS",
+                "default": "Technologie et Ethnologie des Mondes PréhistoriqueS"
+              },
+              "acronym": {
+                "fr": "TEMPS",
+                "default": "TEMPS"
+              },
+              "kind": [
+                "Structure de recherche"
+              ],
+              "level": "Unité de recherche",
+              "status": "active",
+              "isFrench": true,
+              "id_name": "202224230W###Technologie et Ethnologie des Mondes PréhistoriqueS"
+            },
+            {
+              "id": "cnrs"
+            },
+            {
+              "id": "univ-paris-nanterre"
+            },
+            {
+              "id": "197517170",
+              "mainAddress": {
+                "address": "12 Place du Panthéon",
+                "gps": {
+                  "lat": 48.846806,
+                  "lon": 2.344888
+                },
+                "postcode": "75005",
+                "city": "Paris",
+                "country": "France"
+              },
+              "label": {
+                "fr": "Université Paris 1 Panthéon-Sorbonne",
+                "en": "Pantheon-Sorbonne University",
+                "default": "Université Paris 1 Panthéon-Sorbonne Pantheon-Sorbonne University"
+              },
+              "kind": [
+                "Secteur public"
+              ],
+              "level": "Établissement public national à caractère scientifique culturel et professionnel (EPCSCP)",
+              "status": "active",
+              "isFrench": true,
+              "id_name": "197517170###Université Paris 1 Panthéon-Sorbonne Pantheon-Sorbonne University"
+            },
+            {
+              "id": "7550"
+            },
+            {
+              "id": "116205"
+            },
+            {
+              "id": "1082968"
+            },
+            {
+              "id": "shs"
+            },
+            {
+              "id": "univ-paris10"
+            },
+            {
+              "id": "https://ror.org/02feahw73"
+            },
+            {
+              "id": "19753742600011"
+            },
+            {
+              "id": "spf"
+            },
+            {
+              "id": "https://ror.org/013bkhk48"
+            },
+            {
+              "id": "197537426",
+              "mainAddress": {
+                "address": "54 Boulevard Raspail",
+                "gps": {
+                  "lat": 48.850289,
+                  "lon": 2.326965
+                },
+                "postcode": "75006",
+                "city": "Paris",
+                "country": "France"
+              },
+              "label": {
+                "fr": "Ecole des hautes études en sciences sociales",
+                "en": "School for Advanced Studies in the Social Sciences",
+                "default": "School for Advanced Studies in the Social Sciences Ecole des hautes études en sciences sociales"
+              },
+              "acronym": {
+                "fr": "EHESS",
+                "en": "EHESS",
+                "default": "EHESS"
+              },
+              "kind": [
+                "Secteur public"
+              ],
+              "level": "Établissement public national à caractère scientifique culturel et professionnel (EPCSCP)",
+              "status": "active",
+              "isFrench": true,
+              "id_name": "197537426###School for Advanced Studies in the Social Sciences Ecole des hautes études en sciences sociales"
+            },
+            {
+              "id": "441569"
+            },
+            {
+              "id": "univ-paris-lumieres"
+            },
+            {
+              "id": "18008901303720"
+            },
+            {
+              "id": "univ-paris1"
+            },
+            {
+              "id": "https://ror.org/002t25c44"
+            }
+          ],
+          "authors": [
+            {
+              "firstName": "Blandine",
+              "lastName": "Bril",
+              "fullName": "Blandine Bril",
+              "person": "idref028807693",
+              "denormalized": {
+                "id": "idref028807693",
+                "idref": "028807693"
+              },
+              "id_name": "idref028807693###Blandine Bril###FR",
+              "role": "author",
+              "affiliations": [
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "École des hautes études en sciences sociales, EHESS, 54, boulevard Raspail 75006 Paris, France",
+                  "hal_docid": "99539",
+                  "country": "France",
+                  "structId": "99539",
+                  "ids": [
+                    {
+                      "id": "grid.17673.34",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "197537426",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "19753742600011",
+                      "type": "siret"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "firstName": "Valentine",
+              "lastName": "Roux",
+              "fullName": "Valentine Roux",
+              "person": "idref028738497",
+              "denormalized": {
+                "id": "idref028738497",
+                "idref": "028738497",
+                "orcid": "0000-0002-9981-9598",
+                "id_hal": "valentine-roux"
+              },
+              "id_name": "idref028738497###Valentine Roux###FR",
+              "role": "author",
+              "affiliations": [
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Technologie et Ethnologie des Mondes Préhistoriques, UMR 8068, UMR 8068, UMR 8068, TEMPS, UP1, UPN, CNRS, Université Paris 1 Panthéon-Sorbonne, Université Paris Nanterre, Centre National de la Recherche Scientifique, MSH Mondes, bâtiment René Ginouvès, 21 Allée de l’Université, 92023 Nanterre, France",
+                  "hal_docid": "1082968",
+                  "country": "France",
+                  "rnsr": "202224230W",
+                  "structId": "1082968",
+                  "ids": [
+                    {
+                      "id": "grid.4444.0",
+                      "type": "grid"
+                    },
+                    {
+                      "id": "202224230W",
+                      "type": "rnsr"
+                    },
+                    {
+                      "id": "180089013",
+                      "type": "sirene"
+                    },
+                    {
+                      "id": "18008901303720",
+                      "type": "siret"
+                    },
+                    {
+                      "id": "197517170",
+                      "type": "siren"
+                    },
+                    {
+                      "id": "199212044",
+                      "type": "siren"
+                    },
+                    {
+                      "id": "180089013",
+                      "type": "siren"
+                    }
+                  ]
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Université Paris 1 Panthéon-Sorbonne, UP1, 12 place du Panthéon, 75231 Paris Cedex 05, France",
+                  "hal_docid": "7550",
+                  "country": "France",
+                  "ror": "https://ror.org/002t25c44",
+                  "structId": "7550"
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Université Paris Nanterre, UPN, 200 avenue de la République - 92001 Nanterre cedex, France",
+                  "hal_docid": "116205",
+                  "country": "France",
+                  "ror": "https://ror.org/013bkhk48",
+                  "structId": "116205"
+                },
+                {
+                  "detected_countries": [
+                    "fr"
+                  ],
+                  "name": "Centre National de la Recherche Scientifique, CNRS, France",
+                  "hal_docid": "441569",
+                  "country": "France",
+                  "ror": "https://ror.org/02feahw73",
+                  "structId": "441569"
+                }
+              ]
+            }
+          ]
+        },
+        "sort": [
+          1671062400000
+        ]
+      }
+    ]
+  }
+}

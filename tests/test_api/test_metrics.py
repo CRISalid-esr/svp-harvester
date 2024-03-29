@@ -42,7 +42,6 @@ async def test_get_references_by_harvester(
     assert data == {"hal": 10, "scopus": 5, "idref": 3}
 
 
-@pytest.mark.current
 async def test_get_reference_events_by_day_and_type(
     test_client: TestClient,
     async_session: AsyncSession,

@@ -27,6 +27,7 @@ def normalize_string(s: str):
     Normalize a string by replacing spaces by underscores and accents by their non-accented
     version whith unicodedata.normalize, and lowercasing the string.
     """
+    s = s or ""
     s = s.replace(" ", "_")
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("utf-8")
     s = s.lower()
