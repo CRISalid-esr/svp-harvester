@@ -135,6 +135,12 @@ h1 {
   }
 
   table-layout: fixed;
+
+  tbody td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .bg-custom-navbar {
