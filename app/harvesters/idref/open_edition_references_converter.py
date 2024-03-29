@@ -5,6 +5,8 @@ from loguru import logger
 import rdflib
 
 from app.db.models.abstract import Abstract
+from app.db.models.issue import Issue
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
@@ -21,6 +23,9 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key_xml import HashKeyXML
+from app.services.issue.issue_data_class import IssueInformations
+from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.string_utilities import normalize_string
 
 
 class OpenEditionReferencesConverter(AbstractReferencesConverter):
@@ -63,7 +68,41 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             await self._document_type(self._get_root(raw_data))
         )
 
+        journal = await self._get_journal(self._get_root(raw_data))
+        if journal is not None:
+            issue = await self._get_issue(self._get_root(raw_data), journal)
+            new_ref.issue = issue
+
         await self._add_contributions(new_ref, self._get_root(raw_data))
+
+    async def _get_journal(self, root: ElementTree) -> Journal | None:
+        publishers = [publisher for publisher, _ in self._get_terms(root, "publisher")]
+        logger.debug(f"Publishers: {publishers}")
+        if len(publishers) == 0:
+            return None
+        return await self._get_or_create_journal(
+            journal_informations=JournalInformations(
+                source="openedition",
+                source_identifier=f"{normalize_string('-'.join(publishers))}-openedition",
+                titles=publishers[:-1],
+                publisher=publishers[-1],
+            )
+        )
+
+    async def _get_issue(self, root: ElementTree, journal: Journal) -> Issue:
+        rights = self._get_term(root, "rights")
+        logger.debug(f"Rights: {rights}")
+        return await self._get_or_create_issue(
+            issue_informations=IssueInformations(
+                source="openedition",
+                source_identifier=(
+                    f"{journal.source_identifier}"
+                    f"-{normalize_string(rights)}-openedition"
+                ),
+                rights=rights,
+                journal=journal,
+            )
+        )
 
     def hash(self, raw_data: XMLHarvesterRawResult):
         return self._hash_dict(self._create_dict(self._get_root(raw_data)))

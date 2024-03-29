@@ -32,6 +32,9 @@ async def test_open_edition_convert_for_rfd_result(
         "https://journals.openedition.org/conflits/756",
         "10.4000/conflits.756",
     ]
+    expected_publisher = "L’Harmattan"
+    expected_journal_title = "Cultures & conflits"
+    expected_issue_rights = "https://creativecommons.org/licenses/by-nc-nd/4.0/"
 
     assert test_reference.source_identifier == str(
         open_edition_xml_result_for_doc.source_identifier
@@ -47,3 +50,6 @@ async def test_open_edition_convert_for_rfd_result(
         for identifier in test_reference.identifiers
     )
     assert test_reference.document_type[0].label == "Article"
+    assert expected_publisher == test_reference.issue.journal.publisher
+    assert expected_journal_title in test_reference.issue.journal.titles
+    assert expected_issue_rights == test_reference.issue.rights

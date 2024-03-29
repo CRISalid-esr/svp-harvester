@@ -32,7 +32,6 @@ def test_admin_page_contains_api_info_in_hidden_inputs(
     assert '<input type="hidden" id="api-path" value="/api/v1">' in response.text
 
 
-@pytest.mark.current
 @pytest.mark.parametrize(
     "page",
     [

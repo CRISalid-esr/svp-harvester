@@ -28,6 +28,18 @@ def fixture_science_plus_rdf_graph_for_doc(_base_path) -> Graph:
     return _science_plus_rdf_graph_from_file(_base_path, "science_plus_document")
 
 
+@pytest.fixture(name="science_plus_rdf_result_for_journal")
+def fixture_science_plus_rdf_graph_for_journal(_base_path) -> Graph:
+    """Rdf result from science plus rdf journal file"""
+    return _science_plus_rdf_graph_from_file(_base_path, "science_plus_journal")
+
+
+@pytest.fixture(name="science_plus_rdf_result_for_issue")
+def fixture_science_plus_rdf_graph_for_issue(_base_path) -> Graph:
+    """Rdf result from science plus rdf issue file"""
+    return _science_plus_rdf_graph_from_file(_base_path, "science_plus_issue")
+
+
 @pytest.fixture(name="science_plus_rdf_graph_for_hash_1")
 def fixture_science_plus_rdf_graph_for_hash_1(_base_path) -> Graph:
     """Rdf graph from science plus rdf file"""
