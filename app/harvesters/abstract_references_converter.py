@@ -6,7 +6,7 @@ from functools import wraps
 from typing import List, AsyncGenerator
 
 from loguru import logger
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.contributor_dao import ContributorDAO
@@ -561,6 +561,9 @@ class AbstractReferencesConverter(ABC):
                         issue = await self._get_or_create_issue(
                             issue_informations=issue_informations, new_attempt=True
                         )
+                else:
+                    # journal is not set as lazy=raise
+                    issue.journal = issue_informations.journal
         return issue
 
     async def _get_or_create_journal(
@@ -601,7 +604,7 @@ class AbstractReferencesConverter(ABC):
                     session.add(journal)
                     try:
                         await session.commit()
-                    except IntegrityError as error:
+                    except DBAPIError as error:
                         assert new_attempt is False, (
                             f"Unique source and source identifier violation "
                             "for journal cannot occur twice "

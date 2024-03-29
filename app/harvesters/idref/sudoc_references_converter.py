@@ -36,6 +36,17 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
 
+        # If we have an article, we need to get the journal and issue
+        if "Article" in [dc.label for dc in new_ref.document_type]:
+            async for biblio_graph, uri in self._get_bibliographic_resource(
+                pub_graph=raw_data.payload, uri=raw_data.source_identifier
+            ):
+                journal = await self._get_journal(biblio_graph, uri)
+                issue = await self._get_issue(
+                    journal=journal, biblio_graph=biblio_graph, uri=uri
+                )
+                new_ref.issue = issue
+
     def _harvester(self) -> str:
         return "Idref"
 

@@ -39,8 +39,8 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     expected_affiliation = ["Hochschule Furtwangen", "CHU de Nantes"]
 
     expected_page = "132-134"
-    expected_issn = "1111-2222"
-    expected_eissn = "3333-4444"
+    expected_issn = ["1111-2222"]
+    expected_eissn = ["3333-4444"]
     expected_journal_title = "Clinical Physiology and Functional Imaging"
     expected_volume_issue = "12"
     expected_number_issue = "1"
