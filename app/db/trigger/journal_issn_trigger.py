@@ -2,11 +2,11 @@ CHECK_ISSN_OVERLAP = """
     CREATE OR REPLACE FUNCTION check_issn_overlap() RETURNS TRIGGER AS $$
     BEGIN
         -- Check for any existing entry with an overlapping issn
-        IF EXISTS (SELECT 1 FROM journals WHERE issn && NEW.issn) THEN
+        IF EXISTS (SELECT 1 FROM journals WHERE source = NEW.source AND issn && NEW.issn) THEN
             RAISE EXCEPTION 'ISSN overlap detected';
         END IF;
         -- Check for any existing entry with an overlapping eissn
-        IF EXISTS (SELECT 1 FROM journals WHERE eissn && NEW.eissn) THEN
+        IF EXISTS (SELECT 1 FROM journals WHERE source = NEW.source AND eissn && NEW.eissn) THEN
             RAISE EXCEPTION 'EISSN overlap detected';
         END IF;
         RETURN NEW;
