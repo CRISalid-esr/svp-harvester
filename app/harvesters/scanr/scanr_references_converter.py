@@ -114,7 +114,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         title = json_payload["_source"].get("source").get("title")
         if not title:
             raise UnexpectedFormatException(
-                f"Journal title is missing in the ScanR source field for the ScanR reference {json_payload['_id']}"
+                "Journal title is missing in the ScanR source field "
+                f"for the ScanR reference {json_payload['_id']}"
             )
         issn = json_payload["_source"].get("source").get("journalIssns", [])
         publisher = json_payload["_source"].get("source").get("publisher")
