@@ -561,6 +561,9 @@ class AbstractReferencesConverter(ABC):
                         issue = await self._get_or_create_issue(
                             issue_informations=issue_informations, new_attempt=True
                         )
+                else:
+                    # journal is not set as lazy=raise
+                    issue.journal = issue_informations.journal
         return issue
 
     async def _get_or_create_journal(
