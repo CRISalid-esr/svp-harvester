@@ -58,6 +58,9 @@ def _publish_requests(args):
         for row in reader:
             count += 1
             print(f"row : {count}")
+            name = row.get("name", None)
+            if name is None:
+                name = f"{row.get('last_name', '')}, {row.get('first_name', '')}"
             payload = {
                 "type": "person",
                 "identifiers_safe_mode": False,
@@ -65,7 +68,7 @@ def _publish_requests(args):
                 "events": ["created", "updated", "deleted"],
                 "harvesters": harvesters,
                 "fields": {
-                    "name": f"{row['last_name']}, {row['first_name']}",
+                    "name": name,
                     "identifiers": [
                         {"type": key, "value": row[key]}
                         for key in row
