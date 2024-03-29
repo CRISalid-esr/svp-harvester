@@ -123,6 +123,18 @@ class Dashboard {
                     y: {
                         stacked: true
                     }
+                },
+                plugins: {
+                    datalabels: {
+                        display: 'auto',
+                        formatter: function (value) {
+                            if (value > 0) {
+                                return value;
+                            } else {
+                                return null;
+                            }
+                        },
+                    }
                 }
             }
         });
@@ -148,13 +160,13 @@ class Dashboard {
             let events = data[date];
             for (let eventType in events) {
                 const foundLabelIndex = result.findIndex(item => item.label === eventType);
-                if (foundLabelIndex !== -1)
+                if (foundLabelIndex !== -1) {
                     result[foundLabelIndex].data[dateCount] = events[eventType];
+                }
 
             }
             dateCount++;
         }
-
         return result;
     }
 }
