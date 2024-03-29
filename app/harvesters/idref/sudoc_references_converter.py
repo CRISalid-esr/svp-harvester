@@ -42,7 +42,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 pub_graph=raw_data.payload, uri=raw_data.source_identifier
             ):
                 journal = await self._get_journal(biblio_graph, uri)
-                issue = await self._get_issue(journal)
+                issue = await self._get_issue(
+                    journal=journal, biblio_graph=biblio_graph, uri=uri
+                )
                 new_ref.issue = issue
 
     def _harvester(self) -> str:
