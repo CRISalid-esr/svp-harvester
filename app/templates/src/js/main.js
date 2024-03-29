@@ -10,6 +10,7 @@ import env from "./env"
 import Client from "./common/client"
 import RetrievePage from "./retrieve/retrieve_page"
 import HistoryPage from "./history/history_page"
+import OverviewPage from "./overview/overview_page"
 
 const enableTooltips = function () {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -27,6 +28,8 @@ const init = function () {
     }
     switch (pageIdentifier) {
         case "overview":
+            client = new Client({...env, ...apiInformations});
+            new OverviewPage(env, client, document.getElementById("overview-page-content"));
             break;
         case "retrieve":
             client = new Client({...env, ...apiInformations});

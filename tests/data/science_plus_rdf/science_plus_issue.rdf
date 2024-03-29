@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+	xmlns:bibo="http://purl.org/ontology/bibo/" >
+  <rdf:Description rdf:about="http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/w">
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/C10001" />
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Issue" />
+    <dcterms:isPartOf rdf:resource="http://hub.abes.fr/springer/periodical/10571/1992/volume_12" />
+    <dcterms:issued rdf:datatype="http://www.w3.org/2001/XMLSchema#gYearMonth">1992-02</dcterms:issued>
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/m/web" />
+    <rdaw:P10072 rdf:resource="http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/m/print" />
+    <dcterms:dateCopyrighted>1992</dcterms:dateCopyrighted>
+    <bibo:issue>1</bibo:issue>
+    <dcterms:rightsHolder>Plenum Publishing Corporation</dcterms:rightsHolder>
+  </rdf:Description>
+</rdf:RDF>

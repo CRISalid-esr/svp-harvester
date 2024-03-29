@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  SVP-Harvester\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-21 12:57+0000\n"
+"POT-Creation-Date: 2024-03-29 05:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,26 +14,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: app/templates/base.html.jinja:10 app/templates/base.html.jinja:18
-#, fuzzy
-msgid ""
-"\n"
-"      application_name"
+#: app/templates/base.html.jinja:10 app/templates/base.html.jinja:17
+msgid "application_name"
 msgstr "SoVisu+ Harvester"
 
-#: app/templates/base.html.jinja:53
+#: app/templates/base.html.jinja:51
 msgid "main_menu_overview_entry"
 msgstr "Présentation"
 
-#: app/templates/base.html.jinja:60
+#: app/templates/base.html.jinja:58
 msgid "main_menu_data_retrieval_entry"
 msgstr "Collecte de données"
 
-#: app/templates/base.html.jinja:67
+#: app/templates/base.html.jinja:65
 msgid "main_menu_history_entry"
 msgstr "Historique des collecte"
 
-#: app/templates/base.html.jinja:74
+#: app/templates/base.html.jinja:72
 #, fuzzy
 msgid "main_menu_settings_entry"
 msgstr "Administration des collectes"
@@ -290,9 +287,15 @@ msgstr "Historique des publications collectées"
 #: app/templates/overview.html.jinja:2 app/templates/overview.html.jinja:3
 #, fuzzy
 msgid "overview_page_overview_page_title"
-msgstr ""
-"Présentation de l'interface d'administration du service de collecte des "
-"références bibliographiques"
+msgstr "Tableau de bord"
+
+#: app/templates/overview.html.jinja:9
+msgid "overview_charts_collected_references_title"
+msgstr "Références collectées (par source)"
+
+#: app/templates/overview.html.jinja:17
+msgid "overview_charts_latests_streams_title"
+msgstr "Flux des derniers jours"
 
 #: app/templates/publication_history.html.jinja:8
 #: app/templates/publication_history.html.jinja:10
@@ -446,9 +449,6 @@ msgstr "Avancement de la collecte"
 msgid "retrieve_page_search_result_panel_title"
 msgstr "Références collectées"
 
-#~ msgid "application_name"
-#~ msgstr "SoVisu+ Harvester"
-
 #~ msgid "retrieve_page_harvesting_history_page_title"
 #~ msgstr "Historique des collecte"
 
@@ -555,6 +555,11 @@ msgstr "Références collectées"
 
 #~ msgid "retrieve_page_entity_name_input_label"
 #~ msgstr "Nom de l'entité (optionnel)"
+
+#~ msgid ""
+#~ "\n"
+#~ "      application_name"
+#~ msgstr "SoVisu+ Harvester"
 
 #~ msgid "history_page_entity_name_input_label"
 #~ msgstr "Nom de l'entité (optionnel)"

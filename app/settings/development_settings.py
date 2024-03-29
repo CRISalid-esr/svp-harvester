@@ -25,4 +25,4 @@ class DevAppSettings(AppSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    institution_name: str = "XYZ University (développement)"
+    institution_name: str = "XYZ University • instance développement"
