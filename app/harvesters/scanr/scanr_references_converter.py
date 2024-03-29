@@ -10,6 +10,9 @@ from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
@@ -109,6 +112,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         if json_payload["_source"].get("source") == {}:
             return None
         title = json_payload["_source"].get("source").get("title")
+        if not title:
+            raise UnexpectedFormatException(
+                f"Journal title is missing in the ScanR source field for the ScanR reference {json_payload['_id']}"
+            )
         issn = json_payload["_source"].get("source").get("journalIssns", [])
         publisher = json_payload["_source"].get("source").get("publisher")
         journal = await self._get_or_create_journal(

@@ -117,6 +117,32 @@ def fixture_scanr_publication_doc_with_sudoc_domains(_base_path) -> dict:
     )
 
 
+@pytest.fixture(name="scanr_publication_doc_with_journal_without_title")
+def fixture_scanr_publication_doc_with_journal_without_title(_base_path) -> dict:
+    """
+    Generate a SCANR API response for a person in JSON format
+    with a journal that has no title
+    :param _base_path: test data directory base
+    :return: SCANR API response for one researcher in JSON format
+    """
+    return _scanr_api_json_data_from_file(
+        _base_path, "scanr_publication_doc_with_journal_without_title"
+    )
+
+
+@pytest.fixture(name="scanr_publication_doc_with_journal_with_title")
+def fixture_scanr_publication_doc_with_journal_with_title(_base_path) -> dict:
+    """
+    Generate a SCANR API response for a person in JSON format
+    with a journal that has a title
+    :param _base_path: test data directory base
+    :return: SCANR API response for one researcher in JSON format
+    """
+    return _scanr_api_json_data_from_file(
+        _base_path, "scanr_publication_doc_with_journal_with_title"
+    )
+
+
 @pytest.fixture(name="scanr_publication_doc_with_wikidata_domains")
 def fixture_scanr_publication_doc_with_wikidata_domains(_base_path) -> dict:
     """
