@@ -91,18 +91,17 @@ class AppSettings(BaseSettings):
     scopus_api_key: str = "None"
     scopus_inst_token: str = "None"
 
-    idref_sudoc_timeout: int = 30
-    idref_science_plus_timeout: int = 30
-    idref_concepts_timeout: int = 30
+    idref_sudoc_timeout: int = 10
+    idref_science_plus_timeout: int = 10
+    idref_concepts_timeout: int = 10
     wikidata_concepts_timeout: int = 10
-    sparql_jel_concepts_timeout: int = 2
+    sparql_jel_concepts_timeout: int = 10
     skosmos_jel_concepts_timeout: int = 20
-    idref_sparql_timeout: int = 10
-    hal_organizations_timeout: int = 10
+    idref_sparql_timeout: int = 5
+    hal_organizations_timeout: int = 7
     idref_organizations_timeout: int = 10
-    ror_organizations_timeout: int = 10
-    scopus_organizations_timeout: int = 10
-
+    ror_organizations_timeout: int = 7
+    scopus_organizations_timeout: int = 5
 
     third_api_caching_enabled: bool = True
     third_api_default_caching_duration: int = 24 * 3600

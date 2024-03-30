@@ -96,7 +96,6 @@ async def test_get_retrieval_result_response_ok(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_get_retrieval_result_with_subjects_without_uri(
     test_client: TestClient,
     reference_event_db_model: ReferenceEvent,
@@ -130,7 +129,6 @@ async def test_get_retrieval_result_with_subjects_without_uri(
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_get_retrieval_result(
     test_client: TestClient,
     reference_event_db_model: ReferenceEvent,

@@ -54,7 +54,7 @@ class AMQPMessageProcessor:
                     await message.ack()
                     self.tasks_queue.task_done()
                     end_time = datetime.now()
-                    logger.debug(
+                    logger.warning(
                         f"Performance : Message  processed by {worker_id} "
                         f"in {end_time - start_time} for payload {payload}"
                     )
@@ -70,6 +70,8 @@ class AMQPMessageProcessor:
 
     async def _process_message(self, payload: str, timeout=DEFAULT_RESULT_TIMEOUT):
         json_payload = json.loads(payload)
+        reply_expected = json_payload.get("reply", False)
+
         if json_payload["type"] == "person":
             try:
                 person = Person(**json_payload["fields"])
@@ -91,35 +93,45 @@ class AMQPMessageProcessor:
                 events=json_payload.get("events"),
             )
             # Create a queue to get results back
-            retrieval_results_queue = asyncio.Queue(maxsize=self.MAX_EXPECTED_RESULTS)
+            if reply_expected:
+                retrieval_results_queue = asyncio.Queue(
+                    maxsize=self.MAX_EXPECTED_RESULTS
+                )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)
-            await self.publisher.publish(
-                {
-                    "type": "Retrieval",
-                    "id": retrieval.id,
-                }
-            )
+            if reply_expected:
+                await self.publisher.publish(
+                    {
+                        "type": "Retrieval",
+                        "id": retrieval.id,
+                    }
+                )
             # Run the retrieval
             run_task_name = f"amqp_retrieval_service_{retrieval.id}_launcher"
             # Listen for results
-            listen = asyncio.create_task(
-                self._wait_for_retrieval_result(
-                    result_queue=retrieval_results_queue,
-                    retrieval=retrieval,
-                    timeout=timeout,
-                ),
-                name=f"amqp_retrieval_service_{retrieval.id}_listener",
-            )
-            tasks = [
-                asyncio.create_task(
-                    service.run(result_queue=retrieval_results_queue),
-                    name=run_task_name,
-                ),
-                listen,
-            ]
-            await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-            listen.cancel()
+            if reply_expected:
+                listen = asyncio.create_task(
+                    self._wait_for_retrieval_result(
+                        result_queue=retrieval_results_queue,
+                        retrieval=retrieval,
+                        timeout=timeout,
+                    ),
+                    name=f"amqp_retrieval_service_{retrieval.id}_listener",
+                )
+
+            if reply_expected:
+                tasks = [
+                    asyncio.create_task(
+                        service.run(result_queue=retrieval_results_queue),
+                        name=run_task_name,
+                    ),
+                    listen,
+                ]
+                await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            else:
+                await service.run()
+            if reply_expected:
+                listen.cancel()
 
     async def _wait_for_retrieval_result(
         self, result_queue: asyncio.Queue, retrieval: Retrieval, timeout: int
