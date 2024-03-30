@@ -81,7 +81,6 @@ async def test_get_reference_events_by_day_and_type(
                 reference_number += 1
                 reference_event = ReferenceEvent(
                     type=event_type,
-                    history=True,
                     harvesting=harvesting_db_model_for_person_with_idref,
                     reference=references[reference_number % len(references)],
                 )

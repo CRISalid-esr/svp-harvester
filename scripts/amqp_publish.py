@@ -45,7 +45,6 @@ async def main() -> None:
                 payload = {
                     "type": "person",
                     "identifiers_safe_mode": False,
-                    "history_safe_mode": True,
                     "fields": {
                         "name": line[0],
                         "identifiers": [

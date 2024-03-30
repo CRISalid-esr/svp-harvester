@@ -20,7 +20,6 @@ class HarvestingDAO(AbstractDAO):
         retrieval: DbRetrieval,
         harvester: str,
         state: DbHarvesting.State,
-        history: bool = True,
     ) -> DbHarvesting:
         """
         Create a harvesting for a retrieval
@@ -28,12 +27,9 @@ class HarvestingDAO(AbstractDAO):
         :param state: state of the harvesting
         :param retrieval: retrieval to which the harvesting belongs
         :param harvester: type of harvester (idref, orcid, etc.)
-        :param history: if True, the harvesting will be recorded in the history
         :return:
         """
-        harvesting = DbHarvesting(
-            harvester=harvester, state=state.value, history=history
-        )
+        harvesting = DbHarvesting(harvester=harvester, state=state.value)
         harvesting.retrieval = retrieval
         self.db_session.add(harvesting)
         return harvesting

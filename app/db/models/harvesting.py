@@ -39,24 +39,21 @@ class Harvesting(Base):
         nullable=False, index=True, default=State.IDLE.value
     )
 
-    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
-        relationship(
-            "app.db.models.reference_event.ReferenceEvent",
-            back_populates="harvesting",
-            cascade="all, delete",
-            lazy="joined",
-        )
+    reference_events: Mapped[
+        List["app.db.models.reference_event.ReferenceEvent"]
+    ] = relationship(
+        "app.db.models.reference_event.ReferenceEvent",
+        back_populates="harvesting",
+        cascade="all, delete",
+        lazy="joined",
     )
-
-    # boolean field "history"
-    history: Mapped[bool] = mapped_column(nullable=False, index=True, default=True)
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
 
-    error: Mapped[List["app.db.models.harvesting_error.HarvestingError"]] = (
-        relationship(
-            "app.db.models.harvesting_error.HarvestingError",
-            cascade="all, delete-orphan",
-            lazy="joined",
-        )
+    error: Mapped[
+        List["app.db.models.harvesting_error.HarvestingError"]
+    ] = relationship(
+        "app.db.models.harvesting_error.HarvestingError",
+        cascade="all, delete-orphan",
+        lazy="joined",
     )

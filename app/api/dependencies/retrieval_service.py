@@ -9,7 +9,6 @@ from app.services.retrieval.retrieval_service import RetrievalService
 
 
 def build_retrieval_service_from_fields(
-    history_safe_mode: Annotated[bool, Query()] = False,
     identifiers_safe_mode: Annotated[bool, Query()] = False,
     harvesters: Annotated[List[str], Query()] = None,
     nullify: Annotated[List[str], Query()] = None,
@@ -17,7 +16,6 @@ def build_retrieval_service_from_fields(
 ) -> RetrievalService:
     """
     Build a retrieval service from the provided fields.
-    :param history_safe_mode:  history safe mode
     :param identifiers_safe_mode: identifiers safe mode
     :param harvesters:   list of harvesters to fetch (default : None, all harvesters)
     :param nullify:   list of identifiers to nullify for the person
@@ -26,7 +24,6 @@ def build_retrieval_service_from_fields(
     """
 
     return RetrievalService(
-        history_safe_mode=history_safe_mode,
         identifiers_safe_mode=identifiers_safe_mode,
         nullify=nullify,
         events=event_types_or_default(events),

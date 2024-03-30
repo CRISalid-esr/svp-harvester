@@ -33,7 +33,6 @@ class ReferencesRecorder:
                     harvesting_id=self.harvesting.id,
                     reference=new_ref,
                     event_type=ReferenceEvent.Type.CREATED,
-                    history=self.harvesting.history,
                 )
 
     async def register_update(
@@ -56,7 +55,6 @@ class ReferencesRecorder:
                     harvesting_id=self.harvesting.id,
                     reference=new_ref,
                     event_type=ReferenceEvent.Type.UPDATED,
-                    history=self.harvesting.history,
                 )
 
     async def register_unchanged(self, old_ref: Reference) -> ReferenceEvent | None:
@@ -72,7 +70,6 @@ class ReferencesRecorder:
                     harvesting_id=self.harvesting.id,
                     reference=old_ref,
                     event_type=ReferenceEvent.Type.UNCHANGED,
-                    history=self.harvesting.history,
                 )
 
     async def exists(self, new_ref: Reference) -> Reference | None:
@@ -103,7 +100,6 @@ class ReferencesRecorder:
                     harvesting_id=self.harvesting.id,
                     reference=old_ref,
                     event_type=ReferenceEvent.Type.DELETED,
-                    history=self.harvesting.history,
                 )
 
     async def get_matching_references_before_harvesting(

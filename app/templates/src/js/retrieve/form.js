@@ -27,7 +27,6 @@ class Form {
     this.handleEventTypesSelect();
     this.handleDataSourcesSelect();
     this.handleIdentifiersSafeModeToggle();
-    this.handleHistorySafeModeToggle();
     this.renewAddIdentifierControl();
     this.addSubmitListener();
     this.addClearFormListener();
@@ -72,12 +71,6 @@ class Form {
   handleIdentifiersSafeModeToggle() {
     this.identifiersSafeModeToggle = this.formElement.querySelector(
       "#identifiers-safe-mode-toggle"
-    );
-  }
-
-  handleHistorySafeModeToggle() {
-    this.historySafeModeToggle = this.formElement.querySelector(
-      "#history-safe-mode-toggle"
     );
   }
 
@@ -131,7 +124,6 @@ class Form {
         name: this.formElement.querySelector("#name-field-input").value,
         eventTypes: this.eventTypeSelect.getValue(),
         harvesters: this.harvestersSelect.getValue(),
-        historySafeMode: this.historySafeModeToggle.checked,
         identifiersSafeMode: this.identifiersSafeModeToggle.checked,
       },
     });

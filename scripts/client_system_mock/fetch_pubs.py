@@ -61,7 +61,6 @@ def _publish_requests(args):
             payload = {
                 "type": "person",
                 "identifiers_safe_mode": False,
-                "history_safe_mode": False,
                 "events": ["created", "updated", "deleted"],
                 "harvesters": harvesters,
                 "fields": {

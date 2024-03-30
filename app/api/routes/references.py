@@ -53,7 +53,6 @@ async def create_retrieval_sync(
     """
     Fetch references for a person in a synchronous way
 
-    - **history_safe_mode**: if True, this retrieval won't update entity harvesting history
     - **identifiers_safe_mode**: if True, this retrieval won't update entity identifiers
     - **nullify**: list of identifiers to nullify for the person
                     (in case they've been previously associated)

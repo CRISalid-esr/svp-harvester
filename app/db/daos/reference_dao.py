@@ -38,13 +38,12 @@ class ReferenceDAO(AbstractDAO):
         :param harvester: harvester name of the harvesting
         :return: list of references
         """
-        # Fin the last completed harvesting id with history set to true
+        # Fin the last completed harvesting id
         # for the given entity and harvester
         subquery = (
             # pylint: disable=not-callable
             select(func.max(Harvesting.id).label("max_harvesting_id"))
             .join(Retrieval)
-            .where(Harvesting.history.is_(True))
             .where(Retrieval.entity_id == entity_id)
             .where(Harvesting.harvester == harvester)
             .where(Harvesting.id != harvesting_id)
@@ -98,12 +97,6 @@ class ReferenceDAO(AbstractDAO):
             .options(raiseload("*"))
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.harvester == harvester)
-            # where there is no reference event
-            # or exists at least one reference event with history set to true
-            .where(
-                ~Reference.reference_events.any()
-                | Reference.reference_events.any(ReferenceEvent.history.is_(True))
-            )
             .order_by(Reference.version.desc())
         )
         return (await self.db_session.execute(query)).scalars().first()

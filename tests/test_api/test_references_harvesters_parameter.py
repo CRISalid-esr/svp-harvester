@@ -18,7 +18,7 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
         (["hal", "idref"], 2),
     ],
 )
-async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: disable=too-many-statements
+async def test_fetch_references_async(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_orcid_json,
     requested_harvesters,

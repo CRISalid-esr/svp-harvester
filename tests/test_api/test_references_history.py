@@ -11,25 +11,16 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "history_safe_mode",
-    [True, False],
-)
-async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: disable=too-many-statements
+async def test_fetch_references_async_history(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
     hal_api_docs_for_researcher_version_1,
     hal_api_docs_for_researcher_version_2,
-    history_safe_mode,
 ):
     """
-    Test one post request with history safe mode set to False followed by two others,
-    with history safe mode set to True or False by parametrization.
+    Test one post request followed by two others,
     The last two requests return an identical new version of the results.
-    With history safe mode set to False, the last request only returns "unchanged" reference events.
-    With history safe mode set to True, the last request returns all types of reference events.
-
-
+    The last request only returns "unchanged" reference events.
 
     :param test_client:
     :param person_with_name_and_id_hal_i_json:
@@ -37,8 +28,7 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
     :param hal_api_docs_for_researcher_version_2:
     :return:
     """
-    # 1. First launch a retrieval with history safe mode set to False
-    # that will create the 3 references in the database
+    # 1. First launch a retrieval that will create the 3 references in the database
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
@@ -50,7 +40,6 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
             json={
                 "person": person_with_name_and_id_hal_i_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": False,
             },
         )
         assert response.status_code == 200
@@ -69,7 +58,6 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
             for reference_event in json_response["harvestings"][0]["reference_events"]
         )
     # 2. Now relaunch the same retrieval
-    # with history safe mode set to True or False by parametrization
     # It will return a new version of the results
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
@@ -81,7 +69,6 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
             json={
                 "person": person_with_name_and_id_hal_i_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": history_safe_mode,
             },
         )
         assert response.status_code == 200
@@ -120,7 +107,6 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
             json={
                 "person": person_with_name_and_id_hal_i_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": history_safe_mode,
             },
         )
         assert response.status_code == 200
@@ -133,61 +119,15 @@ async def test_fetch_references_async_with_history_safe_or_unsafe(  # pylint: di
         json_response = response.json()
         assert json_response["harvestings"][0]["state"] == "completed"
         assert json_response["harvestings"][0]["harvester"] == "hal"
-        # if history safe mode is False, all reference events are of type unchanged
-        if not history_safe_mode:
-            # there are 3 reference events
-            assert len(json_response["harvestings"][0]["reference_events"]) == 3
-            # all of type unchanged
-            assert all(
-                reference_event["type"] == "unchanged"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
-            # reference with source identifier 3-will-disappear does not appear in the results
-            assert all(
-                reference_event["reference"]["source_identifier"] != "3-will-disappear"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
-        if history_safe_mode:
-            # there are 4 reference events
-            assert len(json_response["harvestings"][0]["reference_events"]) == 4
-            # if history safe mode is True, reference events are
-            # of type created, updated, deleted or unchanged
-            # reference by source identifier 1-will-not-change
-            # is unchanged (reference events order is not guaranteed)
-            assert any(
-                reference_event["type"] == "unchanged"
-                and reference_event["reference"]["source_identifier"]
-                == "1-will-not-change"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
-            # reference by source identifier 4-will-appear is created
-            assert any(
-                reference_event["type"] == "created"
-                and reference_event["reference"]["source_identifier"] == "4-will-appear"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
-            # reference by source identifier 3-will-disappear is deleted
-            assert any(
-                reference_event["type"] == "deleted"
-                and reference_event["reference"]["source_identifier"]
-                == "3-will-disappear"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
-            # reference by source identifier 2-will-change is updated
-            assert any(
-                reference_event["type"] == "updated"
-                and reference_event["reference"]["source_identifier"] == "2-will-change"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
-            )
+        # there are 3 reference events
+        assert len(json_response["harvestings"][0]["reference_events"]) == 3
+        # all of type unchanged
+        assert all(
+            reference_event["type"] == "unchanged"
+            for reference_event in json_response["harvestings"][0]["reference_events"]
+        )
+        # reference with source identifier 3-will-disappear does not appear in the results
+        assert all(
+            reference_event["reference"]["source_identifier"] != "3-will-disappear"
+            for reference_event in json_response["harvestings"][0]["reference_events"]
+        )

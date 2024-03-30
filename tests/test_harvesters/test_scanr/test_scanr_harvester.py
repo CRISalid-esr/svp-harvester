@@ -58,7 +58,6 @@ async def test_fetch_references_async_with_idref(
             json={
                 "person": person_with_name_and_idref_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": False,
                 "harvesters": ["scanr"],
             },
         )
@@ -105,7 +104,6 @@ async def test_fetch_references_async_with_orcid(
             json={
                 "person": person_with_name_and_orcid_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": False,
                 "harvesters": ["scanr"],
             },
         )

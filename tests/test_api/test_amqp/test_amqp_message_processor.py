@@ -63,7 +63,6 @@ async def test_amqp_message_runs_retrieval_service(
         mock_retrieval_service_register.assert_called_once()
         _, init_args = mock_retrieval_service_init.call_args
         _, register_args = mock_retrieval_service_register.call_args
-        assert init_args["history_safe_mode"] is None
         assert init_args["identifiers_safe_mode"] is None
         assert init_args["nullify"] is None
         assert init_args["events"] is None
@@ -87,7 +86,6 @@ async def test_amqp_message_runs_retrieval_service_with_parameters(
         '{"type": "person", '
         '"fields": {"name": "Doe, John", '
         '"identifiers": [{"type": "orcid", "value": "0000-0002-1825-0097"}]},'
-        '"history_safe_mode": true, '
         '"identifiers_safe_mode": true, '
         '"nullify": ["orcid"], '
         '"events": ["updated"]}'
@@ -98,7 +96,6 @@ async def test_amqp_message_runs_retrieval_service_with_parameters(
         mock_retrieval_service_init.assert_called_once()
         mock_retrieval_service_register.assert_called_once()
         _, init_args = mock_retrieval_service_init.call_args
-        assert init_args["history_safe_mode"] is True
         assert init_args["identifiers_safe_mode"] is True
         assert init_args["nullify"] == ["orcid"]
         assert init_args["events"] == ["updated"]

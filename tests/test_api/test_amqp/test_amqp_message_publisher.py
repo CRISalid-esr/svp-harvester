@@ -128,7 +128,6 @@ async def test_publish_retrieval_error(
         "parameters": {
             "type": "person",
             "identifiers_safe_mode": False,
-            "history_safe_mode": True,
             "fields": {
                 "name": "C. Despas",
                 "identifiers": [
