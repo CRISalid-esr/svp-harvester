@@ -1,5 +1,5 @@
 import DataTable from 'datatables.net-dt';
-import { prettyPrintJson } from 'pretty-print-json';
+import {prettyPrintJson} from 'pretty-print-json';
 import * as bootstrap from 'bootstrap'
 
 const MAPPING_COLOR_STATE = {
@@ -29,7 +29,11 @@ class HistoryTable {
     }
 
     getDataTableConfig() {
+        const noDataMessage = document.getElementById("datatables-no-data-available-history").value;
         const commonConfig = {
+            "language": {
+                "emptyTable": noDataMessage
+            },
             "paging": false,
             "searching": false,
             "info": false,
@@ -47,15 +51,15 @@ class HistoryTable {
                             data: null,
                             defaultContent: ''
                         },
-                        { "width": "15%", "title": "Date" },
-                        { "width": "15%", "title": "Nom de l'entité" },
-                        { "width": "20%", "title": "identifiants" },
-                        { "width": "15%", "title": "Type d'événements" },
-                        { "width": "15%", "title": "Sources de données" },
-                        { "width": "16%", "title": "Type de référence" },
-                        { "width": "5%", "title": "Nombre d'événements" },
-                        { "title": "id", "visible": false },
-                        { "title": "Data", "visible": false }
+                        {"width": "15%", "title": "Date"},
+                        {"width": "15%", "title": "Nom de l'entité"},
+                        {"width": "20%", "title": "identifiants"},
+                        {"width": "15%", "title": "Type d'événements"},
+                        {"width": "15%", "title": "Sources de données"},
+                        {"width": "16%", "title": "Type de référence"},
+                        {"width": "5%", "title": "Nombre d'événements"},
+                        {"title": "id", "visible": false},
+                        {"title": "Data", "visible": false}
                     ]
                 };
             case "publication_history":
@@ -69,13 +73,13 @@ class HistoryTable {
                             data: null,
                             defaultContent: ''
                         },
-                        { "width": "20%", "title": "Date" },
-                        { "width": "15%", "title": "Source" },
-                        { "width": "30%", "title": "Identifiant" },
-                        { "width": "15%", "title": "Statut" },
-                        { "width": "20%", "title": "Titre" },
-                        { "title": "id", "visible": false },
-                        { "title": "Data", "visible": false }
+                        {"width": "20%", "title": "Date"},
+                        {"width": "15%", "title": "Source"},
+                        {"width": "30%", "title": "Identifiant"},
+                        {"width": "15%", "title": "Statut"},
+                        {"width": "20%", "title": "Titre"},
+                        {"title": "id", "visible": false},
+                        {"title": "Data", "visible": false}
                     ]
                 };
             default:

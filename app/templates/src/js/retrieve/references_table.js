@@ -9,7 +9,11 @@ class ReferencesTable {
         this.rootElement = rootElement;
         this.client = client;
         this.fetchedReferences = {}
+        const noDataMessage = document.getElementById("datatables-no-data-available-retrieval").value;
         this.dataTable = new DataTable("#references-table", {
+            "language": {
+                "emptyTable": noDataMessage
+            },
             "paging": false,
             "searching": false,
             "info": false,
