@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.integration
 
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
+REFERENCE_EVENTS_API_PATH = "/api/v1/reference_events"
 
 
 @pytest.mark.asyncio
@@ -52,9 +53,18 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         assert json_response["harvestings"][0]["harvester"] == "hal"
         assert len(json_response["harvestings"][0]["reference_events"]) == 1
         events = json_response["harvestings"][0]["reference_events"]
-        reference = _extract_reference_by_source_identifier(events, "halshs-02514028")
+        reference_event_id = _extract_reference_id_by_source_identifier(
+            events, "halshs-02514028"
+        )
+        assert reference_event_id is not None
+        reference_event_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_event_id}"
+        response = test_client.get(reference_event_url)
+        assert response.status_code == 200
+        reference_event = response.json()
+        assert reference_event is not None
+        reference = reference_event["reference"]
         assert reference is not None
-        reference_contributions = reference["reference"]["contributions"]
+        reference_contributions = reference["contributions"]
         assert len(reference_contributions) == 17
         # one of the contributors has the source identifier '183355'
         # and its name may be 'Laïla Nehmé' or 'Laila Nehmé'
@@ -65,10 +75,10 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         )
 
 
-def _extract_reference_by_source_identifier(events, source_identifier):
+def _extract_reference_id_by_source_identifier(events, source_identifier):
     for event in events:
         if event["reference"]["source_identifier"] == source_identifier:
-            return event
+            return event.get("id")
     return None
 
 

@@ -128,7 +128,7 @@ async def get_retrieval_result(
     async with async_session() as session:
         retrieval: DbRetrieval = await RetrievalDAO(
             session
-        ).get_complete_retrieval_by_id(retrieval_id)
+        ).get_retrieval_display_info_by_id(retrieval_id)
     return RetrievalModel.model_validate(retrieval)
 
 

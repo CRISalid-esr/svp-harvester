@@ -26,7 +26,7 @@ class AMQPRetrievalMessageFactory(AbstractAMQPMessageFactory):
         async with async_session() as session:
             retrieval: DbRetrieval = await RetrievalDAO(
                 session
-            ).get_complete_retrieval_by_id(self.content.get("id"))
+            ).get_retrieval_display_info_by_id(self.content.get("id"))
             retrieval_representation: RetrievalModel = RetrievalModel.model_validate(
                 retrieval
             )

@@ -13,6 +13,8 @@ pytestmark = pytest.mark.integration
 
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
+REFERENCE_EVENTS_API_PATH = "/api/v1/reference_events"
+
 
 def test_create_retrieval_sync_with_idref(test_client: TestClient):
     """Test the create_retrieval_sync endpoint."""
@@ -94,6 +96,7 @@ async def test_get_retrieval_result_response_ok(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_get_retrieval_result_with_subjects_without_uri(
     test_client: TestClient,
     reference_event_db_model: ReferenceEvent,
@@ -115,21 +118,19 @@ async def test_get_retrieval_result_with_subjects_without_uri(
     )
     assert response.status_code == 200
     json_response = response.json()
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
-            0
-        ]["pref_labels"][0]["value"]
-        == "label"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
-            0
-        ]["pref_labels"][0]["language"]
-        == "fr"
-    )
+    events = json_response["harvestings"][0]["reference_events"]
+    reference_event_id = events[0]["id"]
+    reference_event_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_event_id}"
+    response = test_client.get(reference_event_url)
+    assert response.status_code == 200
+    reference = response.json()["reference"]
+    assert reference is not None
+    assert reference["subjects"][0]["pref_labels"][0]["value"] == "label"
+    assert reference["subjects"][0]["pref_labels"][0]["language"] == "fr"
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_get_retrieval_result(
     test_client: TestClient,
     reference_event_db_model: ReferenceEvent,
@@ -152,43 +153,20 @@ async def test_get_retrieval_result(
     json_response = response.json()
     assert json_response["harvestings"][0]["harvester"] == "idref"
     assert len(json_response["harvestings"][0]["reference_events"]) == 1
+    events = json_response["harvestings"][0]["reference_events"]
+    reference_id = events[0]["id"]
+    reference_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_id}"
+    response = test_client.get(reference_url)
+    assert response.status_code == 200
+    reference = response.json()["reference"]
+    assert reference is not None
     assert json_response["harvestings"][0]["reference_events"][0]["type"] == "created"
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"][
-            "source_identifier"
-        ]
-        == "123456789"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["titles"][
-            0
-        ]["value"]
-        == "title"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["titles"][
-            0
-        ]["language"]
-        == "fr"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
-            0
-        ]["uri"]
-        == "http://uri"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
-            0
-        ]["pref_labels"][0]["value"]
-        == "label"
-    )
-    assert (
-        json_response["harvestings"][0]["reference_events"][0]["reference"]["subjects"][
-            0
-        ]["pref_labels"][0]["language"]
-        == "fr"
-    )
+    assert reference["source_identifier"] == "123456789"
+    assert reference["titles"][0]["value"] == "title"
+    assert reference["titles"][0]["language"] == "fr"
+    assert reference["subjects"][0]["uri"] == "http://uri"
+    assert reference["subjects"][0]["pref_labels"][0]["value"] == "label"
+    assert reference["subjects"][0]["pref_labels"][0]["language"] == "fr"
 
 
 @pytest.mark.asyncio
@@ -269,3 +247,10 @@ async def test_a_second_post_request_updates_the_name_of_the_person_in_db(
         )
     )
     assert person.scalars().first().name == "new name"
+
+
+def _extract_reference_id_by_source_identifier(events, source_identifier):
+    for event in events:
+        if event["reference"]["source_identifier"] == source_identifier:
+            return event.get("id")
+    return None

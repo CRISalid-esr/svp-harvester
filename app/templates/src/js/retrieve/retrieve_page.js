@@ -7,7 +7,7 @@ class RetrievePage {
 
     constructor(env, client, rootElement) {
         const form = new Form(env, rootElement)
-        const referencesTable = new ReferencesTable(env, rootElement);
+        const referencesTable = new ReferencesTable(env, rootElement, client);
         const harvestingDashboard = new HarvestingDashboard(env, rootElement);
         new Control(env, form, harvestingDashboard, referencesTable, rootElement, client);
     }
