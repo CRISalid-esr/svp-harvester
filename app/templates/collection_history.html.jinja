@@ -52,8 +52,9 @@
 
       <div id="name-field-container">
         <div class="input-group flex-nowrap">
-          <span class="input-group-text" id="addon-wrapping">{% trans %}
-            retrieve_page_entity_name_input_label{% endtrans %}</span>
+          <span class="input-group-text" id="addon-wrapping">
+            {% trans %}retrieve_page_entity_name_input_label{% endtrans %}
+          </span>
           <input type="text" id="name-field-input" class="form-control"
             placeholder="{% trans %}retrieve_page_entity_name_input_placeholder{% endtrans %}"
             aria-label="{% trans %}retrieve_page_entity_name_input_aria_label{% endtrans %}">
@@ -72,16 +73,13 @@
               {% trans %}harvesting_type_new_references_option_label{% endtrans %}
             </option>
             <option selected value="updated">
-              {% trans %}
-              harvesting_type_updated_references_option_label{% endtrans %}
+              {% trans %}harvesting_type_updated_references_option_label{% endtrans %}
             </option>
             <option selected value="deleted">
-              {% trans %}
-              harvesting_type_deleted_references_option_label{% endtrans %}
+              {% trans %}harvesting_type_deleted_references_option_label{% endtrans %}
             </option>
             <option selected value="unchanged">
-              {% trans %}
-              harvesting_type_unchanged_references_option_label{% endtrans %}
+              {% trans %}harvesting_type_unchanged_references_option_label{% endtrans %}
             </option>
           </select>
         </div>
