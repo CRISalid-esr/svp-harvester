@@ -12,4 +12,8 @@ router.include_router(admin.router, tags=["admin"], prefix="/admin")
 
 @router.get("/")
 def redirect_to_admin():
+    """
+    Redirect users from the root path to the admin path
+    :return: RedirectResponse
+    """
     return RedirectResponse(url="/admin")
