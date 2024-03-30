@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.journal import Journal
 
@@ -31,13 +31,15 @@ class JournalDAO(AbstractDAO):
         if not eissn:
             eissn = []
         query = select(Journal).where(Journal.source == source)
+        identifiers_filters = []
         for issn_value in issn:
-            query = query.where(Journal.issn.any(issn_value))
+            identifiers_filters.append(Journal.issn.any(issn_value))
         for eissn_value in eissn:
-            query = query.where(Journal.eissn.any(eissn_value))
+            identifiers_filters.append(Journal.eissn.any(eissn_value))
         if issn_l is not None:
-            query = query.where(Journal.issn_l == str(issn_l))
-
+            identifiers_filters.append(Journal.issn_l == str(issn_l))
+        if len(identifiers_filters) > 0:
+            query = query.where(or_(*identifiers_filters))
         # Get the first result
         return (await self.db_session.execute(query)).scalars().first()
 
