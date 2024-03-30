@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.integration
 
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
+REFERENCE_EVENTS_API_PATH = "/api/v1/reference_events"
 
 
 @pytest.mark.asyncio
@@ -53,9 +54,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         assert json_response["harvestings"][0]["harvester"] == "hal"
         assert len(json_response["harvestings"][0]["reference_events"]) == 7
         events = json_response["harvestings"][0]["reference_events"]
-        reference_1_v1 = _extract_reference_by_source_identifier(
+        reference_1_v1_id = _extract_reference_id_by_source_identifier(
             events, "1-will-gain-second-contributor"
         )
+        reference_1_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_1_v1_id}"
+        response = test_client.get(reference_1_v1_url)
+        assert response.status_code == 200
+        reference_1_v1 = response.json()
         assert reference_1_v1 is not None
         reference_1_v1_contributions = reference_1_v1["reference"]["contributions"]
         assert len(reference_1_v1_contributions) == 1
@@ -72,9 +77,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             ]["name"]
             == "Alessandro Buccheri"
         )
-        reference_2_v1 = _extract_reference_by_source_identifier(
+        reference_2_v1_id = _extract_reference_id_by_source_identifier(
             events, "2-will-loose-a-contributor"
         )
+        reference_2_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_2_v1_id}"
+        response = test_client.get(reference_2_v1_url)
+        assert response.status_code == 200
+        reference_2_v1 = response.json()
         assert reference_2_v1 is not None
         reference_2_v1_contributions = reference_2_v1["reference"]["contributions"]
         assert len(reference_2_v1_contributions) == 2
@@ -102,21 +111,37 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             ]["name"]
             == "Alex Terieur"
         )
-        reference_3_v1 = _extract_reference_by_source_identifier(
+        reference_3_v1_id = _extract_reference_id_by_source_identifier(
             events, "3-will-have-a-contributor-keeping-his-id-but-changing-his-name"
         )
+        reference_3_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_3_v1_id}"
+        response = test_client.get(reference_3_v1_url)
+        assert response.status_code == 200
+        reference_3_v1 = response.json()
         reference_3_v1_contributions = reference_3_v1["reference"]["contributions"]
-        reference_4_v1 = _extract_reference_by_source_identifier(
+        reference_4_v1_id = _extract_reference_id_by_source_identifier(
             events, "4-will-have-a-contributor-keeping-his-name-but-changing-his-id"
         )
+        reference_4_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_4_v1_id}"
+        response = test_client.get(reference_4_v1_url)
+        assert response.status_code == 200
+        reference_4_v1 = response.json()
         reference_4_v1_contributions = reference_4_v1["reference"]["contributions"]
-        reference_5_v1 = _extract_reference_by_source_identifier(
+        reference_5_v1_id = _extract_reference_id_by_source_identifier(
             events, "5-has-a-contributor-with-name-only-will-change-his-name"
         )
+        reference_5_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_5_v1_id}"
+        response = test_client.get(reference_5_v1_url)
+        assert response.status_code == 200
+        reference_5_v1 = response.json()
         reference_5_v1_contributions = reference_5_v1["reference"]["contributions"]
-        reference_6_v1 = _extract_reference_by_source_identifier(
+        reference_6_v1_id = _extract_reference_id_by_source_identifier(
             events, "6-has-the-same-contributor-with-two-different-roles"
         )
+        reference_6_v1_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_6_v1_id}"
+        response = test_client.get(reference_6_v1_url)
+        assert response.status_code == 200
+        reference_6_v1 = response.json()
         # assert that the contributor is present twice in the contributions list
         reference_6_v1_contributions = reference_6_v1["reference"]["contributions"]
         assert len(reference_6_v1_contributions) == 2
@@ -157,9 +182,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         assert json_response["harvestings"][0]["state"] == "completed"
         events = json_response["harvestings"][0]["reference_events"]
         assert len(events) == 7
-        reference_1_v2 = _extract_reference_by_source_identifier(
+        reference_1_v2_id = _extract_reference_id_by_source_identifier(
             events, "1-will-gain-second-contributor"
         )
+        reference_1_v2_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_1_v2_id}"
+        response = test_client.get(reference_1_v2_url)
+        assert response.status_code == 200
+        reference_1_v2 = response.json()
         assert reference_1_v2 is not None
         reference_1_v2_contributions = reference_1_v2["reference"]["contributions"]
         assert len(reference_1_v2_contributions) == 2
@@ -187,9 +216,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             ]["name"]
             == "Françoise Bas-Theron"
         )
-        reference_2_v2 = _extract_reference_by_source_identifier(
+        reference_2_v2_id = _extract_reference_id_by_source_identifier(
             events, "2-will-loose-a-contributor"
         )
+        reference_2_v2_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_2_v2_id}"
+        response = test_client.get(reference_2_v2_url)
+        assert response.status_code == 200
+        reference_2_v2 = response.json()
         reference_2_v2_contributions = reference_2_v2["reference"]["contributions"]
         assert reference_2_v2 is not None
         assert len(reference_2_v2_contributions) == 1
@@ -211,9 +244,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             ]["source_identifier"]
         )
 
-        reference_3_v2 = _extract_reference_by_source_identifier(
+        reference_3_v2_id = _extract_reference_id_by_source_identifier(
             events, "3-will-have-a-contributor-keeping-his-id-but-changing-his-name"
         )
+        reference_3_v2_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_3_v2_id}"
+        response = test_client.get(reference_3_v2_url)
+        assert response.status_code == 200
+        reference_3_v2 = response.json()
         reference_3_v2_contributions = reference_3_v2["reference"]["contributions"]
         # the second contributor has the same id as in reference_3_v1 but a different name
         assert reference_3_v2 is not None
@@ -242,9 +279,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
                 "contributor"
             ]["name_variants"]
         )
-        reference_4_v2 = _extract_reference_by_source_identifier(
+        reference_4_v2_id = _extract_reference_id_by_source_identifier(
             events, "4-will-have-a-contributor-keeping-his-name-but-changing-his-id"
         )
+        reference_4_v2_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_4_v2_id}"
+        response = test_client.get(reference_4_v2_url)
+        assert response.status_code == 200
+        reference_4_v2 = response.json()
         reference_4_v2_contributions = reference_4_v2["reference"]["contributions"]
         # the second contributor has the same name as in reference_4_v1 but a different id
         assert reference_4_v2 is not None
@@ -269,9 +310,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             ]["source_identifier"]
             == "333333"
         )
-        reference_5_v2 = _extract_reference_by_source_identifier(
+        reference_5_v2_id = _extract_reference_id_by_source_identifier(
             events, "5-has-a-contributor-with-name-only-will-change-his-name"
         )
+        reference_5_v2_url = f"{REFERENCE_EVENTS_API_PATH}/{reference_5_v2_id}"
+        response = test_client.get(reference_5_v2_url)
+        assert response.status_code == 200
+        reference_5_v2 = response.json()
         reference_5_v2_contributions = reference_5_v2["reference"]["contributions"]
         # the only contributor had a name and no id in v1
         # he's got a new name but still no id in v2
@@ -303,10 +348,10 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         )
 
 
-def _extract_reference_by_source_identifier(events, source_identifier):
+def _extract_reference_id_by_source_identifier(events, source_identifier):
     for event in events:
         if event["reference"]["source_identifier"] == source_identifier:
-            return event
+            return event.get("id")
     return None
 
 
