@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-30 14:46+0000\n"
+"POT-Creation-Date: 2024-03-30 15:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,6 +236,11 @@ msgstr ""
 msgid "history_page_search_result_panel_title"
 msgstr ""
 
+#: app/templates/collection_history.html.jinja:170
+#: app/templates/publication_history.html.jinja:188
+msgid "datatables_no_data_available_history"
+msgstr ""
+
 #: app/templates/history.html.jinja:3 app/templates/history.html.jinja:4
 msgid "history_page_title"
 msgstr ""
@@ -351,5 +356,9 @@ msgstr ""
 
 #: app/templates/retrieve.html.jinja:212
 msgid "retrieve_page_search_result_panel_title"
+msgstr ""
+
+#: app/templates/retrieve.html.jinja:224
+msgid "datatables_no_data_available_retrieval"
 msgstr ""
 
