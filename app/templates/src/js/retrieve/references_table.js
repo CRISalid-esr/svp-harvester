@@ -65,49 +65,6 @@ class ReferencesTable {
         return "<pre>" + prettyPrintJson.toHtml(json) + "</pre>";
     }
 
-    buildBootstrapTable(data) {
-        let html = `<div class="table-responsive">
-                <table class="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>Field</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>`;
-
-        // Function to handle array of objects or single objects
-        const handleObject = (obj) => {
-            if (Array.isArray(obj) && obj.length > 0) {
-                return obj.map(item => JSON.stringify(item)).join('<br>');
-            }
-            return JSON.stringify(obj);
-        };
-
-        // Iterate over the JSON keys
-        for (let key in data) {
-            if (data.hasOwnProperty(key)) {
-                let value = data[key];
-                // Check if value is an array or an object
-                if (typeof value === 'object' && value !== null) {
-                    value = handleObject(value);
-                }
-                // Append the row for the key
-                html += `<tr>
-                <td>${key}</td>
-                <td>${value}</td>
-              </tr>`;
-            }
-        }
-
-        // Close the table
-        html += `  </tbody>
-            </table>
-          </div>`;
-
-        return html;
-    }
-
 
     updateOpenClosedRows() {
         const self = this;
