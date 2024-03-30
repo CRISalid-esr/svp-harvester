@@ -38,7 +38,8 @@ class JournalDAO(AbstractDAO):
             identifiers_filters.append(Journal.eissn.any(eissn_value))
         if issn_l is not None:
             identifiers_filters.append(Journal.issn_l == str(issn_l))
-        query = query.where(or_(*identifiers_filters))
+        if len(identifiers_filters) > 0:
+            query = query.where(or_(*identifiers_filters))
         # Get the first result
         return (await self.db_session.execute(query)).scalars().first()
 
