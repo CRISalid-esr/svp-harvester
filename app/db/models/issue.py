@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -39,3 +39,5 @@ class Issue(Base):
         lazy="raise",
         cascade="merge, save-update",
     )
+
+    __table_args__ = (UniqueConstraint("source", "source_identifier"),)
