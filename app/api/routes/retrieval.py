@@ -46,5 +46,5 @@ async def get_retrieval(retrieval_id: int) -> RetrievalModel:
     async with async_session() as session:
         retrieval: RetrievalDB = await RetrievalDAO(
             session
-        ).get_complete_retrieval_by_id(retrieval_id)
+        ).get_retrieval_display_info_by_id(retrieval_id)
         return RetrievalModel.model_validate(retrieval)

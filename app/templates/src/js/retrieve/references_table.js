@@ -4,9 +4,11 @@ import {capitalizeFirstLetter} from "../common/string_utils";
 
 
 class ReferencesTable {
-    constructor(env, rootElement) {
+    constructor(env, rootElement, client) {
         this.env = env;
         this.rootElement = rootElement;
+        this.client = client;
+        this.fetchedReferences = {}
         this.dataTable = new DataTable("#references-table", {
             "paging": false,
             "searching": false,
@@ -39,8 +41,17 @@ class ReferencesTable {
     handleCollapse(event) {
         if (event.target.classList.contains("dt-control")) {
             const tr = event.target.closest("tr");
-            const rowId = this.dataTable.row(tr).id();
+            const row = this.dataTable.row(tr);
+            const rowId = row.id();
             if (!this.openRows.includes(rowId)) {
+                this.client.getReferenceEvent(row.data().id).then(response => {
+                        this.fetchedReferences[row.data().id] = response.data['reference'];
+                        row.data().data = this.jsonToHtml(response.data['reference']);
+                        this.updateOpenClosedRows();
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
                 this.openRows.push(rowId);
             } else {
                 const index = this.openRows.indexOf(rowId);
@@ -50,11 +61,59 @@ class ReferencesTable {
         }
     }
 
+    jsonToHtml(json) {
+        return "<pre>" + prettyPrintJson.toHtml(json) + "</pre>";
+    }
+
+    buildBootstrapTable(data) {
+        let html = `<div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Field</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>`;
+
+        // Function to handle array of objects or single objects
+        const handleObject = (obj) => {
+            if (Array.isArray(obj) && obj.length > 0) {
+                return obj.map(item => JSON.stringify(item)).join('<br>');
+            }
+            return JSON.stringify(obj);
+        };
+
+        // Iterate over the JSON keys
+        for (let key in data) {
+            if (data.hasOwnProperty(key)) {
+                let value = data[key];
+                // Check if value is an array or an object
+                if (typeof value === 'object' && value !== null) {
+                    value = handleObject(value);
+                }
+                // Append the row for the key
+                html += `<tr>
+                <td>${key}</td>
+                <td>${value}</td>
+              </tr>`;
+            }
+        }
+
+        // Close the table
+        html += `  </tbody>
+            </table>
+          </div>`;
+
+        return html;
+    }
+
+
     updateOpenClosedRows() {
         const self = this;
         this.dataTable.rows().every(function (rowIdx, tableLoop, rowLoop) {
             if (self.openRows.includes(this.id())) {
-                const reference = this.data()['data'];
+                const reference = this.data().data;
                 this.child(reference).show();
             } else {
                 this.child.hide()
@@ -65,6 +124,7 @@ class ReferencesTable {
 
     updateTable(harvestings) {
         const data = [];
+        const preloader_html = "<div class=\"spinner-border spinner-border-sm spinner-inline float-right\" role=\"status\"></div>";
         for (const harvesting of harvestings) {
             for (const referenceEvent of harvesting.reference_events) {
                 const reference = referenceEvent.reference;
@@ -73,7 +133,8 @@ class ReferencesTable {
                     "identifier": reference.source_identifier,
                     "status": capitalizeFirstLetter(referenceEvent.type),
                     "title": reference.titles && reference.titles[0] ? reference.titles[0].value : "No title",
-                    "data": "<pre>" + prettyPrintJson.toHtml(reference) + "</pre>"
+                    "data": this.fetchedReferences[referenceEvent.id] ? this.jsonToHtml(this.fetchedReferences[referenceEvent.id]) : preloader_html,
+                    "id": referenceEvent.id
                 };
                 data.push(row);
             }
