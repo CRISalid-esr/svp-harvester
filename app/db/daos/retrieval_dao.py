@@ -87,6 +87,34 @@ class RetrievalDAO(AbstractDAO):
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
+    async def get_retrieval_display_info_by_id(
+        self, retrieval_id: int
+    ) -> Retrieval | None:
+        """
+        Get minimal information about a retrieval by its id
+
+        :param retrieval_id: id of the retrieval
+        :return: the retrieval or None if not found
+        """
+        stmt = (
+            select(Retrieval)
+            .options(
+                joinedload(Retrieval.harvestings)
+                .joinedload(Harvesting.reference_events)
+                .options(
+                    joinedload(ReferenceEvent.reference).noload(Reference.contributions)
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).noload(Reference.identifiers)
+                )
+                .options(
+                    joinedload(ReferenceEvent.reference).noload(Reference.document_type)
+                )
+            )
+            .where(Retrieval.id == retrieval_id)
+        )
+        return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
+
     async def get_retrievals_summary(
         self,
         filter_harvester: dict[List],
