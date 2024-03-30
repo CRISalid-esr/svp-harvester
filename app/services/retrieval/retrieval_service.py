@@ -30,7 +30,6 @@ class RetrievalService:
     def __init__(
         self,
         background_tasks: BackgroundTasks = None,
-        history_safe_mode: Annotated[bool, Body()] = False,
         identifiers_safe_mode: Annotated[bool, Body()] = False,
         harvesters: Annotated[
             List[str], Body(examples=[["hal", "idref", "scanr", "openalex"]])
@@ -47,7 +46,6 @@ class RetrievalService:
         self.retrieval: Optional[Retrieval] = None
         self.entity: Optional[Type[DbEntity]] = None
         self.identifiers_safe_mode = identifiers_safe_mode
-        self.history_safe_mode = history_safe_mode
         self.nullify = nullify
         self.events = events
 
@@ -127,8 +125,7 @@ class RetrievalService:
                     harvesting = await HarvestingDAO(session).create_harvesting(
                         retrieval=self.retrieval,
                         harvester=harvester_name,
-                        state=Harvesting.State.RUNNING,
-                        history=not self.history_safe_mode,
+                        state=Harvesting.State.RUNNING
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)

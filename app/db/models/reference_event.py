@@ -30,9 +30,6 @@ class ReferenceEvent(Base):
         lazy="joined",
     )
 
-    # boolean field "history"
-    history: Mapped[bool] = mapped_column(nullable=False, index=True, default=True)
-
     class Type(Enum):
         """Reference events types"""
 

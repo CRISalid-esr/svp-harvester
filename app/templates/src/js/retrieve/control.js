@@ -38,7 +38,6 @@ class Control {
     const formIdentifiers = event.detail.identifiers;
     const formName = event.detail.name;
     const eventTypes = event.detail.eventTypes;
-    const historySafeMode = event.detail.historySafeMode;
     const identifiersSafeMode = event.detail.identifiersSafeMode;
     const harvesters = event.detail.harvesters;
     // Convert hash keys in array : "identifierType" to  "type" and "identifierValue" to "value"
@@ -63,7 +62,6 @@ class Control {
         person: { identifiers: identifiers, name: formName },
         nullify: identifiersToNullify,
         events: eventTypes,
-        history_safe_mode: historySafeMode,
         identifiers_safe_mode: identifiersSafeMode,
         harvesters: harvesters,
       })

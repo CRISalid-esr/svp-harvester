@@ -39,7 +39,6 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             json={
                 "person": person_with_name_and_id_hal_i_json,
                 "events": ["created", "updated", "deleted", "unchanged"],
-                "history_safe_mode": False,
             },
         )
         assert response.status_code == 200

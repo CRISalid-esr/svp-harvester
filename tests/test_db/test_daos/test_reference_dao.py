@@ -118,13 +118,11 @@ async def test_get_references_for_entity_and_harvester_only_returns_last_version
         type=ReferenceEvent.Type.CREATED.value,
         reference=reference1,
         harvesting=harvesting_db_model_1,
-        history=True,
     )
     reference_event_2 = ReferenceEvent(
         type=ReferenceEvent.Type.UPDATED.value,
         reference=reference2,
         harvesting=harvesting_db_model_2,
-        history=True,
     )
     async_session.add_all(
         [reference1, reference2, reference_event_1, reference_event_2]
@@ -174,7 +172,6 @@ async def test_get_references_for_entity_and_harvester_does_not_return_deleted_r
         type=ReferenceEvent.Type.CREATED.value,
         reference=reference1,
         harvesting=harvesting_db_model_1,
-        history=True,
     )
     # the second one updated the reference 1, creating the reference 2 with increased version number
     reference2 = DbReference(
@@ -188,14 +185,12 @@ async def test_get_references_for_entity_and_harvester_does_not_return_deleted_r
         type=ReferenceEvent.Type.UPDATED.value,
         reference=reference2,
         harvesting=harvesting_db_model_2,
-        history=True,
     )
     # the third one deleted the reference 2
     reference_event_3 = ReferenceEvent(
         type=ReferenceEvent.Type.DELETED.value,
         reference=reference2,
         harvesting=harvesting_db_model_3,
-        history=True,
     )
     async_session.add_all(
         [
@@ -250,7 +245,6 @@ async def test_get_references_for_entity_and_harvester_returns_updated_reference
         type=ReferenceEvent.Type.CREATED.value,
         reference=reference1,
         harvesting=harvesting_db_model_1,
-        history=True,
     )
     # the second one updated the reference 1, creating the reference 2 with increased version number
     reference2 = DbReference(
@@ -264,7 +258,6 @@ async def test_get_references_for_entity_and_harvester_returns_updated_reference
         type=ReferenceEvent.Type.UPDATED.value,
         reference=reference2,
         harvesting=harvesting_db_model_2,
-        history=True,
     )
     async_session.add_all(
         [reference1, reference2, reference_event_1, reference_event_2]

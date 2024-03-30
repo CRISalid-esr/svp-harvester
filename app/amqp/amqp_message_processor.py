@@ -85,7 +85,6 @@ class AMQPMessageProcessor:
                 )
                 return
             service = RetrievalService(
-                history_safe_mode=json_payload.get("history_safe_mode"),
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode"),
                 nullify=json_payload.get("nullify"),
                 harvesters=json_payload.get("harvesters"),
