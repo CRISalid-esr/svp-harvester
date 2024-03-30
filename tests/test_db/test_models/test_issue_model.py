@@ -7,7 +7,6 @@ from app.db.models.issue import Issue as DbIssue, Journal as DbJournal
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_two_issues_cannot_have_same_source_and_identifier(
     async_session: AsyncSession,
 ):
