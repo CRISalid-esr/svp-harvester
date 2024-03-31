@@ -25,6 +25,7 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-laboratory-tab" data-bs-toggle="pill"
+                                        disabled="disabled"
                                         data-bs-target="#pills-laboratory" type="button" role="tab"
                                         aria-controls="pills-laboratory"
                                         aria-selected="false">
@@ -32,6 +33,7 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-institution-tab" data-bs-toggle="pill"
+                                        disabled="disabled"
                                         data-bs-target="#pills-institution" type="button" role="tab"
                                         aria-controls="pills-institution"
                                         aria-selected="false">
@@ -39,6 +41,7 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-project-tab" data-bs-toggle="pill"
+                                        disabled="disabled"
                                         data-bs-target="#pills-project"
                                         type="button" role="tab" aria-controls="pills-project" aria-selected="false">
                                     {% trans %}entity_type_select_project_pill{% endtrans %}</button>
@@ -185,5 +188,6 @@
         </div>
 
     </div>
-<input type="hidden" id="datatables-no-data-available-history" value="{% trans %}datatables_no_data_available_history{% endtrans %}">
+    <input type="hidden" id="datatables-no-data-available-history"
+           value="{% trans %}datatables_no_data_available_history{% endtrans %}">
 {% endblock %}
