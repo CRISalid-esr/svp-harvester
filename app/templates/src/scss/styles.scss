@@ -17,7 +17,7 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 @import '~datatables.net-dt/css/jquery.dataTables.css';
 @import '~tom-select/dist/css/tom-select.bootstrap5.min.css';
 @import '~vanillajs-datepicker/sass/datepicker-bs5.scss';
-@import '../../node_modules/pretty-print-json/dist/css/pretty-print-json.dark-mode.min.css';
+@import '../../node_modules/pretty-print-json/dist/css/pretty-print-json.min.css';
 
 
 body {
@@ -130,7 +130,7 @@ h1 {
 
 #references-table {
   pre {
-    background-color: #000000;
+    background-color: $gray-100;
     margin-left: 3em;
   }
 
@@ -174,4 +174,44 @@ h1 {
 
 .spinner-inline {
   display: inline-block;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.compact-list {
+  background-color: $gray-100;
+  padding: 2em;
+}
+
+.compact-list .list-group-item {
+  padding: 0.5rem 1rem;
+  overflow: hidden;
+}
+
+.compact-list .list-group-item h5,
+.compact-list .list-group-item p,
+.compact-list .list-group-item small,
+.compact-list .list-group-item .badge {
+  font-size: 0.8rem;
+}
+
+.compact-list .list-group-item h5 {
+  margin-bottom: 0.25rem;
+}
+
+.compact-list .list-group-item p {
+  margin-bottom: 0.25rem;
 }
