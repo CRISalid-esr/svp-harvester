@@ -215,3 +215,9 @@ h1 {
 .compact-list .list-group-item p {
   margin-bottom: 0.25rem;
 }
+
+.disabled-link {
+  color: $gray-500 !important;
+  pointer-events: none;
+  cursor: default;
+}
