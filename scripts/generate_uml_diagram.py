@@ -1,4 +1,13 @@
 # may require `apt install graphviz` on linux terminals
+import os
+import sys
+
+if os.path.basename(os.getcwd()) != "scripts":
+    print("Please execute this script from the scripts directory")
+    sys.exit(1)
+sys.path.append("..")
+os.environ["APP_ENV"] = "DEV"
+
 from app.db.session import Base
 from app.db.models import (
     abstract,
