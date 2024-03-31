@@ -15,7 +15,7 @@ const MAPPING_COLOR_EVENT = {
     "updated": "badge-updated",
 }
 
-const SPINNER = `<div class='spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div>`;
+const SPINNER = `<div class='spinner-border' role='status'><span class='visually-hidden'>Chargement...</span></div>`;
 
 class HistoryTable {
     constructor(env, rootElement, subpage, client) {
@@ -91,6 +91,28 @@ class HistoryTable {
         this.dataTable.on("click", 'td.dt-control', this.handleCollapse.bind(this));
     }
 
+    buildReferenceEventsList(events) {
+        let listHtml = '<div class="list-group compact-list list-group-flush m-md-3 mx-5">';
+        events.forEach(event => {
+            event.reference_events.forEach(refEvent => {
+                const title = refEvent.reference.titles.length > 0 ? refEvent.reference.titles[0].value : 'No title available';
+                listHtml += `
+                <a href="#" class="list-group-item list-group-item-action" data-event-id="${refEvent.id}" data-detail-shown="false">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"><span class="badge badge-${refEvent.type} me-2 p-1">${refEvent.type}</span> ${title}</h5>
+                        
+                    
+                    <span class="badge rounded-pill bg-light text-dark">${event.harvester}</span>
+                    </div>
+                    <p class="mb-1 text-end">${refEvent.reference.source_identifier}</p>
+                </a>
+            `;
+            });
+        });
+        listHtml += '</div>';
+        return listHtml;
+    }
+
     async handleCollapse(event) {
         if (event.target.classList.contains("dt-control")) {
             const tr = event.target.closest("tr");
@@ -104,8 +126,28 @@ class HistoryTable {
                     case "collection_history":
                         row.child(row.data()[9]).show();
                         const retrieval = await this.client.getRetrieval(row.data()[8]);
-                        row.data()[9] = "<pre>" + prettyPrintJson.toHtml(retrieval.data) + "</pre>";
+                        row.data()[9] = this.buildReferenceEventsList(retrieval.data.harvestings);
                         row.child(row.data()[9]).show();
+                        row.child().on('click', async (event) => {
+                                event.preventDefault();
+                                const link = event.target.closest('a.list-group-item');
+                                if (!link) {
+                                    return;
+                                }
+                                if (link.detailShown === true) {
+                                    link.detailShown = false;
+                                    link.nextSibling.remove();
+                                } else {
+                                    link.insertAdjacentHTML('afterend', SPINNER);
+                                    const referenceEvent = await this.client.getReferenceEvent(event.target.closest('a').dataset.eventId);
+                                    link.nextSibling.remove();
+                                    link.insertAdjacentHTML('afterend', "<pre class='slide-in'>" + prettyPrintJson.toHtml(referenceEvent.data) + "</pre>");
+                                    link.detailShown = true;
+                                }
+                            }
+                        );
+
+
                         break;
                     case "publication_history":
                         row.child(row.data()[7]).show();
