@@ -255,7 +255,7 @@ Then, copy the content of the `docs/build/html` directory to the server of your 
 
 ## ReadTheDocs publication
 
-The documentation is automatically published on [ReadTheDocs](https://readthedocs.org/) at each push on the `dev-main`
+The documentation is automatically published on [ReadTheDocs]([https://readthedocs.org/](https://svp-harvester.readthedocs.io/en/latest/overview.html)) at each push on the `dev-main`
 branch.
 The configuration settings are defined in the `docs/source/conf.py` file, which is specified in the `.readthedocs.yml` file as the entry point.
 
