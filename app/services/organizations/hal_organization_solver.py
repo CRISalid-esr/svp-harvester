@@ -63,10 +63,16 @@ class HalOrganizationSolver(OrganizationSolver):
                             f" {organization_information.identifier}"
                         )
                     data = await response.json()
+                    name = data["response"]["docs"][0].get("name_s", None)
+                    if not name:
+                        raise DereferencingError(
+                            f"HAL organization {organization_information.identifier}"
+                            " has no name"
+                        )
                     org = Organization(
                         source="hal",
                         source_identifier=organization_information.identifier,
-                        name=data["response"]["docs"][0]["name_s"],
+                        name=name,
                         type=self.TYPE_MAPPING[data["response"]["docs"][0]["type_s"]],
                     )
                     org.identifiers.append(
