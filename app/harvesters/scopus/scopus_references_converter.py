@@ -140,8 +140,33 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         return dict_affiliations
 
     async def _add_contributions(self, entry: Element):
-        contributor_affiliation = {}
         authors = self._get_elements(entry, "default:author")
+        contributions, contributor_affiliation = self._get_contributions_information(
+            authors
+        )
+
+        affiliations = self._get_affiliation(entry)
+
+        async for contribution in self._contributions(
+            contribution_informations=contributions, source="scopus"
+        ):
+            list_affiliations = []
+            for id_affiliation in contributor_affiliation[
+                contribution.contributor.source_identifier
+            ]:
+                affiliation = affiliations.get(id_affiliation, None)
+                if affiliation is not None:
+                    list_affiliations.append(affiliation)
+            async for org in self._organizations(list_affiliations):
+                contribution.affiliations.append(org)
+            yield contribution
+
+    def _get_contributions_information(self, authors):
+        """
+        Get the contributions information from the authors
+        And also the affiliation of the authors and save it in a dict
+        """
+        contributor_affiliation = {}
         contributions = []
         for author in authors:
             afiliations = self._get_elements(author, "default:afid")
@@ -159,22 +184,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             contributor_affiliation[identifier] = [
                 afiliation.text for afiliation in afiliations
             ]
-
-        affiliations = self._get_affiliation(entry)
-
-        async for contribution in self._contributions(
-            contribution_informations=contributions, source="scopus"
-        ):
-            list_affiliations = []
-            for id_affiliation in contributor_affiliation[
-                contribution.contributor.source_identifier
-            ]:
-                affiliation = affiliations.get(id_affiliation, None)
-                if affiliation is not None:
-                    list_affiliations.append(affiliation)
-            async for org in self._organizations(list_affiliations):
-                contribution.affiliations.append(org)
-            yield contribution
+        return contributions, contributor_affiliation
 
     async def _abstract(self, entry: Element):
         for abstract in self._get_elements(entry, "dc:description"):
