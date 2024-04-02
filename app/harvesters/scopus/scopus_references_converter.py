@@ -169,7 +169,9 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             for id_affiliation in contributor_affiliation[
                 contribution.contributor.source_identifier
             ]:
-                list_affiliations.append(affiliations[id_affiliation])
+                affiliation = affiliations.get(id_affiliation, None)
+                if affiliation is not None:
+                    list_affiliations.append(affiliation)
             async for org in self._organizations(list_affiliations):
                 contribution.affiliations.append(org)
             yield contribution
