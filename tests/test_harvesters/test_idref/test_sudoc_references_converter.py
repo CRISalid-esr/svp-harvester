@@ -1,6 +1,9 @@
 from math import e
 import pytest
 
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.idref.sudoc_references_converter import SudocReferencesConverter
 
 
@@ -51,3 +54,32 @@ async def test_convert_for_rdf_result(
     assert expected_journal_title in test_reference.issue.journal.titles
     assert expected_issn in test_reference.issue.journal.issn
     assert expected_issn_l == test_reference.issue.journal.issn_l
+
+
+@pytest.mark.asyncio
+async def test_convert_for_rdf_result_without_title(
+    sudoc_rdf_result_for_doc_without_title,
+):
+    """
+    GIVEN a SudocReferencesConverter instance and a Sudoc RDF result
+    WHEN the convert method is called
+    THEN it should return a Reference instance with the expected values
+
+    :param sudoc_rdf_result_for_doc: sudoc RDF result for a document
+    :return: None
+    """
+    converter_under_tests = SudocReferencesConverter()
+
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_doc_without_title
+    )
+    assert test_reference.source_identifier == str(
+        sudoc_rdf_result_for_doc_without_title.source_identifier
+    )
+
+    with pytest.raises(UnexpectedFormatException) as exc_info:
+        await converter_under_tests.convert(
+            raw_data=sudoc_rdf_result_for_doc_without_title, new_ref=test_reference
+        )
+
+    assert exc_info.match("Sudoc reference without title:")
