@@ -122,7 +122,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         journal = await self._get_or_create_journal(
             JournalInformations(
                 source=self._harvester(),
-                source_identifier=str(issn)
+                source_identifier="-".join(issn)
                 + "-"
                 + str(normalize_string(title))
                 + "-"
