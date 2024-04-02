@@ -7,6 +7,9 @@ from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 
 from app.db.models.title import Title
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
@@ -48,6 +51,10 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
         self.pub_graph = raw_data.payload
         self.uri = raw_data.source_identifier
         await super().convert(raw_data=raw_data, new_ref=new_ref)
+        if not new_ref.titles:
+            raise UnexpectedFormatException(
+                f"Science Plus reference without title: {new_ref.source_identifier}"
+            )
         if raw_data.doi:
             new_ref.identifiers.append(self._add_doi_identifier(raw_data.doi))
 

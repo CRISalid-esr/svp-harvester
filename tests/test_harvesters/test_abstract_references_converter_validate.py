@@ -11,9 +11,6 @@ from app.db.models.reference import Reference as DbReference
 from app.db.models.subtitle import Subtitle as DbSubtitle
 from app.db.models.title import Title as DbTitle
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
-from app.harvesters.exceptions.unexpected_format_exception import (
-    UnexpectedFormatException,
-)
 
 
 @pytest.fixture(name="reference_without_title")
@@ -95,7 +92,7 @@ async def test_reference_without_title_raises_exception(reference_without_title)
     """
     Given a reference without title
     When the validate_reference decorator is called
-    Then an UnexpectedFormatException should be raised
+    Then an AssertionError should be raised
 
     :param reference_without_title: A reference without title
     """
@@ -106,7 +103,7 @@ async def test_reference_without_title_raises_exception(reference_without_title)
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
-    with pytest.raises(UnexpectedFormatException) as exc_info:
+    with pytest.raises(AssertionError) as exc_info:
         await function_with_decorator(
             AbstractReferencesConverter, new_ref=reference_without_title
         )
@@ -147,7 +144,7 @@ async def test_reference_without_harvester_raises_exception(
     """ "
     Given a reference without identifier
     When the validate_reference decorator is called
-    Then an UnexpectedFormatException should be raised
+    Then an AssertionError should be raised
 
     :param reference_without_harvester: A reference without identifier
     """
@@ -158,7 +155,7 @@ async def test_reference_without_harvester_raises_exception(
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
-    with pytest.raises(UnexpectedFormatException) as exc_info:
+    with pytest.raises(AssertionError) as exc_info:
         await function_with_decorator(
             AbstractReferencesConverter, new_ref=reference_without_harvester
         )
@@ -173,7 +170,7 @@ async def test_reference_with_abstract_value_none_raises_exception(
     """
     Given a reference without identifier
     When the validate_reference decorator is called
-    Then an UnexpectedFormatException should be raised
+    Then an AssertionError should be raised
 
     :param reference_with_abstract_value_none: A reference without identifier
     """
@@ -184,7 +181,7 @@ async def test_reference_with_abstract_value_none_raises_exception(
     function_with_decorator = AbstractReferencesConverter.validate_reference(
         decorated_function
     )
-    with pytest.raises(UnexpectedFormatException) as exc_info:
+    with pytest.raises(AssertionError) as exc_info:
         await function_with_decorator(
             AbstractReferencesConverter, new_ref=reference_with_abstract_value_none
         )

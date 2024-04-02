@@ -25,9 +25,6 @@ from app.db.models.organization import Organization
 from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
-from app.harvesters.exceptions.unexpected_format_exception import (
-    UnexpectedFormatException,
-)
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
@@ -146,7 +143,7 @@ class AbstractReferencesConverter(ABC):
                     failed_fields.append(field)
 
             if failed_fields:
-                raise UnexpectedFormatException(
+                assert False, (
                     f"Validation failed in method {self.__class__.__name__}.{func.__name__}"
                     f" for reference: {ref.source_identifier}."
                     f" {', '.join(failed_fields)} should be set on reference"

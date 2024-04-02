@@ -76,4 +76,4 @@ async def test_science_plus_convert_for_rdf_without_title(
             raw_data=science_plus_rdf_result_without_title, new_ref=test_reference
         )
 
-    assert exc_info.match("titles should be set on reference")
+    assert exc_info.match("Science Plus reference without title:")
