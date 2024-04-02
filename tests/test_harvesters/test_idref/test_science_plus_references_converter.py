@@ -1,3 +1,7 @@
+import pytest
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
@@ -48,3 +52,28 @@ async def test_science_plus_convert_for_rdf_result(
     assert test_reference.issue.volume == expected_volume
     assert test_reference.issue.number == expected_issue
     assert expected_journal_title in test_reference.issue.journal.titles
+
+
+async def test_science_plus_convert_for_rdf_without_title(
+    science_plus_rdf_result_without_title,
+):
+    """
+    GIVEN a SciencePlusReferencesConverter instance and a sudoc RDF result for a document
+    WHEN the convert method is called
+    THEN it should return a Reference instance with the expected values
+
+    :param science_plus_rdf_result_for_doc: a science plus RDF result for a document
+    :return: None
+    """
+    converter_under_tests = SciencePlusReferencesConverter()
+
+    test_reference = converter_under_tests.build(
+        raw_data=science_plus_rdf_result_without_title
+    )
+
+    with pytest.raises(UnexpectedFormatException) as exc_info:
+        await converter_under_tests.convert(
+            raw_data=science_plus_rdf_result_without_title, new_ref=test_reference
+        )
+
+    assert exc_info.match("titles should be set on reference")
