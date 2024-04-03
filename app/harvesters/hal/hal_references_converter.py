@@ -5,6 +5,7 @@ import isodate
 from loguru import logger
 
 from app.db.models.abstract import Abstract
+from app.db.models.book import Book
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
@@ -20,11 +21,13 @@ from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
+from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
 
@@ -113,10 +116,39 @@ class HalReferencesConverter(AbstractReferencesConverter):
         if journal:
             issue = await self._issue(json_payload, journal)
             new_ref.issue = issue
+
+        if ("Book" in [dc.label for dc in new_ref.document_type]) or (
+            "Chapter" in [dc.label for dc in new_ref.document_type]
+        ):
+            logger.debug([dc.label for dc in new_ref.document_type])
+            logger.info(raw_data.payload)
+            book = await self._book(raw_data.payload)
+            if book:
+                new_ref.book = book
+
         await self._add_organization(json_payload, new_ref)
 
     def _harvester(self) -> str:
         return "HAL"
+
+    async def _book(self, raw_data) -> Book | None:
+        title = raw_data.get("bookTitle_s", None)
+        publisher = raw_data.get("publisher_s", None)
+        if isinstance(publisher, list):
+            publisher = publisher[0]
+        isbn = raw_data.get("isbn_s", None)
+        isbn10, isbn13 = get_isbns(isbn)
+        logger.debug(f"isbn10: {isbn10}, isbn13: {isbn13}")
+        if (title is None) and (isbn is None):
+            return None
+        return await self._get_or_create_book(
+            BookInformations(
+                title=title,
+                publisher=publisher,
+                isbn10=isbn10,
+                isbn13=isbn13,
+            )
+        )
 
     async def _journal(self, raw_data) -> Journal | None:
         title = raw_data.get("journalTitle_s", None)
