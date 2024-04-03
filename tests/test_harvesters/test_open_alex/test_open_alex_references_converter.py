@@ -41,7 +41,7 @@ async def test_convert(open_alex_api_work: dict):
 
     expected_page = "785-789"
     expected_volume = "37"
-    expected_issue_number = "2"
+    expected_issue_number = ["237"]
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
 
