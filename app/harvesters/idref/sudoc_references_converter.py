@@ -6,6 +6,9 @@ from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
@@ -35,6 +38,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
+        if not new_ref.titles:
+            raise UnexpectedFormatException(
+                f"Sudoc reference without title: {new_ref.source_identifier}"
+            )
 
         # If we have an article, we need to get the journal and issue
         if "Article" in [dc.label for dc in new_ref.document_type]:

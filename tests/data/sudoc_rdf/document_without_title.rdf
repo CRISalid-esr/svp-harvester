@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--ISSN = False-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:bibo="http://purl.org/ontology/bibo/"
+   xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:dctype="http://purl.org/dc/dcmitype/" xmlns:fabio="http://purl.org/spar/fabio/"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology"
+   xmlns:gr="http://purl.org/goodrelations/v1#"
+   xmlns:isbd="http://iflastandards.info/ns/isbd/elements/"
+   xmlns:marcrel="http://id.loc.gov/vocabulary/relators/" xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdac="http://rdaregistry.info/Elements/c/" xmlns:rdae="http://rdaregistry.info/Elements/e/"
+   xmlns:rdaelements="http://rdvocab.info/Elements/"
+   xmlns:rdafrbr1="http://rdvocab.info/RDARelationshipsWEMI/"
+   xmlns:rdafrbr2="http://RDVocab.info/uri/schema/FRBRentitiesRDA/"
+   xmlns:rdai="http://rdaregistry.info/Elements/i/" xmlns:rdam="http://rdaregistry.info/Elements/m/"
+   xmlns:rdau="http://rdaregistry.info/Elements/u/" xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+   xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:sudoc="http://www.sudoc.fr/ns/">
+   <bibo:Document rdf:about="http://www.sudoc.fr/193726130">
+      <foaf:primaryTopic rdf:resource="http://www.sudoc.fr/193726130/id" />
+      <dcterms:identifier>193726130</dcterms:identifier>
+      <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id" />
+      <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2016-06-13</dcterms:created>
+      <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2023-04-24T12:38:56</dcterms:modified>
+   </bibo:Document>
+   <bibo:Article rdf:about="http://www.sudoc.fr/193726130/id">
+      <!--content
+      form (isbd), media type (rda)-->
+      <isbd:P1001>
+         <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/contentform/T1009">
+            <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+         </skos:Concept>
+      </isbd:P1001>
+      <!--rda:content
+      type-->
+      <rdau:P60049>
+         <skos:Concept rdf:about="http://rdaregistry.info/termList/RDAContentType/1020">
+            <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+         </skos:Concept>
+      </rdau:P60049>
+      <dc:type>Text</dc:type>
+      <!--media
+      type-->
+      <isbd:P1003>
+         <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/mediatype/T1010">
+            <skos:prefLabel xml:lang="en">unmediated</skos:prefLabel>
+         </skos:Concept>
+      </isbd:P1003>
+      <!--carrier
+      type-->
+      <rdau:P60048>
+         <skos:Concept rdf:about="http://rdaregistry.info/termList/RDACarrierType/1049">
+            <skos:prefLabel xml:lang="fr">volume</skos:prefLabel>
+            <skos:prefLabel xml:lang="en">volume</skos:prefLabel>
+         </skos:Concept>
+      </rdau:P60048>
+      <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/fra" />
+      <gn:countryCode>FR</gn:countryCode>
+      <bibo:isbn13>9782747225786</bibo:isbn13>
+      <gr:hasEAN_UCC-13>9782747225786</gr:hasEAN_UCC-13>
+      <!--rda
+      elements obsolète : voir rdam:P30003-->
+      <rdaelements:modeOfIssuance>
+         <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1001">
+            <skos:prefLabel xml:lang="en">Single unit</skos:prefLabel>
+         </skos:Concept>
+      </rdaelements:modeOfIssuance>
+      <!--mode
+      of issuance-->
+      <rdam:P30003>
+         <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1001">
+            <skos:prefLabel xml:lang="en">Single unit</skos:prefLabel>
+         </skos:Concept>
+      </rdam:P30003>
+      <dc:date>2016</dc:date>
+      <dc:publisher>Paris : Editions ESKA , 2016</dc:publisher>
+      <dc:format>1 volume (105 p.) : ill., cartes, graph. ; 23 cm</dc:format>
+      <dcterms:abstract>Le présent dossier aborde la participation de cette agriculture urbaine à la
+         construction du territoire et à la vie des sociétés des métropoles latino-américaines. La
+         croissance démographique des villes latino-américaines, et tout particulièrement des
+         métropoles, a été très rapide au cours du XXe siècle et reste souvent importante, dans le
+         cadre de la fin des transitions urbaines. Elle s’est effectuée aux dépens des exploitations
+         agricoles voisines, selon un modèle d’urbanisation en « tache d’huile », sans préservation
+         de certaines aires, à la différence de ce qu’on observe par exemple dans des métropoles
+         asiatiques. À Mexico, à Lima, à Buenos Aires ou à Santiago du Chili, l’agriculture est
+         pratiquement absente des quartiers centraux anciens, et peu présente dans ceux qui se sont
+         construits au cours du XXe siècle. Néanmoins, on trouve dans ces derniers, comme dans les
+         périphéries urbaines les plus récentes, des espaces agricoles qui relèvent visiblement de
+         logiques diverses : jardins collectifs, plantes cultivées et petits élevages dans les cours
+         ou arrière-cours des quartiers populaires, arbres fruitiers derrière les hauts murs de
+         résidences luxueuses, serres en tunnel ou culture sur bâche…</dcterms:abstract>
+      <dc:subject>Agriculture urbaine -- Amérique latine -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Agriculture -- Aspect économique -- Amérique latine -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/02722368X/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Pauvres en milieu urbain -- Amérique latine -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027682439/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Agriculture urbaine -- Pérou -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/027252388/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Agriculture urbaine -- Chili -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/027222950/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Agriculture urbaine -- Argentine -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/027219909/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <dc:subject>Agriculture urbaine -- Mexique -- 2000-....</dc:subject>
+      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:spatial rdf:resource="http://www.idref.fr/027239497/id" />
+      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
+      <marcrel:pbd>
+         <foaf:Person rdf:about="http://www.idref.fr/193726831/id">
+            <foaf:name>Faliès, Cécile (1982-....)</foaf:name>
+         </foaf:Person>
+      </marcrel:pbd>
+      <marcrel:pbd>
+         <foaf:Person rdf:about="http://www.idref.fr/057549222/id">
+            <foaf:name>Mesclier, Évelyne (1964-....)</foaf:name>
+         </foaf:Person>
+      </marcrel:pbd>
+      <!--UNM
+      461 : ensemble (fait partie de)-->
+      <dcterms:isPartOf>
+         <bibo:Document rdf:about="http://www.sudoc.fr/013451154/id">
+            <dcterms:bibliographicCitation>Problèmes d'Amérique latine / La Documentation française
+               / Paris : La Documentation française , 1965-</dcterms:bibliographicCitation>
+         </bibo:Document>
+      </dcterms:isPartOf>
+   </bibo:Article>
+</rdf:RDF>
