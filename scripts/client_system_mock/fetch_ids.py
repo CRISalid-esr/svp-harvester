@@ -1,7 +1,13 @@
+import argparse
+
 import requests
 import xml.etree.ElementTree as ET
 import pandas as pd
 from urllib3.exceptions import ConnectTimeoutError
+
+DEFAULT_OUTPUT_CSV_FILE = "researcher_ids.csv"
+
+DEFAULT_INPUT_CSV_FILE = "researcher_ids_base.csv"
 
 SUBSET = None
 
@@ -9,6 +15,26 @@ with_idref = 0
 with_orcid = 0
 with_idhal = 0
 with_orcid_and_idhal = 0
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser()
+    # Required positional argument
+    parser.add_argument(
+        "--input_csv",
+        help="Researcher identifiers input file",
+        required=False,
+        type=str,
+        default=DEFAULT_INPUT_CSV_FILE,
+    )
+    parser.add_argument(
+        "--output_csv",
+        help="Researcher identifiers output file",
+        required=False,
+        type=str,
+        default=DEFAULT_OUTPUT_CSV_FILE,
+    )
+    return parser.parse_args()
 
 
 def _get_identifiers(idref):
@@ -56,7 +82,7 @@ def _print_stats(with_idhal, with_idref, with_orcid, with_orcid_and_idhal):
 
 
 def update_csv(input_csv, output_csv):
-    df = pd.read_csv(input_csv, sep=";")
+    df = pd.read_csv(input_csv, sep=",")
     if SUBSET:
         df = df.head(SUBSET)
     df["orcid"], df["idhal"] = zip(*df["idref"].apply(_get_identifiers))
@@ -64,7 +90,6 @@ def update_csv(input_csv, output_csv):
 
 
 if __name__ == "__main__":
-    input_csv = "p1ps.csv"
-    output_csv = "p1ps_extended.csv"
-    update_csv(input_csv, output_csv)
+    args = _parse_args()
+    update_csv(args.input_csv, args.output_csv)
     _print_stats(with_idhal, with_idref, with_orcid, with_orcid_and_idhal)

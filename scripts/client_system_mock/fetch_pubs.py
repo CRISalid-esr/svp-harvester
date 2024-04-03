@@ -58,17 +58,21 @@ def _publish_requests(args):
         for row in reader:
             count += 1
             print(f"row : {count}")
+            name = row.get("name", None)
+            if name is None:
+                name = f"{row.get('last_name', '')}, {row.get('first_name', '')}"
             payload = {
                 "type": "person",
                 "identifiers_safe_mode": False,
                 "events": ["created", "updated", "deleted"],
                 "harvesters": harvesters,
                 "fields": {
-                    "name": f"{row['last_name']}, {row['first_name']}",
+                    "name": name,
                     "identifiers": [
                         {"type": key, "value": row[key]}
                         for key in row
-                        if key in ["idref", "id_hal_i", "id_hal_s", "orcid"]
+                        if key
+                        in ["idref", "id_hal_i", "id_hal_s", "orcid", "scopus_eid"]
                         and row[key]
                     ],
                 },
