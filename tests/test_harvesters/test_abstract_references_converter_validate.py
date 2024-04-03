@@ -1,6 +1,7 @@
 """
 Test the validate_reference decorator of the AbstractReferencesConverter class.
 """
+
 import pytest
 
 from app.db.models.abstract import Abstract as DbAbstract
