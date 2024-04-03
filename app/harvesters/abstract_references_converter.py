@@ -8,12 +8,14 @@ from typing import List, AsyncGenerator
 from loguru import logger
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
+from app.db.daos.book_dao import BookDAO
 from app.db.daos.concept_dao import ConceptDAO
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.daos.document_type_dao import DocumentTypeDAO
 from app.db.daos.issue_dao import IssueDAO
 from app.db.daos.journal_dao import JournalDAO
 from app.db.daos.organization_dao import OrganizationDAO
+from app.db.models.book import Book
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
@@ -25,6 +27,7 @@ from app.db.models.organization import Organization
 from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
+from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
@@ -615,3 +618,43 @@ class AbstractReferencesConverter(ABC):
                             journal_informations=journal_informations, new_attempt=True
                         )
         return journal
+
+    async def _get_or_create_book(
+        self, book_informations: BookInformations, new_attempt: bool = False
+    ) -> Book:
+        """
+        Try to get a book by isbn10/isbn13.
+        If not found, try to get by title.
+        If not found, create it.
+        """
+        async with async_session() as session:
+            async with session.begin_nested():
+                book = await BookDAO(session).get_books_by_isbn(
+                    isbn10=book_informations.isbn10,
+                    isbn13=book_informations.isbn13,
+                )
+                if book is None:
+                    book = await BookDAO(session).get_books_by_title(
+                        title=book_informations.title
+                    )
+                if book is None:
+                    book = Book(
+                        title=book_informations.title,
+                        isbn10=book_informations.isbn10,
+                        isbn13=book_informations.isbn13,
+                        publisher=book_informations.publisher,
+                    )
+                    session.add(book)
+                    try:
+                        await session.commit()
+                    except DBAPIError as error:
+                        assert new_attempt is False, (
+                            f"Unique isbn10 and isbn13 violation"
+                            "for book cannot occur twice "
+                            f"during book creation : {error}"
+                        )
+                        await session.rollback()
+                        book = await self._get_or_create_book(
+                            book_informations=book_informations, new_attempt=True
+                        )
+        return book

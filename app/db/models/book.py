@@ -14,7 +14,7 @@ class Book(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    title: Mapped[str] = mapped_column(nullable=False, index=True)
+    title: Mapped[str] = mapped_column(nullable=True, index=True)
     isbn10: Mapped[str] = mapped_column(nullable=True, index=True, unique=True)
     isbn13: Mapped[str] = mapped_column(nullable=True, index=True, unique=True)
     publisher: Mapped[str] = mapped_column(nullable=True, index=False)
