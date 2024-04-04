@@ -74,6 +74,15 @@ The microservice is intended to be integrated in a bibliographic data management
 
 The database keeps track of all the harvestings and the errors that may arise during the process. To prevent nightly harvesting failures from becoming a system weakness, the harvesting history is readily accessible via a web interface, harvesting results or errors can be notified.
 
+#########################
+🔗 Entity Dereferencing
+#########################
+
+SoVisu+ Harvester enhances data quality through entity dereferencing. It uses unique identifiers (like IdRef URI, Wikidata ID, ROR ID, etc.) provided by entities to fetch and verify information from various repositories.
+For performance reasons, some of the authoritative sources are represented by a proxy or their data stored in a local cache.
+E.g. see  `SVP JEL Proxy Container <https://hub.docker.com/repository/docker/crisalidesr/svp-jel-proxy/general>`_
+
+
 
 Functional scope limitations
 --------------------------------
