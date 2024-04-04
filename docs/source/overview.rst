@@ -12,13 +12,11 @@ Project repository and live demo 📺
     :alt: GitHub repository
 |ico1| Source code is available on Github
 
-🕘 The code will move to an institutional repository in the near future.
-
-.. |ico2| image:: https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&logo=amazon-aws
+.. |ico2| image:: https://img.shields.io/badge/GKE-demo-green?style=flat-square&logo=google-cloud
     :target: http://34.163.175.52/admin/retrieve?locale=fr_FR
-    :alt: AWS EC2 Démo
+    :alt: GKE Démo
 
-|ico2| A live demo on a basic AWS box.
+|ico2| A live demo on Google Kubernetes Engine
 
 🕘 The demo reflects the current state of development and has no guarantee of stability.
 
