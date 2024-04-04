@@ -49,16 +49,17 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start : deployment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#docker-image">Docker image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#docker-compose">Docker compose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Quick start : development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/entities.html">Reference : entity resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html">Reference : identifiers</a></li>
-    <li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters:
-        Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/idref.html">Harvesters : Idref</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/scanr.html">Harvesters : ScanR</a></li>
 </ul>
 
         </div>
@@ -166,6 +167,28 @@ dockerfile: Dockerfile</p>
 </ol>
 <p>Run the following command from the directory containing the docker-compose.yml file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="kubernetes">
+<h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading"></a></h2>
+<p>Kubernetes deployment files are located in the <code class="code docutils literal notranslate"><span class="pre">deploy/k8s</span></code> directory.</p>
+<p>Example of Minikube deployment:</p>
+<ol class="arabic simple">
+<li><p>Copy all <a href="#id1"><span class="problematic" id="id2">*</span></a>.yaml.dist files in the <code class="code docutils literal notranslate"><span class="pre">deploy/k8s</span></code> directory to <a href="#id3"><span class="problematic" id="id4">*</span></a>.yaml files and replace all environment variables by their base64 encoded values.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;my-password&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64
+</pre></div>
+</div>
+<p>2. Copy postgresql sql.dist initialization script to SQL file and replace all credentials by their values.
+Push the sql file to the Minikube VM.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>minikube<span class="w"> </span>cp<span class="w"> </span>svph-user-db.sql<span class="w"> </span>/home/docker/svph-user-db.sql
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Start the deployment</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>deploy/k8s
 </pre></div>
 </div>
 </section>

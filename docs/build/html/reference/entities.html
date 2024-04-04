@@ -49,12 +49,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/deployment.html">Quick start : deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/development.html">Quick start : development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Reference : model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference : entity resolution</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference : entity resolution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#entities-and-alignement-in-sovisu-harvester">Entities and alignement in SoVisu+ Harvester</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#identifiers-safe-mode">Identifiers safe mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recommendations">Recommendations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#identifier-conflicts">Identifier conflicts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-submitting-a-new-entity">Example 1: submitting a new entity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-change-in-identifiers-alignment">Example 2: change in identifiers alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-identifiers-safe-mode">Example 3 : identifiers safe mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-4-identifier-conflict">Example 4 : identifier conflict</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="identifiers.html">Reference : identifiers</a></li>
-    <li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters:
-        Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/idref.html">Harvesters : Idref</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/scanr.html">Harvesters : ScanR</a></li>
 </ul>
 
         </div>
@@ -83,6 +96,288 @@
              
   <section id="reference-entity-resolution">
 <h1>Reference : entity resolution<a class="headerlink" href="#reference-entity-resolution" title="Link to this heading"></a></h1>
+<section id="entities-and-alignement-in-sovisu-harvester">
+<h2>Entities and alignement in SoVisu+ Harvester<a class="headerlink" href="#entities-and-alignement-in-sovisu-harvester" title="Link to this heading"></a></h2>
+<p>In SoVisu+ Harvester, harvesting activities are always conducted on behalf of an <strong>entity</strong> equipped with unique <strong>identifiers</strong>.
+An <strong>entity</strong> can be an individual, a project, a research structure, or an institution—essentially, any unit to which publications can be attributed.
+Currently, the system primarily supports entities of the “person” type, focusing on researchers.
+The concept of <strong>identifier alignment</strong> refers to the process whereby an entity is associated with multiple identifiers.
+These identifiers are presumed to represent the same entity, ensuring that the harvesting activities are conducted consistently across the various sources.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SoVisu+ Harvester does not perform any kind of entity alignment by itself. It is up to the client system to provide correct identifiers for each submitted entity. Nevertheless, SoVisu+ Harvester memorizes the submitted entities and their identifiers (unless instructed otherwise) and will use the same alignment for subsequent harvestings of the same entity.</p>
+</div>
+<p>In the case where the client system submits an entity with changed identifiers, SoVisu+ Harvester will do its best to update the entity alignment in respect to the new provided identifiers.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>However, sending entities with shifting and contradictory alignments to SoVisu+ Harvester can put the system into an inconsistent state and make the harvesting history illegible, as past harvesting are not retroactively corrected when the alignments are updated.</p>
+</div>
+</section>
+<section id="identifiers-safe-mode">
+<h2>Identifiers safe mode<a class="headerlink" href="#identifiers-safe-mode" title="Link to this heading"></a></h2>
+<p>This whole behavior can be canceled by setting the <cite>identifiers_safe_mode</cite> parameter to <cite>true</cite> in the request body. In this case, the SoVisu+ Harvester will not register submitted identifiers nor update existing entities.
+This mode is activated by default in the graphical user interface to prevent accidental perturbation of the entity alignments by manually submitted entities.</p>
+</section>
+<section id="recommendations">
+<h2>Recommendations<a class="headerlink" href="#recommendations" title="Link to this heading"></a></h2>
+<p>It is recommended to always submit the same entity with the same identifiers. This will ensure the legibility of the harvesting history and the coherency of the results.
+Adding new identifiers to existing entities is the expected behavior of the client system. SoVisu+ harvester will handle this seamlessly and will update its alignment accordingly.
+Correcting alignment errors is also a common operation. SoVisu+ Harvester expects it to occur occasionally and will do its best to   its inner entity registry.
+This includes merging entities that were previously considered as distinct or removing an identifier from an entity to attach it to another one.</p>
+</section>
+<section id="identifier-conflicts">
+<h2>Identifier conflicts<a class="headerlink" href="#identifier-conflicts" title="Link to this heading"></a></h2>
+<p>An identifier conflict occurs when the alignement of a newly submitted entity is logically incompatible with the previously submitted ones.</p>
+<p>For example, Researcher 1 is submitted with ORCID identifier A and IdRef identifier B :</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Researcher 1
+|
++-- ORCID Identifier: A
+|
++-- IdRef Identifier: B
+|
+v
+
+Researcher 2
+|
++-- ORCID Identifier: A  &lt;- Shared ORCID Identifier with Researcher 1
+|
++-- IdRef Identifier: C
+</pre></div>
+</div>
+<p>ORCID A cannot belong to both entities identified respectively by IdRef B and IdRef C. This is an identifier conflict.
+SoVisu+ Harvester will use the <cite>identifiers.yml</cite> configuration file to resolve this conflict (see <a class="reference internal" href="identifiers.html"><span class="doc">Identifiers section</span></a> ).</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-submitting-a-new-entity">
+<h3>Example 1: submitting a new entity<a class="headerlink" href="#example-1-submitting-a-new-entity" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;http://my-service-url/api/v1/references/retrieval&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;person&quot;: {</span>
+<span class="s1">    &quot;identifiers&quot;: [</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;idref&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;111111111&quot;</span>
+<span class="s1">      },</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;orcid&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;0000-0001-1111-1112&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    ],</span>
+<span class="s1">    &quot;name&quot;: &quot;Smith, P&quot;</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;identifiers_safe_mode&quot;: false,</span>
+<span class="s1">  &quot;harvesters&quot;: [</span>
+<span class="s1">    &quot;hal&quot;,</span>
+<span class="s1">    &quot;idref&quot;,</span>
+<span class="s1">    &quot;scanr&quot;,</span>
+<span class="s1">    &quot;openalex&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;events&quot;: [</span>
+<span class="s1">    &quot;created&quot;, &quot;updated&quot;, &quot;deleted&quot;, &quot;unchanged&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>During the execution of this request, the SoVisu+ Harvester will:</p>
+<ul class="simple">
+<li><p>register a new entity with the name “Smith, P” and the identifiers <code class="docutils literal notranslate"><span class="pre">111111111</span></code> and <code class="docutils literal notranslate"><span class="pre">0000-0001-1111-1112</span></code></p></li>
+</ul>
+<p><strong>Smith, P</strong></p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><th class="stub"><p><strong>IdRef</strong></p></th>
+<td><p>111111111</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p><strong>ORCID</strong></p></th>
+<td><p>0000-0001-1111-1112</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>submit the entity to the harvesters “hal”, “idref”, “scanr” and “openalex”</p></li>
+<li><p>return an URL where status and results of the harvesting can be fetched asynchronously</p></li>
+</ul>
+<p>When a request is submitted to the <strong>SoVisu+ Harvester</strong> using either the <em>IdRef identifier</em> “<code class="docutils literal notranslate"><span class="pre">111111111</span></code>” or the <em>ORCID identifier</em> <code class="docutils literal notranslate"><span class="pre">0000-0001-1111-1112</span></code>, the system recognizes and aligns with the previously established entity without creating a new one.
+After an entity has been initially aligned with specific identifiers, subsequent retrievals require <strong>only one of the identifiers</strong>, not all, to trigger the retrieval process with all the associated identifiers.</p>
+</section>
+<section id="example-2-change-in-identifiers-alignment">
+<h3>Example 2: change in identifiers alignment<a class="headerlink" href="#example-2-change-in-identifiers-alignment" title="Link to this heading"></a></h3>
+<p>Following the previous example, let’s say that the client system wants to update the ORCID identifier of the entity identified by <code class="docutils literal notranslate"><span class="pre">111111111</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;http://my-service-url/api/v1/references/retrieval&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;person&quot;: {</span>
+<span class="s1">    &quot;identifiers&quot;: [</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;idref&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;111111111&quot;</span>
+<span class="s1">      },</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;orcid&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;0000-0001-1111-1113&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    ],</span>
+<span class="s1">    &quot;name&quot;: &quot;Smith, P&quot;</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;identifiers_safe_mode&quot;: false,</span>
+<span class="s1">  &quot;harvesters&quot;: [</span>
+<span class="s1">    &quot;hal&quot;,</span>
+<span class="s1">    &quot;idref&quot;,</span>
+<span class="s1">    &quot;scanr&quot;,</span>
+<span class="s1">    &quot;openalex&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;events&quot;: [</span>
+<span class="s1">    &quot;created&quot;, &quot;updated&quot;, &quot;deleted&quot;, &quot;unchanged&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>During the execution of this request, the SoVisu+ Harvester will:</p>
+<ul class="simple">
+<li><p>update the entity identified by <code class="docutils literal notranslate"><span class="pre">111111111</span></code> with the new ORCID identifier <code class="docutils literal notranslate"><span class="pre">0000-0001-1111-1113</span></code></p></li>
+</ul>
+<p><strong>Smith, P</strong></p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><th class="stub"><p><strong>IdRef</strong></p></th>
+<td><p>111111111</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p><strong>ORCID</strong></p></th>
+<td><p>0000-0001-1111-1113</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>submit the entity to the harvesters “hal”, “idref”, “scanr” and “openalex”</p></li>
+<li><p>return an URL where status and results of the harvesting can be fetched asynchronously</p></li>
+</ul>
+<p>If a subsequent request is made with idref identifier <code class="docutils literal notranslate"><span class="pre">111111111</span></code> <strong>and</strong> another orcid identifier, the SoVisu+ Harvester will update the entity identified by <code class="docutils literal notranslate"><span class="pre">111111111</span></code>
+with the new ORCID identifier and will submit the entity to the harvesters.</p>
+</section>
+<section id="example-3-identifiers-safe-mode">
+<h3>Example 3 : identifiers safe mode<a class="headerlink" href="#example-3-identifiers-safe-mode" title="Link to this heading"></a></h3>
+<p>Following the example 1, imagine that the client system wants to submit an entity with the same IdRef identifier but a different ORCID identifier.
+But this time, the parameter <cite>identifiers_safe_mode</cite> is set to <cite>true</cite>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;http://my-service-url/api/v1/references/retrieval&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;person&quot;: {</span>
+<span class="s1">    &quot;identifiers&quot;: [</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;idref&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;111111111&quot;</span>
+<span class="s1">      },</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;orcid&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;0000-0001-1111-1114&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    ],</span>
+<span class="s1">    &quot;name&quot;: &quot;Smith, P&quot;</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;identifiers_safe_mode&quot;: true,</span>
+<span class="s1">  &quot;harvesters&quot;: [</span>
+<span class="s1">    &quot;hal&quot;,</span>
+<span class="s1">    &quot;idref&quot;,</span>
+<span class="s1">    &quot;scanr&quot;,</span>
+<span class="s1">    &quot;openalex&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;events&quot;: [</span>
+<span class="s1">    &quot;created&quot;, &quot;updated&quot;, &quot;deleted&quot;, &quot;unchanged&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>During the execution of this request, the SoVisu+ Harvester will:
+- retrieve the previously submitted entity identified by <code class="docutils literal notranslate"><span class="pre">111111111</span></code> (as a superior priority is given to the IdRef identifier, see <a class="reference internal" href="identifiers.html"><span class="doc">Identifiers section</span></a>.)</p>
+<p><strong>Smith, P</strong></p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><th class="stub"><p><strong>IdRef</strong></p></th>
+<td><p>111111111</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p><strong>ORCID</strong></p></th>
+<td><p>0000-0001-1111-1112</p></td>
+</tr>
+</tbody>
+</table>
+<p>As the <cite>identifiers_safe_mode</cite> parameter is set to <cite>true</cite>, the entity will not be updated and the newly submitted ORCID will be ignored.</p>
+<ul class="simple">
+<li><p>submit the entity with the same identifiers as in Example 1 to the harvesters “hal”, “idref”, “scanr” and “openalex”</p></li>
+</ul>
+</section>
+<section id="example-4-identifier-conflict">
+<h3>Example 4 : identifier conflict<a class="headerlink" href="#example-4-identifier-conflict" title="Link to this heading"></a></h3>
+<p>This time, the new requests contains an identifier conflict. A new entity is submitted with the same ORCID identifier as an existing entity but a different IdRef identifier.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;http://my-service-url/api/v1/references/retrieval&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;accept: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;person&quot;: {</span>
+<span class="s1">    &quot;identifiers&quot;: [</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;idref&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;031794646&quot;</span>
+<span class="s1">      },</span>
+<span class="s1">      {</span>
+<span class="s1">        &quot;type&quot;: &quot;orcid&quot;,</span>
+<span class="s1">        &quot;value&quot;: &quot;0000-0001-1111-1112&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    ],</span>
+<span class="s1">    &quot;name&quot;: &quot;Dupont, G&quot;</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;identifiers_safe_mode&quot;: false,</span>
+<span class="s1">  &quot;harvesters&quot;: [</span>
+<span class="s1">    &quot;hal&quot;,</span>
+<span class="s1">    &quot;idref&quot;,</span>
+<span class="s1">    &quot;scanr&quot;,</span>
+<span class="s1">    &quot;openalex&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;events&quot;: [</span>
+<span class="s1">    &quot;created&quot;, &quot;updated&quot;, &quot;deleted&quot;, &quot;unchanged&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>As the parameter <cite>identifiers_safe_mode</cite> is set to <cite>false</cite>, the SoVisu+ Harvester will:</p>
+<ul class="simple">
+<li><p>register a new entity with the name “Dupont, G” and the identifiers <code class="docutils literal notranslate"><span class="pre">031794646</span></code> and <code class="docutils literal notranslate"><span class="pre">0000-0001-1111-1112</span></code></p></li>
+</ul>
+<p><strong>Dupont, G</strong></p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><th class="stub"><p><strong>IdRef</strong></p></th>
+<td><p>031794646</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p><strong>ORCID</strong></p></th>
+<td><p>0000-0001-1111-1112</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>remove the ORCID identifier <code class="docutils literal notranslate"><span class="pre">0000-0001-1111-1112</span></code> from the entity identified by <code class="docutils literal notranslate"><span class="pre">111111111</span></code></p></li>
+</ul>
+<p><strong>Smith, P</strong></p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><th class="stub"><p><strong>IdRef</strong></p></th>
+<td><p>111111111</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>submit the entity to the harvesters “hal”, “idref”, “scanr” and “openalex”</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 

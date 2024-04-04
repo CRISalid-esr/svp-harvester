@@ -55,6 +55,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#standardized-output-format">🥫 Standardized Output Format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#various-integration-modes">🔌 Various integration modes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#harvesting-monitoring">👁 Harvesting monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entity-dereferencing">🔗 Entity Dereferencing</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#functional-scope-limitations">Functional scope limitations</a></li>
@@ -65,10 +66,10 @@
 <li class="toctree-l1"><a class="reference internal" href="reference/model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/entities.html">Reference : entity resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/identifiers.html">Reference : identifiers</a></li>
-    <li class="toctree-l1"><a class="reference internal" href="harvesters/overview.html">Harvesters:
-        Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harvesters/overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harvesters/hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harvesters/idref.html">Harvesters : Idref</a></li>
+<li class="toctree-l1"><a class="reference internal" href="harvesters/scanr.html">Harvesters : ScanR</a></li>
 </ul>
 
         </div>
@@ -102,8 +103,7 @@
 <section id="project-repository-and-live-demo">
 <h2>Project repository and live demo 📺<a class="headerlink" href="#project-repository-and-live-demo" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/CRISalid-esr/svp-harvester#readme"><img alt="GitHub repository" src="https://img.shields.io/badge/GitHub--repository-svp--harvester-blue?style=flat-square&amp;logo=github" /></a> Source code is available on Github</p>
-<p>🕘 The code will move to an institutional repository in the near future.</p>
-<p><a class="reference external" href="http://34.163.175.52/admin/retrieve?locale=fr_FR"><img alt="AWS EC2 Démo" src="https://img.shields.io/badge/AWS--EC2--demo-svp--harvester-blue?style=flat-square&amp;logo=amazon-aws" /></a> A live demo on a basic AWS box.</p>
+<p><a class="reference external" href="http://34.163.175.52/admin/retrieve?locale=fr_FR"><img alt="GKE Démo" src="https://img.shields.io/badge/GKE-demo-green?style=flat-square&amp;logo=google-cloud" /></a> A live demo on Google Kubernetes Engine</p>
 <p>🕘 The demo reflects the current state of development and has no guarantee of stability.</p>
 <p>🛠️ The presented interface is intended for administration and debugging purposes and is not for end-users.</p>
 <div class="admonition note">
@@ -145,6 +145,12 @@
 <section id="harvesting-monitoring">
 <h3>👁 Harvesting monitoring<a class="headerlink" href="#harvesting-monitoring" title="Link to this heading"></a></h3>
 <p>The database keeps track of all the harvestings and the errors that may arise during the process. To prevent nightly harvesting failures from becoming a system weakness, the harvesting history is readily accessible via a web interface, harvesting results or errors can be notified.</p>
+</section>
+<section id="entity-dereferencing">
+<h3>🔗 Entity Dereferencing<a class="headerlink" href="#entity-dereferencing" title="Link to this heading"></a></h3>
+<p>SoVisu+ Harvester enhances data quality through entity dereferencing. It uses unique identifiers (like IdRef URI, Wikidata ID, ROR ID, etc.) provided by entities to fetch and verify information from various repositories.
+For performance reasons, some of the authoritative sources are represented by a proxy or their data stored in a local cache.
+E.g. see  <a class="reference external" href="https://hub.docker.com/repository/docker/crisalidesr/svp-jel-proxy/general">SVP JEL Proxy Container</a></p>
 </section>
 </section>
 <section id="functional-scope-limitations">

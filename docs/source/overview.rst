@@ -83,7 +83,6 @@ For performance reasons, some of the authoritative sources are represented by a 
 E.g. see  `SVP JEL Proxy Container <https://hub.docker.com/repository/docker/crisalidesr/svp-jel-proxy/general>`_
 
 
-
 Functional scope limitations
 --------------------------------
 .. warning:: **1. No identifiers matching:** By design, it is up to the system client to perform identifier matching for each submitted entity before sending it to the harvester. Identifier matching is governed by complex rules that differ depending on the type of identifier and the type of entity (e.g., authenticated identifiers like ORCID or identifiers managed by librarians like IdRef). For this reason, the harvester does not perform any matching and always considers the submitted matches as valid. The so-called “entity resolution” component is intended to maintain a consistent harvesting history even in cases where matches change over time.
