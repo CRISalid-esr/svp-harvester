@@ -310,8 +310,8 @@ class AbstractReferencesConverter(ABC):
                             f"during concept creation : {error}"
                         )
                         await session.rollback()
-                        concept = await self._get_or_create_concept_by_uri(
-                            concept_informations=concept_informations
+                        concept = await self._get_or_create_concept_by_label(
+                            concept_informations=concept_informations, new_attempt=True
                         )
         return concept
 
