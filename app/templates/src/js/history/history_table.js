@@ -77,8 +77,6 @@ class HistoryTable {
             {
               targets: 2,
               render: function (data, type, full) {
-                console.log(full);
-                console.log(data);
                 return type === "display"
                   ? '<div title="' + full[2] + '">' + data
                   : data;
@@ -87,8 +85,6 @@ class HistoryTable {
             {
               targets: 3,
               render: function (data, type, full) {
-                console.log(full);
-                console.log(data);
                 return type === "display"
                   ? '<div title="' + full[3] + '">' + data
                   : data;
@@ -97,8 +93,6 @@ class HistoryTable {
             {
               targets: 6,
               render: function (data, type, full) {
-                console.log(full);
-                console.log(data);
                 return type === "display"
                   ? '<div title="' + full[6] + '">' + data
                   : data;
@@ -129,8 +123,6 @@ class HistoryTable {
             {
               targets: 1,
               render: function (data, type, full) {
-                console.log(full);
-                console.log(data);
                 return type === "display"
                   ? '<div title="' + full[1] + '">' + data
                   : data;
@@ -139,8 +131,6 @@ class HistoryTable {
             {
               targets: 5,
               render: function (data, type, full) {
-                console.log(full);
-                console.log(data);
                 return type === "display"
                   ? '<div title="' + full[5] + '">' + data
                   : data;
@@ -201,11 +191,11 @@ class HistoryTable {
             );
             row.child(row.data()[9]).show();
             row.child().on("click", async (event) => {
-              event.preventDefault();
               const link = event.target.closest("a.list-group-item");
               if (!link) {
                 return;
               }
+              event.preventDefault();
               if (link.detailShown === true) {
                 link.detailShown = false;
                 link.nextSibling.remove();
