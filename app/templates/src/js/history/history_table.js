@@ -270,13 +270,27 @@ class HistoryTable {
     }
 
     sortReferenceContent(currentReference) {
-        currentReference.contributions.sort((a, b) => a.rank - b.rank);
+        function compareRanks(a, b) {
+            if (a === null && b === null) return 0;
+            if (a === null) return 1;
+            if (b === null) return -1;
+            return a - b;
+        }
+
+        currentReference.contributions.sort((a, b) => {
+            const rankComparison = compareRanks(a.rank, b.rank);
+            if (rankComparison !== 0) return rankComparison;
+            const sourceA = a.contributor.source_identifier;
+            const sourceB = b.contributor.source_identifier;
+            return sourceA.localeCompare(sourceB);
+        });
         currentReference.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
         currentReference.contributions.forEach((contribution) => {
                 contribution.affiliations.sort((a, b) => a.source_identifier < b.source_identifier ? -1 : a.source_identifier > b.source_identifier ? 1 : 0);
                 // sort affiliations identifiers by type
                 contribution.affiliations.forEach((affiliation) => {
-                        affiliation.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
+                        //sort affiliations identifiers by type and value
+                        affiliation.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : a.value < b.value ? -1 : a.value > b.value ? 1 : 0);
                     }
                 );
             }
