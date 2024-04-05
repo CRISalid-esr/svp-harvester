@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get("/{reference_event_id}")
 async def get_reference_event(
-    reference_event_id: int, with_previous: bool = False
+    reference_event_id: int,
 ) -> ReferenceEventModel:
     """
     Get a reference event by id
