@@ -212,6 +212,7 @@ class HistoryTable {
                                 }
                                 link.nextSibling.remove();
                                 referenceEvent.data.reference.contributions.sort((a, b) => a.rank - b.rank);
+                                referenceEvent.data.reference.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
                                 const referenceDisplay = `${prettyPrintJson.toHtml(referenceEvent.data.reference)}`;
                                 if (type === "updated") {
                                     const tabs = this.getDiffTabs(referenceEventId, referenceDisplay);
@@ -233,6 +234,7 @@ class HistoryTable {
                                         return;
                                     }
                                     previousReference.data.contributions.sort((a, b) => a.rank - b.rank);
+                                    previousReference.data.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
                                     const previousReferenceDisplay = `${prettyPrintJson.toHtml(previousReference.data)}`;
                                     const delta = jsondiffpatch.diff(previousReference.data, referenceEvent.data.reference);
                                     const deltaDisplay = `${annotatedFormatter.format(delta, referenceEvent.data.reference)}`;
