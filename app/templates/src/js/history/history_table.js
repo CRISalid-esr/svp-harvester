@@ -1,6 +1,8 @@
 import DataTable from "datatables.net-dt";
 import {prettyPrintJson} from "pretty-print-json";
 import * as bootstrap from "bootstrap";
+import * as jsondiffpatch from "jsondiffpatch";
+import * as annotatedFormatter from "jsondiffpatch/formatters/html";
 
 const MAPPING_COLOR_STATE = {
     created: "badge-created",
@@ -209,24 +211,49 @@ class HistoryTable {
                                     console.log("No type found in reference event");
                                     return;
                                 }
+                                let previousReference = {data: "No previous data found"};
+                                if (type === "updated") {
+                                    const {harvester, source_identifier, version} = referenceEvent.data.reference;
+                                    const intVersion = parseInt(version, 10);
+                                    if (intVersion >= 0) {
+                                        const previousVersion = intVersion - 1;
+                                        previousReference = await this.client.getReferenceByHarversterSourceIdentifierVersion(
+                                            harvester,
+                                            source_identifier,
+                                            previousVersion
+                                        );
+                                        console.log(`Previous reference: ${previousReference}`);
+                                    }
+                                }
                                 link.nextSibling.remove();
                                 if (type === "updated") {
-                                    // wrap in bootstrap 5 tabs
+                                    referenceEvent.data.reference.contributions.sort((a, b) => a.rank - b.rank);
+                                    previousReference.data.contributions.sort((a, b) => a.rank - b.rank);
+                                    const previousReferenceDisplay = `${prettyPrintJson.toHtml(previousReference.data)}`;
+                                    const referenceDisplay = `${prettyPrintJson.toHtml(referenceEvent.data.reference)}`;
+                                    const delta = jsondiffpatch.diff(previousReference.data, referenceEvent.data.reference);
+                                    const deltaDisplay = `${annotatedFormatter.format(delta, referenceEvent.data.reference)}`;
                                     const tabs = `
                                     <ul class="nav nav-tabs" id="updated-data-display-switch" role="tablist"> 
                                         <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="data-display-tab" data-bs-toggle="tab" data-bs-target="#data-display" type="button" role="tab" aria-controls="data-display" aria-selected="true">Données</button>
+                                            <button class="nav-link active" id="current-ref-display-tab" data-bs-toggle="tab" data-bs-target="#current-ref" type="button" role="tab" aria-controls="current-ref" aria-selected="true">Version actuelle</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="current-ref-tab" data-bs-toggle="tab" data-bs-target="#previous-ref" type="button" role="tab" aria-controls="previous-ref" aria-selected="false">Version précédente</button>
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="data-diff-tab" data-bs-toggle="tab" data-bs-target="#data-diff" type="button" role="tab" aria-controls="data-diff" aria-selected="false">Différentiel</button>
                                         </li>
                                     </ul>
                                     <div class="tab-content" id="updated-data-display-content">
-                                        <div class="tab-pane fade show active" id="data-display" role="tabpanel" aria-labelledby="data-display-tab">
-                                            <pre class='slide-in'>${prettyPrintJson.toHtml(referenceEvent.data)}</pre>
+                                        <div class="tab-pane fade show active" id="current-ref" role="tabpanel" aria-labelledby="current-ref-tab">
+                                            <pre class='slide-in'>${referenceDisplay}</pre>
+                                        </div>
+                                        <div class="tab-pane fade" id="previous-ref" role="tabpanel" aria-labelledby="previous-ref-tab">
+                                            <pre>${previousReferenceDisplay}</pre>
                                         </div>
                                         <div class="tab-pane fade" id="data-diff" role="tabpanel" aria-labelledby="data-diff-tab">
-                                            <pre class='slide-in'>${prettyPrintJson.toHtml(referenceEvent.data)}</pre>
+                                            <pre>${deltaDisplay}</pre>
                                         </div>
                                     </div>
                                     `;

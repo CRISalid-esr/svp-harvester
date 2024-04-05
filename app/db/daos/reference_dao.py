@@ -182,6 +182,26 @@ class ReferenceDAO(AbstractDAO):
 
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
+    async def get_complete_reference_by_harvester_source_identifier_version(
+        self, harvester: str, source_identifier: str, version: str
+    ) -> Reference | None:
+        """
+        Get a reference by its source, source_identifier and version
+
+        :param harvester: harvester that harvested the reference
+        :param source_identifier: identifier of the reference in the source
+        :param version: version of the reference
+        :return: the reference or None if not found
+        """
+        query = (
+            select(Reference)
+            .options(joinedload(Reference.contributions))
+            .where(Reference.harvester == harvester)
+            .where(Reference.source_identifier == source_identifier)
+            .where(Reference.version == version)
+        )
+        return (await self.db_session.execute(query)).unique().scalar_one_or_none()
+
     def _filter_text_search(self, query, text_search: str):
         """
         Filter the query by text search
