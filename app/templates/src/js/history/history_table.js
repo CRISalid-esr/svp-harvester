@@ -211,33 +211,33 @@ class HistoryTable {
                                     return;
                                 }
                                 link.nextSibling.remove();
-                                referenceEvent.data.reference.contributions.sort((a, b) => a.rank - b.rank);
-                                referenceEvent.data.reference.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
-                                const referenceDisplay = `${prettyPrintJson.toHtml(referenceEvent.data.reference)}`;
+                                const currentReference = referenceEvent.data.reference;
+                                this.sortReferenceContent(currentReference);
+                                const referenceDisplay = `${prettyPrintJson.toHtml(currentReference)}`;
                                 if (type === "updated") {
                                     const tabs = this.getDiffTabs(referenceEventId, referenceDisplay);
                                     link.detailShown = true;
                                     link.insertAdjacentHTML("afterend", tabs);
-                                    let previousReference = {data: "No previous data found"};
-                                    const {harvester, source_identifier, version} = referenceEvent.data.reference;
+                                    let previousReferenceResponse = {data: "No previous data found"};
+                                    const {harvester, source_identifier, version} = currentReference;
                                     const intVersion = parseInt(version, 10);
                                     if (intVersion >= 0) {
                                         const previousVersion = intVersion - 1;
-                                        previousReference = await this.client.getReferenceByHarversterSourceIdentifierVersion(
+                                        previousReferenceResponse = await this.client.getReferenceByHarversterSourceIdentifierVersion(
                                             harvester,
                                             source_identifier,
                                             previousVersion
                                         );
                                     }
-                                    if (!previousReference?.data?.titles) {
+                                    if (!previousReferenceResponse?.data?.titles) {
                                         console.log("No previous data found")
                                         return;
                                     }
-                                    previousReference.data.contributions.sort((a, b) => a.rank - b.rank);
-                                    previousReference.data.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
-                                    const previousReferenceDisplay = `${prettyPrintJson.toHtml(previousReference.data)}`;
-                                    const delta = jsondiffpatch.diff(previousReference.data, referenceEvent.data.reference);
-                                    const deltaDisplay = `${annotatedFormatter.format(delta, referenceEvent.data.reference)}`;
+                                    const previousReference = previousReferenceResponse.data;
+                                    this.sortReferenceContent(previousReference)
+                                    const previousReferenceDisplay = `${prettyPrintJson.toHtml(previousReference)}`;
+                                    const delta = jsondiffpatch.diff(previousReference, currentReference);
+                                    const deltaDisplay = `${annotatedFormatter.format(delta, currentReference)}`;
                                     document.getElementById(`previous-ref-${referenceEventId}`).innerHTML = `<pre>${previousReferenceDisplay}</pre>`;
                                     document.getElementById(`data-diff-${referenceEventId}`).innerHTML = `<pre>${deltaDisplay}</pre>`;
                                 } else {
@@ -267,6 +267,20 @@ class HistoryTable {
                 tr.classList.add("shown");
             }
         }
+    }
+
+    sortReferenceContent(currentReference) {
+        currentReference.contributions.sort((a, b) => a.rank - b.rank);
+        currentReference.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
+        currentReference.contributions.forEach((contribution) => {
+                contribution.affiliations.sort((a, b) => a.source_identifier < b.source_identifier ? -1 : a.source_identifier > b.source_identifier ? 1 : 0);
+                // sort affiliations identifiers by type
+                contribution.affiliations.forEach((affiliation) => {
+                        affiliation.identifiers.sort((a, b) => a.type < b.type ? -1 : a.type > b.type ? 1 : 0);
+                    }
+                );
+            }
+        );
     }
 
     getDiffTabs(referenceEventId, referenceDisplay) {
