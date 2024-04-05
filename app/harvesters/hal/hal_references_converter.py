@@ -168,7 +168,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
     def _identifiers(self, raw_data):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
-            if field == "linkExtId_s":
+            if field in ("linkExtId_s", "europeanProjectCallId_s"):
                 continue
             field_data = raw_data[field]
             if not isinstance(field_data, list):
