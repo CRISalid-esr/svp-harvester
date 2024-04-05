@@ -69,8 +69,6 @@ class HistoryTable {
                         {
                             targets: 1,
                             render: function (data, type, full) {
-                                console.log(full);
-                                console.log(data);
                                 return type === "display"
                                     ? '<div title="' + full[1] + '">' + data
                                     : data;
@@ -203,16 +201,23 @@ class HistoryTable {
                                 link.nextSibling.remove();
                             } else {
                                 link.insertAdjacentHTML("afterend", SPINNER);
+                                const referenceEventId = event.target.closest("a").dataset.eventId;
                                 const referenceEvent = await this.client.getReferenceEvent(
-                                    event.target.closest("a").dataset.eventId
+                                    referenceEventId
                                 );
                                 const type = referenceEvent?.data?.type;
                                 if (type === undefined) {
                                     console.log("No type found in reference event");
                                     return;
                                 }
-                                let previousReference = {data: "No previous data found"};
+                                link.nextSibling.remove();
+                                referenceEvent.data.reference.contributions.sort((a, b) => a.rank - b.rank);
+                                const referenceDisplay = `${prettyPrintJson.toHtml(referenceEvent.data.reference)}`;
                                 if (type === "updated") {
+                                    const tabs = this.getDiffTabs(referenceEventId, referenceDisplay);
+                                    link.detailShown = true;
+                                    link.insertAdjacentHTML("afterend", tabs);
+                                    let previousReference = {data: "No previous data found"};
                                     const {harvester, source_identifier, version} = referenceEvent.data.reference;
                                     const intVersion = parseInt(version, 10);
                                     if (intVersion >= 0) {
@@ -222,51 +227,26 @@ class HistoryTable {
                                             source_identifier,
                                             previousVersion
                                         );
-                                        console.log(`Previous reference: ${previousReference}`);
                                     }
-                                }
-                                link.nextSibling.remove();
-                                if (type === "updated") {
-                                    referenceEvent.data.reference.contributions.sort((a, b) => a.rank - b.rank);
+                                    if (!previousReference?.data?.titles) {
+                                        console.log("No previous data found")
+                                        return;
+                                    }
                                     previousReference.data.contributions.sort((a, b) => a.rank - b.rank);
                                     const previousReferenceDisplay = `${prettyPrintJson.toHtml(previousReference.data)}`;
-                                    const referenceDisplay = `${prettyPrintJson.toHtml(referenceEvent.data.reference)}`;
                                     const delta = jsondiffpatch.diff(previousReference.data, referenceEvent.data.reference);
                                     const deltaDisplay = `${annotatedFormatter.format(delta, referenceEvent.data.reference)}`;
-                                    const tabs = `
-                                    <ul class="nav nav-tabs" id="updated-data-display-switch" role="tablist"> 
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="current-ref-display-tab" data-bs-toggle="tab" data-bs-target="#current-ref" type="button" role="tab" aria-controls="current-ref" aria-selected="true">Version actuelle</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="current-ref-tab" data-bs-toggle="tab" data-bs-target="#previous-ref" type="button" role="tab" aria-controls="previous-ref" aria-selected="false">Version précédente</button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="data-diff-tab" data-bs-toggle="tab" data-bs-target="#data-diff" type="button" role="tab" aria-controls="data-diff" aria-selected="false">Différentiel</button>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content" id="updated-data-display-content">
-                                        <div class="tab-pane fade show active" id="current-ref" role="tabpanel" aria-labelledby="current-ref-tab">
-                                            <pre class='slide-in'>${referenceDisplay}</pre>
-                                        </div>
-                                        <div class="tab-pane fade" id="previous-ref" role="tabpanel" aria-labelledby="previous-ref-tab">
-                                            <pre>${previousReferenceDisplay}</pre>
-                                        </div>
-                                        <div class="tab-pane fade" id="data-diff" role="tabpanel" aria-labelledby="data-diff-tab">
-                                            <pre>${deltaDisplay}</pre>
-                                        </div>
-                                    </div>
-                                    `;
-                                    link.insertAdjacentHTML("afterend", tabs);
+                                    document.getElementById(`previous-ref-${referenceEventId}`).innerHTML = `<pre>${previousReferenceDisplay}</pre>`;
+                                    document.getElementById(`data-diff-${referenceEventId}`).innerHTML = `<pre>${deltaDisplay}</pre>`;
                                 } else {
                                     link.insertAdjacentHTML(
                                         "afterend",
                                         "<pre class='slide-in'>" +
-                                        prettyPrintJson.toHtml(referenceEvent.data) +
+                                        referenceDisplay +
                                         "</pre>"
                                     );
+                                    link.detailShown = true;
                                 }
-                                link.detailShown = true;
                             }
                         });
 
@@ -285,6 +265,34 @@ class HistoryTable {
                 tr.classList.add("shown");
             }
         }
+    }
+
+    getDiffTabs(referenceEventId, referenceDisplay) {
+        const tabs = `<div>
+                            <ul class="nav nav-tabs" id="updated-data-display-switch" role="tablist"> 
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="current-ref-display-tab-${referenceEventId}" data-bs-toggle="tab" data-bs-target="#current-ref-${referenceEventId}" type="button" role="tab" aria-controls="current-ref" aria-selected="true">Version actuelle</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="current-ref-tab-${referenceEventId}" data-bs-toggle="tab" data-bs-target="#previous-ref-${referenceEventId}" type="button" role="tab" aria-controls="previous-ref" aria-selected="false">Version précédente</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="data-diff-tab-${referenceEventId}" data-bs-toggle="tab" data-bs-target="#data-diff-${referenceEventId}" type="button" role="tab" aria-controls="data-diff" aria-selected="false">Différentiel</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="updated-data-display-content-${referenceEventId}">
+                                <div class="tab-pane fade show active" id="current-ref-${referenceEventId}" role="tabpanel" aria-labelledby="current-ref-tab">
+                                    <pre class='slide-in'>${referenceDisplay}</pre>
+                                </div>
+                                <div class="tab-pane fade" id="previous-ref-${referenceEventId}" role="tabpanel" aria-labelledby="previous-ref-tab">
+                                    <pre>${SPINNER}</pre>
+                                </div>
+                                <div class="tab-pane fade" id="data-diff-${referenceEventId}" role="tabpanel" aria-labelledby="data-diff-tab">
+                                    <pre>${SPINNER}</pre>
+                                </div>
+                            </div>
+                        </div>`;
+        return tabs;
     }
 
     updateTable(history) {
