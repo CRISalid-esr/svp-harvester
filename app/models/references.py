@@ -33,3 +33,4 @@ class Reference(BaseModel):
     page: str | None = None
     issued: datetime | None = None
     created: datetime | None = None
+    version: int

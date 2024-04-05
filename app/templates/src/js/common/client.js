@@ -41,6 +41,16 @@ class Client {
         return await this.axios.get(this.apiUrl() + "/reference_events/" + referenceEventId);
     }
 
+    async getReferenceByHarversterSourceIdentifierVersion(harvester, source_identifier, version) {
+        return await this.axios.get(this.apiUrl() + "/references/by_id_and_version", {
+            params: {
+                harvester: harvester,
+                source_identifier: source_identifier,
+                version: version
+            }
+        });
+    }
+
     async getRetrieval(retrievalId) {
         return await this.axios.get(this.apiUrl() + "/retrievals/" + retrievalId);
     }

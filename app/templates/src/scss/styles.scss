@@ -18,6 +18,8 @@ $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
 @import '~tom-select/dist/css/tom-select.bootstrap5.min.css';
 @import '~vanillajs-datepicker/sass/datepicker-bs5.scss';
 @import '../../node_modules/pretty-print-json/dist/css/pretty-print-json.min.css';
+@import '../../node_modules/jsondiffpatch/lib/formatters/styles/html.css';
+@import '../../node_modules/jsondiffpatch/lib/formatters/styles/annotated.css';
 
 
 body {

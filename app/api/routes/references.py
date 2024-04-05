@@ -155,6 +155,29 @@ async def get_references(
         )
 
 
+@router.get("/by_id_and_version")
+async def get_reference_by_source_identifier_version(
+    harvester: str,
+    source_identifier: str,
+    version: int,
+) -> Reference:
+    """
+    Get a reference by its harvester, source_identifier and version
+
+    :param harvester: harvester that created the reference
+    :param source_identifier: identifier of the reference in the source
+    :param version: version of the reference
+    :return: the reference
+    """
+    async with async_session() as session:
+        reference = await ReferenceDAO(
+            session
+        ).get_complete_reference_by_harvester_source_identifier_version(
+            harvester, source_identifier, version
+        )
+        return Reference.model_validate(reference)
+
+
 @router.get("/{reference_id}")
 async def get_reference_by_id(reference_id: int) -> Reference:
     """

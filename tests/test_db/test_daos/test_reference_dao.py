@@ -275,3 +275,39 @@ async def test_get_references_for_entity_and_harvester_returns_updated_reference
 
     assert references == [reference2]
     assert references[0].titles[0].value == "changed_title"
+
+
+@pytest.mark.asyncio
+@pytest.mark.current
+async def test_get_complete_reference_by_harvester_source_identifier_version(
+    async_session: AsyncSession, harvesting_db_model_for_person_with_idref: Harvesting
+):
+    """
+    GIVEN a reference in database with a source identifier and version number
+    WHEN get_complete_reference_by_harvester_source_identifier_version is called with the source identifier and version number
+    THEN the reference is returned
+    """
+    harvester = harvesting_db_model_for_person_with_idref.harvester
+    source_identifier = "source_identifier_1234"
+    version = 0
+    reference = DbReference(
+        source_identifier=source_identifier,
+        harvester=harvester,
+        hash="hash1",
+        version=version,
+        titles=[Title(value="title", language="fr")],
+    )
+    async_session.add(reference)
+    await async_session.commit()
+    dao = ReferenceDAO(async_session)
+
+    reference_returned = (
+        await dao.get_complete_reference_by_harvester_source_identifier_version(
+            harvester=harvester,
+            source_identifier=source_identifier,
+            version=version,
+        )
+    )
+
+    assert reference_returned == reference
+    assert reference_returned.titles[0].value == "title"
