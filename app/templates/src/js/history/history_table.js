@@ -277,6 +277,7 @@ class HistoryTable {
             return a - b;
         }
 
+        currentReference.document_types.sort((a, b) => a.uri < b.uri ? -1 : a.uri > b.uri ? 1 : 0);
         currentReference.contributions.sort((a, b) => {
             const rankComparison = compareRanks(a.rank, b.rank);
             if (rankComparison !== 0) return rankComparison;
