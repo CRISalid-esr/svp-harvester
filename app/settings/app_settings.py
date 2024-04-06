@@ -116,3 +116,7 @@ class AppSettings(BaseSettings):
     wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600
 
     institution_name: str = "XYZ University"
+
+    git_commit: str = "-"
+    git_branch: str = "-"
+    docker_digest: str = "-"
