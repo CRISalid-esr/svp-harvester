@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  SVP-Harvester\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-06 06:38+0000\n"
+"POT-Creation-Date: 2024-04-06 10:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,23 +14,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: app/templates/base.html.jinja:10 app/templates/base.html.jinja:17
+#: app/templates/base.html.jinja:10 app/templates/base.html.jinja:20
 msgid "application_name"
 msgstr "SoVisu+ Harvester"
 
-#: app/templates/base.html.jinja:51
+#: app/templates/base.html.jinja:55
 msgid "main_menu_overview_entry"
 msgstr "Présentation"
 
-#: app/templates/base.html.jinja:58
+#: app/templates/base.html.jinja:62
 msgid "main_menu_data_retrieval_entry"
 msgstr "Collecte de données"
 
-#: app/templates/base.html.jinja:65
+#: app/templates/base.html.jinja:70
 msgid "main_menu_history_entry"
 msgstr "Historique des collecte"
 
-#: app/templates/base.html.jinja:72
+#: app/templates/base.html.jinja:78
 #, fuzzy
 msgid "main_menu_settings_entry"
 msgstr "Administration des collectes"
