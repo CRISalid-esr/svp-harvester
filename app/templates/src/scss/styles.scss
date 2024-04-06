@@ -26,6 +26,15 @@ body {
   font-size: .875rem;
 }
 
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.container-fluid {
+  padding-bottom: 35px; /* Adjusted for thinner footer */
+}
+
 .feather {
   width: 16px;
   height: 16px;
@@ -234,36 +243,45 @@ h1 {
   cursor: default;
 }
 
-body, html {
-  height: 100%;
-  margin: 0;
-}
-
 .footer {
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: #f8f9fa; /* Light background for the footer */
-  color: #6c757d;
+  background-color: #f9f9f9 !important;
+  color: #343a40 !important;
   text-align: center;
-  border-top: 1px solid #e7e7e7;
-  padding: 4px 0;
+  border-top: 1px solid #e0e0e0 !important;
+  padding: 8px 0 !important;
   z-index: 1030;
-  font-size: 0.8rem;
-  box-shadow: 0 -2px 4px rgba(0,0,0,0.1); /* Adds a subtle shadow for depth */
-}
+  font-size: 0.9rem !important;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05) !important;
 
+  .badge {
+    color: #fff !important;
+    padding: 0.5em 0.75em !important;
+    margin: 0 2px !important;
+    font-size: 0.75rem !important;
+    text-shadow: none !important;
 
-.footer img {
-  height: 15px; /* Smaller logos */
-  margin-right: 5px;
-}
+    &.bg-secondary {
+      background-color: #adb5bd !important;
+    }
 
-.badge {
-  margin: 0 5px;
-}
+    // Lighter grey
+    &.bg-success {
+      background-color: #6c757d !important;
+    }
 
-.container-fluid {
-  padding-bottom: 35px; /* Adjusted for thinner footer */
+    // Softened green/grey
+    &.bg-warning {
+      background-color: #e0a800 !important; // Muted yellow
+      color: #343a40 !important; // Dark text for contrast
+    }
+  }
+
+  img {
+    height: 15px; /* Smaller logos */
+    margin-right: 5px;
+  }
 }
