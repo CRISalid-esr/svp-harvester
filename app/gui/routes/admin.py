@@ -22,13 +22,14 @@ def with_api_informations():
 
     :return: dict containing API informations and Git metadata
     """
+    settings = get_app_settings()
     return {
-        "api_host": get_app_settings().api_host,
-        "api_path": f"{get_app_settings().api_prefix}/{get_app_settings().api_version}",
-        "institution_name": get_app_settings().institution_name,
-        "git_commit": os.getenv("GIT_COMMIT", "-"),
-        "git_branch": os.getenv("GIT_BRANCH", "-"),
-        "docker_digest": os.getenv("DOCKER_DIGEST", "-"),
+        "api_host": settings.api_host,
+        "api_path": f"{settings.api_prefix}/{settings.api_version}",
+        "institution_name": settings.institution_name,
+        "git_commit": settings.git_commit,
+        "git_branch": settings.git_branch,
+        "docker_digest": settings.docker_digest,
     }
 
 
