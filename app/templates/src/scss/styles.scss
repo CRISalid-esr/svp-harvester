@@ -5,9 +5,9 @@ $info: #dcebfe;
 //https://5balloons.info/cursor-pointer-and-other-classes-for-bootstrap-5
 @import "~bootstrap/scss/bootstrap-utilities";
 $utilities: map-merge($utilities,
-    ("cursor": (property: cursor,
-        values: auto default pointer wait text move help not-allowed),
-    ));
+        ("cursor": (property: cursor,
+                values: auto default pointer wait text move help not-allowed),
+        ));
 @import "~bootstrap/scss/bootstrap";
 // from https://stackoverflow.com/a/74992564
 $bootstrap-icons-font-dir: "~bootstrap-icons/font/fonts";
@@ -142,6 +142,7 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
     div {
       white-space: nowrap;
       overflow: hidden;
@@ -231,4 +232,38 @@ h1 {
   color: $gray-500 !important;
   pointer-events: none;
   cursor: default;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa; /* Light background for the footer */
+  color: #6c757d;
+  text-align: center;
+  border-top: 1px solid #e7e7e7;
+  padding: 4px 0;
+  z-index: 1030;
+  font-size: 0.8rem;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.1); /* Adds a subtle shadow for depth */
+}
+
+
+.footer img {
+  height: 15px; /* Smaller logos */
+  margin-right: 5px;
+}
+
+.badge {
+  margin: 0 5px;
+}
+
+.container-fluid {
+  padding-bottom: 35px; /* Adjusted for thinner footer */
 }
