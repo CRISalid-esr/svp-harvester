@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
 
@@ -12,17 +14,21 @@ router = APIRouter()
 
 def with_api_informations():
     """
-    Function to add api informations to the response for the admin gui
-    API information will be printed in hidden inputs in the html
-    where they are available for the javascript code
-    to make api calls from the gui
+    Function to add api informations to the response for the admin gui.
+    API information will be printed in hidden inputs in the HTML
+    where they are available for the JavaScript code to make API calls from the GUI.
 
-    :return: dict containing api informations
+    Now also includes Git branch and Git commit ID information.
+
+    :return: dict containing API informations and Git metadata
     """
     return {
         "api_host": get_app_settings().api_host,
         "api_path": f"{get_app_settings().api_prefix}/{get_app_settings().api_version}",
         "institution_name": get_app_settings().institution_name,
+        "git_commit": os.getenv("GIT_COMMIT", "-"),
+        "git_branch": os.getenv("GIT_BRANCH", "-"),
+        "docker_digest": os.getenv("DOCKER_DIGEST", "-"),
     }
 
 

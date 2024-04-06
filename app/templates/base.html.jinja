@@ -107,11 +107,12 @@
 <footer class="footer">
     <div class="container">
         <img src="/static/images/github-mark.svg" alt="GitHub">
-        <span class="badge bg-secondary">Branch: {{ current_branch }}</span>|
-        <span class="badge bg-success">Commit: {{ commit }}</span>|
+        <span class="badge bg-secondary">Branch: {{ git_branch }}</span> |
+        <span class="badge bg-success">Commit: {{ git_commit }}</span> |
         <img src="/static/images/docker-mark-blue.svg" alt="Docker">
         <span class="badge bg-info">Docker: {{ docker_digest }}</span>
     </div>
 </footer>
+
 </body>
 </html>
