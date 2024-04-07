@@ -174,3 +174,4 @@ rabbitmq-logs
 postgres-data
 
 docker-compose.yml
+*.csv
