@@ -59,7 +59,6 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
         if ("Book" in [dc.label for dc in new_ref.document_type]) or (
             "Chapter" in [dc.label for dc in new_ref.document_type]
         ):
-            logger.debug(f"Getting book for {uri}")
             book = await self._get_book(pub_graph, uri)
             if book:
                 new_ref.book = book

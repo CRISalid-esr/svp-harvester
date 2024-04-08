@@ -1,4 +1,3 @@
-from math import exp
 import pytest
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
 
@@ -64,3 +63,26 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     assert expected_journal_title in test_reference.issue.journal.titles
     assert test_reference.issue.volume == expected_volume_issue
     assert expected_number_issue in test_reference.issue.number
+
+
+@pytest.mark.asyncio
+async def test_convert_book(scopus_xml_raw_result_for_doc_book):
+    """Test that the converter will return normalised references with book info"""
+
+    converter_under_test = ScopusReferencesConverter()
+
+    test_reference = converter_under_test.build(
+        raw_data=scopus_xml_raw_result_for_doc_book
+    )
+
+    await converter_under_test.convert(
+        raw_data=scopus_xml_raw_result_for_doc_book, new_ref=test_reference
+    )
+
+    expected_title_book = "Sustainability Accounting and Accountability"
+    expected_isbn10 = "0203815289"
+    expected_isbn13 = "9780203815281"
+
+    assert test_reference.book.title == expected_title_book
+    assert test_reference.book.isbn10 == expected_isbn10
+    assert test_reference.book.isbn13 == expected_isbn13
