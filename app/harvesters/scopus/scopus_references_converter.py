@@ -68,8 +68,6 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             issue = await self._issue(entry, journal)
             new_ref.issue = issue
 
-        logger.debug(f"Document types: {[dc.label for dc in new_ref.document_type]}")
-
         if ("Book" in [dc.label for dc in new_ref.document_type]) or (
             "Chapter" in [dc.label for dc in new_ref.document_type]
         ):

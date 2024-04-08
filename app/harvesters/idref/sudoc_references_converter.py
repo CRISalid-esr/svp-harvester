@@ -84,9 +84,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title,
-                publisher=publisher,
                 isbn10=isbn10,
                 isbn13=isbn13,
+                publisher=publisher,
             )
         )
 
