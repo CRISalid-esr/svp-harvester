@@ -20,6 +20,7 @@ from app.harvesters.scanr.scanr_document_type_converter import (
     ScanrDocumentTypeConverter,
 )
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
+from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
@@ -89,11 +90,30 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             issue = await self._issue(journal)
             new_ref.issue = issue
 
+        if ("Book" in [dc.label for dc in new_ref.document_type]) or (
+            "Chapter" in [dc.label for dc in new_ref.document_type]
+        ):
+            book = await self._book(json_payload)
+            if book:
+                new_ref.book = book
+
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
 
     def _harvester(self) -> str:
         return "ScanR"
+
+    async def _book(self, json_payload: dict) -> Journal | None:
+        source = json_payload["_source"].get("source", {})
+        if not source:
+            return None
+        title = source.get("title", "")
+        publisher = source.get("publisher", "")
+        if not title:
+            return None
+        return await self._get_or_create_book(
+            BookInformations(title=title, publisher=publisher)
+        )
 
     async def _issue(self, journal: Journal) -> Issue:
         source_identifier = (
@@ -230,10 +250,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 self._duplicate_or_almost(concept_label, label_to_compare_to)
                 for label_to_compare_to in labels_to_compare_to
             ):
-                logger.debug(
-                    f"Concept {concept_label} already mentioned in Scanr results with a source "
-                    f"among {labels_with_source}"
-                )
                 continue
             labels_with_source.setdefault(concept_language, []).append(concept_label)
             db_concept = await self._get_or_create_concept_by_label(

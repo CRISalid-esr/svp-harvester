@@ -120,8 +120,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
         if ("Book" in [dc.label for dc in new_ref.document_type]) or (
             "Chapter" in [dc.label for dc in new_ref.document_type]
         ):
-            logger.debug([dc.label for dc in new_ref.document_type])
-            logger.info(raw_data.payload)
             book = await self._book(raw_data.payload)
             if book:
                 new_ref.book = book
