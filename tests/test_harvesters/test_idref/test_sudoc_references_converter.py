@@ -1,4 +1,3 @@
-from math import e
 import pytest
 
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -83,3 +82,28 @@ async def test_convert_for_rdf_result_without_title(
         )
 
     assert exc_info.match("Sudoc reference without title:")
+
+
+@pytest.mark.asyncio
+async def test_convert_for_rdf_result_for_book(sudoc_rdf_result_for_book):
+    """
+    GIVEN a SudocReferencesConverter instance and a Sudoc RDF result
+    WHEN the convert method is called
+    THEN it should return a Reference instance with the expected Book values
+    """
+    converter_under_tests = SudocReferencesConverter()
+
+    test_reference = converter_under_tests.build(raw_data=sudoc_rdf_result_for_book)
+    await converter_under_tests.convert(
+        raw_data=sudoc_rdf_result_for_book, new_ref=test_reference
+    )
+
+    expected_publisher = "Cambridge, MA : Academic Press, an imprint of Elsevier , 2020"
+    expected_isbn10 = "0128186755"
+    expected_isbn13 = "9780128186756"
+    expected_title = "Tumor immunology and immunotherapy Part B, : cellular methods / edited by Lorenzo Galluzzi,... Nils-Petter Rudqvist,..."
+
+    assert expected_isbn10 == test_reference.book.isbn10
+    assert expected_isbn13 == test_reference.book.isbn13
+    assert expected_publisher == test_reference.book.publisher
+    assert expected_title in test_reference.book.title
