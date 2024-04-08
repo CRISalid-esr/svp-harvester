@@ -657,4 +657,17 @@ class AbstractReferencesConverter(ABC):
                         book = await self._get_or_create_book(
                             book_informations=book_informations, new_attempt=True
                         )
+                else:
+                    book = self._update_book(book, book_informations)
+
+        return book
+
+    def _update_book(self, book: Book, book_informations: BookInformations):
+        """
+        Update the book with the new informations
+        """
+        if (book.title != book_informations.title) and (
+            book_informations.title not in book.title_variants
+        ):
+            book.title_variants.append(book.title)
         return book

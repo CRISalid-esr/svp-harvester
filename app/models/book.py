@@ -9,6 +9,7 @@ class Book(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     title: str | None = None
+    title_variants: list[str] = []
     isbn10: str | None = None
     isbn13: str | None = None
     publisher: str | None = None
