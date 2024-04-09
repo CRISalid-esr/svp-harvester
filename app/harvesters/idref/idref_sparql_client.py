@@ -127,7 +127,8 @@ class IdrefSparqlClient:
                 }
         except Exception as error:
             raise ExternalEndpointFailure(
-                f"Error while fetching Idref sparql endpoint for query : {query} with error {error.__class__.__name__} {error if error else ''}"
+                "Error while fetching Idref sparql endpoint for query : "
+                f"{query} with error {error.__class__.__name__} {error if error else ''}"
             ) from error
 
         finally:
@@ -153,7 +154,8 @@ class IdrefSparqlClient:
             }
         except Exception as error:
             raise ExternalEndpointFailure(
-                f"Error while fetching Idref sparql endpoint for query : {query} with error {error.__class__.__name__} {error if error else ''}"
+                "Error while fetching Idref sparql endpoint for query : "
+                f"{query} with error {error.__class__.__name__} {error if error else ''}"
             ) from error
         finally:
             await client.close()
