@@ -1,4 +1,4 @@
-from rdflib import FOAF
+from rdflib import FOAF, URIRef
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
@@ -81,16 +81,34 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
         :return: A list of ContributionInformations objects.
         """
         contributor_informations = []
-        for contributor in dict_payload.get("author", []):
+        for (
+            contributor,
+            contributor_role,
+            contributor_name,
+            contributor_family_name,
+            contributor_given_name,
+        ) in zip(
+            dict_payload.get("contributor", []),
+            dict_payload.get("contributorRole", []),
+            dict_payload.get("contributorName", []),
+            dict_payload.get("contributorFamilyName", []),
+            dict_payload.get("contributorGivenName", []),
+        ):
             if contributor == "":
                 continue
-            contributor = contributor.replace("/id", ".rdf")
-            contributor = contributor.replace("http://", "https://")
-            graph = await RdfResolver().fetch(contributor)
-            contributor_name = ""
-            for name in graph.objects(contributor, FOAF.name):
-                contributor_name = name
-            role = dict_payload["role"].split("/")[-1]
+            contributor_url = contributor.replace("/id", ".rdf")
+            contributor_url = contributor_url.replace("http://", "https://")
+            graph = await RdfResolver().fetch(contributor_url)
+            for name in graph.objects(URIRef(contributor), FOAF.familyName):
+                contributor_family_name = name.value
+            for name in graph.objects(URIRef(contributor), FOAF.givenName):
+                contributor_given_name = name.value
+            if contributor_family_name and contributor_given_name:
+                contributor_name = f"{contributor_given_name} {contributor_family_name}"
+            else:
+                for name in graph.objects(URIRef(contributor), FOAF.name):
+                    contributor_name = name.value
+            role = contributor_role.split("/")[-1]
             contributor_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
                     role=IdrefQualitiesConverter.convert(role),

@@ -1,6 +1,19 @@
 import pytest
 
+from app.harvesters.sparql_harvester_raw_result import SparqlHarvesterRawResult
 from tests.fixtures.common import _json_data_from_file
+
+
+@pytest.fixture(name="idref_sparql_result_for_doc")
+def fixture_idref_sparql_result_for_doc(
+    idref_pub_converted_1,
+) -> SparqlHarvesterRawResult:
+    """Sparql result from idref wrapped in a SparqlHarvesterRawResult"""
+    return SparqlHarvesterRawResult(
+        source_identifier=idref_pub_converted_1["uri"],
+        payload=idref_pub_converted_1,
+        formatter_name="Idref",
+    )
 
 
 @pytest.fixture(name="idref_pub_converted_1")

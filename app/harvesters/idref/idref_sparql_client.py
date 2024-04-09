@@ -79,7 +79,11 @@ class IdrefSparqlClient:
                     publications[pub] = {
                         "uri": pub,
                         "role": result.get("role", {}).get("value", ""),
-                        "author": [],
+                        "contributor": [],
+                        "contributorRole": [],
+                        "contributorName": [],
+                        "contributorFamilyName": [],
+                        "contributorGivenName": [],
                         "title": [],
                         "note": [],
                         "type": [],
@@ -88,7 +92,17 @@ class IdrefSparqlClient:
                         "doi": result.get("doi", {}).get("value", ""),
                     }
                 # replace by a loop
-                for key in ["type", "title", "altLabel", "note", "author"]:
+                for key in [
+                    "type",
+                    "title",
+                    "altLabel",
+                    "note",
+                    "contributor",
+                    "contributorRole",
+                    "contributorName",
+                    "contributorFamilyName",
+                    "contributorGivenName",
+                ]:
                     if (
                         result.get(key, {}).get("value", "")
                         not in publications[pub][key]
@@ -113,7 +127,8 @@ class IdrefSparqlClient:
                 }
         except Exception as error:
             raise ExternalEndpointFailure(
-                f"Error while fetching Idref sparql endpoint for query : {query} with error {error}"
+                "Error while fetching Idref sparql endpoint for query : "
+                f"{query} with error {error.__class__.__name__} {error if error else ''}"
             ) from error
 
         finally:
@@ -139,7 +154,8 @@ class IdrefSparqlClient:
             }
         except Exception as error:
             raise ExternalEndpointFailure(
-                f"Error while fetching Idref sparql endpoint for query : {query} with error {error}"
+                "Error while fetching Idref sparql endpoint for query : "
+                f"{query} with error {error.__class__.__name__} {error if error else ''}"
             ) from error
         finally:
             await client.close()

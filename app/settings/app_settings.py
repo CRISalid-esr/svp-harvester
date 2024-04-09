@@ -97,7 +97,7 @@ class AppSettings(BaseSettings):
     wikidata_concepts_timeout: int = 10
     sparql_jel_concepts_timeout: int = 10
     skosmos_jel_concepts_timeout: int = 20
-    idref_sparql_timeout: int = 5
+    idref_sparql_timeout: int = 10
     hal_organizations_timeout: int = 7
     idref_organizations_timeout: int = 10
     ror_organizations_timeout: int = 7
