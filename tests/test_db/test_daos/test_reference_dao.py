@@ -278,7 +278,6 @@ async def test_get_references_for_entity_and_harvester_returns_updated_reference
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_get_complete_reference_by_harvester_source_identifier_version(
     async_session: AsyncSession, harvesting_db_model_for_person_with_idref: Harvesting
 ):

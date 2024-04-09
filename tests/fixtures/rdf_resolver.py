@@ -14,8 +14,8 @@ def fixture_fake_rdf_resolver_fixture(
     persee_rdf_result_for_journal: Graph,
     science_plus_rdf_result_for_journal: Graph,
     science_plus_rdf_result_for_issue: Graph,
+    idref_rdf_result_for_person: Graph,
 ):
-
     def fake_rdf_resolver(document_uri: str, output_format: str = "xml") -> Graph:
         """
         Fake rdf resolver fetch
@@ -42,6 +42,8 @@ def fixture_fake_rdf_resolver_fixture(
             == "https://scienceplus.abes.fr/sparql?query=define+sql%3Adescribe-mode+%22CBD%22++DESCRIBE+%3Chttp%3A%2F%2Fhub.abes.fr%2Fspringer%2Fperiodical%2F10571%2F1992%2Fvolume_12%2Fissue_1%2Fw%3E&output=application%2Frdf%2Bxml"
         ):
             return science_plus_rdf_result_for_issue
+        if document_uri == "https://www.idref.fr/026675846.rdf":
+            return idref_rdf_result_for_person
         raise DereferencingError(
             f"Rdf resolver fetch not allowed during tests for {document_uri}"
         )
