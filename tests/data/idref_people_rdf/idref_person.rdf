@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+          xmlns:bio="http://purl.org/vocab/bio/0.1/"
+          xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/"
+          xmlns:dbpedia-owl="http://dbpedia.org/ontology/"
+          xmlns:dbpprop="http://dbpedia.org/property/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dcterms="http://purl.org/dc/terms/"
+          xmlns:fb="http://rdf.freebase.com/ns/"
+          xmlns:foaf="http://xmlns.com/foaf/0.1/"
+          xmlns:frbr="http://purl.org/vocab/frbr/core#"
+          xmlns:isni="http://isni.org/ontology#"
+          xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+          xmlns:org="http://www.w3.org/ns/org#"
+          xmlns:owl="http://www.w3.org/2002/07/owl#"
+          xmlns:rdau="http://rdaregistry.info/Elements/u/"
+          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+          xmlns:schema="http://schema.org/"
+          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+          xmlns:sudoc="http://www.idref.fr/ns/"
+          xmlns:vivo="http://vivoweb.org/ontology/core#"><!--
+            Data provider : ABES
+            Stable URL
+            RDF modelization to be enriched and amended
+            Contact : idref at abes dot org
+        -->
+   <bibo:Document rdf:about="http://www.idref.fr/026675846">
+      <foaf:primaryTopic rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:identifier>026675846</dcterms:identifier>
+      <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"/>
+      <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1975-08-11</dcterms:created>
+      <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-10-23T07:01:17</dcterms:modified>
+      <skos:editorialNote>Systèmes et asservissements linéaires échantillonnés / Y. Sévely avec la collab. de J.-L. Abatut, F. Roubellat, 1989</skos:editorialNote>
+   </bibo:Document>
+   <foaf:Person rdf:about="http://www.idref.fr/026675846/id">
+      <bnf-onto:FRBNF rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11887943</bnf-onto:FRBNF>
+      <!--ISNI-->
+      <owl:sameAs rdf:resource="http://isni.org/isni/0000000108743640"/>
+      <isni:identifierValid>0000000108743640</isni:identifierValid>
+      <!--BNF-->
+      <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb11887943s#foaf:Person"/>
+      <!--VIAF-->
+      <owl:sameAs rdf:resource="http://viaf.org/viaf/17218062"/>
+      <skos:prefLabel>Abatut, Jean-Louis</skos:prefLabel>
+      <foaf:familyName>Abatut</foaf:familyName>
+      <foaf:givenName>Jean-Louis</foaf:givenName>
+      <foaf:name>Jean-Louis Abatut</foaf:name>
+      <dbpedia-owl:citizenship rdf:resource="http://sws.geonames.org/3017382/"/>
+      <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/fra"/>
+      <skos:note>Ingénieur. Professeur à l'Université Paul Sabatier, Toulouse III (en 1989)</skos:note>
+      <!--rdau:P60492 : has biographical information-->
+   </foaf:Person>
+   <bibo:Document rdf:about="https://www.sudoc.fr/001484605/id">
+      <marcrel:clb rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Systèmes et asservissements linéaires échantillonnés  / par Yves Sévely,...  ; avec la collaboration de Jean-Louis Abatut,... François Roubellat,... / 3e édition / Paris : Dunod , DL 1989, cop. 1989</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/009172289/id">
+      <marcrel:clb rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Systèmes et asservissements line��aires échantillonnés  : maîtrise d'E. E. A., C3-Automatique  / par Yves Sévely,...  ; avec la collaboration de Jean-Louis Abatut,... François Roubellat,... / 2e édition / Paris : Dunod , cop. 1973</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/00495873X/id">
+      <marcrel:clb rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Systèmes et asservissements linéaires échantillonnés  : maîtrise d'E.E.A., C 3 automatique  / par Yves Sévely,...  ; avec la collab. de J.-L. Abatut,... F. Roubellat,... / Paris : Dunod , 1969, cop. 1969</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/099123932/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Étude de régulation extrémale en vue notamment de l'optimalisation d'une unité industrielle de "reforming" catalytique  / Jean-Louis Abatut / [Lieu de publication inconnu] : [Éditeur inconnu] , 1965</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/010658998/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Insonorisation d'un système de climatisation automobile par contrôle actif du bruit  / par Catherine Polisset et Jean-Louis Abatut  ; sous la dir. de Claude Nouals / [S.l] : [s.n] , 1997</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/077043669/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Les enseignements d'électrotechnique et d'automatique liés à la robotique  : Journées du club E.E.A., 8 et 9 mars 1984 à Toulouse  / Institut national polytechnique de Toulouse, École nationale supérieure d'électrotechnique, d'électronique, d'informatique et d'hydraulique, Laboratoire d'électrotechnique et d'électronique industrielle  ; J.L. Abatut, B. de Fornel / Toulouse : [ENSEEIH] , [1984?]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/016957342/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Integrated automation practice  / by Lucas Pun,... Javier Aracil,... Jean-Louis Abatut,... / Amsterdam : North-Holland , 1976</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/018464521/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Point mapping stability  / by Jacques Bernussou, with the collaboration of J. L. Abatut ... [et al.] / Oxford : Pergamon Press , 1977</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/004555112/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Contribution à l'analyse de systèmes à données échantillonnées à l'aide des récurrences associées / [Toulouse] : [s.n.] , [1970]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/000084549/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Pratique de l'automatisation intégrée  / Lucas Pun,... Jean-Louis Abatut,... Javier Aracil,... / Paris : Dunod , DL 1975</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/009458581/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Commande prédictive adaptative  : application à des procédés thermiques  / par Joël Bordeneuve-Guibé  ; sous la direction de Jean-Louis Abatut / [Lieu de publication inconnu] : [Éditeur inconnu] , [1990]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/053739701/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>GENERATION CONTROLEE D'ONDES EVANESCENTES POUR LA MESURE DE LA REPONSE D'ANTENNES SONAR AU BRUIT D'ECOULEMENT  / BRUNO COSSON  ; SOUS LA DIR. DE JEAN LOUIS ABATUT / [S.l.] : [s.n.] , 1999</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/246647310/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Application des techniques neuronales à la commande prédictive pour la commande du vol  / Amgad Bayoumy  ; sous la direction de Jean-Louis Abatut, Joël Bordeneuve-Guibé / Grenoble : Atelier national de reproduction des thèses , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/049582291/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>ROBUSTESSE DE LA COMMANDE PREDICTIVE MULTIVARIABLE  : APPLICATION SUR UN BANC D'ESSAIS DE CONDITIONNEMENT D'AIR  / CYRIL VAUCORET  ; SOUS LA DIRECTION DE JEAN-LOUIS ABATUT / [S.l.] : [s.n.] , 1998</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/245428496/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Synthèse d'antennes réseaux conformées  / par Claude Audouy  ; sous la direction de Jean-Louis Abatut / Grenoble : Atelier national de reproduction des thèses , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/24542993X/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Méthodes de régularisation appliquées à l'holographie acoustique champ proche  / par Nassim Seghouani  ; sous la direction de J.L. Abatut / Grenoble : Atelier national de reproduction des thèses , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/004708725/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Méthodes de régularisation appliquées à l'holographie acoustique champ proche  / par Nassim Seghouani  ; sous la direction de J.L. Abatut / [S.l] : [s.n] , [1995]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/004623274/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Synthèse d'antennes réseaux conformées  / par Claude Audouy  ; sous la direction de Jean-Louis Abatut / [S.l] : [s.n] , [1995]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/070128707/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Application des techniques neuronales à la commande prédictive pour la commande du vol  / Amgad Bayoumy  ; sous la dir. de  Jean-Louis Abatut, Joe͏̈l Bordeneuve-Guibé / [S.l.] : [s.n.] , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/013335065/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Transformée par ondelettes appliquée à l'holographie acoustique champ proche  / par Ziad El-Khoury  ; sous la direction de Jean-Louis Abatut / [S.l] : [s.n] , [1993]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/043761151/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>SYNTHESE DE TRAVAUX SUR L'ANALYSE, LA PLANIFICATION ET LA COMMANDE DE SYSTEMES COMPLEXES DE PRODUCTION ET DE TRANSPORT  / FELIX MORA-CAMINO  ; sous la direction de JEAN-LOUIS ABATUT / [Lieu de publication inconnu] : [Éditeur inconnu] , 1987</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/044119380/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>COMMANDE PAR MODE DE GLISSEMENT. APPLICATION AUX CONVERTISSEURS ELECTRIQUES  / FARES BOUDJEMA  ; sous la direction de JEAN LOUIS ABATUT / [Lieu de publication inconnu] : [Éditeur inconnu] , 1991</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/007468806/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Bruit engendré par les rotors d'hélicoptères. Etude des mécanismes de génération de bruit et contribution à l'analyse de signaux expérimentaux  / par Raimund Ulrich Siegert  ; sous la direction de J.L. Abatut / [S.l] : [s.n] , [1995]</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/245469222/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Bruit engendré par les rotors d'hélicoptères. Etude des mécanismes de génération de bruit et contribution à l'analyse de signaux expérimentaux  / par Raimund Ulrich Siegert  ; sous la direction de J.L. Abatut / Grenoble : Atelier national de reproduction des thèses , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2002TOU30104/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Application des techniques neuronales à la commande prédictive pour la commande du vol / Amgad Bayoumy le 2002 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1999TOU30022/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Generation controlee d'ondes evanescentes pour la mesure de la reponse d'antennes sonar au bruit d'ecoulement / BRUNO COSSON le 1999 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1998TOU30218/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Robustesse de la commande predictive multivariable : application sur un banc d'essais de conditionnement d'air / CYRIL VAUCORET le 1998 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995TOU30290/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Bruit engendré par les rotors d'hélicoptères. Etude des mécanismes de génération de bruit et contribution à l'analyse de signaux expérimentaux / Raimund Ulrich Siegert le 1995 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995TOU30034/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Synthèse d'antennes réseaux conformées / Claude Audouy le 1995 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995TOU30077/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Méthodes de régularisation appliquées à l'holographie acoustique champ proche / Nassim Seghouani le 1995 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1993TOU30262/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Transformée par ondelettes appliquée à l'holographie acoustique champ proche / Ziad El-Khoury le 1993 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1991TOU30081/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Commande par mode de glissement. Application aux convertisseurs electriques / Fares Boudjema le 1991 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1990TOU30215/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Commande prédictive adaptative : application à des procédés thermiques / Joël Bordeneuve-Guibé le 1990 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1987TOU30209/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/026675846/id"/>
+      <dcterms:bibliographicCitation>Synthese de travaux sur l'analyse, la planification et la commande de systemes complexes de production et de transport / Félix Mora-Camino le 1987 [ Toulouse 3 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+</rdf:RDF>

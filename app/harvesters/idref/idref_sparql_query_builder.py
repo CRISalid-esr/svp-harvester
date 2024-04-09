@@ -3,6 +3,127 @@ from enum import Enum
 import uritools
 from aiosparql.syntax import Namespace, PrefixedName, IRI
 
+MARCREL_ROLES_LIST = [
+    "aut",
+    "cmp",
+    "ths",
+    "edt",
+    "pbd",
+    "trl",
+    "aui",
+    "drt",
+    "opn",
+    "ill",
+    "prt",
+    "mus",
+    "pra",
+    "clb",
+    "act",
+    "ctb",
+    "sng",
+    "fmo",
+    "cnd",
+    "ant",
+    "sec",
+    "sce",
+    "ive",
+    "pbl",
+    "pht",
+    "exp",
+    "auc",
+    "ctg",
+    "com",
+    "nrt",
+    "dte",
+    "dnr",
+    "art",
+    "egr",
+    "adp",
+    "cur",
+    "cwt",
+    "bsl",
+    "aft",
+    "mte",
+    "asn",
+    "prf",
+    "lbt",
+    "arr",
+    "ivr",
+    "rth",
+    "dgc",
+    "dub",
+    "aqt",
+    "grt",
+    "ccp",
+    "cmm",
+    "pro",
+    "rcp",
+    "orm",
+    "osp",
+    "lyr",
+    "ann",
+    "prd",
+    "flm",
+    "sad",
+    "wde",
+    "dto",
+    "aus",
+    "ltg",
+    "spn",
+    "chr",
+    "col",
+    "rtm",
+    "bkd",
+    "dnc",
+    "etr",
+    "res",
+    "bnd",
+    "pop",
+    "rce",
+    "voc",
+    "pfr",
+    "ilu",
+    "ins",
+    "org",
+    "hnr",
+    "prg",
+    "crr",
+    "cll",
+    "bpd",
+    "pdr",
+    "anm",
+    "csp",
+    "wam",
+    "dgg",
+    "rev",
+    "tyd",
+    "dst",
+    "scr",
+    "sll",
+    "isb",
+    "tyg",
+    "cns",
+    "bdd",
+    "lso",
+    "sgn",
+    "lse",
+    "bjd",
+    "scl",
+    "asg",
+    "frg",
+    "mon",
+    "cph",
+    "ppm",
+    "stm",
+    "ppt",
+    "rbr",
+    "cmt",
+    "inv",
+    "unknow",
+    "oth",
+    "pth",
+]
+
 
 class IdrefSparqlQueryBuilder:
     """
@@ -88,6 +209,11 @@ class IdrefSparqlQueryBuilder:
         raise ValueError(f"Unknown subject type {self.subject_type}")
 
     def _build_person_query(self) -> str:
+        roles_filter_str = " || ".join(
+            f"STR(?contributorRole) = STR(marcrel:{role})"
+            for role in MARCREL_ROLES_LIST
+        )
+
         return (
             "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n"
             "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
@@ -95,7 +221,7 @@ class IdrefSparqlQueryBuilder:
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
             "PREFIX bibo: <http://purl.org/ontology/bibo/> \n"
             "PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/> \n"
-            "select distinct  ?pub ?role ?type ?title ?altLabel ?note ?author "
+            "select distinct  ?pub ?role ?type ?title ?altLabel ?note ?contributor ?contributorRole ?contributorName ?contributorFamilyName ?contributorGivenName \n"
             "?subject_uri ?subject_label ?doi \n "
             f"where {{ {self._person_sparql_filter()} \n"
             "OPTIONAL {"
@@ -105,7 +231,13 @@ class IdrefSparqlQueryBuilder:
             "?pub bibo:doi ?doi"
             "} . "
             "OPTIONAL {"
-            "?pub marcrel:aut ?author"
+            "?pub ?contributorRole ?contributor . "
+            "?contributor a foaf:Person . "
+            "?contributor foaf:name ?contributorName . "
+            "?contributor foaf:familyName ?contributorFamilyName . "
+            "?contributor foaf:givenName ?contributorGivenName . "
+            # Dynamic version would be better but is too slow : "FILTER(STRSTARTS(STR(?contributorRole), STR(marcrel:))) ."
+            f"FILTER({roles_filter_str}) . "
             "} . "
             "OPTIONAL {"
             "?pub dc:title ?title"

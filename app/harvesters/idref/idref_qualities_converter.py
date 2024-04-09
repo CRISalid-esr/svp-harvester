@@ -11,6 +11,7 @@ class IdrefQualitiesConverter:
     ROLES_MAPPING = {
         "aut": Contribution.Role.AUTHOR,
         "cur": Contribution.Role.CURATOR,
+        "ths": Contribution.Role.THESIS_ADVISOR,
     }
 
     @staticmethod
