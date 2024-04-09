@@ -1084,6 +1084,17 @@ files = [
 ]
 
 [[package]]
+name = "isbnlib"
+version = "3.10.14"
+description = "Extract, clean, transform, hyphenate and metadata for ISBNs (International Standard Book Number)."
+optional = false
+python-versions = "*"
+files = [
+    {file = "isbnlib-3.10.14-py2.py3-none-any.whl", hash = "sha256:f885b350fc8e600a919ed46e3b07253062cd604af69885455a25a299217b3fe2"},
+    {file = "isbnlib-3.10.14.tar.gz", hash = "sha256:96f90864c77b01f55fa11e5bfca9fd909501d9842f3bc710d4eab85195d90539"},
+]
+
+[[package]]
 name = "isodate"
 version = "0.6.1"
 description = "An ISO 8601 date/time/duration parser and formatter"

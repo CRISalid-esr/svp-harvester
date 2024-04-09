@@ -14,11 +14,13 @@ from app.harvesters.scopus.scopus_document_type_converter import (
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.db.models.contribution import Contribution
+from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
 
@@ -66,10 +68,41 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             issue = await self._issue(entry, journal)
             new_ref.issue = issue
 
+        if ("Book" in [dc.label for dc in new_ref.document_type]) or (
+            "Chapter" in [dc.label for dc in new_ref.document_type]
+        ):
+            book = await self._book(entry)
+            if book is not None:
+                new_ref.book = book
+
         new_ref.page = (
             self._get_element(entry, "prism:pageRange").text
             if self._get_element(entry, "prism:pageRange") is not None
             else None
+        )
+
+    async def _book(self, entry: Element):
+        isbn10 = None
+        isbn13 = None
+        title = self._get_element(entry, "prism:publicationName")
+        isbns = self._get_elements(entry, "prism:isbn")
+        for isbn in isbns:
+            isbn10_temp, isbn13_temp = get_isbns(isbn.text)
+            if isbn10_temp is not None:
+                isbn10 = isbn10_temp
+            if isbn13_temp is not None:
+                isbn13 = isbn13_temp
+            if isbn10 is not None and isbn13 is not None:
+                break
+        if title is None and (isbn10 is None and isbn13 is None):
+            return None
+        return await self._get_or_create_book(
+            BookInformations(
+                title=title.text if title is not None else None,
+                source="scopus",
+                isbn10=isbn10,
+                isbn13=isbn13,
+            )
         )
 
     async def _journal(self, entry: Element) -> Journal | None:

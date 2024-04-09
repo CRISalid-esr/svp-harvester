@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<search-results xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:prism="http://prismstandard.org/namespaces/basic/2.0/"
+    xmlns:atom="http://www.w3.org/2005/Atom">
+    <opensearch:totalResults>23</opensearch:totalResults>
+    <opensearch:startIndex>0</opensearch:startIndex>
+    <opensearch:itemsPerPage>23</opensearch:itemsPerPage>
+    <opensearch:Query role="request" searchTerms="AU-ID(123123123)" startPage="0" />
+    <link ref="self" href="https://api.elsevier.com/content/search/" />
+    <link ref="first" href="https://api.elsevier.com/content/search/" />
+    <entry>
+        <link ref="self" href="https://api.elsevier.com/content/abstract/scopus_id/11111111" />
+        <link ref="author-affiliation"
+            href="https://api.elsevier.com/content/abstract/scopus_id/11111111?field=author,affiliation" />
+        <link ref="scopus"
+            href="https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&amp;scp=11111111&amp;origin=inward" />
+        <link ref="scopus-citedby"
+            href="https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&amp;scp=11111111&amp;origin=inward" />
+        <prism:url>https://api.elsevier.com/content/abstract/scopus_id/11111111</prism:url>
+        <dc:identifier>SCOPUS_ID:11111111</dc:identifier>
+        <eid>2-s2.0-11111111</eid>
+        <dc:title>Full cost accounting: Adam Smith meets Rachel Carson?</dc:title>
+        <dc:creator>Antheaume N.</dc:creator>
+        <prism:publicationName>Sustainability Accounting and Accountability</prism:publicationName>
+        <prism:isbn>0203815289</prism:isbn>
+        <prism:isbn>9780203815281</prism:isbn>
+        <prism:pageRange>211-225</prism:pageRange>
+        <prism:coverDate>2010-12-14</prism:coverDate>
+        <prism:coverDisplayDate>December 14, 2010</prism:coverDisplayDate>
+        <prism:doi>10.4324/9780203815281</prism:doi>
+        <citedby-count>12</citedby-count>
+        <affiliation>
+            <affiliation-url>https://api.elsevier.com/content/affiliation/affiliation_id/60032006</affiliation-url>
+            <afid>60032006</afid>
+            <affilname>Nantes Université</affilname>
+            <affiliation-city>Nantes</affiliation-city>
+            <affiliation-country>France</affiliation-country>
+        </affiliation>
+        <prism:aggregationType>Book</prism:aggregationType>
+        <subtype>ch</subtype>
+        <subtypeDescription>Book Chapter</subtypeDescription>
+        <author-count limit="100" total="1">1</author-count>
+        <author seq="1">
+            <author-url>https://api.elsevier.com/content/author/author_id/123123123</author-url>
+            <authid>123123123</authid>
+            <authname>Antheaume N.</authname>
+            <surname>Antheaume</surname>
+            <given-name>Nicolas</given-name>
+            <initials>N.</initials>
+            <afid>60032006</afid>
+        </author>
+        <source-id>21100347173</source-id>
+        <fund-no>undefined</fund-no>
+        <openaccess>0</openaccess>
+        <openaccessFlag>false</openaccessFlag>
+        <freetoread>
+            <value>all</value>
+            <value>repository</value>
+            <value>repositoryam</value>
+        </freetoread>
+        <freetoreadLabel>
+            <value>All Open Access</value>
+            <value>Green</value>
+        </freetoreadLabel>
+    </entry>
+</search-results>

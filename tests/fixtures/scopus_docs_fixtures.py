@@ -20,6 +20,27 @@ def fixture_scopus_xml_raw_result_for_doc(scopus_et_for_doc) -> XMLHarvesterRawR
     )
 
 
+@pytest.fixture(name="scopus_xml_raw_result_for_doc_book")
+def fixture_scopus_xml_raw_result_for_doc_book(
+    scopus_et_for_doc_book,
+) -> XMLHarvesterRawResult:
+    """XML from Scopus file"""
+
+    return XMLHarvesterRawResult(
+        payload=scopus_et_for_doc_book.findall(
+            ".//default:entry", ScopusClient.NAMESPACE
+        )[0],
+        source_identifier="test_id",
+        formatter_name=ScopusHarvester.FORMATTER_NAME,
+    )
+
+
+@pytest.fixture(name="scopus_et_for_doc_book")
+def fixture_scopus_et_for_doc_book(_base_path) -> ET:
+    """XML from Scopus file"""
+    return _scopus_et_from_file(_base_path, "scopus_document_book")
+
+
 @pytest.fixture(name="scopus_et_for_doc")
 def fixture_scopus_et_for_doc(_base_path) -> ET:
     """XML from Scopus file"""

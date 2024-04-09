@@ -76,6 +76,7 @@ class ReferenceEventDAO(AbstractDAO):
                 .joinedload(Reference.issue)
                 .joinedload(Issue.journal)
             )
+            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.book))
             .options(
                 joinedload(ReferenceEvent.harvesting)
                 .joinedload(Harvesting.retrieval)

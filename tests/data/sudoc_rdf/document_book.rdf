@@ -1,0 +1,118 @@
+<!--ISSN = False-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:bibo="http://purl.org/ontology/bibo/" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dctype="http://purl.org/dc/dcmitype/" xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:rdafrbr1="http://rdvocab.info/RDARelationshipsWEMI/"
+    xmlns:marcrel="http://id.loc.gov/vocabulary/relators/" xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:gr="http://purl.org/goodrelations/v1#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:isbd="http://iflastandards.info/ns/isbd/elements/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:rdafrbr2="http://RDVocab.info/uri/schema/FRBRentitiesRDA/"
+    xmlns:rdaelements="http://rdvocab.info/Elements/"
+    xmlns:rdac="http://rdaregistry.info/Elements/c/"
+    xmlns:rdau="http://rdaregistry.info/Elements/u/"
+    xmlns:rdaw="http://rdaregistry.info/Elements/w/"
+    xmlns:rdae="http://rdaregistry.info/Elements/e/"
+    xmlns:rdam="http://rdaregistry.info/Elements/m/"
+    xmlns:rdai="http://rdaregistry.info/Elements/i/" xmlns:sudoc="http://www.sudoc.fr/ns/"
+    xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/" xmlns:fabio="http://purl.org/spar/fabio/"
+    xmlns:gn="http://www.geonames.org/ontology">
+    <bibo:Document rdf:about="http://www.sudoc.fr/260799939">
+        <foaf:primaryTopic rdf:resource="http://www.sudoc.fr/260799939/id"></foaf:primaryTopic>
+        <dcterms:identifier>260799939</dcterms:identifier>
+        <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"></dcterms:creator>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-03-04</dcterms:created>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">
+            2022-03-08T01:35:10</dcterms:modified>
+    </bibo:Document>
+    <bibo:Book rdf:about="http://www.sudoc.fr/260799939/id"><!--content
+        form (isbd), media type (rda)-->
+        <isbd:P1001>
+            <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/contentform/T1009">
+                <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+            </skos:Concept>
+        </isbd:P1001><!--rda:content
+        type-->
+        <rdau:P60049>
+            <skos:Concept rdf:about="http://rdaregistry.info/termList/RDAContentType/1020">
+                <skos:prefLabel xml:lang="en">text</skos:prefLabel>
+            </skos:Concept>
+        </rdau:P60049>
+        <dc:type>Text</dc:type><!--media
+        type-->
+        <isbd:P1003>
+            <skos:Concept rdf:about="http://iflastandards.info/ns/isbd/terms/mediatype/T1010">
+                <skos:prefLabel xml:lang="en">unmediated</skos:prefLabel>
+            </skos:Concept>
+        </isbd:P1003><!--carrier
+        type-->
+        <rdau:P60048>
+            <skos:Concept rdf:about="http://rdaregistry.info/termList/RDACarrierType/1049">
+                <skos:prefLabel xml:lang="fr">volume</skos:prefLabel>
+                <skos:prefLabel xml:lang="en">volume</skos:prefLabel>
+            </skos:Concept>
+        </rdau:P60048>
+        <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/eng"></dcterms:language>
+        <gn:countryCode>GB</gn:countryCode>
+        <bibo:isbn13>9780128186756</bibo:isbn13>
+        <bibo:isbn10>0128186755</bibo:isbn10>
+        <dc:title>Tumor immunology and immunotherapy Part B, : cellular methods / edited by Lorenzo Galluzzi,... Nils-Petter Rudqvist,...</dc:title><!--rda
+        elements obsolète : voir rdam:P30003-->
+        <rdaelements:modeOfIssuance>
+            <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1002">
+                <skos:prefLabel xml:lang="en">Multipart monograph</skos:prefLabel>
+            </skos:Concept>
+        </rdaelements:modeOfIssuance><!--mode
+        of issuance-->
+        <rdam:P30003>
+            <skos:Concept rdf:about="http://RDVocab.info/termLIst/ModeIssue/1002">
+                <skos:prefLabel xml:lang="en">Multipart monograph</skos:prefLabel>
+            </skos:Concept>
+        </rdam:P30003>
+        <dc:date>2020</dc:date>
+        <dc:publisher>Cambridge, MA : Academic Press, an imprint of Elsevier , 2020</dc:publisher>
+        <dc:format>1 vol. (XLII-543 p.) : ill. en coul. ; 24 cm</dc:format>
+        <dcterms:abstract>Tumor Immunology and Immunotherapy – Cellular Methods Part B, Volume 632,
+            the latest release in the Methods in Enzymology series, continues the legacy of this
+            premier serial with quality chapters authored by leaders in the field. Topics covered
+            include Quantitation of calreticulin exposure associated with immunogenic cell death,
+            Side-by-side comparisons of flow cytometry and immunohistochemistry for detection of
+            calreticulin exposure in the course of immunogenic cell death, Quantitative
+            determination of phagocytosis by bone marrow-derived dendritic cells via imaging flow
+            cytometry, Cytofluorometric assessment of dendritic cell-mediated uptake of cancer cell
+            apoptotic bodies, Methods to assess DC-dependent priming of T cell responses by dying
+            cells, and more</dcterms:abstract>
+        <dc:subject>Immunothérapie anticancéreuse</dc:subject>
+        <dcterms:subject rdf:resource="http://www.idref.fr/027357155/id"></dcterms:subject>
+        <dc:subject>Tumeurs -- thérapie</dc:subject>
+        <dcterms:subject rdf:resource="http://www.idref.fr/040745910/id"></dcterms:subject>
+        <dcterms:subject rdf:resource="http://www.idref.fr/038961792/id"></dcterms:subject>
+        <dc:subject>Cancer -- Immunological aspects</dc:subject>
+        <dc:subject>Cancer -- Immunotherapy</dc:subject>
+        <marcrel:pbd>
+            <foaf:Person rdf:about="http://www.idref.fr/134206029/id">
+                <foaf:name>Galluzzi, Lorenzo (1980-....)</foaf:name>
+            </foaf:Person>
+        </marcrel:pbd>
+        <marcrel:pbd>
+            <foaf:Person rdf:about="http://www.idref.fr/23271679X/id">
+                <foaf:name>Rudqvist, Nils-Petter</foaf:name>
+            </foaf:Person>
+        </marcrel:pbd><!--UNM
+        410 : fait partie de la collection-->
+        <dcterms:isPartOf>
+            <bibo:Series rdf:about="http://www.sudoc.fr/01328679X/id">
+                <dcterms:bibliographicCitation>Methods in enzymology / edited by Sydney P;Colowick
+                    and Nathan O. Kaplan, Mc Collum-Pratt Institute, The John Hopkins University,
+                    Baltimore, Maryland / New York : Academic Press , 1955-</dcterms:bibliographicCitation>
+            </bibo:Series>
+        </dcterms:isPartOf>
+        <rdau:P60193>
+            <bibo:Series rdf:about="http://www.sudoc.fr/01328679X/id">
+                <dcterms:bibliographicCitation>Methods in enzymology / edited by Sydney P;Colowick
+                    and Nathan O. Kaplan, Mc Collum-Pratt Institute, The John Hopkins University,
+                    Baltimore, Maryland / New York : Academic Press , 1955-</dcterms:bibliographicCitation>
+            </bibo:Series>
+        </rdau:P60193>
+    </bibo:Book>
+</rdf:RDF>

@@ -21,6 +21,7 @@ from app.db.models.document_type import DocumentType  # pylint: disable=unused-i
 from app.db.models.reference_identifier import (  # pylint: disable=unused-import
     ReferenceIdentifier,
 )
+from app.db.models.book import Book  # pylint: disable=unused-import
 
 
 class Reference(Base, VersionedRecord):
@@ -71,35 +72,42 @@ class Reference(Base, VersionedRecord):
         lazy="noload",
     )
 
-    document_type: Mapped[
-        List["app.db.models.document_type.DocumentType"]
-    ] = relationship(
-        "app.db.models.document_type.DocumentType",
-        secondary=references_document_type_table,
-        lazy="joined",
+    document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
+        relationship(
+            "app.db.models.document_type.DocumentType",
+            secondary=references_document_type_table,
+            lazy="joined",
+        )
     )
 
-    reference_events: Mapped[
-        List["app.db.models.reference_event.ReferenceEvent"]
-    ] = relationship(
-        "app.db.models.reference_event.ReferenceEvent",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="raise",
+    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
+        relationship(
+            "app.db.models.reference_event.ReferenceEvent",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="raise",
+        )
     )
 
-    contributions: Mapped[
-        List["app.db.models.contribution.Contribution"]
-    ] = relationship(
-        "app.db.models.contribution.Contribution",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="joined",
+    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
+        relationship(
+            "app.db.models.contribution.Contribution",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="joined",
+        )
     )
 
     issue_id: Mapped[int] = mapped_column(ForeignKey("issues.id"), nullable=True)
     issue: Mapped["app.db.models.issue.Issue"] = relationship(
         "app.db.models.issue.Issue",
+        back_populates="references",
+        lazy="noload",
+    )
+
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"), nullable=True)
+    book: Mapped["app.db.models.book.Book"] = relationship(
+        "app.db.models.book.Book",
         back_populates="references",
         lazy="noload",
     )

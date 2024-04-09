@@ -7,6 +7,16 @@ from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as RdfResult
 
 
+@pytest.fixture(name="sudoc_rdf_result_for_book")
+def fixture_sudoc_rdf_result_for_book(sudoc_rdf_graph_for_book) -> RdfResult:
+    """Rdf result from sudoc wrapped in a RdfHarvesterRawResult"""
+    return RdfResult(
+        payload=sudoc_rdf_graph_for_book,
+        source_identifier=URIRef("http://www.sudoc.fr/260799939/id"),
+        formatter_name=IdrefHarvester.Formatters.SUDOC_RDF.value,
+    )
+
+
 @pytest.fixture(name="sudoc_rdf_result_for_doc")
 def fixture_sudoc_rdf_result_for_doc(sudoc_rdf_graph_for_doc) -> RdfResult:
     """Rdf result from sudoc wrapped in a RdfHarvesterRawResult"""
@@ -27,6 +37,12 @@ def fixture_sudoc_rdf_result_for_doc_without_title(
         source_identifier=URIRef("http://www.sudoc.fr/193726130/id"),
         formatter_name=IdrefHarvester.Formatters.SUDOC_RDF.value,
     )
+
+
+@pytest.fixture(name="sudoc_rdf_graph_for_book")
+def fixture_sudoc_rdf_graph_for_book(_base_path) -> Graph:
+    """Rdf graph from sudoc rdf file"""
+    return _sudoc_rdf_graph_from_file(_base_path, "document_book")
 
 
 @pytest.fixture(name="sudoc_rdf_graph_for_doc_without_title")
