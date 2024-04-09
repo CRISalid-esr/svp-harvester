@@ -34,7 +34,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
                         raise DereferencingError(
                             f"Endpoint returned status {response.status}"
                             f" while dereferencing RDF concept {concept_informations.uri}"
-                            f"at url {concept_informations.url}"
+                            f" at url {concept_informations.url}"
                         )
                     xml = (await response.text()).strip()
                     concept_graph = Graph().parse(data=xml, format="xml")

@@ -66,6 +66,9 @@ class AppSettings(BaseSettings):
     identifiers_settings_file: str = settings_file_path(filename="identifiers.yml")
     identifiers: list = lst_from_yml(yml_file=identifiers_settings_file)
 
+    jobs_settings_file: str = settings_file_path(filename="jobs.yml")
+    jobs: list = lst_from_yml(yml_file=jobs_settings_file)
+
     db_engine: str = "postgresql+asyncpg"
     db_name: str = "svp_harvester"
     db_user: str = "svp_harvester"
