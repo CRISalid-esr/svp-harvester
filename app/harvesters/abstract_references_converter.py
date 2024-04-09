@@ -630,15 +630,17 @@ class AbstractReferencesConverter(ABC):
         async with async_session() as session:
             async with session.begin_nested():
                 book = await BookDAO(session).get_books_by_isbn(
+                    source=book_informations.source,
                     isbn10=book_informations.isbn10,
                     isbn13=book_informations.isbn13,
                 )
                 if book is None:
                     book = await BookDAO(session).get_books_by_title(
-                        title=book_informations.title
+                        source=book_informations.source, title=book_informations.title
                     )
                 if book is None:
                     book = Book(
+                        source=book_informations.source,
                         title=book_informations.title,
                         isbn10=book_informations.isbn10,
                         isbn13=book_informations.isbn13,

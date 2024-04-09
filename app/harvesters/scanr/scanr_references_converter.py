@@ -112,7 +112,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         if not title:
             return None
         return await self._get_or_create_book(
-            BookInformations(title=title, publisher=publisher)
+            BookInformations(title=title, publisher=publisher, source="scanr")
         )
 
     async def _issue(self, journal: Journal) -> Issue:

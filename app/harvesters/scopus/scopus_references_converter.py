@@ -99,6 +99,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title.text if title is not None else None,
+                source="scopus",
                 isbn10=isbn10,
                 isbn13=isbn13,
             )

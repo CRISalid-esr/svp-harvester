@@ -136,12 +136,12 @@ class HalReferencesConverter(AbstractReferencesConverter):
             publisher = publisher[0]
         isbn = raw_data.get("isbn_s", None)
         isbn10, isbn13 = get_isbns(isbn)
-        logger.debug(f"isbn10: {isbn10}, isbn13: {isbn13}")
         if (title is None) and (isbn is None):
             return None
         return await self._get_or_create_book(
             BookInformations(
                 title=title,
+                source="hal",
                 publisher=publisher,
                 isbn10=isbn10,
                 isbn13=isbn13,

@@ -9,7 +9,7 @@ class BookDAO(AbstractDAO):
     """
 
     async def get_books_by_isbn(
-        self, isbn10: str | None = None, isbn13: str | None = None
+        self, source: str, isbn10: str | None = None, isbn13: str | None = None
     ) -> Book | None:
         """
         Get a book by its isbn10 and isbn13
@@ -20,7 +20,7 @@ class BookDAO(AbstractDAO):
         """
         if not isbn10 and not isbn13:
             return None
-        query = select(Book)
+        query = select(Book).where(Book.source == source)
         isbn_filters = []
         if isbn10:
             isbn_filters.append(Book.isbn10 == isbn10)
@@ -31,7 +31,9 @@ class BookDAO(AbstractDAO):
         # Get the first result
         return (await self.db_session.execute(query)).scalars().first()
 
-    async def get_books_by_title(self, title: str | None = None) -> Book | None:
+    async def get_books_by_title(
+        self, source: str, title: str | None = None
+    ) -> Book | None:
         """
         Get a book by its title
 
@@ -40,5 +42,5 @@ class BookDAO(AbstractDAO):
         """
         if not title:
             return None
-        query = select(Book).where(Book.title == title)
+        query = select(Book).where(Book.title == title).where(Book.source == source)
         return (await self.db_session.execute(query)).scalars().one_or_none()

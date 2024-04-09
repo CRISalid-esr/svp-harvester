@@ -15,6 +15,7 @@ class Book(Base):
     __tablename__ = "books"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(nullable=False, index=True)
 
     title: Mapped[str] = mapped_column(nullable=True, index=True)
     title_variants: Mapped[List[str]] = mapped_column(
