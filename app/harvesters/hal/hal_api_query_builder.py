@@ -56,6 +56,9 @@ class HalApiQueryBuilder:
         "journalPublisher_s",
         "issue_s",
         "volume_s",
+        "bookTitle_s",
+        "publisher_s",
+        "isbn_s",
     ]
 
     DEFAULT_SORT_PARAMETER = "halId_s"

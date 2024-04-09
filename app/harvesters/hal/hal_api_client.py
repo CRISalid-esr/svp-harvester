@@ -25,6 +25,9 @@ class HalApiClient:
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(limit=0)
             ) as session:
+                logger.info(
+                    f"Fetching HAL API with query: {self.HAL_API_URL}/?{query_string}"
+                )
                 async with session.get(f"{self.HAL_API_URL}/?{query_string}") as resp:
                     if resp.status == 200:
                         json_response = await resp.json()

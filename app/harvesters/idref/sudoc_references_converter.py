@@ -1,6 +1,7 @@
 import rdflib
 from rdflib import DC, DCTERMS, Graph, Literal, Namespace
 
+from app.db.models.book import Book
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -18,9 +19,11 @@ from app.harvesters.idref.sudoc_document_type_converter import (
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.harvesters.idref.sudoc_qualities_converter import SudocQualitiesConverter
+from app.services.book.book_data_class import BookInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string, remove_after_separator
 
 
@@ -56,6 +59,37 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
     def _harvester(self) -> str:
         return "Idref"
+
+    async def _get_book(self, pub_graph, uri) -> Book | None:
+        isbn10 = None
+        isbn13_from_isbn10 = None
+        for isbn10 in pub_graph.objects(rdflib.term.URIRef(uri), self.RDF_BIBO.isbn10):
+            isbn10 = isbn10.value
+        if isbn10:
+            isbn10, isbn13_from_isbn10 = get_isbns(isbn10)
+        isbn13 = None
+        for isbn13 in pub_graph.objects(rdflib.term.URIRef(uri), self.RDF_BIBO.isbn13):
+            isbn13 = isbn13.value
+        if not isbn13 and isbn13_from_isbn10:
+            isbn13 = isbn13_from_isbn10
+        else:
+            _, isbn13 = get_isbns(isbn13)
+
+        publisher: Literal
+        for publisher in pub_graph.objects(rdflib.term.URIRef(uri), DC.publisher):
+            publisher = publisher.value
+        title = None
+        for title in pub_graph.objects(rdflib.term.URIRef(uri), DC.title):
+            title = title.value
+        return await self._get_or_create_book(
+            BookInformations(
+                title=title,
+                source="sudoc",
+                isbn10=isbn10,
+                isbn13=isbn13,
+                publisher=publisher,
+            )
+        )
 
     async def _get_bibliographic_resource(self, pub_graph, uri) -> Graph:
         document: Literal

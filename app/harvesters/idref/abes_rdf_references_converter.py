@@ -6,6 +6,7 @@ import rdflib
 from rdflib import FOAF, Graph, Literal, DCTERMS, Namespace
 
 from app.db.models.abstract import Abstract
+from app.db.models.book import Book
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -55,6 +56,13 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
                     continue
                 new_ref.issue = await self._get_issue(biblio_graph, uri, journal)
 
+        if ("Book" in [dc.label for dc in new_ref.document_type]) or (
+            "Chapter" in [dc.label for dc in new_ref.document_type]
+        ):
+            book = await self._get_book(pub_graph, uri)
+            if book:
+                new_ref.book = book
+
     def hash(self, raw_data: RdfRawResult) -> str:
         pub_graph: Graph = raw_data.payload
         uri = raw_data.source_identifier
@@ -63,6 +71,10 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))
         }
         return hashlib.sha256(str(graph_as_dict).encode()).hexdigest()
+
+    # pylint: disable=unused-argument
+    async def _get_book(self, pub_graph, uri) -> Book | None:
+        return None
 
     # pylint: disable=unused-argument
     async def _get_bibliographic_resource(self, pub_graph, uri):
