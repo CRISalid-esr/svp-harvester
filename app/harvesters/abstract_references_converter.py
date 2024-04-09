@@ -168,8 +168,19 @@ class AbstractReferencesConverter(ABC):
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
         new_ref.harvester_version = str(harvester_version)
-        new_ref.hash = HashService().hash(raw_data, self.hash_keys(harvester_version))
+        new_ref.hash = self.compute_hash(harvester_version, raw_data)
         return new_ref
+
+    def compute_hash(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> str:
+        """
+        Compute the hash of the raw data
+        :param raw_data: raw data from harvester source
+        :param harvester_version: version of the harvester
+        :return:
+        """
+        return HashService().hash(raw_data, self.hash_keys(harvester_version))
 
     @abstractmethod
     def _harvester(self) -> str:

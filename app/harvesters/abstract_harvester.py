@@ -120,6 +120,10 @@ class AbstractHarvester(ABC):
                     old_ref = await references_recorder.exists(new_ref=new_ref)
                     if old_ref is not None:
                         existing_references.append(old_ref)
+                    if old_ref.harvester_version < new_ref.harvester_version:
+                        comparaison_hash = self.converter.compute_hash(
+                            raw_data, old_ref.harvester_version
+                        )
                     if (old_ref is None) or (new_ref.hash != old_ref.hash):
                         await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
                     reference_event: Optional[

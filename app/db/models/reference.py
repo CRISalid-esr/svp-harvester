@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import List
 
+from semver import VersionInfo
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.db.models.abstract import Abstract
 from app.db.models.references_subject import references_subjects_table
@@ -38,6 +39,8 @@ class Reference(Base, VersionedRecord):
     # even if the harvesting history is cleaned up
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
 
+    harvester_version: Mapped[str] = mapped_column(nullable=False, index=False)
+
     identifiers: Mapped[
         List["app.db.models.reference_identifier.ReferenceIdentifier"]
     ] = relationship(
@@ -72,30 +75,30 @@ class Reference(Base, VersionedRecord):
         lazy="noload",
     )
 
-    document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
-        relationship(
-            "app.db.models.document_type.DocumentType",
-            secondary=references_document_type_table,
-            lazy="joined",
-        )
+    document_type: Mapped[
+        List["app.db.models.document_type.DocumentType"]
+    ] = relationship(
+        "app.db.models.document_type.DocumentType",
+        secondary=references_document_type_table,
+        lazy="joined",
     )
 
-    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
-        relationship(
-            "app.db.models.reference_event.ReferenceEvent",
-            back_populates="reference",
-            cascade="all, delete",
-            lazy="raise",
-        )
+    reference_events: Mapped[
+        List["app.db.models.reference_event.ReferenceEvent"]
+    ] = relationship(
+        "app.db.models.reference_event.ReferenceEvent",
+        back_populates="reference",
+        cascade="all, delete",
+        lazy="raise",
     )
 
-    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
-        relationship(
-            "app.db.models.contribution.Contribution",
-            back_populates="reference",
-            cascade="all, delete",
-            lazy="joined",
-        )
+    contributions: Mapped[
+        List["app.db.models.contribution.Contribution"]
+    ] = relationship(
+        "app.db.models.contribution.Contribution",
+        back_populates="reference",
+        cascade="all, delete",
+        lazy="joined",
     )
 
     issue_id: Mapped[int] = mapped_column(ForeignKey("issues.id"), nullable=True)
@@ -116,3 +119,11 @@ class Reference(Base, VersionedRecord):
 
     issued: Mapped[datetime] = mapped_column(nullable=True, index=True)
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)
+
+    @validates("harvester_version")
+    def validate_version(self, key, version):
+        try:
+            parsed_version = VersionInfo.parse(version)
+            return str(parsed_version)
+        except ValueError:
+            raise ValueError(f"Invalid semantic version: {version} for field {key}")
