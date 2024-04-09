@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from semver import Version
+from semver import VersionInfo, Version
 
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.scopus.scopus_api_query_builder import ScopusQueryBuilder
@@ -23,7 +23,7 @@ class ScopusHarvester(AbstractHarvester):
 
     supported_identifier_types = ["scopus_eid"]
 
-    VERSION: Version = Version("0.0.0")
+    VERSION: Version = VersionInfo.parse("0.0.0")
 
     async def _get_scopus_query_parameters(self, entity_class: str):
         """

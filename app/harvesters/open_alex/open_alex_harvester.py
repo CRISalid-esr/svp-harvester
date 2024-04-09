@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from semver import Version
+from semver import VersionInfo, Version
 
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
@@ -23,7 +23,7 @@ class OpenAlexHarvester(AbstractHarvester):
 
     supported_identifier_types = ["orcid"]
 
-    VERSION: Version = Version("0.0.0")
+    VERSION: Version = VersionInfo.parse("0.0.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """

@@ -1,5 +1,6 @@
 import rdflib
 from rdflib import DC, DCTERMS, Graph, Literal, Namespace
+from semver import Version
 
 from app.db.models.book import Book
 from app.db.models.issue import Issue
@@ -204,7 +205,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     def _convert_role(self, role):
         return SudocQualitiesConverter.convert(role)
 
-    def hash_keys(self):
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey(DC.title),
             HashKey(DC.type),

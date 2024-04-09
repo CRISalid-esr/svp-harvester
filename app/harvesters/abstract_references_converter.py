@@ -6,6 +6,7 @@ from functools import wraps
 from typing import List, AsyncGenerator
 
 from loguru import logger
+from semver import Version
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from app.db.daos.book_dao import BookDAO
@@ -31,6 +32,7 @@ from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_service import HashService
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -154,7 +156,9 @@ class AbstractReferencesConverter(ABC):
 
         return wrapper
 
-    def build(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+    def build(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> Reference:
         """
         Build a Normalised Reference object with basic information
         :param raw_data: Raw data from harvester source
@@ -163,7 +167,8 @@ class AbstractReferencesConverter(ABC):
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
-        new_ref.hash = HashService().hash(raw_data, self.hash_keys())
+        new_ref.harvester_version = str(harvester_version)
+        new_ref.hash = HashService().hash(raw_data, self.hash_keys(harvester_version))
         return new_ref
 
     @abstractmethod
@@ -204,7 +209,7 @@ class AbstractReferencesConverter(ABC):
                 string_to_hash += str(values)
         return hashlib.sha256(string_to_hash.encode()).hexdigest()
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         """
         For the most simple case where data to hash are a dictionary,
         returns the keys of the dictionary to include in change detection

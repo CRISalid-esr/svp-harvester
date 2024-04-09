@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
+
 from loguru import logger
 from semver import Version
 
@@ -113,7 +114,7 @@ class AbstractHarvester(ABC):
                 try:
                     if raw_data is None or raw_data == "end":
                         break
-                    new_ref = self.converter.build(raw_data)
+                    new_ref = self.converter.build(raw_data, self.get_version())
                     if new_ref is None:
                         continue
                     old_ref = await references_recorder.exists(new_ref=new_ref)
@@ -315,6 +316,10 @@ class AbstractHarvester(ABC):
         return self.harvesting
 
     @classmethod
-    def get_version(cls):
+    def get_version(cls) -> Version:
+        """
+        Retrieve the version of the harvester
+        :return: The version of the harvester
+        """
         assert cls.VERSION is not None, "Harvester must have a VERSION attribute"
         return cls.VERSION

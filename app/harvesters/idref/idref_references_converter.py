@@ -1,3 +1,5 @@
+from semver import Version
+
 from app.db.models.reference import Reference
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -19,6 +21,7 @@ from app.harvesters.rdf_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
+from app.services.hash.hash_key import HashKey
 
 
 class IdrefReferencesConverter(AbstractReferencesConverter):
@@ -63,5 +66,5 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     def hash(self, raw_data):
         return self.secondary_converter.hash(raw_data)
 
-    def hash_keys(self):
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return self.secondary_converter.hash_keys()

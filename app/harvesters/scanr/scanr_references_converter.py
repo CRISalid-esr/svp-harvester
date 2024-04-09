@@ -1,4 +1,5 @@
 from loguru import logger
+from semver import Version
 from similarity.jarowinkler import JaroWinkler
 from similarity.normalized_levenshtein import NormalizedLevenshtein
 
@@ -287,7 +288,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 return value, language
         return label_dict.get("default"), None
 
-    def hash_keys(self):
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         # This listing is independant of PUBLICATIONS_DEFAULT_FIELDS
         # in ScanRApiQueryBuilder
         # pylint: disable=duplicate-code

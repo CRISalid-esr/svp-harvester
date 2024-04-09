@@ -43,7 +43,7 @@ class Reference(BaseModel):
     @validates("harvester_version")
     def validate_version(self, key, version):
         try:
-            parsed_version = semver.VersionInfo.parse(version)
+            parsed_version = VersionInfo.parse(version)
             return str(parsed_version)
         except ValueError:
             raise ValueError(f"Invalid semantic version: {version} for field {key}")

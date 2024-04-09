@@ -7,7 +7,7 @@ from typing import AsyncGenerator
 import uritools
 from loguru import logger
 from rdflib import URIRef
-from semver import Version
+from semver import VersionInfo, Version
 
 from app.config import get_app_settings
 from app.harvesters.abstract_harvester import AbstractHarvester
@@ -52,7 +52,7 @@ class IdrefHarvester(AbstractHarvester):
 
     supported_identifier_types = ["idref", "orcid"]
 
-    VERSION: Version = Version("0.0.0")
+    VERSION: Version = VersionInfo.parse("0.0.0")
 
     class Formatters(Enum):
         """

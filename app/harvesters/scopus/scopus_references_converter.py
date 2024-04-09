@@ -1,6 +1,8 @@
 from xml.etree.ElementTree import Element
 import isodate
 from loguru import logger
+from semver import Version
+
 from app.db.models.abstract import Abstract
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
@@ -16,6 +18,7 @@ from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.db.models.contribution import Contribution
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -263,7 +266,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Scopus"
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKeyXML("prism:url", namespace=ScopusClient.NAMESPACE),
             HashKeyXML("dc:identifier", namespace=ScopusClient.NAMESPACE),

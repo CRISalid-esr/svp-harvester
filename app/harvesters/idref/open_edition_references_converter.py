@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 
 from loguru import logger
 import rdflib
+from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.issue import Issue
@@ -22,6 +23,7 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
+from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -218,7 +220,7 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         )
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKeyXML("dcterms:title", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:abstract", namespace=self.NAMESPACES),
