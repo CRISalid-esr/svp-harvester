@@ -3,10 +3,11 @@ import re
 import urllib
 from enum import Enum
 from typing import AsyncGenerator
-from loguru import logger
 
 import uritools
+from loguru import logger
 from rdflib import URIRef
+from semver import Version
 
 from app.config import get_app_settings
 from app.harvesters.abstract_harvester import AbstractHarvester
@@ -24,11 +25,11 @@ from app.harvesters.rdf_harvester_raw_result import (
     AbstractHarvesterRawResult as RawResult,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult as RdfResult
-from app.harvesters.xml_harvester_raw_result import (
-    XMLHarvesterRawResult as XmlResult,
-)
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlResult,
+)
+from app.harvesters.xml_harvester_raw_result import (
+    XMLHarvesterRawResult as XmlResult,
 )
 from app.services.cache.third_api_cache import ThirdApiCache
 
@@ -50,6 +51,8 @@ class IdrefHarvester(AbstractHarvester):
     SUDOC_ENABLED = True
 
     supported_identifier_types = ["idref", "orcid"]
+
+    VERSION: Version = Version("0.0.0")
 
     class Formatters(Enum):
         """

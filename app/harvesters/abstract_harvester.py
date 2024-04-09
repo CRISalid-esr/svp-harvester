@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
 from loguru import logger
+from semver import Version
 
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
@@ -27,6 +28,8 @@ class AbstractHarvester(ABC):
     """
 
     supported_identifier_types: list[str] = []
+
+    VERSION: Version | None = None
 
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
@@ -310,3 +313,8 @@ class AbstractHarvester(ABC):
                     self.harvesting_id
                 )
         return self.harvesting
+
+    @classmethod
+    def get_version(cls):
+        assert cls.VERSION is not None, "Harvester must have a VERSION attribute"
+        return cls.VERSION

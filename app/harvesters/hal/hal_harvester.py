@@ -1,5 +1,7 @@
 from typing import AsyncGenerator
 
+from semver import Version
+
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
 from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
@@ -24,6 +26,8 @@ class HalHarvester(AbstractHarvester):
     }
 
     supported_identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
+
+    VERSION: Version = Version("0.0.0")
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
