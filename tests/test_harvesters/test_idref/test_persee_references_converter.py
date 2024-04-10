@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
 
@@ -29,7 +30,9 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
     expected_publisher = "Paris : Centre Gustave Glotz"
 
-    test_reference = converter_under_tests.build(raw_data=persee_rdf_result_for_doc)
+    test_reference = converter_under_tests.build(
+        raw_data=persee_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
+    )
     assert test_reference.source_identifier == expected_source_identifier
     await converter_under_tests.convert(
         raw_data=persee_rdf_result_for_doc, new_ref=test_reference

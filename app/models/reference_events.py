@@ -18,6 +18,8 @@ class ReferenceEvent(BaseModel):
 
     reference: Reference
 
+    enhanced: bool
+
     class Type(str, Enum):
         """Reference events types"""
 

@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 import rdflib
 from rdflib import DCTERMS, RDF, Literal, Namespace, URIRef
+from semver import Version
 
 from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
@@ -171,7 +172,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
                     break
             yield Title(value=title.value, language=lng)
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey(RDF.type),
             HashKey(DCTERMS.title),

@@ -1,5 +1,7 @@
 from typing import AsyncGenerator
 
+from semver import Version
+
 from app.db.models.abstract import Abstract
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
@@ -210,7 +212,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         value = json_payload.get(key, default)
         return value if value is not None else default
 
-    def hash_keys(self) -> list[HashKey]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey("id"),
             HashKey("ids"),

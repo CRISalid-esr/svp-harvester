@@ -46,7 +46,7 @@
                         </ul>
                     </div>
                     <div class="col-md-4 d-flex justify-content-end align-items-end">
-                        <div class="text-md-end">
+                        <div>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="identifiers-safe-mode-toggle"
                                        aria-label="{% trans %}retrieve_page_identifiers_safe_mode_switch_aria_label{% endtrans %}"
@@ -136,6 +136,18 @@
                                 {% trans %}harvester_scopus_option_label{% endtrans %}
                             </option>
                         </select>
+                        <div class="form-check form-switch d-flex justify-content-end">
+                            <input class="form-check-input  me-2" type="checkbox" id="fetch-enhancements-toggle"
+                                   aria-label="retrieve_page_fetch_enhancements_switch_aria_label"
+                                   checked/>
+                            <label class="form-check-label checkbox-inline" for="fetch-enhancements-toggle">
+                                retrieve_page_fetch_enhancements_switch_label <i
+                                    class="bi bi-info-circle cursor-help" data-bs-toggle="tooltip"
+                                    data-bs-title="retrieve_page_fetch_enhancements_switch_help_text">
+                            </i>
+                            </label>
+                        </div>
+
                     </div>
                 </div>
                 <div class="row">

@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
@@ -7,7 +8,6 @@ from app.harvesters.idref.persee_references_converter import PerseeReferencesCon
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     """
     GIVEN a IdrefReferencesConverter instance and a Idref Sparql result for a document
@@ -32,7 +32,10 @@ async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
     expected_publisher = "Paris : Centre Gustave Glotz"
 
-    test_reference = converter_under_tests.build(raw_data=idref_sparql_result_for_doc)
+    test_reference = converter_under_tests.build(
+        raw_data=idref_sparql_result_for_doc,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
     assert test_reference.source_identifier == expected_source_identifier
     await converter_under_tests.convert(
         raw_data=idref_sparql_result_for_doc, new_ref=test_reference

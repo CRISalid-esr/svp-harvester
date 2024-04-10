@@ -1,4 +1,6 @@
 import pytest
+from semver import VersionInfo
+
 from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
 )
@@ -13,6 +15,7 @@ async def test_sparql_idref_hash(idref_pub_converted_1, idref_pub_converted_2):
     Test the SparqlHash with Idref documents
     when the raw data is the same but in different order
     """
+    harvester_version = VersionInfo.parse("0.0.0")
     raw_data_1 = SparqlHarvesterRawResult(
         source_identifier=idref_pub_converted_1["uri"],
         payload=idref_pub_converted_1,
@@ -27,10 +30,16 @@ async def test_sparql_idref_hash(idref_pub_converted_1, idref_pub_converted_2):
 
     hash_service = HashService()
     hash_1 = hash_service.hash(
-        raw_data=raw_data_1, hash_dict=IdrefBasicReferencesConverter().hash_keys()
+        raw_data=raw_data_1,
+        hash_dict=IdrefBasicReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
     hash_2 = hash_service.hash(
-        raw_data=raw_data_2, hash_dict=IdrefBasicReferencesConverter().hash_keys()
+        raw_data=raw_data_2,
+        hash_dict=IdrefBasicReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
 
     assert hash_1 == hash_2

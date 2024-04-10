@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -33,7 +34,9 @@ async def test_convert_publication_with_journal_without_title(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         with pytest.raises(UnexpectedFormatException):
             await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
@@ -50,7 +53,9 @@ async def test_convert_publication_with_journal_with_title(
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         journal = test_reference.issue.journal

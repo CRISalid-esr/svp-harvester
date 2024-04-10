@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from asyncio import Queue
 from typing import Optional, AsyncGenerator, Type, List
+
 from loguru import logger
+from semver import Version, VersionInfo
 
 from app.api.dependencies.event_types import event_types_or_default
 from app.db.daos.entity_dao import EntityDAO
@@ -9,6 +11,7 @@ from app.db.daos.harvesting_dao import HarvestingDAO
 from app.db.daos.harvesting_error_dao import HarvestingErrorDAO
 from app.db.models.entity import Entity as DbEntity
 from app.db.models.harvesting import Harvesting
+from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.references.references_recorder import ReferencesRecorder
 from app.db.session import async_session
@@ -18,15 +21,16 @@ from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpoint
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.models.references import Reference
 
 
-class AbstractHarvester(ABC):
+class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
     """ "
     Abstract mother class for harvesters
     """
 
     supported_identifier_types: list[str] = []
+
+    VERSION: Version | None = None
 
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
@@ -36,6 +40,7 @@ class AbstractHarvester(ABC):
         self.entity_id: Optional[int] = None
         self.entity: Optional[DbEntity] = None
         self.event_types: list[ReferenceEvent.Type] = []
+        self.fetch_enhancements: bool = True
 
     def set_result_queue(self, result_queue: Queue):
         """
@@ -68,6 +73,14 @@ class AbstractHarvester(ABC):
         :return: None
         """
         self.event_types = event_types
+
+    def set_fetch_enhancements(self, fetch_enhancements: bool):
+        """
+        Set if the harvesting should include enhancements
+        :param fetch_enhancements: True if the harvesting should include enhancements
+        :return: None
+        """
+        self.fetch_enhancements = fetch_enhancements
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
         """
@@ -110,19 +123,47 @@ class AbstractHarvester(ABC):
                 try:
                     if raw_data is None or raw_data == "end":
                         break
-                    new_ref = self.converter.build(raw_data)
+                    new_ref = self.converter.build(
+                        raw_data=raw_data, harvester_version=self.get_version()
+                    )
                     if new_ref is None:
                         continue
                     old_ref = await references_recorder.exists(new_ref=new_ref)
+                    comparaison_hash = new_ref.hash
+                    new_ref_is_enhanced = False
                     if old_ref is not None:
                         existing_references.append(old_ref)
-                    if (old_ref is None) or (new_ref.hash != old_ref.hash):
+                        new_ref_is_enhanced = VersionInfo.parse(
+                            new_ref.harvester_version
+                        ) > VersionInfo.parse(old_ref.harvester_version)
+                        if new_ref_is_enhanced:
+                            # If the version of the harvester has changed, we need to use a
+                            # comparaison hash computed with the old version of the harvester
+                            # to track changes
+                            comparaison_hash = self.converter.compute_hash(
+                                raw_data=raw_data,
+                                harvester_version=VersionInfo.parse(
+                                    old_ref.harvester_version
+                                ),
+                            )
+
+                    assert old_ref is None or comparaison_hash is not None
+                    # Compute the new reference fields only
+                    # 1. if the reference is new,
+                    # or 2. if source data have changed
+                    # or 3. if the harvester version has changed and fetch enhancements is True
+                    if (
+                        (old_ref is None)
+                        or (comparaison_hash != old_ref.hash)
+                        or (new_ref_is_enhanced and self.fetch_enhancements)
+                    ):
                         await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
                     reference_event: Optional[
                         ReferenceEvent
                     ] = await self._handle_converted_result(
                         new_ref=new_ref,
                         old_ref=old_ref,
+                        comparaison_hash=comparaison_hash,
                         references_recorder=references_recorder,
                     )
                     if reference_event is not None:
@@ -168,27 +209,39 @@ class AbstractHarvester(ABC):
         self,
         new_ref: Reference,
         old_ref: Reference,
+        comparaison_hash: str,
         references_recorder: ReferencesRecorder,
     ) -> Optional[ReferenceEvent]:
         reference_event: Optional[ReferenceEvent] = None
+
         if old_ref is not None:
-            if (
-                new_ref.hash != old_ref.hash
-                and ReferenceEvent.Type.UPDATED.value
+            enhanced = new_ref.harvester_version > old_ref.harvester_version
+            # If the reference has been enhanced, and the harvester is configured
+            # to fetch enhancements, we will return an event even
+            # if the event type is not among the requested ones
+            return_anyway = enhanced and self.fetch_enhancements
+            if comparaison_hash != old_ref.hash and (
+                ReferenceEvent.Type.UPDATED.value
                 in event_types_or_default(self.event_types)
+                or return_anyway
             ):
                 reference_event = await references_recorder.register_update(
                     new_ref=new_ref,
                     old_ref=old_ref,
+                    enhanced=enhanced,
                 )
-            if (
-                new_ref.hash == old_ref.hash
-                and ReferenceEvent.Type.UNCHANGED.value
+            if comparaison_hash == old_ref.hash and (
+                ReferenceEvent.Type.UNCHANGED.value
                 in event_types_or_default(self.event_types)
+                or return_anyway
             ):
                 reference_event = await references_recorder.register_unchanged(
                     old_ref=old_ref,
+                    new_ref=new_ref if enhanced else None,
+                    enhanced=enhanced,
                 )
+        # a created reference cannot be enhanced
+        # as there is no previous version to compare with
         if (
             old_ref is None
             and ReferenceEvent.Type.CREATED.value
@@ -310,3 +363,12 @@ class AbstractHarvester(ABC):
                     self.harvesting_id
                 )
         return self.harvesting
+
+    @classmethod
+    def get_version(cls) -> Version:
+        """
+        Retrieve the version of the harvester
+        :return: The version of the harvester
+        """
+        assert cls.VERSION is not None, "Harvester must have a VERSION attribute"
+        return cls.VERSION

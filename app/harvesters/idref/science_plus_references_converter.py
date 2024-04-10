@@ -2,6 +2,8 @@ import urllib
 import rdflib
 
 from rdflib import RDF, Literal, DCTERMS, Namespace
+from semver import Version
+
 from app.config import get_app_settings
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
@@ -176,7 +178,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     def _get_source(self):
         return "science_plus"
 
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey(DCTERMS.title),
             HashKey(DCTERMS.abstract),

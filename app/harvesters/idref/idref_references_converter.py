@@ -1,3 +1,5 @@
+from semver import Version
+
 from app.db.models.reference import Reference
 from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawResult
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -19,6 +21,7 @@ from app.harvesters.rdf_harvester_raw_result import (
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
+from app.services.hash.hash_key import HashKey
 
 
 class IdrefReferencesConverter(AbstractReferencesConverter):
@@ -29,9 +32,11 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     def __init__(self):
         self.secondary_converter: AbstractReferencesConverter = None
 
-    def build(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+    def build(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> Reference:
         self._build_secondary_converter(raw_data)
-        return super().build(raw_data=raw_data)
+        return super().build(raw_data=raw_data, harvester_version=harvester_version)
 
     async def convert(
         self, raw_data: RdfRawResult | SparqlRawResult, new_ref: Reference
@@ -60,8 +65,5 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Idref"
 
-    def hash(self, raw_data):
-        return self.secondary_converter.hash(raw_data)
-
-    def hash_keys(self):
-        return self.secondary_converter.hash_keys()
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
+        return self.secondary_converter.hash_keys(harvester_version=harvester_version)

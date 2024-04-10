@@ -3,6 +3,7 @@ from typing import Generator, List
 
 import isodate
 from loguru import logger
+from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.book import Book
@@ -336,7 +337,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         uri, label = HalDocumentTypeConverter().convert(raw_data)
         return await self._get_or_create_document_type_by_uri(uri, label)
 
-    def hash_keys(self):
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey("docid"),
             HashKey("citationRef_s"),

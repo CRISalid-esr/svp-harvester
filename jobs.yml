@@ -1,0 +1,3 @@
+- name: concept_dereferencing
+  schedule: "0 0 * * *"
+  enabled: true

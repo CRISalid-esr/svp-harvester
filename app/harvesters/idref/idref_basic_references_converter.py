@@ -1,4 +1,5 @@
 from rdflib import FOAF, URIRef
+from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
@@ -62,7 +63,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
 
-    def hash_keys(self):
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKey("uri"),
             HashKey("role"),

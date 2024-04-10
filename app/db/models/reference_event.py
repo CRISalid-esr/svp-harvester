@@ -16,6 +16,10 @@ class ReferenceEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)
 
+    enhanced: Mapped[bool] = mapped_column(
+        nullable=False, index=False, default=False, server_default="false"
+    )
+
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
     reference: Mapped["app.db.models.reference.Reference"] = relationship(
         "app.db.models.reference.Reference",
