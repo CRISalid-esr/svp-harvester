@@ -1,5 +1,7 @@
 from typing import AsyncGenerator
 
+from semver import VersionInfo, Version
+
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
 from app.harvesters.scanr.scanr_api_query_builder import (
@@ -24,6 +26,8 @@ class ScanrHarvester(AbstractHarvester):
     }
 
     supported_identifier_types = ["idref", "orcid", "id_hal_s"]
+
+    VERSION: Version = VersionInfo.parse("1.0.0")
 
     async def _get_scanr_query_parameters(self, entity_class: str):
         """

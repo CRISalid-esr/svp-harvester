@@ -59,6 +59,8 @@ async def create_retrieval_sync(
     - **harvesters**: list of harvesters to use
                         (default : None, all eligible harvesters will be used)
     - **events**: list of event types to fetch (default : "created", "updated", "deleted")
+    - **fetch_enhancements**: if True, this retrieval will fetch enhanced references
+                    even if the event type is not among the requested ones
     - **name**: name of the entity to fetch references for (optional, for lisibility only)
     - **idref**: idref of the entity
     - **orcid**: orcid of the entity

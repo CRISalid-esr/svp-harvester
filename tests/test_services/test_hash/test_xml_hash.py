@@ -1,9 +1,10 @@
-from loguru import logger
 import pytest
+from loguru import logger
+from semver import VersionInfo
+
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
-
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.hash.hash_service import HashService
 
@@ -16,6 +17,7 @@ async def test_xml_open_edition_hash(
     Test the XMLHash with Open Edition documents
     when the raw data is the same but in different order
     """
+    harvester_version = VersionInfo.parse("0.0.0")
     raw_data_1 = XMLHarvesterRawResult(
         source_identifier="https://journals.openedition.org/conflits/basictei/756",
         payload=open_edition_xml_for_hash_1,
@@ -29,10 +31,16 @@ async def test_xml_open_edition_hash(
 
     hash_service = HashService()
     hash_1 = hash_service.hash(
-        raw_data=raw_data_1, hash_dict=OpenEditionReferencesConverter().hash_keys()
+        raw_data=raw_data_1,
+        hash_dict=OpenEditionReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
     hash_2 = hash_service.hash(
-        raw_data=raw_data_2, hash_dict=OpenEditionReferencesConverter().hash_keys()
+        raw_data=raw_data_2,
+        hash_dict=OpenEditionReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
 
     logger.info(f"hash_1: {hash_1}")
@@ -46,6 +54,7 @@ async def test_xml_hash(open_edition_xml_for_hash_1):
     Test the XMLHash with Open Edition documents
     when the raw data is the same
     """
+    harvester_version = VersionInfo.parse("0.0.0")
     raw_data = XMLHarvesterRawResult(
         source_identifier="https://journals.openedition.org/conflits/basictei/756",
         payload=open_edition_xml_for_hash_1,
@@ -54,9 +63,15 @@ async def test_xml_hash(open_edition_xml_for_hash_1):
 
     hash_service = HashService()
     hash_1 = hash_service.hash(
-        raw_data=raw_data, hash_dict=OpenEditionReferencesConverter().hash_keys()
+        raw_data=raw_data,
+        hash_dict=OpenEditionReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
     hash_2 = hash_service.hash(
-        raw_data=raw_data, hash_dict=OpenEditionReferencesConverter().hash_keys()
+        raw_data=raw_data,
+        hash_dict=OpenEditionReferencesConverter().hash_keys(
+            harvester_version=harvester_version
+        ),
     )
     assert hash_1 == hash_2

@@ -4,20 +4,21 @@ from unittest import mock
 
 import aiohttp
 import pytest
+from semver import VersionInfo
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.db.models.concept import Concept
+from app.db.models.document_type import DocumentType
 from app.db.models.harvesting import Harvesting
 from app.db.models.label import Label
+from app.db.models.person import Person as DbPerson
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
-from app.db.models.document_type import DocumentType
 from app.db.references.references_recorder import ReferencesRecorder
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
-from app.db.models.person import Person as DbPerson
 
 
 @pytest.fixture(name="hal_api_client_mock")
@@ -323,3 +324,65 @@ async def test_hal_harvester_register_document_type_in_db(
     result = await async_session.execute(stmt)
     results = list(result)
     assert len(results) == 1
+
+
+@pytest.mark.current
+@pytest.mark.asyncio
+async def test_hal_harvester_registers_docs_in_db(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    hal_api_client_mock,
+    hal_api_docs_for_researcher: dict,
+    async_session: AsyncSession,
+):
+    """
+    Test that if we harvest the same data twice, with increased hervester vesion number,
+    a reference event of type unchanged is created its flag enhanced is set to True
+    and a new version of the reference is created
+
+    :param hal_harvester:
+    :param hal_harvesting_db_model_id_hal_i:
+    :param hal_api_client_mock:
+    :param hal_api_docs_for_researcher:
+    :param async_session:
+    :return:
+    """
+    with mock.patch.object(HalHarvester, "get_version") as hal_harvester_version:
+        hal_harvester_version.return_value = VersionInfo.parse("1.0.0")
+        async_session.add(hal_harvesting_db_model_id_hal_i)
+        await async_session.commit()
+        hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+        hal_harvester.set_entity_id(
+            hal_harvesting_db_model_id_hal_i.retrieval.entity_id
+        )
+        await hal_harvester.run()
+        hal_api_client_mock.assert_called_once()
+        stmt = (
+            select(Reference, ReferenceEvent)
+            .join(ReferenceEvent)
+            .join(Harvesting)
+            .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
+        )
+        result = (await async_session.execute(stmt)).unique()
+        results = list(result)
+        assert len(results) == 1
+        reference1 = results[0][0]
+        reference_event = results[0][1]
+        assert reference_event.type == ReferenceEvent.Type.CREATED.value
+        hal_harvester_version.return_value = VersionInfo.parse("1.0.1")
+        await hal_harvester.run()
+        stmt = (
+            select(Reference, ReferenceEvent)
+            .join(ReferenceEvent)
+            .join(Harvesting)
+            .filter(Harvesting.id == hal_harvesting_db_model_id_hal_i.id)
+        )
+        result = (await async_session.execute(stmt)).unique()
+        results = list(result)
+        assert len(results) == 2
+        reference2 = results[1][0]
+        reference_event = results[1][1]
+        assert reference_event.type == ReferenceEvent.Type.UNCHANGED.value
+        assert reference_event.enhanced is True
+        assert reference2.version == reference1.version + 1
+        assert reference2.titles[0].value == reference1.titles[0].value

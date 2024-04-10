@@ -36,15 +36,14 @@ class ReferencesRecorder:
                 )
 
     async def register_update(
-        self,
-        old_ref: Reference,
-        new_ref: Reference,
+        self, old_ref: Reference, new_ref: Reference, enhanced: bool
     ) -> ReferenceEvent | None:
         """
         Register an update of a reference in the database
 
         :param old_ref: old version of the reference to update
         :param new_ref: new reference to register
+        :param enhanced: if the new reference is enhanced
         :return: the reference event
         """
         new_ref.version = old_ref.version + 1
@@ -55,21 +54,33 @@ class ReferencesRecorder:
                     harvesting_id=self.harvesting.id,
                     reference=new_ref,
                     event_type=ReferenceEvent.Type.UPDATED,
+                    enhanced=enhanced,
                 )
 
-    async def register_unchanged(self, old_ref: Reference) -> ReferenceEvent | None:
+    async def register_unchanged(
+        self, old_ref: Reference, new_ref: Reference, enhanced: bool = False
+    ) -> ReferenceEvent | None:
         """
         Register an unchanged reference in the database
 
         :param old_ref: old version of the reference to update
+        :param new_ref: new reference to register
+        :param enhanced: if the new reference is enhanced
         :return: the reference event
         """
+        if enhanced:
+            new_ref.version = old_ref.version + 1
+            reference_to_register = new_ref
+            await self._create_reference(new_ref)
+        else:
+            reference_to_register = old_ref
         async with async_session() as session:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=self.harvesting.id,
-                    reference=old_ref,
+                    reference=reference_to_register,
                     event_type=ReferenceEvent.Type.UNCHANGED,
+                    enhanced=enhanced,
                 )
 
     async def exists(self, new_ref: Reference) -> Reference | None:

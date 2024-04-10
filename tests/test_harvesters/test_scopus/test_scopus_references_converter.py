@@ -1,6 +1,7 @@
 import pytest
-from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
+from semver import VersionInfo
 
+from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 
 
@@ -9,7 +10,10 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     """Test that the converter will return normalised references"""
     converter_under_test = ScopusReferencesConverter()
 
-    test_reference = converter_under_test.build(raw_data=scopus_xml_raw_result_for_doc)
+    test_reference = converter_under_test.build(
+        raw_data=scopus_xml_raw_result_for_doc,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
 
     await converter_under_test.convert(
         raw_data=scopus_xml_raw_result_for_doc, new_ref=test_reference
@@ -72,7 +76,8 @@ async def test_convert_book(scopus_xml_raw_result_for_doc_book):
     converter_under_test = ScopusReferencesConverter()
 
     test_reference = converter_under_test.build(
-        raw_data=scopus_xml_raw_result_for_doc_book
+        raw_data=scopus_xml_raw_result_for_doc_book,
+        harvester_version=VersionInfo.parse("0.0.0"),
     )
 
     await converter_under_test.convert(

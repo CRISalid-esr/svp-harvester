@@ -1,11 +1,11 @@
 import asyncio
-import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import wraps
 from typing import List, AsyncGenerator
 
 from loguru import logger
+from semver import Version
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
 from app.db.daos.book_dao import BookDAO
@@ -31,6 +31,7 @@ from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_service import HashService
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -154,17 +155,36 @@ class AbstractReferencesConverter(ABC):
 
         return wrapper
 
-    def build(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+    def build(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> Reference:
         """
         Build a Normalised Reference object with basic information
         :param raw_data: Raw data from harvester source
+        :param harvester_version: version of the harvester
         :return: Normalised Reference object with basic information
         """
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
-        new_ref.hash = HashService().hash(raw_data, self.hash_keys())
+        new_ref.harvester_version = str(harvester_version)
+        new_ref.hash = self.compute_hash(
+            raw_data=raw_data, harvester_version=harvester_version
+        )
         return new_ref
+
+    def compute_hash(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> str:
+        """
+        Compute the hash of the raw data
+        :param raw_data: raw data from harvester source
+        :param harvester_version: version of the harvester
+        :return:
+        """
+        return HashService().hash(
+            raw_data=raw_data, hash_dict=self.hash_keys(harvester_version)
+        )
 
     @abstractmethod
     def _harvester(self) -> str:
@@ -180,31 +200,7 @@ class AbstractReferencesConverter(ABC):
         :return: Normalised Reference object with basic information
         """
 
-    def hash(self, raw_data: AbstractHarvesterRawResult) -> str:
-        """
-        Hashes harvesting result paylod to track changes
-        :param raw_data: Raw data from harvester source
-        :return: a hash of the payload
-        """
-        payload = raw_data.payload
-        return self._hash_dict(payload)
-
-    def _hash_dict(self, payload: dict):
-        reduced_dic: dict = dict(
-            zip(
-                self.hash_keys(),
-                [payload[k] for k in self.hash_keys() if k in payload],
-            )
-        )
-        string_to_hash = ""
-        for values in reduced_dic.values():
-            if isinstance(values, list):
-                string_to_hash += ",".join((str(value) for value in values))
-            else:
-                string_to_hash += str(values)
-        return hashlib.sha256(string_to_hash.encode()).hexdigest()
-
-    def hash_keys(self) -> list[str]:
+    def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         """
         For the most simple case where data to hash are a dictionary,
         returns the keys of the dictionary to include in change detection

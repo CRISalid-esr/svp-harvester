@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
@@ -62,7 +63,9 @@ async def test_convert(scanr_api_publication_cleaned_response):
             formatter_name="SCANR",
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         assert test_reference.source_identifier == expected_identifier
         assert test_reference.harvester == "ScanR"
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
@@ -112,7 +115,9 @@ async def test_convert_with_default_dupe(
             formatter_name="SCANR",
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         assert test_reference.source_identifier == expected_identifier
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
@@ -141,7 +146,9 @@ async def test_same_contributor_with_different_roles(
             formatter_name="SCANR",
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         # Create a dictionary to count the occurrences of each contributor source_identifier
