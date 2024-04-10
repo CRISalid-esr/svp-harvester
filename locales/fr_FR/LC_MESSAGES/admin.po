@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  SVP-Harvester\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-10 15:05+0000\n"
+"POT-Creation-Date: 2024-04-10 16:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -251,7 +251,7 @@ msgstr "Date de publication maximale"
 
 #: app/templates/collection_history.html.jinja:156
 #: app/templates/publication_history.html.jinja:164
-#: app/templates/retrieve.html.jinja:169
+#: app/templates/retrieve.html.jinja:181
 msgid "clear_form_button_label"
 msgstr "Effacer le formulaire"
 
@@ -360,67 +360,67 @@ msgstr ""
 "Choisissez les sources de données depuis lesquelles vous voulez collecter"
 " les références"
 
-#: app/templates/retrieve.html.jinja:143
+#: app/templates/retrieve.html.jinja:155
 #, fuzzy
 msgid "retrieve_page_reference_type_select_label"
 msgstr "Type de référence"
 
-#: app/templates/retrieve.html.jinja:145
+#: app/templates/retrieve.html.jinja:157
 #, fuzzy
 msgid "retrieve_page_reference_type_select_help_text"
 msgstr ""
 "Choisissez le type de publication pour lequel vous voulez collecter les "
 "références"
 
-#: app/templates/retrieve.html.jinja:149
+#: app/templates/retrieve.html.jinja:161
 #, fuzzy
 msgid "retrieve_page_reference_type_select_aria_label"
 msgstr "Sélectionner le type de publication"
 
-#: app/templates/retrieve.html.jinja:151
+#: app/templates/retrieve.html.jinja:163
 #, fuzzy
 msgid "retrieve_page_reference_type_article_option_label"
 msgstr "Article"
 
-#: app/templates/retrieve.html.jinja:153
+#: app/templates/retrieve.html.jinja:165
 #, fuzzy
 msgid "retrieve_page_reference_type_book_option_label"
 msgstr "Livre/monographie"
 
-#: app/templates/retrieve.html.jinja:156
+#: app/templates/retrieve.html.jinja:168
 #, fuzzy
 msgid "retrieve_page_reference_type_book_section_option_label"
 msgstr "Section de livre/monographie"
 
-#: app/templates/retrieve.html.jinja:159
+#: app/templates/retrieve.html.jinja:171
 #, fuzzy
 msgid "retrieve_page_reference_type_book_chapter_option_label"
 msgstr "Chapitre de livre/monographie"
 
-#: app/templates/retrieve.html.jinja:174
+#: app/templates/retrieve.html.jinja:186
 #, fuzzy
 msgid "retrieve_page_launch_retrieval_button_label"
 msgstr "Lancer la collecte"
 
-#: app/templates/retrieve.html.jinja:179
+#: app/templates/retrieve.html.jinja:191
 msgid "retrieve_page_stop_retrieval_button_label"
 msgstr "Arrêter la collecte"
 
-#: app/templates/retrieve.html.jinja:192
+#: app/templates/retrieve.html.jinja:204
 #, fuzzy
 msgid "retrieve_page_current_entity_card_title"
 msgstr "Entité en cours de collecte"
 
-#: app/templates/retrieve.html.jinja:200
+#: app/templates/retrieve.html.jinja:212
 msgid "retrieve_page_collection_status_card_title"
 msgstr "Avancement de la collecte"
 
-#: app/templates/retrieve.html.jinja:212
+#: app/templates/retrieve.html.jinja:224
 #, fuzzy
 msgid "retrieve_page_search_result_panel_title"
 msgstr "Références collectées"
 
-#: app/templates/retrieve.html.jinja:224
+#: app/templates/retrieve.html.jinja:236
 msgid "datatables_no_data_available_retrieval"
 msgstr "Lancez une collecte pour afficher les références"
 
