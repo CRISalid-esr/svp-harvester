@@ -23,6 +23,7 @@ class ReferenceEventDAO(AbstractDAO):
         reference: Reference,
         harvesting_id: int,
         event_type: ReferenceEvent.Type,
+        enhanced: bool = False,
     ) -> ReferenceEvent:
         """
         Create a reference event for a reference
@@ -30,11 +31,12 @@ class ReferenceEventDAO(AbstractDAO):
         :param reference: reference to which the event is related
         :param harvesting_id: harvesting id to which the event belongs
         :param event_type: state of the event
+        :param enhanced: if the harvester version is increased
 
         :return: the created reference event
         """
         reference_event = ReferenceEvent(
-            type=event_type.value, harvesting_id=harvesting_id
+            type=event_type.value, harvesting_id=harvesting_id, enhanced=enhanced
         )
         reference_event.reference = reference
         self.db_session.add(reference_event)

@@ -32,9 +32,11 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     def __init__(self):
         self.secondary_converter: AbstractReferencesConverter = None
 
-    def build(self, raw_data: AbstractHarvesterRawResult) -> Reference:
+    def build(
+        self, raw_data: AbstractHarvesterRawResult, harvester_version: Version
+    ) -> Reference:
         self._build_secondary_converter(raw_data)
-        return super().build(raw_data=raw_data)
+        return super().build(raw_data=raw_data, harvester_version=harvester_version)
 
     async def convert(
         self, raw_data: RdfRawResult | SparqlRawResult, new_ref: Reference
@@ -67,4 +69,4 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
         return self.secondary_converter.hash(raw_data)
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
-        return self.secondary_converter.hash_keys()
+        return self.secondary_converter.hash_keys(harvester_version=harvester_version)

@@ -39,7 +39,9 @@ class Reference(Base, VersionedRecord):
     # even if the harvesting history is cleaned up
     harvester: Mapped[str] = mapped_column(nullable=False, index=True)
 
-    harvester_version: Mapped[str] = mapped_column(nullable=False, index=False)
+    harvester_version: Mapped[str] = mapped_column(
+        nullable=False, index=False, server_default="0.0.0"
+    )
 
     identifiers: Mapped[
         List["app.db.models.reference_identifier.ReferenceIdentifier"]

@@ -162,13 +162,16 @@ class AbstractReferencesConverter(ABC):
         """
         Build a Normalised Reference object with basic information
         :param raw_data: Raw data from harvester source
+        :param harvester_version: version of the harvester
         :return: Normalised Reference object with basic information
         """
         new_ref = Reference()
         new_ref.harvester = self._harvester()
         new_ref.source_identifier = str(raw_data.source_identifier)
         new_ref.harvester_version = str(harvester_version)
-        new_ref.hash = self.compute_hash(harvester_version, raw_data)
+        new_ref.hash = self.compute_hash(
+            raw_data=raw_data, harvester_version=harvester_version
+        )
         return new_ref
 
     def compute_hash(
@@ -180,7 +183,9 @@ class AbstractReferencesConverter(ABC):
         :param harvester_version: version of the harvester
         :return:
         """
-        return HashService().hash(raw_data, self.hash_keys(harvester_version))
+        return HashService().hash(
+            raw_data=raw_data, hash_dict=self.hash_keys(harvester_version)
+        )
 
     @abstractmethod
     def _harvester(self) -> str:

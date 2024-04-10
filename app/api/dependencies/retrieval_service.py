@@ -13,6 +13,7 @@ def build_retrieval_service_from_fields(
     harvesters: Annotated[List[str], Query()] = None,
     nullify: Annotated[List[str], Query()] = None,
     events: Annotated[List[ReferenceEvent.Type], Query()] = None,
+    fetch_enhancements: Annotated[bool, Query()] = True,
 ) -> RetrievalService:
     """
     Build a retrieval service from the provided fields.
@@ -28,4 +29,5 @@ def build_retrieval_service_from_fields(
         nullify=nullify,
         events=event_types_or_default(events),
         harvesters=harvesters,
+        fetch_enhancements=fetch_enhancements,
     )

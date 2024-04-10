@@ -38,6 +38,7 @@ class RetrievalService:
         events: Annotated[
             List[ReferenceEvent.Type], Depends(event_types_or_default)
         ] = None,
+        fetch_enhancements: Annotated[bool, Body()] = True,
     ):
         """Init RetrievalService class"""
         self.background_tasks = background_tasks
@@ -48,6 +49,7 @@ class RetrievalService:
         self.identifiers_safe_mode = identifiers_safe_mode
         self.nullify = nullify
         self.events = events
+        self.fetch_enhancements = fetch_enhancements
 
     async def register(
         self,
@@ -125,12 +127,13 @@ class RetrievalService:
                     harvesting = await HarvestingDAO(session).create_harvesting(
                         retrieval=self.retrieval,
                         harvester=harvester_name,
-                        state=Harvesting.State.RUNNING
+                        state=Harvesting.State.RUNNING,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
             harvester.set_entity_id(self.retrieval.entity_id)
             harvester.set_event_types(self.retrieval.event_types)
+            harvester.set_fetch_enhancements(self.fetch_enhancements)
             harvester.set_harvesting_id(harvesting.id)
             task = asyncio.create_task(
                 harvester.run(),
