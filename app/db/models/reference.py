@@ -123,9 +123,11 @@ class Reference(Base, VersionedRecord):
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)
 
     @validates("harvester_version")
-    def validate_version(self, key, version):
+    def _validate_version(self, key, version):
         try:
             parsed_version = VersionInfo.parse(version)
             return str(parsed_version)
-        except ValueError:
-            raise ValueError(f"Invalid semantic version: {version} for field {key}")
+        except ValueError as exc:
+            raise ValueError(
+                f"Invalid semantic version: {version} for field {key}"
+            ) from exc

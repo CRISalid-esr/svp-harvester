@@ -1,14 +1,13 @@
-import hashlib
 from abc import abstractmethod
-from loguru import logger
 
 import rdflib
+from loguru import logger
 from rdflib import FOAF, Graph, Literal, DCTERMS, Namespace
 
 from app.db.models.abstract import Abstract
 from app.db.models.book import Book
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import (

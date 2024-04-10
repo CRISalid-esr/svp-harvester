@@ -23,7 +23,7 @@ from app.harvesters.exceptions.unexpected_format_exception import (
 )
 
 
-class AbstractHarvester(ABC):
+class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
     """ "
     Abstract mother class for harvesters
     """

@@ -1,8 +1,8 @@
 from typing import Generator
 from xml.etree import ElementTree
 
-from loguru import logger
 import rdflib
+from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
@@ -227,10 +227,3 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             HashKeyXML("dcterms:subject", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
         ]
-
-    def _create_dict(self, root: ElementTree):
-        new_dict = {}
-        for term in self.hash_keys():
-            new_dict[term] = self._get_terms(root, term)
-
-        return new_dict
