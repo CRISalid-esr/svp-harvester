@@ -23,7 +23,7 @@ class OpenAlexHarvester(AbstractHarvester):
 
     supported_identifier_types = ["orcid"]
 
-    VERSION: Version = VersionInfo.parse("0.0.0")
+    VERSION: Version = VersionInfo.parse("1.0.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """
