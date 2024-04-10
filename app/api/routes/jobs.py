@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.post("/concept_dereferencing")
-async def post_concept_dereferencing(background_tasks: BackgroundTasks):
+async def create_concept_dereferencing(background_tasks: BackgroundTasks):
     """
     Post a concept dereferencing job
     """
@@ -24,7 +24,7 @@ async def post_concept_dereferencing(background_tasks: BackgroundTasks):
 
 
 @router.on_event("startup")
-async def post_concept_dereferencing_cron():
+async def start_concept_dereferencing_cron():
     """
     Post a concept dereferencing job
     """
