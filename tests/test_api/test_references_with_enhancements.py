@@ -14,6 +14,7 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_fetch_unchanged_references_async_with_enhancements_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
@@ -62,7 +63,8 @@ async def test_fetch_unchanged_references_async_with_enhancements_returned(  # p
         with mock.patch.object(
             app.harvesters.hal.hal_harvester.HalHarvester, "get_version"
         ) as hal_harvester_version:
-            hal_harvester_version.return_value = VersionInfo.parse("1.0.0")
+            # ensure this is always a higher version than the real one
+            hal_harvester_version.return_value = VersionInfo.parse("99.0.0")
             response = test_client.post(
                 REFERENCES_RETRIEVAL_API_PATH,
                 json={
@@ -96,6 +98,7 @@ async def test_fetch_unchanged_references_async_with_enhancements_returned(  # p
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_fetch_unchanged_references_async_with_enhancements_not_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
@@ -142,7 +145,8 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
         with mock.patch.object(
             app.harvesters.hal.hal_harvester.HalHarvester, "get_version"
         ) as hal_harvester_version:
-            hal_harvester_version.return_value = VersionInfo.parse("1.0.0")
+            # ensure this is always a higher version than the real one
+            hal_harvester_version.return_value = VersionInfo.parse("99.0.0")
             response = test_client.post(
                 REFERENCES_RETRIEVAL_API_PATH,
                 json={
@@ -165,6 +169,7 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_fetch_modified_references_async_with_enhancements_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
@@ -222,7 +227,8 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
         with mock.patch.object(
             app.harvesters.hal.hal_harvester.HalHarvester, "get_version"
         ) as hal_harvester_version:
-            hal_harvester_version.return_value = VersionInfo.parse("1.0.0")
+            # ensure this is always a higher version than the real one
+            hal_harvester_version.return_value = VersionInfo.parse("99.0.0")
             response = test_client.post(
                 REFERENCES_RETRIEVAL_API_PATH,
                 json={
