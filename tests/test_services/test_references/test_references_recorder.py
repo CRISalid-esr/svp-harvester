@@ -92,8 +92,7 @@ async def test_reference_recorder_creates_event_for_updated_reference(
     old_reference = await references_recorder.exists(reference)
     assert old_reference is not None
     reference_event: ReferenceEvent = await references_recorder.register_update(
-        old_ref=old_reference,
-        new_ref=new_version_of_reference,
+        old_ref=old_reference, new_ref=new_version_of_reference, enhanced=False
     )
     assert reference_event is not None
     assert reference_event.reference == new_version_of_reference

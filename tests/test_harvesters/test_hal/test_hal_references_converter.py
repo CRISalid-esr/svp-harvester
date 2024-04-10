@@ -1,6 +1,7 @@
 from email.contentmanager import raw_data_manager
 
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
@@ -42,7 +43,9 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         assert test_reference.source_identifier == expected_docid
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
@@ -90,7 +93,9 @@ async def test_convert_with_date_inconsistency(
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
-        reference = converter_under_tests.build(raw_data=result)
+        reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         await converter_under_tests.convert(raw_data=result, new_ref=reference)
         assert reference.issued is None
         assert reference.created is None

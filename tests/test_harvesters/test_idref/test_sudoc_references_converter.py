@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -32,7 +33,9 @@ async def test_convert_for_rdf_result(
     expected_issn = "1954-6009"
     expected_issn_l = "1954-6009"
 
-    test_reference = converter_under_tests.build(raw_data=sudoc_rdf_result_for_doc)
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
+    )
     assert test_reference.source_identifier == str(
         sudoc_rdf_result_for_doc.source_identifier
     )
@@ -70,7 +73,8 @@ async def test_convert_for_rdf_result_without_title(
     converter_under_tests = SudocReferencesConverter()
 
     test_reference = converter_under_tests.build(
-        raw_data=sudoc_rdf_result_for_doc_without_title
+        raw_data=sudoc_rdf_result_for_doc_without_title,
+        harvester_version=VersionInfo.parse("0.0.0"),
     )
     assert test_reference.source_identifier == str(
         sudoc_rdf_result_for_doc_without_title.source_identifier
@@ -93,7 +97,9 @@ async def test_convert_for_rdf_result_for_book(sudoc_rdf_result_for_book):
     """
     converter_under_tests = SudocReferencesConverter()
 
-    test_reference = converter_under_tests.build(raw_data=sudoc_rdf_result_for_book)
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_book, harvester_version=VersionInfo.parse("0.0.0")
+    )
     await converter_under_tests.convert(
         raw_data=sudoc_rdf_result_for_book, new_ref=test_reference
     )

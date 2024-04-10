@@ -1,4 +1,6 @@
 import pytest
+from semver import VersionInfo
+
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
 from app.harvesters.open_alex.open_alex_references_converter import (
@@ -45,7 +47,9 @@ async def test_convert(open_alex_api_work: dict):
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
 
-    test_reference = converter_under_tests.build(raw_data=result)
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
     assert test_reference.source_identifier == expected_id

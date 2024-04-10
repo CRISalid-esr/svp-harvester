@@ -1,4 +1,6 @@
 import pytest
+from semver import VersionInfo
+
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
@@ -31,7 +33,8 @@ async def test_science_plus_convert_for_rdf_result(
     expected_journal_title = "Cellular and Molecular Neurobiology"
 
     test_reference = converter_under_tests.build(
-        raw_data=science_plus_rdf_result_for_doc
+        raw_data=science_plus_rdf_result_for_doc,
+        harvester_version=VersionInfo.parse("0.0.0"),
     )
     assert test_reference.source_identifier == str(
         science_plus_rdf_result_for_doc.source_identifier
@@ -68,7 +71,8 @@ async def test_science_plus_convert_for_rdf_without_title(
     converter_under_tests = SciencePlusReferencesConverter()
 
     test_reference = converter_under_tests.build(
-        raw_data=science_plus_rdf_result_without_title
+        raw_data=science_plus_rdf_result_without_title,
+        harvester_version=VersionInfo.parse("0.0.0"),
     )
 
     with pytest.raises(UnexpectedFormatException) as exc_info:

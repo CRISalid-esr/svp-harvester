@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
@@ -19,7 +20,8 @@ async def test_open_edition_convert_for_rfd_result(
     """
     converter_under_tests = OpenEditionReferencesConverter()
     test_reference = converter_under_tests.build(
-        raw_data=open_edition_xml_result_for_doc
+        raw_data=open_edition_xml_result_for_doc,
+        harvester_version=VersionInfo.parse("0.0.0"),
     )
     await converter_under_tests.convert(
         raw_data=open_edition_xml_result_for_doc, new_ref=test_reference

@@ -1,4 +1,5 @@
 import pytest
+from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
@@ -24,7 +25,9 @@ async def test_convert_publication_with_book(scanr_publication_doc_book):
             source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
         )
 
-        test_reference = converter_under_tests.build(raw_data=result)
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         book = test_reference.book
