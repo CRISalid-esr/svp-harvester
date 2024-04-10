@@ -216,8 +216,9 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
 
         if old_ref is not None:
             enhanced = new_ref.harvester_version > old_ref.harvester_version
-            # If the reference has been enhanced, and the harvester is configured to fetch enhancements
-            # we will return an event even if the event type is not among the requested ones
+            # If the reference has been enhanced, and the harvester is configured
+            # to fetch enhancements, we will return an event even
+            # if the event type is not among the requested ones
             return_anyway = enhanced and self.fetch_enhancements
             if comparaison_hash != old_ref.hash and (
                 ReferenceEvent.Type.UPDATED.value
