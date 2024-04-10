@@ -165,7 +165,6 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_fetch_modified_references_async_with_enhancements_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
