@@ -49,6 +49,7 @@ async def test_publish_harvesting_status(
 
 
 @pytest.mark.asyncio
+@pytest.mark.current
 async def test_publish_created_reference(
     async_session: AsyncSession,
     mocked_message: Mock,
@@ -68,10 +69,10 @@ async def test_publish_created_reference(
     expected_sent_message_payload = {
         "reference_event": {
             "type": "created",
-            "enhanced": False,
             "reference": {
                 "source_identifier": "123456789",
                 "harvester": "hal",
+                "harvester_version": "0.0.0",
                 "identifiers": [],
                 "titles": [{"value": "title", "language": "fr"}],
                 "subtitles": [{"value": "subtitle", "language": "fr"}],
@@ -93,6 +94,7 @@ async def test_publish_created_reference(
                 "created": "2018-02-02 10:00:00",
                 "version": 0,
             },
+            "enhanced": False,
         },
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
