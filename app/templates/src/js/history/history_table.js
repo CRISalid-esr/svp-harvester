@@ -156,12 +156,11 @@ class HistoryTable {
                     refEvent.reference.titles.length > 0
                         ? refEvent.reference.titles[0].value
                         : "No title available";
+                const enhancedBadge = refEvent.enhanced ? "<span class='badge bg-success-subtle text-secondary ms-2'>enhanced &#9733;</span>" : "";
                 listHtml += `
                 <a href="#" class="list-group-item list-group-item-action" data-event-id="${refEvent.id}" data-detail-shown="false">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1" title="${title}"><span class="badge badge-${refEvent.type} me-2 p-1">${refEvent.type}</span> ${title}</h5>
-                        
-                    
+                        <h5 class="mb-1" title="${title}"><span class="badge badge-${refEvent.type} me-2 p-1">${refEvent.type}</span>${enhancedBadge}   ${title}</h5>                        
                     <span class="badge rounded-pill bg-light text-dark">${event.harvester}</span>
                     </div>
                     <p class="mb-1 text-end">${refEvent.reference.source_identifier}</p>
@@ -206,6 +205,7 @@ class HistoryTable {
                                     referenceEventId
                                 );
                                 const type = referenceEvent?.data?.type;
+                                const enhanced = referenceEvent?.data?.enhanced;
                                 if (type === undefined) {
                                     console.log("No type found in reference event");
                                     return;
@@ -214,7 +214,7 @@ class HistoryTable {
                                 const currentReference = referenceEvent.data.reference;
                                 this.sortReferenceContent(currentReference);
                                 const referenceDisplay = `${prettyPrintJson.toHtml(currentReference)}`;
-                                if (type === "updated") {
+                                if (type === "updated" || enhanced) {
                                     const tabs = this.getDiffTabs(referenceEventId, referenceDisplay);
                                     link.detailShown = true;
                                     link.insertAdjacentHTML("afterend", tabs);
