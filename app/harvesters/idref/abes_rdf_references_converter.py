@@ -63,15 +63,6 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
             if book:
                 new_ref.book = book
 
-    def hash(self, raw_data: RdfRawResult) -> str:
-        pub_graph: Graph = raw_data.payload
-        uri = raw_data.source_identifier
-        graph_as_dict = {
-            str(p): str(o)
-            for s, p, o in pub_graph.triples((rdflib.term.URIRef(uri), None, None))
-        }
-        return hashlib.sha256(str(graph_as_dict).encode()).hexdigest()
-
     # pylint: disable=unused-argument
     async def _get_book(self, pub_graph, uri) -> Book | None:
         return None

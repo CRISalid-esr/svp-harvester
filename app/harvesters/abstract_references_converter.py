@@ -201,30 +201,6 @@ class AbstractReferencesConverter(ABC):
         :return: Normalised Reference object with basic information
         """
 
-    def hash(self, raw_data: AbstractHarvesterRawResult) -> str:
-        """
-        Hashes harvesting result paylod to track changes
-        :param raw_data: Raw data from harvester source
-        :return: a hash of the payload
-        """
-        payload = raw_data.payload
-        return self._hash_dict(payload)
-
-    def _hash_dict(self, payload: dict):
-        reduced_dic: dict = dict(
-            zip(
-                self.hash_keys(),
-                [payload[k] for k in self.hash_keys() if k in payload],
-            )
-        )
-        string_to_hash = ""
-        for values in reduced_dic.values():
-            if isinstance(values, list):
-                string_to_hash += ",".join((str(value) for value in values))
-            else:
-                string_to_hash += str(values)
-        return hashlib.sha256(string_to_hash.encode()).hexdigest()
-
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         """
         For the most simple case where data to hash are a dictionary,

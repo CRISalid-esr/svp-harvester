@@ -106,9 +106,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             )
         )
 
-    def hash(self, raw_data: XMLHarvesterRawResult):
-        return self._hash_dict(self._create_dict(self._get_root(raw_data)))
-
     def _reference_identifier(
         self, root: ElementTree
     ) -> Generator[ReferenceIdentifier, None, None]:
