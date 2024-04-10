@@ -29,6 +29,7 @@ strsim = "^0.0.3"
 aioredis = "^2.0.1"
 isbnlib = "^3.10.14"
 semver = "^3.0.2"
+apscheduler = "^3.10.4"
 
 [tool.poetry.group.development]
 optional = true

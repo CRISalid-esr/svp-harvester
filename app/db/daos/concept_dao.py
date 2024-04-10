@@ -1,4 +1,6 @@
 from sqlalchemy import select
+from sqlalchemy.sql.expression import func
+
 from sqlalchemy.orm import raiseload, joinedload
 
 from app.db.abstract_dao import AbstractDAO
@@ -53,3 +55,29 @@ class ConceptDAO(AbstractDAO):
         """
         query = select(Concept).where(Concept.uri.in_(uris)).options(raiseload("*"))
         return (await self.db_session.execute(query)).unique().scalars().all()
+
+    # pylint: disable=singleton-comparison
+    async def get_random_concept_not_dereferenced(
+        self, exclude_ids: list[int] = None
+    ) -> Concept | None:
+        """
+        Get a random concept that has not been dereferenced yet
+        It need to have an uri to be dereferenced
+
+        :param exclude_ids: We can provide a list of ids to exclude
+
+        :return: the Concept or None if not found
+        """
+        if exclude_ids is None:
+            exclude_ids = []
+
+        query = (
+            select(Concept)
+            .where(Concept.dereferenced == False)
+            .where(Concept.uri != None)
+            .where(~Concept.id.in_(exclude_ids))
+            .order_by(func.random())  # pylint: disable=not-callable
+            .limit(1)
+        )
+
+        return await self.db_session.scalar(query)
