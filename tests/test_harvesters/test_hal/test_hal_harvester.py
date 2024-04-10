@@ -384,6 +384,5 @@ async def test_hal_harvester_registers_docs_in_db(
         reference_event = results[1][1]
         assert reference_event.type == ReferenceEvent.Type.UNCHANGED.value
         assert reference_event.enhanced is True
-        # check in db that a new versio of the reference has been created
         assert reference2.version == reference1.version + 1
         assert reference2.titles[0].value == reference1.titles[0].value
