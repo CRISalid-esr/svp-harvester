@@ -68,6 +68,7 @@ async def test_publish_created_reference(
     expected_sent_message_payload = {
         "reference_event": {
             "type": "created",
+            "enhanced": False,
             "reference": {
                 "source_identifier": "123456789",
                 "harvester": "hal",
