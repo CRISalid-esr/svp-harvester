@@ -1,121 +1,18 @@
-Quick start : deployment
+Quick start: deployment
 ------------------------
+Welcome to the quick start guide for deployment. Below are the available deployment options:
 
-################
-Docker image
-################
+- **Fresh Install:** Set up a new deployment from scratch.
+- **Docker Image:** Deploy using pre-built Docker images.
+- **Docker Compose:** Deploy using Docker Compose for multi-container applications.
+- **Kubernetes:** Deploy using Kubernetes for container orchestration.
 
-At the time of writing, svp-harvester docker image should only be rebuilt if you want to
-modify the translation files, adapt some hard-coded parameters in javascript environment variables
-or in order to customize the look and feel.
-If you just want to deploy the application, you can use the pre-build docker image from docker hub and skip the following 2-4 steps.
+For detailed instructions, click on the respective links below.
 
-1. Clone the repository
+.. toctree::
+    :maxdepth: 1
 
-..  code-block:: bash
-
-    git clone https://github.com/CRISalid-esr/svp-harvester.git
-
-
-2. Customize js environment variables
-
-Javascript environment variables are located in the following file: :code:`app/templates/src/js/env.js`.
-
-The API path parameters are commented out by default. If you leave them as is, the GUI will receive this information
-from the back end environment variables (API_HOST, API_PATH and API_VERSION). If for any reason you want to hard-code
-these parameters client side, you can uncomment them and set them to the desired values.
-
-.. code-block:: javascript
-
-    // apiHost: "http://localhost",
-    // apiPath: "/api/v1",
-
-The remaining parameters are related to the list of identifiers types that are available from the collection test form.
-
-3. Build the static files
-
-Install the required build environment if needed
-
-.. code-block:: bash
-
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    source ~/.bashrc
-    nvm install v18.12.1
-    nvm use 18.12.1
-
-Move to the js directory and build the static files
-
-.. code-block:: bash
-
-    cd app/templates/src/js/
-    npm install
-    npm run build
-
-4. Build the docker image
-
-If you don't want to use docker compose, you can build the docker image manually
-e.g. to push it to a private registry. Else, you can skip this step as the image
-will be built automatically by docker compose.
-
-From repository root directory:
-
-.. code-block:: bash
-
-    docker build -t svp-harvester .
-
-################
-Docker compose
-################
-
-If you want to deploy the application using docker compose, you can use the provided docker-compose.yml file.
-This file will deploy the following containers:
-- postgresql database
-- rabbitmq message broker
-- svp-harvester application (API + interactive documentation + GUI)
-
-Rename :code:`docker-compose.yml.dist` to :code:`docker-compose.yml` and adapt all environment variables to your needs.
-
-If you need to build the docker image manually (see above steps 2-4), you will need to modify the docker-compose.yml file :
-
-- replace the image name by the one you built
-- or uncomment the build section and comment out the image section
-  svphweb:
-    #image: crisalidesr/svp-harvester:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-
-5. Start the containers
-
-Run the following command from the directory containing the docker-compose.yml file:
-
-.. code-block:: bash
-
-    docker-compose up -d
-
-##########
-Kubernetes
-##########
-
-Kubernetes deployment files are located in the :code:`deploy/k8s` directory.
-
-Example of Minikube deployment:
-
-1. Copy all *.yaml.dist files in the :code:`deploy/k8s` directory to *.yaml files and replace all environment variables by their base64 encoded values.
-
-.. code-block:: bash
-
-    echo -n "my-password" | base64
-
-2. Copy postgresql sql.dist initialization script to SQL file and replace all credentials by their values.
-Push the sql file to the Minikube VM.
-
-.. code-block:: bash
-
-    minikube cp svph-user-db.sql /home/docker/svph-user-db.sql
-
-3. Start the deployment
-
-.. code-block:: bash
-
-    kubectl apply -f deploy/k8s
+    deployment/fresh_install
+    deployment/docker_image
+    deployment/docker_compose
+    deployment/kubernetes

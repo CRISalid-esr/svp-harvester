@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker compose &mdash; SoVisu+ Harvester V0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=0199fefd"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Kubernetes" href="kubernetes.html" />
+    <link rel="prev" title="Docker image" href="docker_image.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SoVisu+ Harvester
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../deployment.html">Quick start: deployment</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="fresh_install.html">Fresh Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker_image.html">Docker image</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Docker compose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kubernetes.html">Kubernetes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Quick start : development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/model.html">Reference : model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/entities.html">Reference : entity resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/identifiers.html">Reference : identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harvesters/overview.html">Harvesters: Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harvesters/hal.html">Harvesters : Hal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harvesters/idref.html">Harvesters : Idref</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harvesters/scanr.html">Harvesters : ScanR</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SoVisu+ Harvester</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../deployment.html">Quick start: deployment</a></li>
+      <li class="breadcrumb-item active">Docker compose</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/quickstart/deployment/docker_compose.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docker-compose">
+<h1>Docker compose<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h1>
+<p>If you want to deploy the application using docker compose, you can use the provided docker-compose.yml file.
+This file will deploy the following containers:
+- postgresql database
+- rabbitmq message broker
+- svp-harvester application (API + interactive documentation + GUI)</p>
+<p>Rename <code class="code docutils literal notranslate"><span class="pre">docker-compose.yml.dist</span></code> to <code class="code docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> and adapt all environment variables to your needs.</p>
+<p>If you need to build the docker image manually (see above steps 2-4), you will need to modify the docker-compose.yml file :</p>
+<ul>
+<li><p>replace the image name by the one you built</p></li>
+<li><p>or uncomment the build section and comment out the image section
+svphweb:</p>
+<blockquote>
+<div><p>#image: crisalidesr/svp-harvester:latest
+build:</p>
+<blockquote>
+<div><p>context: .
+dockerfile: Dockerfile</p>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+<ol class="arabic simple" start="5">
+<li><p>Start the containers</p></li>
+</ol>
+<p>Run the following command from the directory containing the docker-compose.yml file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="docker_image.html" class="btn btn-neutral float-left" title="Docker image" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kubernetes.html" class="btn btn-neutral float-right" title="Kubernetes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, SoVisu+ Community.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

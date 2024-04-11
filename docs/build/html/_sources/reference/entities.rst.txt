@@ -253,7 +253,7 @@ This time, the new requests contains an identifier conflict. A new entity is sub
         "identifiers": [
           {
             "type": "idref",
-            "value": "031794646"
+            "value": "222222222"
           },
           {
             "type": "orcid",
@@ -276,7 +276,7 @@ This time, the new requests contains an identifier conflict. A new entity is sub
 
 As the parameter `identifiers_safe_mode` is set to `false`, the SoVisu+ Harvester will:
 
-- register a new entity with the name "Dupont, G" and the identifiers ``031794646`` and ``0000-0001-1111-1112``
+- register a new entity with the name "Dupont, G" and the identifiers ``222222222`` and ``0000-0001-1111-1112``
 
 **Dupont, G**
 
@@ -284,7 +284,7 @@ As the parameter `identifiers_safe_mode` is set to `false`, the SoVisu+ Harveste
    :stub-columns: 1
 
    * - **IdRef**
-     - 031794646
+     - 222222222
    * - **ORCID**
      - 0000-0001-1111-1112
 
