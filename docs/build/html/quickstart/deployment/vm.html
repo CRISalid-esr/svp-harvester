@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fresh Installation &mdash; SoVisu+ Harvester V0.1 documentation</title>
+  <title>VM Deployment &mdash; SoVisu+ Harvester V0.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
@@ -20,7 +20,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Docker image" href="docker_image.html" />
+    <link rel="next" title="Docker image Deployment" href="docker_image.html" />
     <link rel="prev" title="Quick start: deployment" href="../deployment.html" /> 
 </head>
 
@@ -47,16 +47,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../deployment.html">Quick start: deployment</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Fresh Installation</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">VM Deployment</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-rabbitmq">1. Install RabbitMQ</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-postgresql">2. Install PostgreSQL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-redis">3. Install Redis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-svp-harvester">4. Install SVP Harvester</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="docker_image.html">Docker image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker_compose.html">Docker compose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kubernetes.html">Kubernetes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker_image.html">Docker image Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker_compose.html">Docker compose Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kubernetes.html">Kubernetes Deployment</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../development.html">Quick start : development</a></li>
@@ -84,9 +84,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../deployment.html">Quick start: deployment</a></li>
-      <li class="breadcrumb-item active">Fresh Installation</li>
+      <li class="breadcrumb-item active">VM Deployment</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/quickstart/deployment/fresh_install.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/quickstart/deployment/vm.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -94,8 +94,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="fresh-installation">
-<h1>Fresh Installation<a class="headerlink" href="#fresh-installation" title="Link to this heading"></a></h1>
+  <section id="vm-deployment">
+<h1>VM Deployment<a class="headerlink" href="#vm-deployment" title="Link to this heading"></a></h1>
 <p>This guide will walk you through setting up the SVP Harvester project on a fresh Ubuntu 22.04 installation.</p>
 <section id="install-rabbitmq">
 <h2>1. Install RabbitMQ<a class="headerlink" href="#install-rabbitmq" title="Link to this heading"></a></h2>
@@ -213,7 +213,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 <span class="nv">APP_ENV</span><span class="o">=</span>DEV<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
 
 <span class="c1"># Run the project</span>
-<span class="nv">APP_ENV</span><span class="o">=</span>DEV<span class="w"> </span>uvicorn<span class="w"> </span>app.main:app<span class="w"> </span>--reload
+<span class="nv">APP_ENV</span><span class="o">=</span>DEV<span class="w"> </span>uvicorn<span class="w"> </span>app.main:app
 </pre></div>
 </div>
 <p>To deactivate the virtual environment, use:</p>
@@ -228,7 +228,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../deployment.html" class="btn btn-neutral float-left" title="Quick start: deployment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="docker_image.html" class="btn btn-neutral float-right" title="Docker image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docker_image.html" class="btn btn-neutral float-right" title="Docker image Deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

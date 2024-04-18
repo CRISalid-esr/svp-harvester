@@ -1,6 +1,5 @@
-################
-Docker compose
-################
+Docker compose Deployment
+===========================================================
 
 If you want to deploy the application using docker compose, you can use the provided docker-compose.yml file.
 This file will deploy the following containers:

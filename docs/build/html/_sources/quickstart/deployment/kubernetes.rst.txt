@@ -1,6 +1,5 @@
-##########
-Kubernetes
-##########
+Kubernetes Deployment
+===========================================================
 
 Kubernetes deployment files are located in the :code:`deploy/k8s` directory.
 
