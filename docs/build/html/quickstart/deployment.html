@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quick start : deployment &mdash; SoVisu+ Harvester V0.1 documentation</title>
+  <title>Quick start: deployment &mdash; SoVisu+ Harvester V0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Quick start : development" href="development.html" />
+    <link rel="next" title="VM Deployment" href="deployment/vm.html" />
     <link rel="prev" title="Overview" href="../overview.html" /> 
 </head>
 
@@ -46,10 +46,11 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start : deployment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#docker-image">Docker image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#docker-compose">Docker compose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start: deployment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deployment/vm.html">VM Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment/docker_image.html">Docker image Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment/docker_compose.html">Docker compose Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment/kubernetes.html">Kubernetes Deployment</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Quick start : development</a></li>
@@ -76,7 +77,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Quick start : deployment</li>
+      <li class="breadcrumb-item active">Quick start: deployment</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/quickstart/deployment.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,111 +88,23 @@
            <div itemprop="articleBody">
              
   <section id="quick-start-deployment">
-<h1>Quick start : deployment<a class="headerlink" href="#quick-start-deployment" title="Link to this heading"></a></h1>
-<section id="docker-image">
-<h2>Docker image<a class="headerlink" href="#docker-image" title="Link to this heading"></a></h2>
-<p>At the time of writing, svp-harvester docker image should only be rebuilt if you want to
-modify the translation files, adapt some hard-coded parameters in javascript environment variables
-or in order to customize the look and feel.
-If you just want to deploy the application, you can use the pre-build docker image from docker hub and skip the following 2-4 steps.</p>
-<ol class="arabic simple">
-<li><p>Clone the repository</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/CRISalid-esr/svp-harvester.git
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Customize js environment variables</p></li>
-</ol>
-<p>Javascript environment variables are located in the following file: <code class="code docutils literal notranslate"><span class="pre">app/templates/src/js/env.js</span></code>.</p>
-<p>The API path parameters are commented out by default. If you leave them as is, the GUI will receive this information
-from the back end environment variables (API_HOST, API_PATH and API_VERSION). If for any reason you want to hard-code
-these parameters client side, you can uncomment them and set them to the desired values.</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// apiHost: &quot;http://localhost&quot;,</span>
-<span class="c1">// apiPath: &quot;/api/v1&quot;,</span>
-</pre></div>
-</div>
-<p>The remaining parameters are related to the list of identifiers types that are available from the collection test form.</p>
-<ol class="arabic simple" start="3">
-<li><p>Build the static files</p></li>
-</ol>
-<p>Install the required build environment if needed</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-o-<span class="w"> </span>https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
-<span class="nb">source</span><span class="w"> </span>~/.bashrc
-nvm<span class="w"> </span>install<span class="w"> </span>v18.12.1
-nvm<span class="w"> </span>use<span class="w"> </span><span class="m">18</span>.12.1
-</pre></div>
-</div>
-<p>Move to the js directory and build the static files</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>app/templates/src/js/
-npm<span class="w"> </span>install
-npm<span class="w"> </span>run<span class="w"> </span>build
-</pre></div>
-</div>
-<ol class="arabic simple" start="4">
-<li><p>Build the docker image</p></li>
-</ol>
-<p>If you don’t want to use docker compose, you can build the docker image manually
-e.g. to push it to a private registry. Else, you can skip this step as the image
-will be built automatically by docker compose.</p>
-<p>From repository root directory:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>svp-harvester<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<section id="docker-compose">
-<h2>Docker compose<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h2>
-<p>If you want to deploy the application using docker compose, you can use the provided docker-compose.yml file.
-This file will deploy the following containers:
-- postgresql database
-- rabbitmq message broker
-- svp-harvester application (API + interactive documentation + GUI)</p>
-<p>Rename <code class="code docutils literal notranslate"><span class="pre">docker-compose.yml.dist</span></code> to <code class="code docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> and adapt all environment variables to your needs.</p>
-<p>If you need to build the docker image manually (see above steps 2-4), you will need to modify the docker-compose.yml file :</p>
-<ul>
-<li><p>replace the image name by the one you built</p></li>
-<li><p>or uncomment the build section and comment out the image section
-svphweb:</p>
-<blockquote>
-<div><p>#image: crisalidesr/svp-harvester:latest
-build:</p>
-<blockquote>
-<div><p>context: .
-dockerfile: Dockerfile</p>
-</div></blockquote>
-</div></blockquote>
-</li>
+<h1>Quick start: deployment<a class="headerlink" href="#quick-start-deployment" title="Link to this heading"></a></h1>
+<p>Welcome to the quick start guide for deployment. Below are the available deployment options:</p>
+<ul class="simple">
+<li><p><strong>VM deployment:</strong> Set up a new deployment from scratch.</p></li>
+<li><p><strong>Docker Image Deployment:</strong> Deploy using pre-built Docker images.</p></li>
+<li><p><strong>Docker Compose Deployment:</strong> Deploy using Docker Compose for multi-container applications.</p></li>
+<li><p><strong>Kubernetes Deployment:</strong> Deploy using Kubernetes for container orchestration.</p></li>
 </ul>
-<ol class="arabic simple" start="5">
-<li><p>Start the containers</p></li>
-</ol>
-<p>Run the following command from the directory containing the docker-compose.yml file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
-</pre></div>
+<p>For detailed instructions, click on the respective links below.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployment/vm.html">VM Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/docker_image.html">Docker image Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/docker_compose.html">Docker compose Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment/kubernetes.html">Kubernetes Deployment</a></li>
+</ul>
 </div>
-</section>
-<section id="kubernetes">
-<h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading"></a></h2>
-<p>Kubernetes deployment files are located in the <code class="code docutils literal notranslate"><span class="pre">deploy/k8s</span></code> directory.</p>
-<p>Example of Minikube deployment:</p>
-<ol class="arabic simple">
-<li><p>Copy all <a href="#id1"><span class="problematic" id="id2">*</span></a>.yaml.dist files in the <code class="code docutils literal notranslate"><span class="pre">deploy/k8s</span></code> directory to <a href="#id3"><span class="problematic" id="id4">*</span></a>.yaml files and replace all environment variables by their base64 encoded values.</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;my-password&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64
-</pre></div>
-</div>
-<p>2. Copy postgresql sql.dist initialization script to SQL file and replace all credentials by their values.
-Push the sql file to the Minikube VM.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>minikube<span class="w"> </span>cp<span class="w"> </span>svph-user-db.sql<span class="w"> </span>/home/docker/svph-user-db.sql
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p>Start the deployment</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>deploy/k8s
-</pre></div>
-</div>
-</section>
 </section>
 
 
@@ -199,7 +112,7 @@ Push the sql file to the Minikube VM.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../overview.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="development.html" class="btn btn-neutral float-right" title="Quick start : development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="deployment/vm.html" class="btn btn-neutral float-right" title="VM Deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

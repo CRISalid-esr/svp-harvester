@@ -5,7 +5,7 @@ description = ""
 authors = ["jdp1ps <joachim.dornbusch@univ-paris1.fr>"]
 license = "Cecill"
 repository = "https://github.com/CRISalid-esr/svp-harvester"
-documentation = ""
+documentation = "https://svp-harvester.readthedocs.io/en/latest/index.html"
 packages = [{ include = "svp_harvester" }]
 
 [tool.poetry.dependencies]
