@@ -1,6 +1,5 @@
-################
-Docker image
-################
+Docker image Deployment
+===========================================================
 
 At the time of writing, svp-harvester docker image should only be rebuilt if you want to
 modify the translation files, adapt some hard-coded parameters in javascript environment variables

@@ -1,4 +1,4 @@
-Fresh Installation
+VM Deployment
 ===========================================================
 
 This guide will walk you through setting up the SVP Harvester project on a fresh Ubuntu 22.04 installation.
@@ -148,7 +148,7 @@ Clone the repository and set up the project:
    APP_ENV=DEV alembic upgrade head
 
    # Run the project
-   APP_ENV=DEV uvicorn app.main:app --reload
+   APP_ENV=DEV uvicorn app.main:app
 
 To deactivate the virtual environment, use:
 
