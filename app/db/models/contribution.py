@@ -71,7 +71,7 @@ class Contribution(Base):
 
     __tablename__ = "contributions"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
     rank: Mapped[int] = mapped_column(nullable=True)
 
@@ -89,9 +89,9 @@ class Contribution(Base):
         lazy="raise",
     )
 
-    role: Mapped[str] = mapped_column(
-        nullable=False, index=True, default=Role.AUTHOR.value
-    )
+    role: Mapped[str] = mapped_column(nullable=False, index=True, default=Role.AUTHOR.value)
+
+    uri: Mapped[str] = mapped_column(nullable=False, index=True)
 
     affiliations: Mapped[
         List["app.db.models.organization.Organization"]
