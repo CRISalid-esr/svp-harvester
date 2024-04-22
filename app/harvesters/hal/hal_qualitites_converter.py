@@ -12,7 +12,8 @@ class HalQualitiesConverter:
         "aut": Contribution.LOCAuthorRoles.AUT,
         "co_first_author": Contribution.LOCAuthorRoles.AUT,
         "co_last_author": Contribution.LOCAuthorRoles.AUT,
-        "crp": Contribution.LOCAuthorRoles.AUT,  # TODO: add boolean to contribution model for author when they are correspondent
+        # TODO: add boolean to contribution model for author when they are correspondent/crp
+        "crp": Contribution.LOCAuthorRoles.AUT,
         "edt": Contribution.LOCAuthorRoles.EDT,
         "ctb": Contribution.LOCAuthorRoles.CTB,
         "ann": Contribution.LOCAuthorRoles.ANN,
