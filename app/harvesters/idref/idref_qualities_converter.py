@@ -9,9 +9,9 @@ class IdrefQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "aut": Contribution.Role.AUTHOR,
-        "cur": Contribution.Role.CURATOR,
-        "ths": Contribution.Role.THESIS_ADVISOR,
+        "aut": Contribution.LOCAuthorRoles.AUT,
+        "cur": Contribution.LOCAuthorRoles.CUR,
+        "ths": Contribution.LOCAuthorRoles.THS,
     }
 
     @staticmethod
@@ -23,5 +23,5 @@ class IdrefQualitiesConverter:
         """
         if quality not in IdrefQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown idref quality: {quality}")
-            return Contribution.Role.UNKNOWN.value
+            return Contribution.LOCAuthorRoles.UNKNOWN.value
         return IdrefQualitiesConverter.ROLES_MAPPING[quality].value

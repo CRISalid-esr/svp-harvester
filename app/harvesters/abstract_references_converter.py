@@ -61,7 +61,7 @@ class AbstractReferencesConverter(ABC):
         Informations about a contribution
         """
 
-        role: str | None = Contribution.Role.AUTHOR.value
+        role: str | None = Contribution.LOCAuthorRoles.UNKNOWN.value # TODO: need confirmation, previous was author.value
         rank: int | None = None
         name: str | None = None
         identifier: str | None = None

@@ -13,7 +13,7 @@ def test_known_hal_qualities_converter():
     role = "enq"
     convert = ScanrRolesConverter.convert(role=role)
 
-    assert convert == Contribution.Role.INTERVIEWER.value
+    assert convert == Contribution.LOCAuthorRoles.IVR.value
 
 
 def test_unknown_hal_qualities_converter():
@@ -25,4 +25,4 @@ def test_unknown_hal_qualities_converter():
     role = "test_method"
     convert = ScanrRolesConverter.convert(role=role)
 
-    assert convert == Contribution.Role.UNKNOWN.value
+    assert convert == Contribution.LOCAuthorRoles.UNKNOWN.value

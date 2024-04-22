@@ -16,67 +16,10 @@ class Contribution(Base):
     Model for persistence of contributions
     """
 
-    class Role(Enum):
-        """
-        Rôles of contributors
-        see https://documentation.abes.fr/aidescienceplusabes/index.html#roles
-        """
-
-        ANNOTATOR = "Annotator"
-        ANALYST = "Analyst"
-        ARCHITECT = "Architect"
-        ARTISTIC_DIRECTOR = "Artistic Director"
-        AUTHOR = "Author"
-        AUTHOR_OF_AFTERWORD = "Author Of Afterword"
-        AUTHOR_OF_INTRODUCTION = "Author Of Introduction"
-        CARTOGRAPHER = "Cartographer"
-        COMMENTATOR_OF_WRITTEN_TEXT = "Commentator Of Written Text"
-        COMPOSER = "Composer"
-        COMPILER = "Compiler"
-        CONTRIBUTOR = "Contributor"
-        CONTRACTOR = "Contractor"
-        CORRESPONDENT_AUTHOR = "Correspondent Author"
-        CURATOR = "Curator"
-        DEGREE_COMMITTEE_MEMBER = "Degree Committee Member"
-        DESIGNER = "Designer"
-        DISSERTANT = "Dissertant"
-        DONOR = "Donor"
-        EDITOR = "Editor"
-        FILM_DIRECTOR = "Film Director"
-        FILM_EDITOR = "Film Editor"
-        FORMER_OWNER = "Former Owner"
-        ILLUSTRATOR = "Illustrator"
-        INTERVIEWEE = "Interviewee"
-        INTERVIEWER = "Interviewer"
-        OPPONENT = "Opponent"
-        OTHER = "Other"
-        PHOTOGRAPHER = "Photographer"
-        PRAESES = "Praeses"
-        PRODUCER = "Producer"
-        PROJECT_DIRECTOR = "Project Director"
-        PRODUCTION_PERSONNEL = "Production Personnel"
-        PUBLISHER_DIRECTOR = "Publisher Director"
-        RESPONDANT = "Respondant"
-        RAPPORTEUR = "Rapporteur"
-        SCIENTIFIC_ADVISOR = "Scientific Advisor"
-        SCIENTIFIC_EDITOR = "Scientific Editor"
-        SOFTWARE_DEVELOPER = "Software Developer"
-        SOUND_DESIGNER = "Sound Designer"
-        SPEAKER = "Speaker"
-        STAGE_MANAGER = "Stage Manager"
-        THESIS_ADVISOR = "Thesis Advisor"
-        TRANSLATOR = "Translator"
-        UNKNOWN = "Unknown"
-        WITNESS = "Witness"
-        WRITER_OF_ACCOMPANYING_MATERIAL = "Writer Of Accompanying Material"
-        WRITER_OF_INTRODUCTION = "Writer Of Introduction"
-
-    # TODO: Move the existing harvesters from using the Role enum to the LOCAuthorRoles enum.
-    #  This will require updating the existing harvesters to use the new enum.
-    #  In case of the information sent back by the idref base harvester,
-    #  the codes are already those of the LOCAuthorRoles enum.
-    #  If the code is not set in the harvester, the role will be set to "Unknown".
     class LOCAuthorRoles(Enum):
+        """
+        Enum class for Library of Congress (LOC) relators
+        """
 
         ACT = ("Actor", f"{RELATORS_BASE_URL}act.html")
         ADP = ("Adapter", f"{RELATORS_BASE_URL}adp.html")
@@ -176,6 +119,7 @@ class Contribution(Base):
         PBL = ("Publisher", f"{RELATORS_BASE_URL}pbl.html")
         PBD = ("Publisher director", f"{RELATORS_BASE_URL}pbd.html")
         PPT = ("Puppeteer", f"{RELATORS_BASE_URL}ppt.html")
+        RAP = ("Rapporteur", f"{RELATORS_BASE_URL}rap.html")
         RCP = ("Addressee", f"{RELATORS_BASE_URL}rcp.html")
         RCE = ("Recording engineer", f"{RELATORS_BASE_URL}rce.html")
         RTH = ("Research team head", f"{RELATORS_BASE_URL}rth.html")

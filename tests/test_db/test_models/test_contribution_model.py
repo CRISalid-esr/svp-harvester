@@ -33,7 +33,7 @@ async def test_contributor(async_session: AsyncSession):
         titles=[Title(value="title", language="fr")],
         contributions=[
             Contribution(
-                role=Contribution.Role.ILLUSTRATOR.value, contributor=contributor
+                role=Contribution.LOCAuthorRoles.ILL.value, contributor=contributor
             )
         ],
     )
@@ -56,7 +56,7 @@ async def test_contributor(async_session: AsyncSession):
     assert contributor_from_db.name == "John Doe"
     assert len(contributor_from_db.contributions) == 1
     assert (
-        contributor_from_db.contributions[0].role == Contribution.Role.ILLUSTRATOR.value
+        contributor_from_db.contributions[0].role == Contribution.LOCAuthorRoles.ILL.value
     )
     reference = contributor_from_db.contributions[0].reference
     assert reference.source_identifier == "source_identifier_1234"
@@ -95,7 +95,7 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
         titles=[Title(value="title", language="fr")],
         contributions=[
             Contribution(
-                role=Contribution.Role.ILLUSTRATOR.value,
+                role=Contribution.LOCAuthorRoles.ILL.value,
                 contributor=contributor,
                 affiliations=[organization],
             )
@@ -119,7 +119,7 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
     assert len(organization_from_db.contributions) == 1
     assert (
         organization_from_db.contributions[0].role
-        == Contribution.Role.ILLUSTRATOR.value
+        == Contribution.LOCAuthorRoles.ILL.value
     )
     reference = organization_from_db.contributions[0].reference
     assert reference.source_identifier == "source_identifier_1234"

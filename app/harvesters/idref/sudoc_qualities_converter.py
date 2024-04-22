@@ -9,22 +9,22 @@ class SudocQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "aut": Contribution.Role.AUTHOR,
-        "trl": Contribution.Role.TRANSLATOR,
-        "opn": Contribution.Role.OPPONENT,
-        "ths": Contribution.Role.THESIS_ADVISOR,
-        "pra": Contribution.Role.PRAESES,
-        "edt": Contribution.Role.EDITOR,
-        "pbd": Contribution.Role.PUBLISHER_DIRECTOR,
-        "aui": Contribution.Role.AUTHOR_OF_INTRODUCTION,
-        "clb": Contribution.Role.CONTRIBUTOR,
-        "fmo": Contribution.Role.FORMER_OWNER,
-        "dnr": Contribution.Role.DONOR,
-        "cur": Contribution.Role.CURATOR,
-        "aft": Contribution.Role.AUTHOR_OF_AFTERWORD,
-        "ive": Contribution.Role.INTERVIEWEE,
-        "ctg": Contribution.Role.CARTOGRAPHER,
-        "ill": Contribution.Role.ILLUSTRATOR,
+        "aut": Contribution.LOCAuthorRoles.AUT,
+        "trl": Contribution.LOCAuthorRoles.TRL,
+        "opn": Contribution.LOCAuthorRoles.OPN,
+        "ths": Contribution.LOCAuthorRoles.THS,
+        "pra": Contribution.LOCAuthorRoles.PRA,
+        "edt": Contribution.LOCAuthorRoles.EDT,
+        "pbd": Contribution.LOCAuthorRoles.PBD,
+        "aui": Contribution.LOCAuthorRoles.AUI,
+        "clb": Contribution.LOCAuthorRoles.CTB,
+        "fmo": Contribution.LOCAuthorRoles.FMO,
+        "dnr": Contribution.LOCAuthorRoles.DNR,
+        "cur": Contribution.LOCAuthorRoles.CUR,
+        "aft": Contribution.LOCAuthorRoles.AFT,
+        "ive": Contribution.LOCAuthorRoles.IVE,
+        "ctg": Contribution.LOCAuthorRoles.CTG,
+        "ill": Contribution.LOCAuthorRoles.ILL,
     }
 
     @staticmethod
@@ -36,5 +36,5 @@ class SudocQualitiesConverter:
         """
         if quality not in SudocQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown sudoc quality: {quality}")
-            return Contribution.Role.UNKNOWN.value
+            return Contribution.LOCAuthorRoles.UNKNOWN.value
         return SudocQualitiesConverter.ROLES_MAPPING[quality].value

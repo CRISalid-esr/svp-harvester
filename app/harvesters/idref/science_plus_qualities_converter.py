@@ -9,8 +9,8 @@ class SciencePlusQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "aut": Contribution.Role.AUTHOR,
-        "ctb": Contribution.Role.CONTRIBUTOR,
+        "aut": Contribution.LOCAuthorRoles.AUT,
+        "ctb": Contribution.LOCAuthorRoles.CTB,
     }
 
     @staticmethod
@@ -22,5 +22,5 @@ class SciencePlusQualitiesConverter:
         """
         if quality not in SciencePlusQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown science plus quality: {quality} {len(quality)}")
-            return Contribution.Role.UNKNOWN.value
+            return Contribution.LOCAuthorRoles.UNKNOWN.value
         return SciencePlusQualitiesConverter.ROLES_MAPPING[quality].value

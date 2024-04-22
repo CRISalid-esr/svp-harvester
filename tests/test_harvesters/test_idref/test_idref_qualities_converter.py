@@ -23,5 +23,5 @@ def test_uknown_open_edition_qualities_converter(caplog):
     """
     quality = "test_method"
     convert = OpenEditionQualitiesConverter.convert(quality=quality)
-    assert convert == Contribution.Role.UNKNOWN.value
+    assert convert == Contribution.LOCAuthorRoles.UNKNOWN.value
     assert f"Unknown open edition quality: {quality}" in caplog.text

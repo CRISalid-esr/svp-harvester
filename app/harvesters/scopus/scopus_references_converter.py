@@ -211,7 +211,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             name = self._get_element(author, "default:authname").text
             contributions.append(
                 AbstractReferencesConverter.ContributionInformations(
-                    role=Contribution.Role.AUTHOR.value,
+                    role=Contribution.LOCAuthorRoles.AUT.value,
                     identifier=identifier,
                     name=name,
                     rank=int(rank),

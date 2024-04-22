@@ -9,9 +9,9 @@ class PerseeQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "aut": Contribution.Role.AUTHOR,
-        "trl": Contribution.Role.TRANSLATOR,
-        "ctb": Contribution.Role.CONTRIBUTOR,
+        "aut": Contribution.LOCAuthorRoles.AUT,
+        "trl": Contribution.LOCAuthorRoles.TRL,
+        "ctb": Contribution.LOCAuthorRoles.CTB,
     }
 
     @staticmethod
@@ -23,5 +23,5 @@ class PerseeQualitiesConverter:
         """
         if quality not in PerseeQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown persee quality: {quality}")
-            return Contribution.Role.UNKNOWN.value
+            return Contribution.LOCAuthorRoles.UNKNOWN.value
         return PerseeQualitiesConverter.ROLES_MAPPING[quality].value

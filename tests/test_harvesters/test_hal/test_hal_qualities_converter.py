@@ -13,7 +13,7 @@ def test_known_hal_qualities_converter():
     quality = "edt"
     convert = HalQualitiesConverter.convert(quality=quality)
 
-    assert convert == Contribution.Role.EDITOR.value
+    assert convert == Contribution.LOCAuthorRoles.EDT.value
 
 
 def test_unknown_hal_qualities_converter():
@@ -25,4 +25,4 @@ def test_unknown_hal_qualities_converter():
     quality = "test_method"
     convert = HalQualitiesConverter.convert(quality=quality)
 
-    assert convert == Contribution.Role.UNKNOWN.value
+    assert convert == Contribution.LOCAuthorRoles.UNKNOWN.value

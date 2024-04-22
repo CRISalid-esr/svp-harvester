@@ -8,8 +8,8 @@ class OpenEditionQualitiesConverter:
     """
 
     ROLES_MAPPING = {
-        "contributor": Contribution.Role.CONTRIBUTOR,
-        "creator": Contribution.Role.AUTHOR,
+        "contributor": Contribution.LOCAuthorRoles.CTB,
+        "creator": Contribution.LOCAuthorRoles.AUT,
     }
 
     @staticmethod
@@ -21,5 +21,5 @@ class OpenEditionQualitiesConverter:
         """
         if quality not in OpenEditionQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown open edition quality: {quality}")
-            return Contribution.Role.UNKNOWN.value
+            return Contribution.LOCAuthorRoles.UNKNOWN.value
         return OpenEditionQualitiesConverter.ROLES_MAPPING[quality].value
