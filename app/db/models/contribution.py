@@ -48,8 +48,8 @@ class Contribution(Base):
         CTG = ("Cartographer", f"{RELATORS_BASE_URL}ctg.html")
         CNS = ("Censor", f"{RELATORS_BASE_URL}cns.html")
         CHR = ("Choreographer", f"{RELATORS_BASE_URL}chr.html")
-        CLB = ("Collaborator", f"discontinued code")
-        COl = ("Collector", f"{RELATORS_BASE_URL}col.html")
+        CLB = ("Collaborator", "discontinued code")
+        COL = ("Collector", f"{RELATORS_BASE_URL}col.html")
         CMM = ("Commentator", f"{RELATORS_BASE_URL}cmm.html")
         CMT = ("Compositor", f"{RELATORS_BASE_URL}cmt.html")
         CWT = ("Commentator for written text", f"{RELATORS_BASE_URL}cwt.html")
@@ -81,7 +81,7 @@ class Contribution(Base):
         FLM = ("Film editor", f"{RELATORS_BASE_URL}flm.html")
         FRG = ("Forger", f"{RELATORS_BASE_URL}frg.html")
         FMO = ("Former owner", f"{RELATORS_BASE_URL}fmo.html")
-        GRT = ("Graphic technician", f"Discontinued code")
+        GRT = ("Graphic technician", "Discontinued code")
         HNR = ("Honoree", f"{RELATORS_BASE_URL}hnr.html")
         ILU = ("Illuminator", f"{RELATORS_BASE_URL}ilu.html")
         ILL = ("Illustrator", f"{RELATORS_BASE_URL}ill.html")
@@ -145,7 +145,7 @@ class Contribution(Base):
         TRL = ("Translator", f"{RELATORS_BASE_URL}trl.html")
         TYD = ("Type designer", f"{RELATORS_BASE_URL}tyd.html")
         TYG = ("Typographer", f"{RELATORS_BASE_URL}tyg.html")
-        VOC = ("Vocalist", f"Discontinued code")
+        VOC = ("Vocalist", "Discontinued code")
         WDE = ("Wood-engraver", f"{RELATORS_BASE_URL}wde.html")
         WAM = ("Writer of accompanying material", f"{RELATORS_BASE_URL}wam.html")
         WIT = ("Witness", f"{RELATORS_BASE_URL}wit.html")
@@ -156,25 +156,35 @@ class Contribution(Base):
             self._role = role
             self._url = url
 
-        @property
-        def full_name(self):
+        def loc_name(self):
+            """
+            Define a property to return the name of the role
+            """
             return self._role
 
-        @property
-        def url(self):
+        def loc_url(self):
+            """
+            Define a property to return the URL of the role
+            """
             return self._url
 
     @classmethod
-    def get_full_name(cls, role_code):
+    def get_name(cls, role_code):
+        """
+        Get the name for a given role code
+        """
         try:
-            return cls.LOCAuthorRoles[role_code].full_name
+            return cls.LOCAuthorRoles[role_code].loc_name()
         except KeyError:
             return "Unknown"
 
     @classmethod
     def get_url(cls, role_code):
+        """
+        Get the URL for a given role code
+        """
         try:
-            return cls.LOCAuthorRoles[role_code].url
+            return cls.LOCAuthorRoles[role_code].loc_url()
         except KeyError:
             return ""
 
@@ -198,7 +208,9 @@ class Contribution(Base):
         lazy="raise",
     )
 
-    role: Mapped[str] = mapped_column(nullable=False, index=True, default=LOCAuthorRoles.UNKNOWN.value)
+    role: Mapped[str] = mapped_column(
+        nullable=False, index=True, default=LOCAuthorRoles.UNKNOWN.value
+    )
 
     affiliations: Mapped[
         List["app.db.models.organization.Organization"]
@@ -209,9 +221,6 @@ class Contribution(Base):
     )
 
 
-# # Example usage:
-# print(Contribution.LOCAuthorRoles.aut.full_name)  # Output: "Author"
-# print(Contribution.LOCAuthorRoles.aut.url)  # Output: "https://id.loc.gov/vocabulary/relators/aut.html"
-#
-# print(Contribution.get_full_name("aut"))  # Output: "Author"
-# print(Contribution.get_url("aut"))  # Output: "https://id.loc.gov/vocabulary/relators/aut.html"
+# # Example usage of LOCAuthorRoles enum class:
+# print(Contribution.get_name("AUT"))  # Output: "Author"
+# print(Contribution.get_url("AUT"))  # Output: "https://id.loc.gov/vocabulary/relators/aut.html"
