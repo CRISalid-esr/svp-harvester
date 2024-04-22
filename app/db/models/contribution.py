@@ -198,7 +198,7 @@ class Contribution(Base):
         lazy="raise",
     )
 
-    role: Mapped[str] = mapped_column(nullable=False, index=True, default=LOCAuthorRoles.unknow.value)
+    role: Mapped[str] = mapped_column(nullable=False, index=True, default=LOCAuthorRoles.UNKNOWN.value)
 
     affiliations: Mapped[
         List["app.db.models.organization.Organization"]
