@@ -3,7 +3,7 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class SudocQualitiesConverter:
+class SudocRolesConverter:
     """
     Use mapping table to convert sudoc role values to loc roles values
     """
@@ -28,13 +28,13 @@ class SudocQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert sudo role value to loc role value
-        :param quality: sudoc role value
+        :param role: sudoc role value
         :return: loc role value
         """
-        if quality not in SudocQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown sudoc quality: {quality}")
+        if role not in SudocRolesConverter.ROLES_MAPPING:
+            logger.warning(f"Unknown sudoc role: {role}")
             return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
-        return SudocQualitiesConverter.ROLES_MAPPING[quality].loc_url()
+        return SudocRolesConverter.ROLES_MAPPING[role].loc_url()

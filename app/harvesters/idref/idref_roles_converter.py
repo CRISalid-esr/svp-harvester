@@ -3,22 +3,22 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class IdrefQualitiesConverter:
+class IdrefRolesConverter:
     """
     Use mapping table to convert idref role values to loc roles values
     """
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert science plus role value to loc role value
-        :param quality: science plus role value
+        :param role: science plus role value
         :return: loc role value
         """
-        quality_upper = quality.upper()
+        role_upper = role.upper()
 
-        if hasattr(Contribution.LOCAuthorRoles, quality_upper):
-            return getattr(Contribution.LOCAuthorRoles, quality_upper).loc_url()
+        if hasattr(Contribution.LOCAuthorRoles, role_upper):
+            return getattr(Contribution.LOCAuthorRoles, role_upper).loc_url()
 
-        logger.warning(f"Unknown idref quality: {quality}")
+        logger.warning(f"Unknown idref role: {role}")
         return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()

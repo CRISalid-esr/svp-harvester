@@ -2,7 +2,7 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class HalQualitiesConverter:
+class HalRolesConverter:
     """
     Use mapping table ton convert hal role values to loc roles values
     through a static method
@@ -12,7 +12,6 @@ class HalQualitiesConverter:
         "aut": Contribution.LOCAuthorRoles.AUT,
         "co_first_author": Contribution.LOCAuthorRoles.AUT,
         "co_last_author": Contribution.LOCAuthorRoles.AUT,
-        # TODO: add boolean to contribution model for author when they are correspondent/crp
         "crp": Contribution.LOCAuthorRoles.AUT,
         "edt": Contribution.LOCAuthorRoles.EDT,
         "ctb": Contribution.LOCAuthorRoles.CTB,
@@ -63,16 +62,16 @@ class HalQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert hal role value to loc role value
-        :param quality: hal role value
+        :param role: hal role value
         :return: loc role value
         """
-        if quality in HalQualitiesConverter.ROLES_MAPPING:
-            contribution_role = HalQualitiesConverter.ROLES_MAPPING[quality]
+        if role in HalRolesConverter.ROLES_MAPPING:
+            contribution_role = HalRolesConverter.ROLES_MAPPING[role]
         else:
-            logger.warning(f"Unknown hal quality: {quality}")
+            logger.warning(f"Unknown hal role: {role}")
             contribution_role = Contribution.LOCAuthorRoles.UNKNOWN
 
         return contribution_role.loc_url()

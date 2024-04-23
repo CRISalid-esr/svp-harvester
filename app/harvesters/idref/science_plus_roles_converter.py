@@ -3,7 +3,7 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class SciencePlusQualitiesConverter:
+class SciencePlusRolesConverter:
     """
     Use mapping table to convert science plus role values to loc roles values
     """
@@ -14,13 +14,13 @@ class SciencePlusQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert science plus role value to loc role value
-        :param quality: science plus role value
+        :param role: science plus role value
         :return: loc role value
         """
-        if quality not in SciencePlusQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown science plus quality: {quality} {len(quality)}")
+        if role not in SciencePlusRolesConverter.ROLES_MAPPING:
+            logger.warning(f"Unknown science plus role: {role} {len(role)}")
             return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
-        return SciencePlusQualitiesConverter.ROLES_MAPPING[quality].loc_url()
+        return SciencePlusRolesConverter.ROLES_MAPPING[role].loc_url()

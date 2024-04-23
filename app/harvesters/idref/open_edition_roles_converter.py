@@ -2,7 +2,7 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class OpenEditionQualitiesConverter:
+class OpenEditionRolesConverter:
     """
     Use mapping table to convert open edition role values to loc roles values
     """
@@ -13,13 +13,13 @@ class OpenEditionQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert open edition role value to loc role value
-        :param quality: open edition role value
+        :param role: open edition role value
         :return: loc role value
         """
-        if quality not in OpenEditionQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown open edition quality: {quality}")
+        if role not in OpenEditionRolesConverter.ROLES_MAPPING:
+            logger.warning(f"Unknown open edition role: {role}")
             return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
-        return OpenEditionQualitiesConverter.ROLES_MAPPING[quality].loc_url()
+        return OpenEditionRolesConverter.ROLES_MAPPING[role].loc_url()

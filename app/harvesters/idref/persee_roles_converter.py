@@ -3,7 +3,7 @@ from loguru import logger
 from app.db.models.contribution import Contribution
 
 
-class PerseeQualitiesConverter:
+class PerseeRolesConverter:
     """
     Use mapping table to convert persee role value to loc roles values
     """
@@ -15,13 +15,13 @@ class PerseeQualitiesConverter:
     }
 
     @staticmethod
-    def convert(quality: str) -> str:
+    def convert(role: str) -> str:
         """
         Convert persee role value to loc role value
-        :param quality: persee role value
+        :param role: persee role value
         :return: loc role value
         """
-        if quality not in PerseeQualitiesConverter.ROLES_MAPPING:
-            logger.warning(f"Unknown persee quality: {quality}")
+        if role not in PerseeRolesConverter.ROLES_MAPPING:
+            logger.warning(f"Unknown persee role: {role}")
             return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
-        return PerseeQualitiesConverter.ROLES_MAPPING[quality].loc_url()
+        return PerseeRolesConverter.ROLES_MAPPING[role].loc_url()

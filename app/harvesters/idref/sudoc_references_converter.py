@@ -19,7 +19,7 @@ from app.harvesters.idref.sudoc_document_type_converter import (
     SudocDocumentTypeConverter,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
-from app.harvesters.idref.sudoc_qualities_converter import SudocQualitiesConverter
+from app.harvesters.idref.sudoc_roles_converter import SudocRolesConverter
 from app.services.book.book_data_class import BookInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
@@ -203,7 +203,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         pass
 
     def _convert_role(self, role):
-        return SudocQualitiesConverter.convert(role)
+        return SudocRolesConverter.convert(role)
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [

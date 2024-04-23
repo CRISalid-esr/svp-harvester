@@ -1,3 +1,5 @@
+from loguru import logger
+
 from app.db.models.contribution import Contribution
 
 
@@ -70,6 +72,7 @@ class ScanrRolesConverter:
         if role in ScanrRolesConverter.ROLES_MAPPING:
             contribution_role = ScanrRolesConverter.ROLES_MAPPING[role]
         else:
+            logger.warning(f"Unknown Scanr role: {role}")
             contribution_role = Contribution.LOCAuthorRoles.UNKNOWN
 
         return contribution_role.loc_url()
