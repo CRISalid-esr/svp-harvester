@@ -75,4 +75,4 @@ class HalQualitiesConverter:
             logger.warning(f"Unknown hal quality: {quality}")
             contribution_role = Contribution.LOCAuthorRoles.UNKNOWN
 
-        return contribution_role.value
+        return contribution_role.loc_url()

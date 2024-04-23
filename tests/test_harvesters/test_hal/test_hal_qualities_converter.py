@@ -1,5 +1,3 @@
-import pytest
-
 from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
 from app.db.models.contribution import Contribution
 
@@ -12,8 +10,9 @@ def test_known_hal_qualities_converter():
     """
     quality = "edt"
     convert = HalQualitiesConverter.convert(quality=quality)
+    expected_quality = Contribution.get_url("EDT")
 
-    assert convert == Contribution.LOCAuthorRoles.EDT.value
+    assert convert == expected_quality
 
 
 def test_unknown_hal_qualities_converter():
@@ -24,5 +23,6 @@ def test_unknown_hal_qualities_converter():
     """
     quality = "test_method"
     convert = HalQualitiesConverter.convert(quality=quality)
+    expected_quality = Contribution.get_url("UNKNOWN")
 
-    assert convert == Contribution.LOCAuthorRoles.UNKNOWN.value
+    assert convert == expected_quality

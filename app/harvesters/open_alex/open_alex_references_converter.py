@@ -157,7 +157,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             id_open_alex = author.get("id")
             contribution_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
-                    role=Contribution.LOCAuthorRoles.AUT.value,
+                    role=Contribution.get_url("AUT"),
                     identifier=id_open_alex,
                     name=name,
                     rank=rank_count,

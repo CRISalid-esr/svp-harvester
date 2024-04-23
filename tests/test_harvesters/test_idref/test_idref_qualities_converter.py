@@ -5,14 +5,15 @@ from app.harvesters.idref.open_edition_qualities_converter import (
 
 
 def test_known_open_edition_qualities_converter():
-    # TODO WHEN Mapping Table is complete
     """
     Given a known quality from OpenEdition
     When the quality converter is called
     Then the quality is converted into the corresponding Loc value
     """
-    quality = "author"
+    quality = "contributor"
     convert = OpenEditionQualitiesConverter.convert(quality=quality)
+    expected_quality = Contribution.get_url("CTB")
+    assert convert == expected_quality
 
 
 def test_uknown_open_edition_qualities_converter(caplog):
@@ -23,5 +24,6 @@ def test_uknown_open_edition_qualities_converter(caplog):
     """
     quality = "test_method"
     convert = OpenEditionQualitiesConverter.convert(quality=quality)
-    assert convert == Contribution.LOCAuthorRoles.UNKNOWN.value
+    expected_quality = Contribution.get_url("UNKNOWN")
+    assert convert == expected_quality
     assert f"Unknown open edition quality: {quality}" in caplog.text

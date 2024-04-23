@@ -22,5 +22,5 @@ class SciencePlusQualitiesConverter:
         """
         if quality not in SciencePlusQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown science plus quality: {quality} {len(quality)}")
-            return Contribution.LOCAuthorRoles.UNKNOWN.value
-        return SciencePlusQualitiesConverter.ROLES_MAPPING[quality].value
+            return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
+        return SciencePlusQualitiesConverter.ROLES_MAPPING[quality].loc_url()

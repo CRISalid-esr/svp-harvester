@@ -23,5 +23,5 @@ class PerseeQualitiesConverter:
         """
         if quality not in PerseeQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown persee quality: {quality}")
-            return Contribution.LOCAuthorRoles.UNKNOWN.value
-        return PerseeQualitiesConverter.ROLES_MAPPING[quality].value
+            return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
+        return PerseeQualitiesConverter.ROLES_MAPPING[quality].loc_url()

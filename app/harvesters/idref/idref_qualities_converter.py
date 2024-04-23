@@ -2,6 +2,9 @@ from loguru import logger
 
 from app.db.models.contribution import Contribution
 
+# TODO: Complete the IdrefQualitiesConverter class to use LOCAuthorRoles enum by default,
+#  without needing mapping table
+
 
 class IdrefQualitiesConverter:
     """
@@ -23,5 +26,5 @@ class IdrefQualitiesConverter:
         """
         if quality not in IdrefQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown idref quality: {quality}")
-            return Contribution.LOCAuthorRoles.UNKNOWN.value
-        return IdrefQualitiesConverter.ROLES_MAPPING[quality].value
+            return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
+        return IdrefQualitiesConverter.ROLES_MAPPING[quality].loc_url()

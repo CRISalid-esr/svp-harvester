@@ -72,4 +72,4 @@ class ScanrRolesConverter:
         else:
             contribution_role = Contribution.LOCAuthorRoles.UNKNOWN
 
-        return contribution_role.value
+        return contribution_role.loc_url()

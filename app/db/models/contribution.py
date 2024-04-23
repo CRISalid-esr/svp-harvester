@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import List
 
-from sqlalchemy import ForeignKey, Column, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship, Composite
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.models.affiliations import affiliations_table
 from app.db.session import Base
@@ -150,7 +150,7 @@ class Contribution(Base):
         WAM = ("Writer of accompanying material", f"{RELATORS_BASE_URL}wam.html")
         WIT = ("Witness", f"{RELATORS_BASE_URL}wit.html")
 
-        UNKNOWN = ("Unknown", "")
+        UNKNOWN = ("Unknown", "Unknown")
 
         def __init__(self, role, url):
             self._role = role
@@ -188,16 +188,6 @@ class Contribution(Base):
         except KeyError:
             return ""
 
-    class RoleComposite:
-        """
-        Composite class for role
-        """
-
-        def __init__(self, role: 'Contribution.LOCAuthorRoles'):
-            self.role_code = role.name
-            self.role_name = role.loc_name()
-            self.role_url = role.loc_url()
-
     __tablename__ = "contributions"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -217,10 +207,10 @@ class Contribution(Base):
         back_populates="contributions",
         lazy="raise",
     )
-    role_code = Column(String)
-    role_name = Column(String)
-    role_url = Column(String)
-    role: Composite(RoleComposite, role_code, role_name, role_url)
+    # TODO: add a validator to check if the role is a valid LOCAuthorRoles enum value
+    role: Mapped[str] = mapped_column(
+        nullable=False, index=True, default=lambda: Contribution.get_url("UNKNOWN")
+    )
 
     affiliations: Mapped[
         List["app.db.models.organization.Organization"]
@@ -232,5 +222,9 @@ class Contribution(Base):
 
 
 # # Example usage of LOCAuthorRoles enum class:
+# print(Contribution.LOCAuthorRoles.AUT.loc_name())  # Output: "Author"
+# print(Contribution.LOCAuthorRoles.AUT.loc_url())
+# Output: "https://id.loc.gov/vocabulary/relators/aut.html"
+
 # print(Contribution.get_name("AUT"))  # Output: "Author"
 # print(Contribution.get_url("AUT"))  # Output: "https://id.loc.gov/vocabulary/relators/aut.html"

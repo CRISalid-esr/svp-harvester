@@ -1,8 +1,7 @@
-from email.contentmanager import raw_data_manager
-
 import pytest
 from semver import VersionInfo
 
+from app.db.models.contribution import Contribution
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
@@ -32,7 +31,7 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_docid = "1387023"
     expected_abstracts = ["This article focuses on Vernant..."]
     expected_contributors_number = 1
-    expected_contributor_role = "Author"
+    expected_contributor_role = Contribution.get_url("AUT")
     expected_contributor_name = "Violaine Sebillotte Cuchet"
     expected_contributor_source = "hal"
     expected_contributor_source_identifier = "10227"

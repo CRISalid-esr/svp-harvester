@@ -36,5 +36,5 @@ class SudocQualitiesConverter:
         """
         if quality not in SudocQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown sudoc quality: {quality}")
-            return Contribution.LOCAuthorRoles.UNKNOWN.value
-        return SudocQualitiesConverter.ROLES_MAPPING[quality].value
+            return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
+        return SudocQualitiesConverter.ROLES_MAPPING[quality].loc_url()

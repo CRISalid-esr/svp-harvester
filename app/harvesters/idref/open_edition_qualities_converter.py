@@ -21,5 +21,5 @@ class OpenEditionQualitiesConverter:
         """
         if quality not in OpenEditionQualitiesConverter.ROLES_MAPPING:
             logger.warning(f"Unknown open edition quality: {quality}")
-            return Contribution.LOCAuthorRoles.UNKNOWN.value
-        return OpenEditionQualitiesConverter.ROLES_MAPPING[quality].value
+            return Contribution.LOCAuthorRoles.UNKNOWN.loc_url()
+        return OpenEditionQualitiesConverter.ROLES_MAPPING[quality].loc_url()
