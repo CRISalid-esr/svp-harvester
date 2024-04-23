@@ -2,11 +2,10 @@ from enum import Enum
 from typing import List
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.db.models.affiliations import affiliations_table
 from app.db.session import Base
-from app.db.models.organization import Organization  # pylint: disable=unused-import
 
 RELATORS_BASE_URL = "https://id.loc.gov/vocabulary/relators/"
 
@@ -207,7 +206,7 @@ class Contribution(Base):
         back_populates="contributions",
         lazy="raise",
     )
-    # TODO: add a validator to check if the role is a valid LOCAuthorRoles enum value
+
     role: Mapped[str] = mapped_column(
         nullable=False, index=True, default=lambda: Contribution.get_url("UNKNOWN")
     )
@@ -219,6 +218,17 @@ class Contribution(Base):
         secondary=affiliations_table,
         lazy="joined",
     )
+
+    @validates("role")
+    def validate_role(self, _, role_uri):
+        """
+        Validate that the role is a valid LOCAuthorRoles enum value
+        """
+        if not any(role_uri == role.loc_url() for role in Contribution.LOCAuthorRoles):
+            raise ValueError(
+                f"Unknown role: {role_uri} for reference {self.reference_id}"
+            )
+        return role_uri
 
 
 # # Example usage of LOCAuthorRoles enum class:

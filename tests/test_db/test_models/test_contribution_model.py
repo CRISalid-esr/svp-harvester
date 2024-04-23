@@ -119,3 +119,15 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
     assert reference.harvester == "harvester"
     assert reference.hash == "hash"
     assert reference.version == 0
+
+
+def test_validate_role():
+    # Test with a valid role_uri
+    valid_role_uri = Contribution.LOCAuthorRoles.AUT.loc_url()
+    contribution = Contribution(role=valid_role_uri)
+    assert contribution.role == valid_role_uri
+
+    # Test with an invalid role_uri
+    invalid_role_uri = "invalid_uri"
+    with pytest.raises(ValueError):
+        Contribution(role=invalid_role_uri)

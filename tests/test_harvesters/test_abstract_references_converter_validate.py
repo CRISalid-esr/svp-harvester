@@ -75,7 +75,7 @@ def fixture_reference_with_all_fields():
         contributions=[
             DbContribution(
                 rank=1,
-                role="I am a role",
+                role=DbContribution.get_url("AUT"),
                 contributor=DbContributor(
                     source="I am a source",
                     source_identifier="I am a source identifier",
