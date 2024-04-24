@@ -1,3 +1,4 @@
+import isodate
 from loguru import logger
 from semver import Version
 from similarity.jarowinkler import JaroWinkler
@@ -84,6 +85,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 new_ref.subjects.append(subject)
 
         await self._add_contributions(json_payload, new_ref)
+
+        issue = json_payload["_source"].get("publicationDate")
+        if issue:
+            new_ref.issued = self._date(issue)
 
         journal = await self._journal(json_payload)
 
@@ -325,3 +330,13 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             levenshtein_dist < LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD
             and jaro_winkler_dist < JARO_WINKLER_CONCEPT_LABELS_SIMILARITY_THRESHOLD
         )
+
+    def _date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            return isodate.parse_datetime(date).replace(tzinfo=None)
+        except isodate.ISO8601Error as error:
+            logger.error(f"Could not parse date {date} from HAL with error {error}")
+            return None
