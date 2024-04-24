@@ -338,5 +338,5 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 return None
             return isodate.parse_datetime(date).replace(tzinfo=None)
         except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from HAL with error {error}")
+            logger.error(f"Could not parse date {date} from ScanR with error {error}")
             return None
