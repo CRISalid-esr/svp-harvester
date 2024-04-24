@@ -10,7 +10,7 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.idref.idref_document_type_converter import (
     IdrefDocumentTypeConverter,
 )
-from app.harvesters.idref.idref_qualities_converter import IdrefQualitiesConverter
+from app.harvesters.idref.idref_roles_converter import IdrefRolesConverter
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
@@ -112,7 +112,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
             role = contributor_role.split("/")[-1]
             contributor_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
-                    role=IdrefQualitiesConverter.convert(role),
+                    role=IdrefRolesConverter.convert(role),
                     identifier=contributor,
                     name=contributor_name,
                     rank=None,

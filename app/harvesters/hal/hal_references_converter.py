@@ -18,7 +18,7 @@ from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
 from app.harvesters.hal.hal_document_type_converter import HalDocumentTypeConverter
-from app.harvesters.hal.hal_qualitites_converter import HalQualitiesConverter
+from app.harvesters.hal.hal_roles_converter import HalRolesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
 )
@@ -293,7 +293,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             _, id_hal = ids.split("-")
             contribution_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
-                    role=HalQualitiesConverter.convert(quality),
+                    role=HalRolesConverter.convert(quality),
                     identifier=id_hal if id_hal != "0" else None,
                     name=name,
                     rank=rank,

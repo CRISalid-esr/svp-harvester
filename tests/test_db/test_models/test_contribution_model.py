@@ -32,9 +32,7 @@ async def test_contributor(async_session: AsyncSession):
         version=0,
         titles=[Title(value="title", language="fr")],
         contributions=[
-            Contribution(
-                role=Contribution.Role.ILLUSTRATOR.value, contributor=contributor
-            )
+            Contribution(role=Contribution.get_url("ILL"), contributor=contributor)
         ],
     )
     async_session.add(reference)
@@ -55,9 +53,7 @@ async def test_contributor(async_session: AsyncSession):
     assert contributor_from_db is not None
     assert contributor_from_db.name == "John Doe"
     assert len(contributor_from_db.contributions) == 1
-    assert (
-        contributor_from_db.contributions[0].role == Contribution.Role.ILLUSTRATOR.value
-    )
+    assert contributor_from_db.contributions[0].role == Contribution.get_url("ILL")
     reference = contributor_from_db.contributions[0].reference
     assert reference.source_identifier == "source_identifier_1234"
     assert reference.harvester == "harvester"
@@ -95,7 +91,7 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
         titles=[Title(value="title", language="fr")],
         contributions=[
             Contribution(
-                role=Contribution.Role.ILLUSTRATOR.value,
+                role=Contribution.get_url("ILL"),
                 contributor=contributor,
                 affiliations=[organization],
             )
@@ -117,12 +113,21 @@ async def test_contributor_with_organisation(async_session: AsyncSession):
     assert organization_from_db is not None
     assert organization_from_db.name == "Physics Department"
     assert len(organization_from_db.contributions) == 1
-    assert (
-        organization_from_db.contributions[0].role
-        == Contribution.Role.ILLUSTRATOR.value
-    )
+    assert organization_from_db.contributions[0].role == Contribution.get_url("ILL")
     reference = organization_from_db.contributions[0].reference
     assert reference.source_identifier == "source_identifier_1234"
     assert reference.harvester == "harvester"
     assert reference.hash == "hash"
     assert reference.version == 0
+
+
+def test_validate_role():
+    # Test with a valid role_uri
+    valid_role_uri = Contribution.LOCAuthorRoles.AUT.loc_url()
+    contribution = Contribution(role=valid_role_uri)
+    assert contribution.role == valid_role_uri
+
+    # Test with an invalid role_uri
+    invalid_role_uri = "invalid_uri"
+    with pytest.raises(ValueError):
+        Contribution(role=invalid_role_uri)

@@ -3,6 +3,7 @@ from semver import VersionInfo
 
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
+from app.db.models.contribution import Contribution
 
 
 @pytest.mark.asyncio
@@ -47,6 +48,7 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     expected_journal_title = "Clinical Physiology and Functional Imaging"
     expected_volume_issue = "12"
     expected_number_issue = "1"
+    expected_role = Contribution.get_url("AUT")
 
     assert test_reference.titles[0].value == expected_title
     assert test_reference.abstracts[0].value == expected_abstract
@@ -58,7 +60,7 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
             assert label.value in expected_concepts
     for contribution in test_reference.contributions:
         assert contribution.contributor.name in expected_authors
-        assert contribution.role == "Author"
+        assert contribution.role == expected_role
         for affiliation in contribution.affiliations:
             assert affiliation.name in expected_affiliation
     assert test_reference.page == expected_page

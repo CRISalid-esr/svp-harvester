@@ -18,8 +18,8 @@ from app.harvesters.exceptions.unexpected_format_exception import (
 from app.harvesters.idref.open_edition_document_type_converter import (
     OpenEditionDocumentTypeConverter,
 )
-from app.harvesters.idref.open_edition_qualities_converter import (
-    OpenEditionQualitiesConverter,
+from app.harvesters.idref.open_edition_roles_converter import (
+    OpenEditionRolesConverter,
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.services.concepts.concept_informations import ConceptInformations
@@ -125,16 +125,14 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         contribution_informations = []
         for open_edition_quality, contributors in [
             (open_edition_role, self._get_terms(root, open_edition_role))
-            for open_edition_role in OpenEditionQualitiesConverter.ROLES_MAPPING
+            for open_edition_role in OpenEditionRolesConverter.ROLES_MAPPING
         ]:
             if len(contributors) == 0:
                 continue
             for contributor_name, _ in contributors:
                 contribution_informations.append(
                     AbstractReferencesConverter.ContributionInformations(
-                        role=OpenEditionQualitiesConverter.convert(
-                            open_edition_quality
-                        ),
+                        role=OpenEditionRolesConverter.convert(open_edition_quality),
                         identifier=None,
                         name=contributor_name,
                         rank=None,

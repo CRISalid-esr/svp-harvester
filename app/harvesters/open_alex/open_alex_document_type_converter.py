@@ -34,4 +34,5 @@ class OpenAlexDocumentTypeConverter(AbstractDocumentTypeConverter):
         "reference-entry": ("Reference entry URI", "Reference entry"),
         "report": (f"{RDF['SPAR']}Report", "Report"),
         "standard": (f"{RDF['BIBO']}Standard", "Standard"),
+        "preprint": (f"{RDF['SPAR']}Preprint", "Preprint"),
     }
