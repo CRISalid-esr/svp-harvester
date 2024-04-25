@@ -47,6 +47,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 f"Sudoc reference without title: {new_ref.source_identifier}"
             )
 
+        new_ref.created = self._created_date(
+            raw_data.payload, raw_data.source_identifier
+        )
+
         # If we have an article, we need to get the journal and issue
         if "Article" in [dc.label for dc in new_ref.document_type]:
             async for biblio_graph, uri in self._get_bibliographic_resource(
@@ -155,6 +159,13 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             yield Title(
                 value=remove_after_separator(title.value, "/"), language=title.language
             )
+
+    def _created_date(self, pub_graph, uri):
+        if uri.endswith("/id"):
+            uri = uri[:-3]
+        for created in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.created):
+            date_string = created.value
+            return date_string
 
     async def _document_type(self, pub_graph, uri):
         for document_type in pub_graph.objects(
