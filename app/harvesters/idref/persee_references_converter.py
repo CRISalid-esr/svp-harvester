@@ -1,6 +1,8 @@
 from typing import AsyncGenerator
 
+import isodate
 import rdflib
+from loguru import logger
 from rdflib import DCTERMS, RDF, Literal, Namespace, URIRef
 from semver import Version
 
@@ -34,6 +36,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
+        new_ref.issued = self._issued_date(raw_data.payload, raw_data.source_identifier)
         new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
 
     def _page(self, pub_graph, uri):
@@ -177,4 +180,23 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             HashKey(RDF.type),
             HashKey(DCTERMS.title),
             HashKey(DCTERMS.abstract),
+            HashKey(URIRef("http://rdaregistry.info/Elements/m/dateOfPublication")),
         ]
+
+    def _issued_date(self, pub_graph, uri):
+        for issued in pub_graph.objects(
+            rdflib.term.URIRef(uri),
+            URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
+        ):
+            date_string = issued.value
+            return self._date(date_string)
+
+    def _date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            return isodate.parse_date(date)
+        except isodate.ISO8601Error as error:
+            logger.error(f"Could not parse date {date} from Persee with error {error}")
+            return None
