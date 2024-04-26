@@ -48,12 +48,16 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Idref"
 
+
+# TODO: add the content of those tags:
+#   Tag: {http://purl.org/dc/terms/}issued, Attribute: {'{http://www.w3.org/2001/XMLSchema-instance}type': 'dcterms:W3CDTF'}, Text: 2022-06-07T02:00:00Z
+#   Tag: {http://purl.org/dc/terms/}created, Attribute: {'{http://www.w3.org/2001/XMLSchema-instance}type': 'dcterms:W3CDTF'}, Text: 2022
     @AbstractReferencesConverter.validate_reference
     async def convert(
         self, raw_data: XMLHarvesterRawResult, new_ref: Reference
     ) -> None:
         new_ref.titles.append(self._title(self._get_root(raw_data)))
-
+        self.parse_xml(raw_data)
         for abstract in self._abstracts(self._get_root(raw_data)):
             new_ref.abstracts.append(abstract)
 
@@ -227,3 +231,18 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             HashKeyXML("dcterms:subject", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
         ]
+
+    def parse_xml(self, raw_data: XMLHarvesterRawResult):
+        # Get the 'qualifieddc' element
+        root = self._get_root(raw_data)
+
+        # Print the tag, attribute, and text of each element in the 'qualifieddc' element
+        self._print_tree(root)
+
+    def _print_tree(self, element, indent=0):
+        print(
+            " " * indent
+            + f"Tag: {element.tag}, Attribute: {element.attrib}, Text: {element.text}"
+        )
+        for child in element:
+            self._print_tree(child, indent + 2)
