@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -29,6 +31,8 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     expected_volume = "18"
     expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
     expected_publisher = "Paris : Centre Gustave Glotz"
+    expected_issued_date = datetime.date(1998, 1, 1)
+    expected_created_date = datetime.date(2021, 6, 23)
 
     test_reference = converter_under_tests.build(
         raw_data=persee_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
@@ -51,4 +55,6 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     assert expected_issue == test_reference.issue.number
     assert expected_volume == test_reference.issue.volume
     assert expected_journal_title in test_reference.issue.journal.titles
-    assert expected_publisher == test_reference.issue.journal.publisher
+    assert test_reference.issue.journal.publisher == expected_publisher
+    assert test_reference.issued == expected_issued_date
+    assert test_reference.created == expected_created_date
