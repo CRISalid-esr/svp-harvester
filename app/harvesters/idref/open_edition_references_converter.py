@@ -1,6 +1,7 @@
 from typing import Generator
 from xml.etree import ElementTree
 
+import isodate
 import rdflib
 from loguru import logger
 from semver import Version
@@ -48,16 +49,11 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     def _harvester(self) -> str:
         return "Idref"
 
-
-# TODO: add the content of those tags:
-#   Tag: {http://purl.org/dc/terms/}issued, Attribute: {'{http://www.w3.org/2001/XMLSchema-instance}type': 'dcterms:W3CDTF'}, Text: 2022-06-07T02:00:00Z
-#   Tag: {http://purl.org/dc/terms/}created, Attribute: {'{http://www.w3.org/2001/XMLSchema-instance}type': 'dcterms:W3CDTF'}, Text: 2022
     @AbstractReferencesConverter.validate_reference
     async def convert(
         self, raw_data: XMLHarvesterRawResult, new_ref: Reference
     ) -> None:
         new_ref.titles.append(self._title(self._get_root(raw_data)))
-        self.parse_xml(raw_data)
         for abstract in self._abstracts(self._get_root(raw_data)):
             new_ref.abstracts.append(abstract)
 
@@ -73,6 +69,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         new_ref.document_type.append(
             await self._document_type(self._get_root(raw_data))
         )
+
+        new_ref.issued = self._get_issued_date(self._get_root(raw_data))
+        new_ref.created = self._get_created_date(self._get_root(raw_data))
 
         journal = await self._get_journal(self._get_root(raw_data))
         if journal is not None:
@@ -221,6 +220,14 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         )
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
+    def _get_issued_date(self, root: ElementTree):
+        issued = self._get_term(root, "issued")
+        return self._date(issued)
+
+    def _get_created_date(self, root: ElementTree):
+        created = self._get_term(root, "created")
+        return self._date(created)
+
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKeyXML("dcterms:title", namespace=self.NAMESPACES),
@@ -230,19 +237,18 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             HashKeyXML("dcterms:identifier", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:subject", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:issued", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:created", namespace=self.NAMESPACES),
         ]
 
-    def parse_xml(self, raw_data: XMLHarvesterRawResult):
-        # Get the 'qualifieddc' element
-        root = self._get_root(raw_data)
-
-        # Print the tag, attribute, and text of each element in the 'qualifieddc' element
-        self._print_tree(root)
-
-    def _print_tree(self, element, indent=0):
-        print(
-            " " * indent
-            + f"Tag: {element.tag}, Attribute: {element.attrib}, Text: {element.text}"
-        )
-        for child in element:
-            self._print_tree(child, indent + 2)
+    def _date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            return isodate.parse_date(date)
+        except isodate.ISO8601Error as error:
+            logger.error(
+                f"Could not parse date {date} from OpenEdition with error {error}"
+            )
+            return None
