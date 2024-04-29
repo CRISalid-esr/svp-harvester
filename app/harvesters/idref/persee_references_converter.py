@@ -1,3 +1,4 @@
+from datetime import date as datetime_date
 from typing import AsyncGenerator
 
 import isodate
@@ -37,6 +38,9 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
         new_ref.issued = self._issued_date(raw_data.payload, raw_data.source_identifier)
+        new_ref.created = self._created_date(
+            raw_data.payload, raw_data.source_identifier
+        )
         new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
 
     def _page(self, pub_graph, uri):
@@ -181,14 +185,29 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             HashKey(DCTERMS.title),
             HashKey(DCTERMS.abstract),
             HashKey(URIRef("http://rdaregistry.info/Elements/m/dateOfPublication")),
+            HashKey(
+                URIRef(
+                    "http://data.persee.fr/ontology/persee-ontology/dateOfPrintPublication"
+                )
+            ),
         ]
 
     def _issued_date(self, pub_graph, uri):
         for issued in pub_graph.objects(
             rdflib.term.URIRef(uri),
-            URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
+            URIRef(
+                "http://data.persee.fr/ontology/persee-ontology/dateOfPrintPublication"
+            ),
         ):
             date_string = issued.value
+            return self._date(date_string)
+
+    def _created_date(self, pub_graph, uri):
+        for created in pub_graph.objects(
+            rdflib.term.URIRef(uri),
+            URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
+        ):
+            date_string = created.value
             return self._date(date_string)
 
     def _date(self, date):
@@ -196,6 +215,10 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         try:
             if date is None:
                 return None
+            if isinstance(date, datetime_date):
+                return date
+            if not isinstance(date, str):
+                date = str(date)
             return isodate.parse_date(date)
         except isodate.ISO8601Error as error:
             logger.error(f"Could not parse date {date} from Persee with error {error}")
