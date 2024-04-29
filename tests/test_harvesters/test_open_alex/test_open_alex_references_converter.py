@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -46,6 +48,8 @@ async def test_convert(open_alex_api_work: dict):
     expected_issue_number = ["237"]
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
+    expected_issued_date = datetime.date(1988, 1, 15)
+    expected_created_date = datetime.date(2016, 6, 24)
 
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -82,3 +86,5 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.issue.number == expected_issue_number
     assert test_reference.issue.journal.publisher == expected_publisher
     assert expected_issn in test_reference.issue.journal.issn
+    assert test_reference.issued == expected_issued_date
+    assert test_reference.created == expected_created_date
