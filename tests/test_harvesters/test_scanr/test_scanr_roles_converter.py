@@ -1,5 +1,3 @@
-import pytest
-
 from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.db.models.contribution import Contribution
 
@@ -12,8 +10,9 @@ def test_known_hal_qualities_converter():
     """
     role = "enq"
     convert = ScanrRolesConverter.convert(role=role)
+    expected_quality = Contribution.get_url("IVR")
 
-    assert convert == Contribution.Role.INTERVIEWER.value
+    assert convert == expected_quality
 
 
 def test_unknown_hal_qualities_converter():
@@ -24,5 +23,6 @@ def test_unknown_hal_qualities_converter():
     """
     role = "test_method"
     convert = ScanrRolesConverter.convert(role=role)
+    expected_quality = Contribution.get_url("UNKNOWN")
 
-    assert convert == Contribution.Role.UNKNOWN.value
+    assert convert == expected_quality

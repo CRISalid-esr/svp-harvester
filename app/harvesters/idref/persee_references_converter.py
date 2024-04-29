@@ -14,7 +14,7 @@ from app.db.models.title import Title
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
-from app.harvesters.idref.persee_qualities_converter import PerseeQualitiesConverter
+from app.harvesters.idref.persee_roles_converter import PerseeRolesConverter
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.hash.hash_key import HashKey
 from app.harvesters.idref.rdf_resolver import RdfResolver
@@ -146,7 +146,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         return identifier
 
     def _convert_role(self, role):
-        return PerseeQualitiesConverter.convert(role)
+        return PerseeRolesConverter.convert(role)
 
     def _get_source(self):
         return "persee"

@@ -19,8 +19,8 @@ from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.science_plus_document_type_converter import (
     SciencePlusDocumentTypeConverter,
 )
-from app.harvesters.idref.science_plus_qualities_converter import (
-    SciencePlusQualitiesConverter,
+from app.harvesters.idref.science_plus_roles_converter import (
+    SciencePlusRolesConverter,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.hash.hash_key import HashKey
@@ -173,7 +173,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
         )
 
     def _convert_role(self, role):
-        return SciencePlusQualitiesConverter.convert(role)
+        return SciencePlusRolesConverter.convert(role)
 
     def _get_source(self):
         return "science_plus"
