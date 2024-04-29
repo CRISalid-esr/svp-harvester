@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -55,6 +57,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     expected_publisher = "De Gruyter"
     expected_journal_title = "Central European Journal of Public Policy"
     expected_issn = "1802-4866"
+    expected_publication_date = datetime.datetime(2019, 12, 6, 0, 0)
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -86,6 +89,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_reference.issue.journal.publisher == expected_publisher
         assert expected_journal_title in test_reference.issue.journal.titles
         assert expected_issn in test_reference.issue.journal.issn
+        assert test_reference.issued == expected_publication_date
 
 
 async def test_convert_with_default_dupe(
