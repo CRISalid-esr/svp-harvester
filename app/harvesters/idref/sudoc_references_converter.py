@@ -1,4 +1,8 @@
+from datetime import date as datetime_date
+
+import isodate
 import rdflib
+from loguru import logger
 from rdflib import DC, DCTERMS, Graph, Literal, Namespace
 from semver import Version
 
@@ -18,8 +22,8 @@ from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.idref.sudoc_document_type_converter import (
     SudocDocumentTypeConverter,
 )
-from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.harvesters.idref.sudoc_qualities_converter import SudocQualitiesConverter
+from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.book.book_data_class import BookInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
@@ -165,7 +169,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             uri = uri[:-3]
         for created in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.created):
             date_string = created.value
-            return date_string
+            return self._date(date_string)
 
     async def _document_type(self, pub_graph, uri):
         for document_type in pub_graph.objects(
@@ -222,3 +226,17 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             HashKey(DC.type),
             HashKey(DCTERMS.abstract),
         ]
+
+    def _date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            if isinstance(date, datetime_date):
+                return date
+            if not isinstance(date, str):
+                date = str(date)
+            return isodate.parse_date(date)
+        except isodate.ISO8601Error as error:
+            logger.error(f"Could not parse date {date} from Sudoc with error {error}")
+            return None

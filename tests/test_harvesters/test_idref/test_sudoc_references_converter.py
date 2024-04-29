@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -32,6 +34,7 @@ async def test_convert_for_rdf_result(
     expected_journal_title = "Le Cabinet historique"
     expected_issn = "1954-6009"
     expected_issn_l = "1954-6009"
+    expected_created_date = datetime.date(2016, 6, 13)
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
@@ -55,7 +58,8 @@ async def test_convert_for_rdf_result(
     assert expected_document_type in [test_reference.document_type[0].label]
     assert expected_journal_title in test_reference.issue.journal.titles
     assert expected_issn in test_reference.issue.journal.issn
-    assert expected_issn_l == test_reference.issue.journal.issn_l
+    assert test_reference.issue.journal.issn_l == expected_issn_l
+    assert test_reference.created == expected_created_date
 
 
 @pytest.mark.asyncio
