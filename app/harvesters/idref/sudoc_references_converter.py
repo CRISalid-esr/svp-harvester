@@ -227,6 +227,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             HashKey(DCTERMS.abstract),
         ]
 
+    # TODO: move _date to an utility class or the base class, and adjust it in consequence.
     def _date(self, date):
         # Check if is a valid ISO 8601 date
         try:
