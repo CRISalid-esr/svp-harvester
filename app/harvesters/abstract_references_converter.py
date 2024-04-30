@@ -1,7 +1,7 @@
 import asyncio
+import datetime
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import date as datetime_date
 from functools import wraps
 from typing import List, AsyncGenerator
 
@@ -677,13 +677,17 @@ class AbstractReferencesConverter(ABC):
         try:
             if date is None:
                 return None
-            if isinstance(date, datetime_date):
+            if isinstance(date, (datetime.date, datetime.datetime)):
                 return date
-            if not isinstance(date, str):
-                date = str(date)
-            if "T" in date:
-                return isodate.parse_datetime(date).replace(tzinfo=None)
-            return isodate.parse_date(date)
+            if isinstance(date, str):
+                if "T" in date:
+                    return isodate.parse_datetime(date).replace(tzinfo=None)
+                return isodate.parse_date(date)
+            logger.error(
+                f"Invalid date {date} from {self._harvester()}."
+                f" Date should be a string, datetime.date or datetime.datetime object"
+            )
+            return None
         except isodate.ISO8601Error as error:
             logger.error(
                 f"Could not parse date {date} from {self._harvester()} with error {error}"
