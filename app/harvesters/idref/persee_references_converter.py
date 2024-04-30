@@ -35,6 +35,9 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
         new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
+        new_ref.subjects = self._get_subjects(
+            raw_data.payload, raw_data.source_identifier
+        )
 
     def _page(self, pub_graph, uri):
         page = ""
@@ -47,6 +50,12 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         ):
             page += "-" + page_start.value
         return page if page else None
+
+    def _get_subjects(self, pub_graph, uri):
+        subjects = []
+        for subject in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.subject):
+            subjects.append(subject.value)
+        return subjects
 
     async def _get_journal(self, biblio_graph, uri):
         # Check we are dealing with an issue in the first place
