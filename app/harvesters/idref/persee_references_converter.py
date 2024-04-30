@@ -13,6 +13,7 @@ from app.harvesters.idref.abes_rdf_references_converter import (
 )
 from app.harvesters.idref.persee_roles_converter import PerseeRolesConverter
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.services.issue.issue_data_class import IssueInformations
@@ -34,10 +35,12 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
-        new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
-        new_ref.subjects = self._get_subjects(
+        async for subject in self._concepts(
             raw_data.payload, raw_data.source_identifier
-        )
+        ):
+            new_ref.subjects.append(subject)
+
+        new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
 
     def _page(self, pub_graph, uri):
         page = ""
@@ -51,11 +54,15 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             page += "-" + page_start.value
         return page if page else None
 
-    def _get_subjects(self, pub_graph, uri):
-        subjects = []
+    async def _concepts(self, pub_graph, uri):
+        fields = []
         for subject in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.subject):
-            subjects.append(subject.value)
-        return subjects
+            fields.append((subject.value, subject.language))
+
+        for field in fields:
+            yield await self._get_or_create_concept_by_label(
+                ConceptInformations(label=field[0], language=field[1])
+            )
 
     async def _get_journal(self, biblio_graph, uri):
         # Check we are dealing with an issue in the first place

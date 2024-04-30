@@ -63,4 +63,10 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     assert expected_volume == test_reference.issue.volume
     assert expected_journal_title in test_reference.issue.journal.titles
     assert expected_publisher == test_reference.issue.journal.publisher
-    assert test_reference.subjects == expected_subjects
+
+    test_subjects = []
+    for subject in test_reference.subjects:
+        for label in subject.labels:
+            test_subjects.append(label.value)
+
+    assert test_subjects == expected_subjects
