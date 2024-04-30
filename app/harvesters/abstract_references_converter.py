@@ -1,9 +1,11 @@
 import asyncio
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import date as datetime_date
 from functools import wraps
 from typing import List, AsyncGenerator
 
+import isodate
 from loguru import logger
 from semver import Version
 from sqlalchemy.exc import DBAPIError, IntegrityError
@@ -669,3 +671,19 @@ class AbstractReferencesConverter(ABC):
         ):
             book.title_variants.append(book.title)
         return book
+
+    def _check_valid_iso8601_date(self, date):
+        # Check if is a valid ISO 8601 date
+        try:
+            if date is None:
+                return None
+            if isinstance(date, datetime_date):
+                return date
+            if not isinstance(date, str):
+                date = str(date)
+            if "T" in date:
+                return isodate.parse_datetime(date).replace(tzinfo=None)
+            return isodate.parse_date(date)
+        except isodate.ISO8601Error as error:
+            logger.error(f"Could not parse date {date} from Persee with error {error}")
+            return None

@@ -1,18 +1,16 @@
 import re
 from typing import Generator, List
 
-import isodate
 from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.book import Book
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
-from app.db.models.journal import Journal
-
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -109,8 +107,12 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
-        new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
-        new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
+        new_ref.issued = self._check_valid_iso8601_date(
+            json_payload.get("publicationDate_tdate", None)
+        )
+        new_ref.created = self._check_valid_iso8601_date(
+            json_payload.get("producedDate_tdate", None)
+        )
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
 
@@ -215,16 +217,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 return identifier_type
         logger.error(f"Unknown identifier type from Hal for field {field}")
         return None
-
-    def _date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            return isodate.parse_datetime(date).replace(tzinfo=None)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from HAL with error {error}")
-            return None
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(

@@ -1,9 +1,6 @@
-from datetime import date as datetime_date
 from typing import AsyncGenerator
 
-import isodate
 import rdflib
-from loguru import logger
 from rdflib import DCTERMS, RDF, Literal, Namespace, URIRef
 from semver import Version
 
@@ -15,9 +12,9 @@ from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
 from app.harvesters.idref.persee_roles_converter import PerseeRolesConverter
+from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.hash.hash_key import HashKey
-from app.harvesters.idref.rdf_resolver import RdfResolver
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 
@@ -200,7 +197,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             ),
         ):
             date_string = issued.value
-            return self._date(date_string)
+            return self._check_valid_iso8601_date(date_string)
 
     def _created_date(self, pub_graph, uri):
         for created in pub_graph.objects(
@@ -208,18 +205,4 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
         ):
             date_string = created.value
-            return self._date(date_string)
-
-    def _date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            if isinstance(date, datetime_date):
-                return date
-            if not isinstance(date, str):
-                date = str(date)
-            return isodate.parse_date(date)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from Persee with error {error}")
-            return None
+            return self._check_valid_iso8601_date(date_string)

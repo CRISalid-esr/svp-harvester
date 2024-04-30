@@ -1,7 +1,5 @@
 from typing import AsyncGenerator
 
-import isodate
-from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
@@ -10,8 +8,8 @@ from app.db.models.contribution import Contribution
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
-from app.db.models.title import Title
 from app.db.models.reference_identifier import ReferenceIdentifier
+from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.json_harvester_raw_result import (
     JsonHarvesterRawResult as JsonRawResult,
@@ -70,11 +68,11 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         created = json_payload.get("created_date")
         if created:
-            new_ref.created = self._date(created)
+            new_ref.created = self._check_valid_iso8601_date(created)
 
         issue = json_payload.get("publication_date")
         if issue:
-            new_ref.issued = self._date(issue)
+            new_ref.issued = self._check_valid_iso8601_date(issue)
 
     def _harvester(self) -> str:
         return "OpenAlex"
@@ -233,13 +231,3 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             HashKey("created_date"),
             HashKey("publication_date"),
         ]
-
-    def _date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            return isodate.parse_date(date)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from OpenAlex with error {error}")
-            return None

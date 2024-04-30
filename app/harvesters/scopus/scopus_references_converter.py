@@ -1,9 +1,9 @@
 from xml.etree.ElementTree import Element
-import isodate
-from loguru import logger
+
 from semver import Version
 
 from app.db.models.abstract import Abstract
+from app.db.models.contribution import Contribution
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -15,7 +15,6 @@ from app.harvesters.scopus.scopus_document_type_converter import (
     ScopusDocumentTypeConverter,
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
-from app.db.models.contribution import Contribution
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
@@ -246,22 +245,13 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
 
     def _issued(self, entry: Element):
         issued = self._get_element(entry, "prism:coverDate")
-        return self._date(issued.text)
+        return self._check_valid_iso8601_date(issued.text)
 
     def _get_element(self, entry: Element, tag: str) -> Element | None:
         return entry.find(tag, ScopusClient.NAMESPACE)
 
     def _get_elements(self, entry: Element, tag: str) -> list[Element]:
         return entry.findall(tag, ScopusClient.NAMESPACE)
-
-    def _date(self, date):
-        try:
-            if date is None:
-                return None
-            return isodate.parse_date(date)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from Scopus with error {error}")
-            return None
 
     def _harvester(self) -> str:
         return "Scopus"

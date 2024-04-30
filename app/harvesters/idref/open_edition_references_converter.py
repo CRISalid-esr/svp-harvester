@@ -1,7 +1,6 @@
 from typing import Generator
 from xml.etree import ElementTree
 
-import isodate
 import rdflib
 from loguru import logger
 from semver import Version
@@ -220,11 +219,11 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def _get_issued_date(self, root: ElementTree):
         issued = self._get_term(root, "issued")
-        return self._date(issued)
+        return self._check_valid_iso8601_date(issued)
 
     def _get_created_date(self, root: ElementTree):
         created = self._get_term(root, "created")
-        return self._date(created)
+        return self._check_valid_iso8601_date(created)
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
@@ -238,15 +237,3 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             HashKeyXML("dcterms:issued", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:created", namespace=self.NAMESPACES),
         ]
-
-    def _date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            return isodate.parse_date(date)
-        except isodate.ISO8601Error as error:
-            logger.error(
-                f"Could not parse date {date} from OpenEdition with error {error}"
-            )
-            return None
