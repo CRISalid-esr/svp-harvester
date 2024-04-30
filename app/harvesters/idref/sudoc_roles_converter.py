@@ -25,6 +25,7 @@ class SudocRolesConverter:
         "ive": Contribution.LOCAuthorRoles.IVE,
         "ctg": Contribution.LOCAuthorRoles.CTG,
         "ill": Contribution.LOCAuthorRoles.ILL,
+        "pht": Contribution.LOCAuthorRoles.PHT,
     }
 
     @staticmethod
