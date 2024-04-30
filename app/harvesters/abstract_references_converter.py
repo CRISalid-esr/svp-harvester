@@ -685,5 +685,7 @@ class AbstractReferencesConverter(ABC):
                 return isodate.parse_datetime(date).replace(tzinfo=None)
             return isodate.parse_date(date)
         except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from Persee with error {error}")
+            logger.error(
+                f"Could not parse date {date} from {self._harvester()} with error {error}"
+            )
             return None
