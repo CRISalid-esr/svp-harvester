@@ -22,6 +22,7 @@ from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
@@ -245,7 +246,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
 
     def _issued(self, entry: Element):
         issued = self._get_element(entry, "prism:coverDate")
-        return self._check_valid_iso8601_date(issued.text)
+        return check_valid_iso8601_date(issued.text, self._harvester())
 
     def _get_element(self, entry: Element, tag: str) -> Element | None:
         return entry.find(tag, ScopusClient.NAMESPACE)

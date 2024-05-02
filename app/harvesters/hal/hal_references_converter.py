@@ -26,6 +26,7 @@ from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
@@ -107,11 +108,11 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
-        new_ref.issued = self._check_valid_iso8601_date(
-            json_payload.get("publicationDate_tdate", None)
-        )
-        new_ref.created = self._check_valid_iso8601_date(
-            json_payload.get("producedDate_tdate", None)
+
+        self._add_issued_date(json_payload, new_ref)
+
+        new_ref.created = check_valid_iso8601_date(
+            json_payload.get("producedDate_tdate", None), self._harvester()
         )
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
@@ -128,6 +129,16 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 new_ref.book = book
 
         await self._add_organization(json_payload, new_ref)
+
+    def _add_issued_date(self, json_payload, new_ref):
+        try:
+            new_ref.issued = check_valid_iso8601_date(
+                json_payload.get("publicationDate_tdate", None)
+            )
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Hal reference converter cannot create issued date from publicationDate_tdate in {json_payload['halId_s']}: {error}"
+            )
 
     def _harvester(self) -> str:
         return "HAL"

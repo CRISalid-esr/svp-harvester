@@ -27,6 +27,7 @@ from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
 
@@ -219,11 +220,11 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     def _get_issued_date(self, root: ElementTree):
         issued = self._get_term(root, "issued")
-        return self._check_valid_iso8601_date(issued)
+        return check_valid_iso8601_date(issued, self._harvester())
 
     def _get_created_date(self, root: ElementTree):
         created = self._get_term(root, "created")
-        return self._check_valid_iso8601_date(created)
+        return check_valid_iso8601_date(created, self._harvester())
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [

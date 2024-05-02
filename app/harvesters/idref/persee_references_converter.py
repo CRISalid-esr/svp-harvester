@@ -17,6 +17,7 @@ from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 
 
 class PerseeReferencesConverter(AbesRDFReferencesConverter):
@@ -197,7 +198,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             ),
         ):
             date_string = issued.value
-            return self._check_valid_iso8601_date(date_string)
+            return check_valid_iso8601_date(date_string, self._harvester())
 
     def _created_date(self, pub_graph, uri):
         for created in pub_graph.objects(
@@ -205,4 +206,4 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
         ):
             date_string = created.value
-            return self._check_valid_iso8601_date(date_string)
+            return check_valid_iso8601_date(date_string, self._harvester())

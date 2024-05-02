@@ -4,39 +4,13 @@ from datetime import datetime, date
 import pytest
 
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.utilities.date_utilities import check_valid_iso8601_date
 
 
-class MockAbstractReferencesConverter(AbstractReferencesConverter):
-    """
-    Mock class for testing AbstractReferencesConverter
-    """
-
-    def _harvester(self):
-        return "MockHarvester"
-
-    async def convert(self, *args, **kwargs):
-        """
-        Mock method for testing AbstractReferencesConverter
-        """
-
-    def check_date(self, input_date):
-        """
-        Public method to test _check_valid_iso8601_date
-        """
-        return self._check_valid_iso8601_date(input_date)
-
-
-class TestAbstractReferencesConverter:
+class TestCheckValidIso8601:
     """
     Test class for AbstractReferencesConverter
     """
-
-    @pytest.fixture
-    def converter(self):
-        """
-        Fixture for AbstractReferencesConverter
-        """
-        return MockAbstractReferencesConverter()
 
     @pytest.mark.parametrize(
         "input_date, expected_output",
@@ -54,32 +28,32 @@ class TestAbstractReferencesConverter:
             ),  # Test with datetime object
         ],
     )
-    def test_check_valid_iso8601_date(self, converter, input_date, expected_output):
+    def test_check_valid_iso8601_date(self, input_date, expected_output):
         """
         Test that _check_valid_iso8601_date returns the expected output with expected input
         """
-        assert converter.check_date(input_date) == expected_output
+        assert check_valid_iso8601_date(input_date) == expected_output
 
     @pytest.mark.parametrize(
         "invalid_date, expected_log",
         [
             (
                 "invalid_date",
-                "Could not parse date invalid_date from MockHarvester with error",
+                "Could not parse date invalid_date from Unknown source with error",
             ),  # Test with invalid date string
             (
                 123,
-                "Invalid date 123 from MockHarvester."
+                "Invalid date 123 from Unknown source."
                 " Date should be a string, datetime.date or datetime.datetime object",
             ),  # Test with non-string, non-date object
         ],
     )
     def test_check_valid_iso8601_date_with_invalid_date(
-        self, converter, invalid_date, expected_log, caplog
+        self, invalid_date, expected_log, caplog
     ):
         """
         Test that _check_valid_iso8601_date logs the expected error message with invalid input
         """
         with caplog.at_level(logging.ERROR):
-            assert converter.check_date(invalid_date) is None
+            assert check_valid_iso8601_date(invalid_date) is None
         assert expected_log in caplog.text

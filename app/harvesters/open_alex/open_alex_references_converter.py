@@ -21,6 +21,7 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
 
@@ -68,11 +69,11 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         created = json_payload.get("created_date")
         if created:
-            new_ref.created = self._check_valid_iso8601_date(created)
+            new_ref.created = check_valid_iso8601_date(created, self._harvester())
 
         issue = json_payload.get("publication_date")
         if issue:
-            new_ref.issued = self._check_valid_iso8601_date(issue)
+            new_ref.issued = check_valid_iso8601_date(issue, self._harvester())
 
     def _harvester(self) -> str:
         return "OpenAlex"

@@ -24,6 +24,7 @@ from app.services.book.book_data_class import BookInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string, remove_after_separator
 
@@ -165,7 +166,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             uri = uri[:-3]
         for created in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.created):
             date_string = created.value
-            return self._check_valid_iso8601_date(date_string)
+            return check_valid_iso8601_date(date_string, self._harvester())
 
     async def _document_type(self, pub_graph, uri):
         for document_type in pub_graph.objects(

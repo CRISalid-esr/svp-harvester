@@ -671,25 +671,3 @@ class AbstractReferencesConverter(ABC):
         ):
             book.title_variants.append(book.title)
         return book
-
-    def _check_valid_iso8601_date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            if isinstance(date, (datetime.date, datetime.datetime)):
-                return date
-            if isinstance(date, str):
-                if "T" in date:
-                    return isodate.parse_datetime(date).replace(tzinfo=None)
-                return isodate.parse_date(date)
-            logger.error(
-                f"Invalid date {date} from {self._harvester()}."
-                f" Date should be a string, datetime.date or datetime.datetime object"
-            )
-            return None
-        except isodate.ISO8601Error as error:
-            logger.error(
-                f"Could not parse date {date} from {self._harvester()} with error {error}"
-            )
-            return None
