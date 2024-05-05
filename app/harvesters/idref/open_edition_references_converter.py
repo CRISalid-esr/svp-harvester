@@ -70,8 +70,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             await self._document_type(self._get_root(raw_data))
         )
 
-        new_ref.issued = self._get_issued_date(self._get_root(raw_data))
-        new_ref.created = self._get_created_date(self._get_root(raw_data))
+        self._get_issued_date(self._get_root(raw_data), new_ref)
+        self._get_created_date(self._get_root(raw_data), new_ref)
 
         journal = await self._get_journal(self._get_root(raw_data))
         if journal is not None:
@@ -218,13 +218,23 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         )
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    def _get_issued_date(self, root: ElementTree):
+    def _get_issued_date(self, root: ElementTree, new_ref: Reference):
         issued = self._get_term(root, "issued")
-        return check_valid_iso8601_date(issued, self._harvester())
+        try:
+            new_ref.issued = check_valid_iso8601_date(issued)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"OpenEdition reference converter cannot create issued date from issued in {root}: {error}"
+            )
 
-    def _get_created_date(self, root: ElementTree):
+    def _get_created_date(self, root: ElementTree, new_ref: Reference):
         created = self._get_term(root, "created")
-        return check_valid_iso8601_date(created, self._harvester())
+        try:
+            new_ref.created = check_valid_iso8601_date(created)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"OpenEdition reference converter cannot create created date from created in {root}: {error}"
+            )
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [

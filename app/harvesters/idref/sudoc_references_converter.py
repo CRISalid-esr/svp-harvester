@@ -1,4 +1,5 @@
 import rdflib
+from loguru import logger
 from rdflib import DC, DCTERMS, Graph, Literal, Namespace
 from semver import Version
 
@@ -48,9 +49,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 f"Sudoc reference without title: {new_ref.source_identifier}"
             )
 
-        new_ref.created = self._created_date(
-            raw_data.payload, raw_data.source_identifier
-        )
+        self._add_created_date(raw_data.payload, raw_data.source_identifier, new_ref)
 
         # If we have an article, we need to get the journal and issue
         if "Article" in [dc.label for dc in new_ref.document_type]:
@@ -161,12 +160,17 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 value=remove_after_separator(title.value, "/"), language=title.language
             )
 
-    def _created_date(self, pub_graph, uri):
+    def _add_created_date(self, pub_graph, uri, new_ref):
         if uri.endswith("/id"):
             uri = uri[:-3]
         for created in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.created):
             date_string = created.value
-            return check_valid_iso8601_date(date_string, self._harvester())
+            try:
+                new_ref.created = check_valid_iso8601_date(date_string)
+            except UnexpectedFormatException as error:
+                logger.error(
+                    f"Sudoc reference converter cannot create created date from DCTERMS.created in {uri}: {error}"
+                )
 
     async def _document_type(self, pub_graph, uri):
         for document_type in pub_graph.objects(

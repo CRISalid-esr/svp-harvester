@@ -1,5 +1,6 @@
 from xml.etree.ElementTree import Element
 
+from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
@@ -10,6 +11,9 @@ from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.scopus.scopus_client import ScopusClient
 from app.harvesters.scopus.scopus_document_type_converter import (
     ScopusDocumentTypeConverter,
@@ -53,7 +57,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         async for document_type in self._document_type(entry):
             new_ref.document_type.append(document_type)
 
-        async for identifier in self._indetifiers(entry):
+        async for identifier in self._identifiers(entry):
             new_ref.identifiers.append(identifier)
 
         async for concept in self._concepts(entry):
@@ -62,9 +66,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._add_contributions(entry):
             new_ref.contributions.append(contribution)
 
-        issued = self._issued(entry)
-        if issued is not None:
-            new_ref.issued = issued
+        self._add_issued_date(entry, new_ref)
 
         journal = await self._journal(entry)
         if journal is not None:
@@ -231,7 +233,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             uri, label = ScopusDocumentTypeConverter().convert(document_type.text)
             yield await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    async def _indetifiers(self, entry: Element):
+    async def _identifiers(self, entry: Element):
         for key_identifier, type_identifier in self.FIELD_NAME_IDENTIFIER.items():
             identifier = self._get_element(entry, key_identifier)
             if identifier is not None:
@@ -244,9 +246,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         for title in self._get_elements(entry, "dc:title"):
             yield Title(value=title.text)
 
-    def _issued(self, entry: Element):
+    def _add_issued_date(self, entry: Element, new_ref: Reference):
         issued = self._get_element(entry, "prism:coverDate")
-        return check_valid_iso8601_date(issued.text, self._harvester())
+        try:
+            new_ref.issued = check_valid_iso8601_date(issued.text)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Scopus reference converter cannot create issued date from coverDate in {new_ref.source_identifier}: {error}"
+            )
 
     def _get_element(self, entry: Element, tag: str) -> Element | None:
         return entry.find(tag, ScopusClient.NAMESPACE)
