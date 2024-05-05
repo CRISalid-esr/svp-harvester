@@ -88,7 +88,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         issue = json_payload["_source"].get("publicationDate")
         if issue:
-            new_ref.issued = check_valid_iso8601_date(issue, self._harvester())
+            self._add_issued_date(issue, json_payload, new_ref)
 
         journal = await self._journal(json_payload)
 
@@ -105,6 +105,14 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
+
+    def _add_issued_date(self, issue, json_payload, new_ref):
+        try:
+            new_ref.issued = check_valid_iso8601_date(issue)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Scanr reference converter cannot create issued date from publicationDate in Scanr reference {json_payload['_id']}: {error}"
+            )
 
     def _harvester(self) -> str:
         return "ScanR"

@@ -111,9 +111,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
         self._add_issued_date(json_payload, new_ref)
 
-        new_ref.created = check_valid_iso8601_date(
-            json_payload.get("producedDate_tdate", None), self._harvester()
-        )
+        self._add_created_date(json_payload, new_ref)
+
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
 
@@ -129,6 +128,16 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 new_ref.book = book
 
         await self._add_organization(json_payload, new_ref)
+
+    def _add_created_date(self, json_payload, new_ref):
+        try:
+            new_ref.created = check_valid_iso8601_date(
+                json_payload.get("producedDate_tdate", None)
+            )
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Hal reference converter cannot create created date from producedDate_tdate in {json_payload['halId_s']}: {error}"
+            )
 
     def _add_issued_date(self, json_payload, new_ref):
         try:

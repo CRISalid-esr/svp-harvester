@@ -1,6 +1,7 @@
 from typing import AsyncGenerator
 
 import rdflib
+from loguru import logger
 from rdflib import DCTERMS, RDF, Literal, Namespace, URIRef
 from semver import Version
 
@@ -8,6 +9,9 @@ from app.db.models.document_type import DocumentType
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.idref.abes_rdf_references_converter import (
     AbesRDFReferencesConverter,
 )
@@ -35,10 +39,8 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
     ) -> None:
         await super().convert(raw_data=raw_data, new_ref=new_ref)
-        new_ref.issued = self._issued_date(raw_data.payload, raw_data.source_identifier)
-        new_ref.created = self._created_date(
-            raw_data.payload, raw_data.source_identifier
-        )
+        self._add_issued_date(raw_data.payload, raw_data.source_identifier, new_ref)
+        self._add_created_date(raw_data.payload, raw_data.source_identifier, new_ref)
         new_ref.page = self._page(raw_data.payload, raw_data.source_identifier)
 
     def _page(self, pub_graph, uri):
@@ -190,7 +192,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             ),
         ]
 
-    def _issued_date(self, pub_graph, uri):
+    def _add_issued_date(self, pub_graph, uri, new_ref):
         for issued in pub_graph.objects(
             rdflib.term.URIRef(uri),
             URIRef(
@@ -198,12 +200,22 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             ),
         ):
             date_string = issued.value
-            return check_valid_iso8601_date(date_string, self._harvester())
+            try:
+                new_ref.issued = check_valid_iso8601_date(date_string)
+            except UnexpectedFormatException as error:
+                logger.error(
+                    f"Persee reference converter cannot create issued date from dateOfPrintPublication in {uri}: {error}"
+                )
 
-    def _created_date(self, pub_graph, uri):
+    def _add_created_date(self, pub_graph, uri, new_ref):
         for created in pub_graph.objects(
             rdflib.term.URIRef(uri),
             URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
         ):
             date_string = created.value
-            return check_valid_iso8601_date(date_string, self._harvester())
+            try:
+                new_ref.created = check_valid_iso8601_date(date_string)
+            except UnexpectedFormatException as error:
+                logger.error(
+                    f"Persee reference converter cannot create created date from dateOfPublication in {uri}: {error}"
+                )
