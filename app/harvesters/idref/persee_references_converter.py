@@ -204,7 +204,8 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
                 new_ref.issued = check_valid_iso8601_date(date_string)
             except UnexpectedFormatException as error:
                 logger.error(
-                    f"Persee reference converter cannot create issued date from dateOfPrintPublication in {uri}: {error}"
+                    f"Persee reference converter cannot create issued date from dateOfPrintPublication in {uri}:"
+                    f" {error}"
                 )
 
     def _add_created_date(self, pub_graph, uri, new_ref):
@@ -212,10 +213,10 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             rdflib.term.URIRef(uri),
             URIRef("http://rdaregistry.info/Elements/m/dateOfPublication"),
         ):
-            date_string = created.value
             try:
-                new_ref.created = check_valid_iso8601_date(date_string)
+                new_ref.created = check_valid_iso8601_date(created.value)
             except UnexpectedFormatException as error:
                 logger.error(
-                    f"Persee reference converter cannot create created date from dateOfPublication in {uri}: {error}"
+                    f"Persee reference converter cannot create created date from dateOfPublication in {uri}:"
+                    f" {error}"
                 )

@@ -164,12 +164,12 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         if uri.endswith("/id"):
             uri = uri[:-3]
         for created in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.created):
-            date_string = created.value
             try:
-                new_ref.created = check_valid_iso8601_date(date_string)
+                new_ref.created = check_valid_iso8601_date(created.value)
             except UnexpectedFormatException as error:
                 logger.error(
-                    f"Sudoc reference converter cannot create created date from DCTERMS.created in {uri}: {error}"
+                    f"Sudoc reference converter cannot create created date from DCTERMS.created in {uri}:"
+                    f" {error}"
                 )
 
     async def _document_type(self, pub_graph, uri):

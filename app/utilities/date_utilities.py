@@ -26,7 +26,7 @@ def check_valid_iso8601_date(
                 return isodate.parse_datetime(date).replace(tzinfo=None)
             return isodate.parse_date(date)
         raise UnexpectedFormatException(
-            " Date should be a string, datetime.date or datetime.datetime object"
+            "Date should be a string, datetime.date or datetime.datetime object"
         )
     except isodate.ISO8601Error as error:
         raise UnexpectedFormatException(

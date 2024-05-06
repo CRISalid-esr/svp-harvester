@@ -1,9 +1,10 @@
-import logging
 from datetime import datetime, date
 
 import pytest
 
-from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.utilities.date_utilities import check_valid_iso8601_date
 
 
@@ -39,21 +40,21 @@ class TestCheckValidIso8601:
         [
             (
                 "invalid_date",
-                "Could not parse date invalid_date from Unknown source with error",
+                "Could not parse date invalid_date with error Unrecognised ISO 8601 date "
+                "format: 'invalid_date'",
             ),  # Test with invalid date string
             (
                 123,
-                "Invalid date 123 from Unknown source."
-                " Date should be a string, datetime.date or datetime.datetime object",
+                "Date should be a string, datetime.date or datetime.datetime object",
             ),  # Test with non-string, non-date object
         ],
     )
     def test_check_valid_iso8601_date_with_invalid_date(
-        self, invalid_date, expected_log, caplog
+        self, invalid_date, expected_log
     ):
         """
         Test that _check_valid_iso8601_date logs the expected error message with invalid input
         """
-        with caplog.at_level(logging.ERROR):
-            assert check_valid_iso8601_date(invalid_date) is None
-        assert expected_log in caplog.text
+        with pytest.raises(UnexpectedFormatException) as exception_info:
+            check_valid_iso8601_date(invalid_date)
+        assert str(exception_info.value) == expected_log
