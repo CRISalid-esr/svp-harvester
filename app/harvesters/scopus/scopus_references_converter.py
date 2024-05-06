@@ -252,7 +252,8 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             new_ref.issued = check_valid_iso8601_date(issued.text)
         except UnexpectedFormatException as error:
             logger.error(
-                f"Scopus reference converter cannot create issued date from coverDate in {new_ref.source_identifier}: {error}"
+                f"Scopus reference converter cannot create issued date from coverDate in"
+                f" {new_ref.source_identifier}: {error}"
             )
 
     def _get_element(self, entry: Element, tag: str) -> Element | None:

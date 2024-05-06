@@ -84,7 +84,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             new_ref.issued = check_valid_iso8601_date(issue)
         except UnexpectedFormatException as error:
             logger.error(
-                f"OpenAlex reference converter cannot create issued date from publication_date in {json_payload['id']}: {error}"
+                f"OpenAlex reference converter cannot create issued date from publication_date in"
+                f" {json_payload['id']}: {error}"
             )
 
     def _add_created_date(self, created, json_payload, new_ref):
@@ -92,7 +93,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             new_ref.created = check_valid_iso8601_date(created)
         except UnexpectedFormatException as error:
             logger.error(
-                f"OpenAlex reference converter cannot create created date from created_date in {json_payload['id']}: {error}"
+                f"OpenAlex reference converter cannot create created date from created_date in"
+                f" {json_payload['id']}: {error}"
             )
 
     def _harvester(self) -> str:

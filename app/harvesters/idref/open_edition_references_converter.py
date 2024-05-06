@@ -224,7 +224,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             new_ref.issued = check_valid_iso8601_date(issued)
         except UnexpectedFormatException as error:
             logger.error(
-                f"OpenEdition reference converter cannot create issued date from issued in {root}: {error}"
+                f"OpenEdition reference converter cannot create issued date from issued in {root}"
+                f": {error}"
             )
 
     def _get_created_date(self, root: ElementTree, new_ref: Reference):
@@ -233,7 +234,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             new_ref.created = check_valid_iso8601_date(created)
         except UnexpectedFormatException as error:
             logger.error(
-                f"OpenEdition reference converter cannot create created date from created in {root}: {error}"
+                f"OpenEdition reference converter cannot create created date from created in {root}"
+                f": {error}"
             )
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:

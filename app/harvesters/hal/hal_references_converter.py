@@ -136,7 +136,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
             )
         except UnexpectedFormatException as error:
             logger.error(
-                f"Hal reference converter cannot create created date from producedDate_tdate in {json_payload['halId_s']}: {error}"
+                f"Hal reference converter cannot create created date from producedDate_tdate in"
+                f" {json_payload['halId_s']}: {error}"
             )
 
     def _add_issued_date(self, json_payload, new_ref):
@@ -146,7 +147,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
             )
         except UnexpectedFormatException as error:
             logger.error(
-                f"Hal reference converter cannot create issued date from publicationDate_tdate in {json_payload['halId_s']}: {error}"
+                f"Hal reference converter cannot create issued date from publicationDate_tdate in"
+                f" {json_payload['halId_s']}: {error}"
             )
 
     def _harvester(self) -> str:

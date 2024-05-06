@@ -168,8 +168,8 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 new_ref.created = check_valid_iso8601_date(created.value)
             except UnexpectedFormatException as error:
                 logger.error(
-                    f"Sudoc reference converter cannot create created date from DCTERMS.created in {uri}:"
-                    f" {error}"
+                    f"Sudoc reference converter cannot create created date from DCTERMS.created in"
+                    f" {uri}: {error}"
                 )
 
     async def _document_type(self, pub_graph, uri):
