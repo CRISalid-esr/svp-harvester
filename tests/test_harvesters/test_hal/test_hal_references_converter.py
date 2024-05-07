@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -37,6 +39,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_contributor_source_identifier = "10227"
     expected_references_identifier_types = ["hal", "doi"]
     expected_references_identifier_values = ["halshs-01387023", "doi/1234"]
+    expected_issued_date = datetime.datetime(2016, 1, 1, 0, 0)
+    expected_created_date = datetime.datetime(2016, 1, 1, 0, 0)
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -60,6 +64,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
         assert test_subjects == expected_subjects
         assert test_subtitles == expected_subtitles
         assert test_abstracts == expected_abstracts
+        assert test_reference.issued == expected_issued_date
+        assert test_reference.created == expected_created_date
         assert len(test_reference.contributions) == expected_contributors_number
         assert test_reference.contributions[0].role == expected_contributor_role
         assert (
@@ -83,12 +89,20 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
             )
 
 
-async def test_convert_with_date_inconsistency(
-    hal_api_docs_with_date_inconsistency, caplog
-):
-    """Test that the converter will raise an exception when the date is inconsistent"""
+@pytest.mark.parametrize(
+    "fixture, expected_output",
+    [
+        ("hal_api_docs_with_date_invalid_format", "Date should be"),
+        ("hal_api_docs_with_date_inconsistency", "Could not parse date"),
+    ],
+)
+async def test_convert_with_date_exception(fixture, expected_output, caplog, request):
+    """
+    Test that the converter will raise an exception when the date have an unexpected format
+    """
+    fixture = request.getfixturevalue(fixture)
     converter_under_tests = HalReferencesConverter()
-    for doc in hal_api_docs_with_date_inconsistency["response"]["docs"]:
+    for doc in fixture["response"]["docs"]:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
         )
@@ -98,4 +112,5 @@ async def test_convert_with_date_inconsistency(
         await converter_under_tests.convert(raw_data=result, new_ref=reference)
         assert reference.issued is None
         assert reference.created is None
-        assert "Could not parse date" in caplog.text
+        assert "Hal reference converter cannot create" in caplog.text
+        assert expected_output in caplog.text

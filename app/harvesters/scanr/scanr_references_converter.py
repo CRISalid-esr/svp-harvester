@@ -26,6 +26,7 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
 LEVENSHTEIN_CONCEPT_LABELS_SIMILARITY_THRESHOLD = 0.3
@@ -85,6 +86,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         await self._add_contributions(json_payload, new_ref)
 
+        issue = json_payload["_source"].get("publicationDate")
+        if issue:
+            self._add_issued_date(issue, json_payload, new_ref)
+
         journal = await self._journal(json_payload)
 
         if journal:
@@ -100,6 +105,15 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
+
+    def _add_issued_date(self, issue, json_payload, new_ref):
+        try:
+            new_ref.issued = check_valid_iso8601_date(issue)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"ScanR reference converter cannot create issued date from publicationDate in"
+                f" ScanR reference {json_payload['_id']}: {error}"
+            )
 
     def _harvester(self) -> str:
         return "ScanR"

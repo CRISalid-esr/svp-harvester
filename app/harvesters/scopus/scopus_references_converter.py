@@ -1,21 +1,24 @@
 from xml.etree.ElementTree import Element
-import isodate
+
 from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
+from app.db.models.contribution import Contribution
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
+from app.harvesters.exceptions.unexpected_format_exception import (
+    UnexpectedFormatException,
+)
 from app.harvesters.scopus.scopus_client import ScopusClient
 from app.harvesters.scopus.scopus_document_type_converter import (
     ScopusDocumentTypeConverter,
 )
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
-from app.db.models.contribution import Contribution
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
@@ -23,6 +26,7 @@ from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
@@ -53,7 +57,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         async for document_type in self._document_type(entry):
             new_ref.document_type.append(document_type)
 
-        async for identifier in self._indetifiers(entry):
+        async for identifier in self._identifiers(entry):
             new_ref.identifiers.append(identifier)
 
         async for concept in self._concepts(entry):
@@ -62,9 +66,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         async for contribution in self._add_contributions(entry):
             new_ref.contributions.append(contribution)
 
-        issued = self._issued(entry)
-        if issued is not None:
-            new_ref.issued = issued
+        self._add_issued_date(entry, new_ref)
 
         journal = await self._journal(entry)
         if journal is not None:
@@ -231,7 +233,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             uri, label = ScopusDocumentTypeConverter().convert(document_type.text)
             yield await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
-    async def _indetifiers(self, entry: Element):
+    async def _identifiers(self, entry: Element):
         for key_identifier, type_identifier in self.FIELD_NAME_IDENTIFIER.items():
             identifier = self._get_element(entry, key_identifier)
             if identifier is not None:
@@ -244,24 +246,21 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         for title in self._get_elements(entry, "dc:title"):
             yield Title(value=title.text)
 
-    def _issued(self, entry: Element):
+    def _add_issued_date(self, entry: Element, new_ref: Reference):
         issued = self._get_element(entry, "prism:coverDate")
-        return self._date(issued.text)
+        try:
+            new_ref.issued = check_valid_iso8601_date(issued.text)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Scopus reference converter cannot create issued date from coverDate in"
+                f" {new_ref.source_identifier}: {error}"
+            )
 
     def _get_element(self, entry: Element, tag: str) -> Element | None:
         return entry.find(tag, ScopusClient.NAMESPACE)
 
     def _get_elements(self, entry: Element, tag: str) -> list[Element]:
         return entry.findall(tag, ScopusClient.NAMESPACE)
-
-    def _date(self, date):
-        try:
-            if date is None:
-                return None
-            return isodate.parse_date(date)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from Scopus with error {error}")
-            return None
 
     def _harvester(self) -> str:
         return "Scopus"

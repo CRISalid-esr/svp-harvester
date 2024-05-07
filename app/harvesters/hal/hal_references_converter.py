@@ -1,18 +1,16 @@
 import re
 from typing import Generator, List
 
-import isodate
 from loguru import logger
 from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.book import Book
+from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
-from app.db.models.journal import Journal
-
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -28,6 +26,7 @@ from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_data_class import OrganizationInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string
 
@@ -109,8 +108,11 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
-        new_ref.issued = self._date(json_payload.get("publicationDate_tdate", None))
-        new_ref.created = self._date(json_payload.get("producedDate_tdate", None))
+
+        self._add_issued_date(json_payload, new_ref)
+
+        self._add_created_date(json_payload, new_ref)
+
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
 
@@ -126,6 +128,28 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 new_ref.book = book
 
         await self._add_organization(json_payload, new_ref)
+
+    def _add_created_date(self, json_payload, new_ref):
+        try:
+            new_ref.created = check_valid_iso8601_date(
+                json_payload.get("producedDate_tdate", None)
+            )
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Hal reference converter cannot create created date from producedDate_tdate in"
+                f" {json_payload['halId_s']}: {error}"
+            )
+
+    def _add_issued_date(self, json_payload, new_ref):
+        try:
+            new_ref.issued = check_valid_iso8601_date(
+                json_payload.get("publicationDate_tdate", None)
+            )
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"Hal reference converter cannot create issued date from publicationDate_tdate in"
+                f" {json_payload['halId_s']}: {error}"
+            )
 
     def _harvester(self) -> str:
         return "HAL"
@@ -215,16 +239,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 return identifier_type
         logger.error(f"Unknown identifier type from Hal for field {field}")
         return None
-
-    def _date(self, date):
-        # Check if is a valid ISO 8601 date
-        try:
-            if date is None:
-                return None
-            return isodate.parse_datetime(date).replace(tzinfo=None)
-        except isodate.ISO8601Error as error:
-            logger.error(f"Could not parse date {date} from HAL with error {error}")
-            return None
 
     def _titles(self, raw_data):
         for value, language in self._values_from_field_pattern(

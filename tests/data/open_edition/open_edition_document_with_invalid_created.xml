@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="xsl/oai2.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2024-01-24T16:21:33Z</responseDate>
+    <request verb="GetRecord" identifier="oai:revues.org:conflits/756" metadataPrefix="qdc">
+        https://oai.openedition.org/
+    </request>
+    <GetRecord>
+        <record>
+            <header>
+                <identifier>oai:revues.org:conflits/756</identifier>
+                <datestamp>2008-06-01T13:08:37Z</datestamp>
+                <setSpec>journals</setSpec>
+                <setSpec>journals:conflits</setSpec>
+                <setSpec>openaire</setSpec>
+            </header>
+            <metadata>
+                <qdc:qualifieddc xmlns:dcterms="http://purl.org/dc/terms/"
+                                 xmlns:qdc="http://www.bl.uk/namespaces/oai_dcq/"
+                                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                 xsi:schemaLocation="http://www.bl.uk/namespaces/oai_dcq/ http://www.bl.uk/schemas/qualifieddc/oai_dcq.xsd">
+                    <dcterms:hasFormat scheme="BASICTEI">
+                        https://journals.openedition.org/conflits/basictei/756
+                    </dcterms:hasFormat>
+                    <dcterms:identifier scheme="URI">https://journals.openedition.org/conflits/756
+                    </dcterms:identifier>
+                    <dcterms:identifier scheme="URN">urn:doi:10.4000/conflits.756
+                    </dcterms:identifier>
+                    <dcterms:language xsi:type="dcterms:RFC1766">fr</dcterms:language>
+                    <dcterms:created xsi:type="dcterms:W3CDTF">-1992</dcterms:created>
+                    <dcterms:hasFormat scheme="TEI">
+                        https://journals.openedition.org/conflits/tei/756
+                    </dcterms:hasFormat>
+                    <dcterms:issued xsi:type="dcterms:W3CDTF">2003-01-02T00:00:00Z</dcterms:issued>
+                    <dcterms:accessRights>info:eu-repo/semantics/openAccess</dcterms:accessRights>
+                    <dcterms:type>article</dcterms:type>
+                    <dcterms:rights>https://creativecommons.org/licenses/by-nc-nd/4.0/
+                    </dcterms:rights>
+                    <dcterms:title>Les émeutes entre hindous et musulmans (partie 2)</dcterms:title>
+                    <dcterms:publisher>Cultures &amp; conflits</dcterms:publisher>
+                    <dcterms:publisher>CECLS - Centre d'études sur les conflits - Liberté et
+                        sécurité
+                    </dcterms:publisher>
+                    <dcterms:publisher>L’Harmattan</dcterms:publisher>
+                    <dcterms:isPartOf scheme="URN">urn:eissn:1777-5345</dcterms:isPartOf>
+                    <dcterms:isPartOf scheme="URN">urn:issn:1157-996X</dcterms:isPartOf>
+                    <dcterms:isPartOf scheme="URI">https://journals.openedition.org/conflits
+                    </dcterms:isPartOf>
+                    <dcterms:creator>Jaffrelot, Christophe</dcterms:creator>
+                    <dcterms:subject xml:lang="fr" scheme="keywords">identité</dcterms:subject>
+                    <dcterms:subject xml:lang="fr" scheme="keywords">religion</dcterms:subject>
+                    <dcterms:subject xml:lang="fr" scheme="keywords">émeutes</dcterms:subject>
+                    <dcterms:subject xml:lang="fr" scheme="keywords">mobilisation</dcterms:subject>
+                    <dcterms:subject xml:lang="fr" scheme="keywords">culture(s)</dcterms:subject>
+                    <dcterms:spatial>Inde</dcterms:spatial>
+                    <dcterms:abstract xml:lang="fr">Si le caractère très ancien et les facteurs
+                        religieux des émeutes entre hindous et musulmans ont pu accréditer une
+                        interprétation culturaliste du phénomène, cette analyse s'est rapidement
+                        trouvée relayée par une approche économiciste et microsociologique mettant
+                        l'accent sur les rivalités socio-économiques locales comme ressort des
+                        violences. Cette lecture, sans doute pertinente dans les années 1960-1970,
+                        ne permet guère de rendre compte des émeutes de la dernière décennie qui
+                        s'expliquent d'abord dans une perspective politique. Le " complexe
+                        d'infériorité majoritaire " des hindous face à une communauté musulmane
+                        perçue comme adossée à une internationale islamique et favorisée par le
+                        pouvoir a en effet été exploitée par des groupes nationalistes hindous,
+                        notamment dans de] contextes préélectoraux : l'institution hindoue que
+                        constitue la procession s'est par exemple trouvée politisée et transformée
+                        en démonstration de force à l'origine de nombreuses émeutes. Par ailleurs,
+                        les pouvoirs locaux ou régionaux ont davantage tendu à gérer ces tensions au
+                        mieux de leurs intérêts, surtout dans les zones où l'Etat de droit était
+                        déjà en déclin. Les violences des dernières années suggèrent donc un modèle
+                        politico-idéologique où l'émeute se situe au carrefour de facteurs
+                        internationaux (l'impact du " panislamisme ") nationaux (la propagande
+                        nationaliste hindoue) et locaux (le degré de criminalisation de la
+                        politique).
+                    </dcterms:abstract>
+                    <dcterms:abstract xml:lang="en">Riots between Hindus and Muslims, due to their
+                        ancient origin, have long been explained on religious grounds. Later,
+                        economic and micro-sociological explanations were adopted, stressing local
+                        socio-economic conflicts. While these interpretations may have remained
+                        valid during the sixties and seventies, they failed in the last decade
+                        during which riots appear to be based more on political reasons. There
+                        exists a " majority inferiority complex " of the Hindu population which
+                        perceives the Muslim population as benefiting from international Islamic
+                        back-up and governmental preference ; this feeling is exploited by Hinduist
+                        groups, particularly for electoral purposes. For instance, the traditional
+                        role of the Hindu procession has been perverted into a demonstration of
+                        force, often at the origin of riots. Moreover, local and regional
+                        authorities - especially there where the rule of Law is on the decline -
+                        have exploited such tensions for their own benefit. Violence in recent years
+                        thus suggests an ideological model at the crossroads of international
+                        factors (the " Pan Islamic " impact), national factors (Hindu nationalist
+                        propaganda) and local factors (criminalisation of political life).
+                    </dcterms:abstract>
+                </qdc:qualifieddc>
+            </metadata>
+        </record>
+    </GetRecord>
+</OAI-PMH>

@@ -109,6 +109,16 @@ def fixture_hal_api_docs_with_date_inconsistency(_base_path) -> dict:
     return _hal_api_json_data_from_file(_base_path, "docs_with_date_inconsistency")
 
 
+@pytest.fixture(name="hal_api_docs_with_date_invalid_format")
+def fixture_hal_api_docs_with_date_invalid_format(_base_path) -> dict:
+    """
+    Generate a HAL API response for one researcher in JSON format
+    :param _base_path: test data directory base
+    :return: HAL API response for one researcher in JSON format
+    """
+    return _hal_api_json_data_from_file(_base_path, "docs_with_date_invalid_format")
+
+
 def _hal_api_json_data_from_file(base_path, file_name) -> dict:
     file_path = f"data/hal_api/{file_name}.json"
     return _json_data_from_file(base_path, file_path)

@@ -1,6 +1,9 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
+from app.harvesters.scopus.scopus_client import ScopusClient
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
 from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 from app.db.models.contribution import Contribution
@@ -49,6 +52,7 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     expected_volume_issue = "12"
     expected_number_issue = "1"
     expected_role = Contribution.get_url("AUT")
+    expected_issued = datetime.date(2024, 1, 1)
 
     assert test_reference.titles[0].value == expected_title
     assert test_reference.abstracts[0].value == expected_abstract
@@ -69,6 +73,7 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
     assert expected_journal_title in test_reference.issue.journal.titles
     assert test_reference.issue.volume == expected_volume_issue
     assert expected_number_issue in test_reference.issue.number
+    assert test_reference.issued == expected_issued
 
 
 @pytest.mark.asyncio
@@ -93,3 +98,33 @@ async def test_convert_book(scopus_xml_raw_result_for_doc_book):
     assert test_reference.book.title == expected_title_book
     assert test_reference.book.isbn10 == expected_isbn10
     assert test_reference.book.isbn13 == expected_isbn13
+
+
+@pytest.mark.asyncio
+async def test_convert_with_invalid_date_format(scopus_xml_raw_result_for_doc, caplog):
+    """
+    Test that the ScopusReferencesConverter will handle an invalid date format gracefully
+    """
+    converter_under_tests = ScopusReferencesConverter()
+
+    # Simulate invalid date format
+    existing_cover_date = scopus_xml_raw_result_for_doc.payload.find(
+        "prism:coverDate", ScopusClient.NAMESPACE
+    )
+    if existing_cover_date is not None:
+        existing_cover_date.text = "invalid-date"
+
+    test_reference = converter_under_tests.build(
+        raw_data=scopus_xml_raw_result_for_doc,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
+
+    await converter_under_tests.convert(
+        raw_data=scopus_xml_raw_result_for_doc, new_ref=test_reference
+    )
+
+    assert test_reference.issued is None
+    assert (
+        "Scopus reference converter cannot create issued date from coverDate"
+        in caplog.text
+    )

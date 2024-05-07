@@ -27,6 +27,7 @@ from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
 
@@ -53,7 +54,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         self, raw_data: XMLHarvesterRawResult, new_ref: Reference
     ) -> None:
         new_ref.titles.append(self._title(self._get_root(raw_data)))
-
         for abstract in self._abstracts(self._get_root(raw_data)):
             new_ref.abstracts.append(abstract)
 
@@ -69,6 +69,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         new_ref.document_type.append(
             await self._document_type(self._get_root(raw_data))
         )
+
+        self._get_issued_date(self._get_root(raw_data), new_ref)
+        self._get_created_date(self._get_root(raw_data), new_ref)
 
         journal = await self._get_journal(self._get_root(raw_data))
         if journal is not None:
@@ -215,6 +218,26 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         )
         return await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
+    def _get_issued_date(self, root: ElementTree, new_ref: Reference):
+        issued = self._get_term(root, "issued")
+        try:
+            new_ref.issued = check_valid_iso8601_date(issued)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"OpenEdition reference converter cannot create issued date from issued in {root}"
+                f": {error}"
+            )
+
+    def _get_created_date(self, root: ElementTree, new_ref: Reference):
+        created = self._get_term(root, "created")
+        try:
+            new_ref.created = check_valid_iso8601_date(created)
+        except UnexpectedFormatException as error:
+            logger.error(
+                f"OpenEdition reference converter cannot create created date from created in {root}"
+                f": {error}"
+            )
+
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
             HashKeyXML("dcterms:title", namespace=self.NAMESPACES),
@@ -224,4 +247,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             HashKeyXML("dcterms:identifier", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:subject", namespace=self.NAMESPACES),
             HashKeyXML("dcterms:type", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:issued", namespace=self.NAMESPACES),
+            HashKeyXML("dcterms:created", namespace=self.NAMESPACES),
         ]

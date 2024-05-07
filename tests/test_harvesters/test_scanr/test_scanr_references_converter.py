@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from semver import VersionInfo
 
@@ -55,6 +57,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     expected_publisher = "De Gruyter"
     expected_journal_title = "Central European Journal of Public Policy"
     expected_issn = "1802-4866"
+    expected_publication_date = datetime.datetime(2019, 12, 6, 0, 0)
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -86,6 +89,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_reference.issue.journal.publisher == expected_publisher
         assert expected_journal_title in test_reference.issue.journal.titles
         assert expected_issn in test_reference.issue.journal.issn
+        assert test_reference.issued == expected_publication_date
 
 
 async def test_convert_with_default_dupe(
@@ -160,14 +164,17 @@ async def test_same_contributor_with_different_roles(
             contributor_source_identifier = contribution.contributor.source_identifier
             role = contribution.role
 
-            # If the contributor source_identifier is not in the dictionary, add it with a set containing the role
+            # If the contributor source_identifier
+            # is not in the dictionary, add it with a set containing the role
             if contributor_source_identifier not in contributor_roles:
                 contributor_roles[contributor_source_identifier] = {role}
-            # If the contributor source_identifier is already in the dictionary, add the role to the set
+            # If the contributor source_identifier
+            # is already in the dictionary, add the role to the set
             else:
                 contributor_roles[contributor_source_identifier].add(role)
 
-        # Assert that the number of roles for the contributor source_identifier of interest is equal to the expected number of roles
+        # Assert that the number of roles for the
+        # contributor source_identifier of interest is equal to the expected number of roles
         assert len(contributor_roles["idref122796527"]) == 2
         assert len(contributor_roles["idref034869417"]) == 2
         assert len(contributor_roles["idref132138123"]) == 2
@@ -177,3 +184,43 @@ async def test_same_contributor_with_different_roles(
         assert len(contributor_roles["idref034105700"]) == 1
         # Check that the returned Reference object has the correct properties
         assert len(test_reference.contributions) == 11
+
+
+@pytest.mark.parametrize(
+    "publication_date_value, expected_output",
+    [
+        ("invalid_date", "Could not parse date"),
+        (123, "Date should be"),
+    ],
+)
+async def test_convert_with_date_exception(
+    scanr_api_docs_from_publication, publication_date_value, expected_output, caplog
+):
+    """
+    Test that the converter will raise an exception when the date have an unexpected format
+    """
+
+    converter_under_tests = ScanrReferencesConverter()
+
+    for doc in scanr_api_docs_from_publication["hits"]["hits"]:
+        doc["_source"]["publicationDate"] = publication_date_value
+
+    for doc in scanr_api_docs_from_publication["hits"]["hits"]:
+        result = JsonHarvesterRawResult(
+            source_identifier=doc["_source"].get("id"),
+            payload=doc,
+            formatter_name="SCANR",
+        )
+
+        test_reference = converter_under_tests.build(
+            raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+        )
+        await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
+        assert test_reference.source_identifier == "nnt2019lysem032"
+        assert test_reference.harvester == "ScanR"
+
+        assert test_reference.issued is None
+        assert "ScanR reference converter cannot create" in caplog.text
+
+        assert expected_output in caplog.text
