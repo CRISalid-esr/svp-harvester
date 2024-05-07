@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:rdau="http://rdaregistry.info/Elements/u/"
+	xmlns:bibo="http://purl.org/ontology/bibo/"
+	xmlns:persee="http://data.persee.fr/ontology/persee-ontology/"
+	xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+	xmlns:rdam="http://rdaregistry.info/Elements/m/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/" >
+  <rdf:Description rdf:about="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Print">
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/Manifestation" />
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Document" />
+    <dcterms:title>Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception</dcterms:title>
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print" />
+    <dcterms:publisher>Paris : Institut national d&#39;histoire de l&#39;art</dcterms:publisher>
+    <rdam:dateOfPublication rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1998</rdam:dateOfPublication>
+    <rdam:mediaType>unmediated</rdam:mediaType>
+    <dcterms:bibliographicCitation>Hottin Christian. Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception. In: Histoire de l&#39;art, N°42-43, 1998. Architecture et décor. pp. 103-113.</dcterms:bibliographicCitation>
+    <bibo:pageEnd>113</bibo:pageEnd>
+    <bibo:pageStart>103</bibo:pageStart>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web">
+    <rdf:type rdf:resource="http://purl.org/ontology/bibo/Document" />
+    <rdf:type rdf:resource="http://data.persee.fr/ontology/persee-ontology/Article" />
+    <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/Manifestation" />
+    <dcterms:modified>2021-06-23 19:46:55.993611</dcterms:modified>
+    <rdfs:label>Hottin Christian. Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception. In: Histoire de l&#39;art, N°42-43, 1998. Architecture et décor. pp. 103-113. [Online]</rdfs:label>
+    <rdau:electronicReproductionOf rdf:resource="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Print" />
+    <dcterms:title>Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception</dcterms:title>
+    <dcterms:license>http://creativecommons.org/licenses/by-nc-sa/3.0/fr/</dcterms:license>
+    <dcterms:isPartOf rdf:resource="http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Web" />
+    <dcterms:subject xml:lang="en">university</dcterms:subject>
+    <dcterms:subject xml:lang="en">amphitheater</dcterms:subject>
+    <dcterms:subject xml:lang="en">artistic heritage</dcterms:subject>
+    <dcterms:subject xml:lang="en">History painting</dcterms:subject>
+    <dcterms:subject xml:lang="en">commissioned works of art</dcterms:subject>
+    <dcterms:subject xml:lang="en">mural painting</dcterms:subject>
+    <dcterms:subject xml:lang="en">group portrait</dcterms:subject>
+    <dcterms:subject xml:lang="en">Paris, Sorbonne, Law School, Faculty of Medicine, Faculty of Pharmacy.</dcterms:subject>
+    <dcterms:subject xml:lang="en">architectural decor, France, 18th-20th centuries</dcterms:subject>
+    <bibo:doi>10.3406/hista.1998.2826</bibo:doi>
+    <dcterms:creator rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    <persee:dateOfPrintPublication rdf:datatype="http://www.w3.org/2001/XMLSchema#string">invalid_date</persee:dateOfPrintPublication>
+    <marcrel:aut rdf:resource="http://data.persee.fr/authority/214267#Person" />
+    <dcterms:publisher>PERSÉE : CNRS &amp; ENS de Lyon</dcterms:publisher>
+    <dcterms:identifier>https://www.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826</dcterms:identifier>
+    <dcterms:language>fr</dcterms:language>
+    <rdam:dateOfPublication>2021-06-23 23:09:28.581</rdam:dateOfPublication>
+    <rdam:mediaType>electronic</rdam:mediaType>
+    <dcterms:bibliographicCitation>Hottin Christian. Le décor peint des établissements d’enseignement supérieur à Paris. De la conception à la réception. In: Histoire de l&#39;art, N°42-43, 1998. Architecture et décor. pp. 103-113. [En ligne] Disponible sur : https://www.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826</dcterms:bibliographicCitation>
+    <dcterms:abstract xml:lang="en"> Painted decor in university education buildings in Paris.  From conception to reception.  The first great painted decors designed for university education buildings dates back to the end of the 18th century, but the golden age of this painting takes place during the Third Republic, when great sites are launched in universities and prestigious schools for their extension or reconstruction.  The majority of these works originate in a public commission, during which execution a number of actors (artist, architect, members of the institutions, officials of the Beaux-Arts administration) bring their contribution to the birth of the work. Its themes, usually put forward by the establishment’s directors, are connected to the history of the institution or the scientific subjects it teaches, but through these works, the group portrait is the most typical feature of a community identity. These works occasioned a greater indifference among the critics than among the users of the premises : at times adorned with drawings, at other times defaced or defiled, they also provided an opportunity to remember the academic years. The recent restoration campaigns show the interest they arouse nowadays.  </dcterms:abstract>
+    <dcterms:tableOfContents>
+&lt;ol&gt;&lt;li&gt;De l’École de chirurgie à la Sorbonne, la localisation des œuvres          &lt;/li&gt;
+
+&lt;li&gt;Les acteurs de la décoration et la commande publique          &lt;/li&gt;
+
+&lt;li&gt;Les grands thèmes de la décoration peinte des établissements d’enseignement supérieur          &lt;/li&gt;
+
+&lt;li&gt;Réception, influence et devenir des œuvres          &lt;/li&gt;
+
+&lt;li&gt;Notes          &lt;/li&gt;
+
+&lt;/ol&gt;
+</dcterms:tableOfContents>
+    <bibo:numPages>11</bibo:numPages>
+    <bibo:pageEnd>113</bibo:pageEnd>
+    <bibo:pageStart>103</bibo:pageStart>
+    <rdau:hasIllustrativeContent rdf:resource="http://data.persee.fr/image/hista_0992-2059_1998_num_42_1_T2_0104_0000_1" />
+    <rdau:hasIllustrativeContent rdf:resource="http://data.persee.fr/image/hista_0992-2059_1998_num_42_1_T2_0105_0000_1" />
+    <rdau:hasIllustrativeContent rdf:resource="http://data.persee.fr/image/hista_0992-2059_1998_num_42_1_T2_0109_0000_1" />
+    <rdau:hasIllustrativeContent rdf:resource="http://data.persee.fr/image/hista_0992-2059_1998_num_42_1_T2_0109_0000_2" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826">
+    <rdf:type rdf:resource="http://purl.org/spar/biro/BibliographicRecord" />
+    <dcterms:modified>2021-08-27 11:21:27</dcterms:modified>
+    <dcterms:license>http://creativecommons.org/licenses/by-nc-sa/3.0/fr/</dcterms:license>
+    <dcterms:creator rdf:resource="http://data.persee.fr/UMS_Persee/" />
+    <foaf:focus rdf:resource="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web" />
+  </rdf:Description>
+</rdf:RDF>

@@ -111,8 +111,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             new_ref.issued = check_valid_iso8601_date(issue)
         except UnexpectedFormatException as error:
             logger.error(
-                f"Scanr reference converter cannot create issued date from publicationDate in"
-                f" Scanr reference {json_payload['_id']}: {error}"
+                f"ScanR reference converter cannot create issued date from publicationDate in"
+                f" ScanR reference {json_payload['_id']}: {error}"
             )
 
     def _harvester(self) -> str:

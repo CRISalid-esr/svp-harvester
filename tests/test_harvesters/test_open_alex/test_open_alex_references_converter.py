@@ -15,7 +15,10 @@ async def test_convert(open_alex_api_work: dict):
     """Test that the converter will return normalised references"""
     converter_under_tests = OpenAlexReferencesConverter()
 
-    expected_title = "Development of the Colle-Salvetti correlation-energy formula into a functional of the electron density"
+    expected_title = (
+        "Development of the Colle-Salvetti "
+        "correlation-energy formula into a functional of the electron density"
+    )
     expected_abstract = (
         "insertion gradient expansions for density, density-functional formulas"
     )
@@ -88,3 +91,44 @@ async def test_convert(open_alex_api_work: dict):
     assert expected_issn in test_reference.issue.journal.issn
     assert test_reference.issued == expected_issued_date
     assert test_reference.created == expected_created_date
+
+
+@pytest.mark.parametrize(
+    "field_tested, reference_field, tested_value, expected_log",
+    [
+        ("publication_date", "issued", "invalid_date", "Could not parse date"),
+        ("publication_date", "issued", 123, "Date should be"),
+        ("created_date", "created", "invalid_date", "Could not parse date"),
+        ("created_date", "created", 123, "Date should be"),
+    ],
+)
+async def test_convert_with_date_exception(
+    open_alex_api_work: dict,
+    field_tested,
+    reference_field,
+    tested_value,
+    expected_log,
+    caplog,
+):
+    """test that converter will raise an error when date is in invalid format"""
+    converter_under_tests = OpenAlexReferencesConverter()
+
+    open_alex_api_work[field_tested] = tested_value
+
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_api_work["id"],
+        payload=open_alex_api_work,
+        formatter_name="OPEN_ALEX",
+    )
+
+    expected_id = "https://openalex.org/W2023271753"
+
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
+    assert test_reference.source_identifier == expected_id
+    assert getattr(test_reference, reference_field) is None
+    assert "OpenAlex reference converter cannot create" in caplog.text
+    assert expected_log in caplog.text

@@ -111,9 +111,36 @@ async def test_convert_for_rdf_result_for_book(sudoc_rdf_result_for_book):
     expected_publisher = "Cambridge, MA : Academic Press, an imprint of Elsevier , 2020"
     expected_isbn10 = "0128186755"
     expected_isbn13 = "9780128186756"
-    expected_title = "Tumor immunology and immunotherapy Part B, : cellular methods / edited by Lorenzo Galluzzi,... Nils-Petter Rudqvist,..."
+    expected_title = (
+        "Tumor immunology and immunotherapy Part B, :"
+        " cellular methods / edited by Lorenzo Galluzzi,... Nils-Petter Rudqvist,..."
+    )
 
     assert expected_isbn10 == test_reference.book.isbn10
     assert expected_isbn13 == test_reference.book.isbn13
     assert expected_publisher == test_reference.book.publisher
     assert expected_title in test_reference.book.title
+
+
+async def test_convert_with_invalid_date_format(
+    sudoc_rdf_result_for_doc_with_invalid_created, caplog
+):
+    """
+    GIVEN a SudocReferencesConverter instance and a Sudoc RDF result with an invalid date format
+    WHEN the convert method is called
+    THEN it should raise a log error and the created date should be None
+    """
+    converter_under_tests = SudocReferencesConverter()
+
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_doc_with_invalid_created,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
+
+    await converter_under_tests.convert(
+        raw_data=sudoc_rdf_result_for_doc_with_invalid_created, new_ref=test_reference
+    )
+
+    assert test_reference.created is None
+    assert "Sudoc reference converter cannot create" in caplog.text
+    assert "Could not parse date" in caplog.text
