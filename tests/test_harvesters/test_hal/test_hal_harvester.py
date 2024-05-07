@@ -1,4 +1,5 @@
 """Tests for the Person model."""
+
 import urllib
 from unittest import mock
 
@@ -326,7 +327,6 @@ async def test_hal_harvester_register_document_type_in_db(
     assert len(results) == 1
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_hal_harvester_registers_docs_in_db(
     hal_harvester: HalHarvester,
