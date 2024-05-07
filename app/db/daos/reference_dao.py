@@ -8,6 +8,7 @@ from app.db.daos.entity_dao import EntityDAO
 from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.identifier import Identifier
+from app.db.models.issue import Issue
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
@@ -196,6 +197,11 @@ class ReferenceDAO(AbstractDAO):
         query = (
             select(Reference)
             .options(joinedload(Reference.contributions))
+            .options(joinedload(Reference.abstracts))
+            .options(joinedload(Reference.subjects))
+            .options(joinedload(Reference.issue))
+            .options(joinedload(Reference.issue).joinedload(Issue.journal))
+            .options(joinedload(Reference.book))
             .where(Reference.harvester == harvester)
             .where(Reference.source_identifier == source_identifier)
             .where(Reference.version == version)

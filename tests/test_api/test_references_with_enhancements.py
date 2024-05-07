@@ -1,4 +1,5 @@
 """Test that references API creates Retrieval in database."""
+
 from unittest import mock
 
 import aiohttp
@@ -14,7 +15,6 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_fetch_unchanged_references_async_with_enhancements_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
@@ -98,7 +98,6 @@ async def test_fetch_unchanged_references_async_with_enhancements_returned(  # p
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_fetch_unchanged_references_async_with_enhancements_not_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
@@ -169,7 +168,6 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_fetch_modified_references_async_with_enhancements_returned(  # pylint: disable=too-many-statements
     test_client: TestClient,
     person_with_name_and_id_hal_i_json,
