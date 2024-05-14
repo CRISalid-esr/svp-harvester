@@ -44,7 +44,6 @@ async def test_convert_for_rdf_result(
         "Concept Idref autorisé pour les tests",
         "Idref concept you can use for tests",
         "Concept Idref que vous pouvez utiliser pour les tests",
-        "Agriculture urbaine -- Amérique latine -- 2000-....",
     ]
 
     assert test_reference.source_identifier == str(

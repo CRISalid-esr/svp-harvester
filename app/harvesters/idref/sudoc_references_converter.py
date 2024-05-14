@@ -74,14 +74,6 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                 )
             )
             new_ref.subjects.append(db_concept)
-        for subject in pub_graph.objects(rdflib.term.URIRef(uri), DC.subject):
-            concept_label = subject.value
-            db_concept = await self._get_or_create_concept_by_label(
-                ConceptInformations(
-                    label=concept_label,
-                )
-            )
-            new_ref.subjects.append(db_concept)
 
     def _harvester(self) -> str:
         return "Idref"
