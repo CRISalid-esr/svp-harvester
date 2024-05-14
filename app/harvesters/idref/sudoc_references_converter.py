@@ -22,6 +22,7 @@ from app.harvesters.idref.sudoc_document_type_converter import (
 from app.harvesters.idref.sudoc_roles_converter import SudocRolesConverter
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.book.book_data_class import BookInformations
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -51,6 +52,8 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
         self._add_created_date(raw_data.payload, raw_data.source_identifier, new_ref)
 
+        await self._get_subjects(raw_data.payload, raw_data.source_identifier, new_ref)
+
         # If we have an article, we need to get the journal and issue
         if "Article" in [dc.label for dc in new_ref.document_type]:
             async for biblio_graph, uri in self._get_bibliographic_resource(
@@ -61,6 +64,24 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                     journal=journal, biblio_graph=biblio_graph, uri=uri
                 )
                 new_ref.issue = issue
+
+    async def _get_subjects(self, pub_graph, uri, new_ref):
+        for subject in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.subject):
+            concept_uri = str(subject)
+            db_concept = await self._get_or_create_concept_by_uri(
+                ConceptInformations(
+                    uri=concept_uri,
+                )
+            )
+            new_ref.subjects.append(db_concept)
+        for subject in pub_graph.objects(rdflib.term.URIRef(uri), DC.subject):
+            concept_label = subject.value
+            db_concept = await self._get_or_create_concept_by_label(
+                ConceptInformations(
+                    label=concept_label,
+                )
+            )
+            new_ref.subjects.append(db_concept)
 
     def _harvester(self) -> str:
         return "Idref"

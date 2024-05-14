@@ -39,18 +39,34 @@ async def test_convert_for_rdf_result(
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
     )
+    expected_subjects = [
+        "Idref concept allowed for test",
+        "Concept Idref autorisé pour les tests",
+        "Idref concept you can use for tests",
+        "Concept Idref que vous pouvez utiliser pour les tests",
+        "Agriculture urbaine -- Amérique latine -- 2000-....",
+    ]
+
     assert test_reference.source_identifier == str(
         sudoc_rdf_result_for_doc.source_identifier
     )
     await converter_under_tests.convert(
         raw_data=sudoc_rdf_result_for_doc, new_ref=test_reference
     )
+    test_subjects = []
+    for concept in test_reference.subjects:
+        for label in concept.labels:
+            test_subjects.append(label.value)
+
+    assert test_subjects == expected_subjects
+
     assert len(test_reference.titles) == 2
     assert expected_french_title in [title.value for title in test_reference.titles]
     assert any(
         abstract.value.startswith(expected_french_abstract_beginning)
         for abstract in test_reference.abstracts
     )
+
     assert (
         test_reference.identifiers[0].value
         == sudoc_rdf_result_for_doc.source_identifier
