@@ -10,14 +10,7 @@
     <rdf:type rdf:resource="http://purl.org/ontology/bibo/Article" />
     <rdf:type rdf:resource="http://rdaregistry.info/Elements/c/C10001" />
     <dcterms:isPartOf rdf:resource="http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/w" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/environnement" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/metropolisation" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/metropolization" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/periurbanisation" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/periurbanization" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/durabilite" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/environment" />
-    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/sustainability" />
+    <dcterms:subject rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2024/issue_autr001/t35t/subject/test" />
     <dcterms:title xml:lang="fr">Marges urbaines, marges rurales entre Santiago du Chili et Valparaíso</dcterms:title>
     <dcterms:title xml:lang="en">Another fake title in english</dcterms:title>
     <rdaw:P10072 rdf:resource="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/m/web" />

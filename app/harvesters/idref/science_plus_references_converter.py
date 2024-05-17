@@ -1,13 +1,12 @@
 import urllib
-import rdflib
 
+import rdflib
 from rdflib import RDF, Literal, DCTERMS, Namespace
 from semver import Version
 
 from app.config import get_app_settings
-from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference import Reference
-
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -23,6 +22,7 @@ from app.harvesters.idref.science_plus_roles_converter import (
     SciencePlusRolesConverter,
 )
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
+from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
@@ -57,8 +57,18 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             raise UnexpectedFormatException(
                 f"Science Plus reference without title: {new_ref.source_identifier}"
             )
+
+        await self._get_subjects(raw_data.payload, raw_data.source_identifier, new_ref)
+
         if raw_data.doi:
             new_ref.identifiers.append(self._add_doi_identifier(raw_data.doi))
+
+    async def _get_subjects(self, pub_graph, uri, new_ref):
+        for subject in pub_graph.objects(rdflib.term.URIRef(uri), DCTERMS.subject):
+            db_concept = await self._get_or_create_concept_by_uri(
+                ConceptInformations(uri=subject)
+            )
+            new_ref.subjects.append(db_concept)
 
     async def _get_bibliographic_resource(self, pub_graph, uri):
         for document in pub_graph.objects(

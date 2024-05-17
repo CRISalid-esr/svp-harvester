@@ -85,6 +85,12 @@ def fixture_science_plus_rdf_xml_for_doc(_base_path) -> str:
     return _rdf_xml_file_content(_base_path, "science_plus_document")
 
 
+@pytest.fixture(name="science_plus_raw_result_for_concept")
+def fixture_science_plus_raw_result_for_concept(_base_path) -> str:
+    """Rdf xml from science plus rdf file"""
+    return _abes_concepts_raw_rdf_from_file(_base_path, "science_plus_abes_concept")
+
+
 def _science_plus_rdf_graph_from_file(base_path, file_name) -> Graph:
     file_path = f"data/science_plus_rdf/{file_name}.rdf"
     return _rdf_graph_from_xml_file(base_path, file_path)
@@ -93,6 +99,11 @@ def _science_plus_rdf_graph_from_file(base_path, file_name) -> Graph:
 def _rdf_graph_from_xml_file(base_path, file_path) -> Graph:
     input_data = _rdf_xml_file_content(base_path, file_path)
     return Graph().parse(data=input_data, format="xml")
+
+
+def _abes_concepts_raw_rdf_from_file(base_path, file_name) -> str:
+    file_path = f"data/science_plus_rdf/{file_name}.rdf"
+    return _rdf_xml_file_content(base_path, file_path)
 
 
 def _rdf_xml_file_content(base_path, file_path):

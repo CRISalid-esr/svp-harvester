@@ -10,6 +10,7 @@ from starlette.testclient import TestClient
 
 from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
+from app.services.concepts.abes_concept_solver import AbesConceptSolver
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
@@ -155,6 +156,34 @@ def fake_idref_concept_uri_solver(concept_informations: ConceptInformations):
     pass
 
 
+def fake_abes_concept_solver(concept_informations: ConceptInformations):
+    """
+    Fake abes concept solver for tests
+
+    :param concept_id: concept id to solve
+    :return: fake uri
+    """
+    if (
+        str(concept_informations.uri)
+        == "http://hub.abes.fr/cairn/periodical/autr/2024/issue_autr001/t35t/subject/test"
+    ):
+        return DbConcept(
+            uri="http://hub.abes.fr/cairn/periodical/autr/2024/issue_autr001/t35t/subject/test",
+            labels=[
+                Label(
+                    value="Idref concept allowed for test",
+                    language="en",
+                ),
+                Label(
+                    value="Concept Idref autorisé pour les tests",
+                    language="fr",
+                ),
+            ],
+        )
+
+    raise DereferencingError("Abes concept dereferencing not allowed during tests")
+
+
 @pytest.fixture(name="mock_idref_concept_solver", autouse=True)
 def fixture_mock_idref_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
@@ -168,6 +197,14 @@ def fixture_mock_sparql_jel_concept_solver():
     """Hal harvester mock to detect is_relevant method calls."""
     with mock.patch.object(SparqlJelConceptSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_jel_sparql_concept_solver
+        yield mock_solve
+
+
+@pytest.fixture(name="mock_abes_concept_solver", autouse=True)
+def fixture_mock_abes_concept_solver():
+    """abes harvester mock to detect is_relevant method calls."""
+    with mock.patch.object(AbesConceptSolver, "solve") as mock_solve:
+        mock_solve.side_effect = fake_abes_concept_solver
         yield mock_solve
 
 
