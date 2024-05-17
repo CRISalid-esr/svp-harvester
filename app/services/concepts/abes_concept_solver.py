@@ -20,7 +20,8 @@ class AbesConceptSolver(RdfConceptSolver):
         """
         if concept_informations.uri is not None:
             url = (
-                "https://scienceplus.abes.fr/sparql?query=define%20sql%3Adescribe-mode%20%22CBD%22%20%20DESCRIBE%20%3C"
+                "https://scienceplus.abes.fr/sparql?"
+                "query=define%20sql%3Adescribe-mode%20%22CBD%22%20%20DESCRIBE%20%3C"
                 f"{urllib.parse.quote(concept_informations.uri)}"
                 "%3E&output=application%2Frdf%2Bxml"
             )
