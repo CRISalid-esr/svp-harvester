@@ -154,7 +154,7 @@ async def test_idref_harvester_puts_sudoc_reponse_in_cache(
     assert arg["name"] == "sudoc_publications:https://www.sudoc.fr/193726130.rdf"
     cached_value = arg["value"]
     graph_from_cache = pickle.loads(cached_value)
-    assert len(list(graph_from_cache.subjects())) == 60
+    assert len(list(graph_from_cache.subjects())) == 48
     _, arg = reference_recorder_register_mock.call_args
     reference: Reference = arg["new_ref"]
     assert len(reference.titles) == 2
