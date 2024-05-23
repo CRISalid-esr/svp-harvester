@@ -337,17 +337,14 @@ class AbstractReferencesConverter(ABC):
                             "Dereferencing failure for concept "
                             f"{concept_informations.uri} with error: {error}"
                         )
-                        assert concept_informations.label is not None, (
-                            f"Could not create concept with uri {concept_informations.uri} "
-                            "without any label"
-                        )
                         concept = Concept(uri=concept_informations.uri)
-                        concept.labels.append(
-                            Label(
-                                value=concept_informations.label,
-                                language=concept_informations.language,
+                        if concept_informations.label is not None:
+                            concept.labels.append(
+                                Label(
+                                    value=concept_informations.label,
+                                    language=concept_informations.language,
+                                )
                             )
-                        )
                     session.add(concept)
                     try:
                         await session.commit()

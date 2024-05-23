@@ -3,6 +3,7 @@ from datetime import datetime
 
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
+from app.services.concepts.abes_concept_solver import AbesConceptSolver
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
@@ -70,6 +71,9 @@ class ConceptFactory:
             return SkosmosJelConceptSolver(
                 timeout=settings.skosmos_jel_concepts_timeout
             )
+        if concept_source == ConceptInformations.ConceptSources.ABES:
+            return AbesConceptSolver(timeout=settings.abes_concepts_timeout)
+
         # add more sources here
         # if no solver is found, raise an exception
         raise ValueError(f"Unknown concept source {concept_source}")
@@ -89,6 +93,8 @@ class ConceptFactory:
                 )
             elif cls._jel_pattern().match(concept_informations.uri):
                 concept_informations.source = ConceptInformations.ConceptSources.JEL
+            elif cls._abes_pattern().match(concept_informations.uri):
+                concept_informations.source = ConceptInformations.ConceptSources.ABES
             else:
                 raise UnknownAuthorityException(concept_informations.uri)
         else:
@@ -107,3 +113,7 @@ class ConceptFactory:
     @classmethod
     def _jel_pattern(cls):
         return re.compile(r"^https?://zbw\.eu")
+
+    @classmethod
+    def _abes_pattern(cls):
+        return re.compile(r"^https?://hub\.abes\.fr")

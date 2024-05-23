@@ -58,32 +58,8 @@
       <dc:format>1 volume (105 p.) : ill., cartes, graph. ; 23 cm</dc:format>
       <dcterms:abstract>Le présent dossier aborde la participation de cette agriculture urbaine à la construction du territoire et à la vie des sociétés des métropoles latino-américaines. La croissance démographique des villes latino-américaines, et tout particulièrement des métropoles, a été très rapide au cours du XXe siècle et reste souvent importante, dans le cadre de la fin des transitions urbaines. Elle s’est effectuée aux dépens des exploitations agricoles voisines, selon un modèle d’urbanisation en « tache d’huile », sans préservation de certaines aires, à la différence de ce qu’on observe par exemple dans des métropoles asiatiques. À Mexico, à Lima, à Buenos Aires ou à Santiago du Chili, l’agriculture est pratiquement absente des quartiers centraux anciens, et peu présente dans ceux qui se sont construits au cours du XXe siècle. Néanmoins, on trouve dans ces derniers, comme dans les périphéries urbaines les plus récentes, des espaces agricoles qui relèvent visiblement de logiques diverses : jardins collectifs, plantes cultivées et petits élevages dans les cours ou arrière-cours des quartiers populaires, arbres fruitiers derrière les hauts murs de résidences luxueuses, serres en tunnel ou culture sur bâche…</dcterms:abstract>
       <dc:subject>Agriculture urbaine -- Amérique latine -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
+      <dcterms:subject rdf:resource="http://www.idref.fr/123456789X/id" />
       <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Agriculture -- Aspect économique -- Amérique latine -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/02722368X/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Pauvres en milieu urbain -- Amérique latine -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027682439/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/02721897X/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Agriculture urbaine -- Pérou -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/027252388/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Agriculture urbaine -- Chili -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/027222950/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Agriculture urbaine -- Argentine -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/027219909/id" />
-      <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
-      <dc:subject>Agriculture urbaine -- Mexique -- 2000-....</dc:subject>
-      <dcterms:subject rdf:resource="http://www.idref.fr/027675807/id" />
-      <dcterms:spatial rdf:resource="http://www.idref.fr/027239497/id" />
       <dcterms:temporal rdf:resource="http://www.idref.fr/050665391/id" />
       <marcrel:pbd>
          <foaf:Person rdf:about="http://www.idref.fr/193726831/id">

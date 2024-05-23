@@ -83,12 +83,8 @@
             apoptotic bodies, Methods to assess DC-dependent priming of T cell responses by dying
             cells, and more</dcterms:abstract>
         <dc:subject>Immunothérapie anticancéreuse</dc:subject>
-        <dcterms:subject rdf:resource="http://www.idref.fr/027357155/id"></dcterms:subject>
+        <dcterms:subject rdf:resource="http://www.idref.fr/123456789X/id"></dcterms:subject>
         <dc:subject>Tumeurs -- thérapie</dc:subject>
-        <dcterms:subject rdf:resource="http://www.idref.fr/040745910/id"></dcterms:subject>
-        <dcterms:subject rdf:resource="http://www.idref.fr/038961792/id"></dcterms:subject>
-        <dc:subject>Cancer -- Immunological aspects</dc:subject>
-        <dc:subject>Cancer -- Immunotherapy</dc:subject>
         <marcrel:pbd>
             <foaf:Person rdf:about="http://www.idref.fr/134206029/id">
                 <foaf:name>Galluzzi, Lorenzo (1980-....)</foaf:name>

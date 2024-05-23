@@ -32,6 +32,11 @@ async def test_science_plus_convert_for_rdf_result(
     expected_issue = "1"
     expected_journal_title = "Cellular and Molecular Neurobiology"
 
+    expected_subjects = [
+        "Idref concept allowed for test",
+        "Concept Idref autorisé pour les tests",
+    ]
+
     test_reference = converter_under_tests.build(
         raw_data=science_plus_rdf_result_for_doc,
         harvester_version=VersionInfo.parse("0.0.0"),
@@ -42,6 +47,13 @@ async def test_science_plus_convert_for_rdf_result(
     await converter_under_tests.convert(
         raw_data=science_plus_rdf_result_for_doc, new_ref=test_reference
     )
+
+    test_subjects = []
+    for concept in test_reference.subjects:
+        for label in concept.labels:
+            test_subjects.append(label.value)
+
+    assert test_subjects == expected_subjects
 
     # assert that there are two titles
     assert len(test_reference.titles) == 2
