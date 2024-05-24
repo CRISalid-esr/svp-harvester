@@ -16,17 +16,7 @@ class HalApiQueryBuilder:
         AUTH_ID_HAL_S = "authIdHal_s"
         AUTH_ORCID_ID_EXT_ID = "authORCIDIdExt_id"
 
-    DEFAULT_DOC_TYPES = [
-        "ART",
-        "OUV",
-        "COUV",
-        "COMM",
-        "THESE",
-        "HDR",
-        "REPORT",
-        "NOTICE",
-        "PROCEEDINGS",
-    ]
+    DEFAULT_DOC_TYPES = ["*"]
 
     DEFAULT_FIELDS = [
         "docid",
