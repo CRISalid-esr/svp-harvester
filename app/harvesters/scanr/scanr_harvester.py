@@ -40,6 +40,11 @@ class ScanrHarvester(AbstractHarvester):
         # and choose the first one for which value is provided
 
         for scanr_query_parameter, identifier_key in query_parameters:
+
+            assert (
+                    identifier_key in self.supported_identifier_types
+            ), "Unable to run Scanr harvester for a person without idref, orcid or id_hal_s"
+
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_key == "idref" and identifier_value is not None:
                 # create a scanr id from idref
@@ -53,9 +58,7 @@ class ScanrHarvester(AbstractHarvester):
                 if scanr_id:
                     return scanr_id
 
-        assert (
-            False
-        ), "Unable to run hal harvester for a person without idref, orcid or id_hal_s"
+        return None
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         async with ScanRElasticClient() as client:
@@ -64,7 +67,8 @@ class ScanrHarvester(AbstractHarvester):
             scanr_id = await self._get_scanr_query_parameters(
                 await self._get_entity_class_name()
             )
-
+            if scanr_id is None:
+                return
             builder.set_publication_query(scanr_id=scanr_id)
 
             client.set_query(elastic_query=builder.build())
