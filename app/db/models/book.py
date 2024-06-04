@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import String
+from sqlalchemy import String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -21,12 +21,17 @@ class Book(Base):
     title_variants: Mapped[List[str]] = mapped_column(
         ARRAY(String), nullable=True, default=[]
     )
-    isbn10: Mapped[str] = mapped_column(nullable=True, index=True, unique=True)
-    isbn13: Mapped[str] = mapped_column(nullable=True, index=True, unique=True)
+    isbn10: Mapped[str] = mapped_column(nullable=True, index=True)
+    isbn13: Mapped[str] = mapped_column(nullable=True, index=True)
     publisher: Mapped[str] = mapped_column(nullable=True, index=False)
 
     references: Mapped[List["app.db.models.reference.Reference"]] = relationship(
         "app.db.models.reference.Reference",
         back_populates="book",
         lazy="raise",
+    )
+
+    __table_args__ = (
+        UniqueConstraint("isbn10", "source", name="_isbn10_source_uc"),
+        UniqueConstraint("isbn13", "source", name="_isbn13_source_uc"),
     )
