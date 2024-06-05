@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+          xmlns:bio="http://purl.org/vocab/bio/0.1/"
+          xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/"
+          xmlns:dbpedia-owl="http://dbpedia.org/ontology/"
+          xmlns:dbpprop="http://dbpedia.org/property/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dcterms="http://purl.org/dc/terms/"
+          xmlns:fb="http://rdf.freebase.com/ns/"
+          xmlns:foaf="http://xmlns.com/foaf/0.1/"
+          xmlns:frbr="http://purl.org/vocab/frbr/core#"
+          xmlns:isni="http://isni.org/ontology#"
+          xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+          xmlns:org="http://www.w3.org/ns/org#"
+          xmlns:owl="http://www.w3.org/2002/07/owl#"
+          xmlns:rdau="http://rdaregistry.info/Elements/u/"
+          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+          xmlns:schema="http://schema.org/"
+          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+          xmlns:sudoc="http://www.idref.fr/ns/"
+          xmlns:vivo="http://vivoweb.org/ontology/core#"><!--
+            Data provider : ABES
+            Stable URL
+            RDF modelization to be enriched and amended
+            Contact : idref at abes dot org
+        -->
+   <bibo:Document rdf:about="http://www.idref.fr/027060918">
+      <foaf:primaryTopic rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:identifier>027060918</dcterms:identifier>
+      <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"/>
+      <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1978-04-21</dcterms:created>
+      <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2024-05-08T12:42:07</dcterms:modified>
+      <skos:editorialNote>La Causalité en économie / Bernard Paulré, 1985</skos:editorialNote>
+      <skos:editorialNote>Systémique : théorie et applications / Francis Le Gallou et Bernadette Bouchon-Meunier, coordonnateurs, 1992, p. VII</skos:editorialNote>
+      <skos:editorialNote>https://www.pantheonsorbonne.fr/page-perso/paulre, 20220922 : Professeur émérite "Economie industrielle, Economie de l'innovation, Economie d'entreprise" ; Affectation(s) : ISST : Institut des sciences sociales du travail</skos:editorialNote>
+   </bibo:Document>
+   <foaf:Person rdf:about="http://www.idref.fr/027060918/id">
+      <bnf-onto:FRBNF rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11918824</bnf-onto:FRBNF>
+      <!--IdHAL-->
+      <owl:sameAs rdf:resource="https://data.hal.science/author/bernard-paulre#foaf:Person"/>
+      <!--ORCID-->
+      <vivo:orcidId>0000-0002-1279-3218</vivo:orcidId>
+      <owl:sameAs rdf:resource="https://orcid.org/0000-0002-1279-3218"/>
+      <!--ISNI-->
+      <owl:sameAs rdf:resource="http://isni.org/isni/0000000117840530"/>
+      <isni:identifierValid>0000000117840530</isni:identifierValid>
+      <!--BNF-->
+      <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb119188246#foaf:Person"/>
+      <!--VIAF-->
+      <owl:sameAs rdf:resource="http://viaf.org/viaf/162558235"/>
+      <!--PERSEE-->
+      <owl:sameAs rdf:resource="https://www.persee.fr/authority/148973"/>
+      <foaf:gender>male</foaf:gender>
+      <skos:prefLabel>Paulré, Bernard (19..-....)</skos:prefLabel>
+      <foaf:familyName>Paulré</foaf:familyName>
+      <foaf:givenName>Bernard</foaf:givenName>
+      <foaf:name>Bernard Paulré</foaf:name>
+      <bio:event>
+         <bio:Birth rdf:about="http://www.idref.fr/027060918/birth">
+            <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">19XX</dcterms:date>
+         </bio:Birth>
+      </bio:event>
+      <dbpedia-owl:citizenship rdf:resource="http://sws.geonames.org/3017382/"/>
+      <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/fra"/>
+      <!--rdau:P60492 : has biographical information-->
+      <rdau:P60492>Docteur ès sciences économiques. Professeur à l'Université Paris-Dauphine et à l'Université de technologie de Compiègne (en 1992)</rdau:P60492>
+      <rdau:P60492>Professeur émérite en Économie industrielle, Économie de l'innovation, Économie d'entreprise de l'université Paris 1 Panthéon-Sorbonne</rdau:P60492>
+      <org:memberOf>
+         <foaf:Organization rdf:about="http://www.idref.fr/067106471/id">
+            <skos:prefLabel xml:lang="fr">Institut des sciences sociales du travail (Bourg-la-Reine, Hauts-de-Seine) (1951-....)</skos:prefLabel>
+         </foaf:Organization>
+      </org:memberOf>
+      <org:hasMembership>
+         <org:Membership rdf:about="http://www.idref.fr/027060918/affiliation/1">
+            <org:organization>
+               <foaf:Organization rdf:about="http://www.idref.fr/067106471/id">
+                  <skos:prefLabel>Institut des sciences sociales du travail (Bourg-la-Reine, Hauts-de-Seine ; 1951-....)</skos:prefLabel>
+               </foaf:Organization>
+            </org:organization>
+            <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#date"/>
+         </org:Membership>
+      </org:hasMembership>
+   </foaf:Person>
+   <bibo:Document rdf:about="https://www.sudoc.fr/001765345/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>AFCET systèmes / Paris : Dunod , 1990-</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/196254388/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'innovation dans tous ses états  : seconde partie  / [direction du numéro par Bernard Paulré] / Paris : Éditions de la Maison des sciences de l'homme , DL 2016</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/012152099/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Perspectives systémiques  : actes du Colloque international de 1986  / sous la dir. de Bernard Paulré  ; [publ. avec le concours de l'AFCET] / Limonest : L'Interdisciplinaire , DL 1989</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/119259559/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le rachat de start up dans la haute technologie  : électronique, pharmacie, biotechnologies  / [étude réalisée par le Laboratoire] MATISSE-ISYS, Innovation-système-stratégie [et le Centre français du commerce extérieur pour le Ministère de l'économie, des finances et de l'industrie]  ; une recherche coordonnée par Bernard Paulré,...  ; avec Joëlle Le Goff, Laurent Le Dortz, Dominique Perrochon / [Paris] : Ministère de l'économie, des finances et de l'industrie , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/127027556/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les nouveaux horizons du capitalisme  / coordonné par Gabriel Colletis, Bernard Paulré / Paris : Economica , DL 2008</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/192975137/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'innovation dans tous ses états  : première partie  / [direction du numéro par Bernard Paulré] / Paris : Éd. de la Maison des sciences de l'homme , DL 2016</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/045292256/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Approches évolutionnistes de la firme et de l'industrie  : théories et analyses empiriques  / Sous la direction de Maurice Basle, Robert Delorme, Jean-Louis Lemoigne et Bernard Paulré  ; Colloque organisé par l'U.R.A.M.E.T.I.S. de l'Université de Paris 1 / Paris : L'Harmattan , 1999</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/004402057/id">
+      <marcrel:pbd rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Epistémologie de la stratégie en économie  / ouvrage coordonné par Bernard Paulré / Paris : Publications de la Sorbonne , DL 1998</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/245608338/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Modélisation de la demande de logements en zone frontalière  : un outils d'aide à la décision appliqué au marché local de Morteau (Doubs)  / par Amexandre Moine  ; sous la direction de Maryvonne Le Berre / Lille : Atelier national de reproduction des thèses , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/244246661/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Conditions d'émergence et de diffusion de l'automobile électrique  : une analyse en termes de "bien-système territorialisé"  / Jonathan Bainée  ; sous la direction de Patrick Dieuaide /  , 2013</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/041603966/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Modélisation de la demande de logements en zone frontalière  : un outils d'aide à la décision appliqué au marché local de Morteau (Doubs)  / par Amexandre Moine  ; sous la direction de Maryvonne Le Berre /  , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2014PA010083/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La place des PME dans les exportations, la croissance, l'emploi et l'innovation : une approche empirique et comparative / Humberto Cesar Lopez Rizzo le 2014 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2013PA010022/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Division technique, division cognitive : une mise en perspective historique et théorique / Saïd Mahrez le 2013 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2013PA010079/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Conditions d’émergence et de diffusion de l’automobile électrique : une analyse en termes de "bien-système territorialisé" / Jonathan Bainée le 2013 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995BESA1037/id">
+      <marcrel:opn rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Modélisation de la demande de logements en zone frontalière : un outils d'aide à la décision appliqué au marché local de Morteau (Doubs) / Alexandre Moine le 1995 [ Besançon ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/052048365/id">
+      <marcrel:sec rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les stratégies de recentrage dans les secteurs de haute technologie  : chimie, pharmacie, informatique et télécommunications  / [Ministère de l'économie, des finances et de l'industrie, Direction générale de l'industrie, des technologies de l'information et des postes]  ; [réd. par] Bernard Paulré,... / Paris : Éd. de l'industrie , 2000</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/004567110/id">
+      <marcrel:aui rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Entreprise et communication  : dysfonctionnements  / [Avant-propos Bernard Paulré] / Colombes : AZ presse , 1993</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/098429981/id">
+      <marcrel:aui rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'entreprise système  : nouvelles approches et thèmes nouveaux  / présentation générale Bernard Paulré,... / Paris : Dunod , cop. 1987</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059945788/id">
+      <marcrel:aui rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Vers un capitalisme cognitif  : entre mutations du travail et territoires  / éd. Christian Azai͏̈s, Antonella Corsani, Patrick Dieuaide  ; Christian Azai͏̈s, Giuseppe Cocco, Antonella Corsani... [et al.]  ; préf. Bernard Paulré  ; postf. Christian Palloix / Paris : L'Harmattan , DL 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/006489818/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>De l'entreprise comme système ouvert  : les implications économiques de la régulation dans les organisations industrielles  / par Bernard Paulré / [S.l.] : [S.n.] , 1976</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/047465573/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'industrie électronique européenne  : hétérogénéités et incertitudes  / Bernard Paulré  ; Ministère de l'économie, des finances et de l'industrie, Secrétariat d'Etat à l'industrie, Direction générale des stratégies industrielles / Paris : Ministère de l'économie et des finances , 1997</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/015349225/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les comportements d'entreprise comme processus d'ajustement  : le modèle RAMAJE  / Pierre-Yves Hénin, Bernard Paulre, Michel Pouchain  ; contribution, W. Marois / Paris : Association Cournot , 1975</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/000841242/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La causalité en économie  : signification et portée de la modélisation structurelle  / Bernard Paulré / Lyon : Presses universitaires de Lyon , DL1985</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2014PA010083/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La place des PME dans les exportations, la croissance, l'emploi et l'innovation : une approche empirique et comparative / Humberto Cesar Lopez Rizzo le 2014 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2013PA010022/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Division technique, division cognitive : une mise en perspective historique et théorique / Saïd Mahrez le 2013 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2013PA010079/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Conditions d’émergence et de diffusion de l’automobile électrique : une analyse en termes de "bien-système territorialisé" / Jonathan Bainée le 2013 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2002PA010063/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'influence des processus de sélection interne sur les performances des firmes : un modèle évolutionniste de micro-simulation / Nadia Jacoby le 2002 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1998PA010070/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le "paradoxe de la productivité" de Solow : une explication par la complexité du système "solution informatique" / Az-Eddine Bennani le 1998 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1998PA010070/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le "paradoxe de la productivité" de Solow : une explication par la complexité du système "solution informatique" / Az-Eddine Bennani le 1998 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1997PA010069/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'émergence industrielle : un nouvel objet d'étude / Laurent Le Dortz le 1997 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1997PA010076/id">
+      <marcrel:aut rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Coopérations horizontales entre concurrents et politique européenne de la concurrence / Béatrice Dumont le 1997 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059377607/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les conceptions de l'information en économie  / Michel Kourbatoff  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/150582757/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Prédiction des résultats de la R&amp;D coopérative en Europe  : compétences collectives et cultures  = = Outcome predictors of co-operative R&amp;D in Europe : =organisational capabilities and cultures  / Laurent Zibell  ; sous la direction de Peter M. Allen et de Bernard Paulré /  , 2010</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/112683576/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les performances du système national d'innovation chinois après 1998  / Shan Chen  ; directeur Bernard Paulré / [S.l.] : [s.n.] , 2006</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/233663037/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Critères de flexibilité dans les systèmes de production  : analyse et évaluation par simulation  / Javier Pereira  ; sous la direction de Bernard Paulré /  , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/155711067/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les modèles différents de développement du capital-risque  : inspiration pour la Chine  / Hongye Yu  ; sous la direction de Bernard Paulré /  , 2010</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/233663002/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Dynamique et simulation des marches de matière plastique  / Arif Arryman  ; sous la direction de Bernard Paulré /  , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/158986881/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Crédit, consommation et occupation dans la pensée de Thorstein Veblen  / Alfonso Giuliani  ; sous la direction de Bernard Paulré et de Guglielmo Forges Davanzati /  , 2011</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/137278802/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La théorie de Tibor Scitovsky sur les consommations induites  / Viviana Di Giovinazzo  ; tutori del dottorando Annalisa rosseli, Bernard Paulré /  , 2009</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/183908961/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le recentrage des entreprises non financières  : analyse sur une longue période en Europe et aux États-Unis  / Hafida El Younsi  ; directeur de recherche Bernard Paulré / Lille : Atelier national de reproduction des thèses , 2013</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059568712/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L' autonomie des représentations de l'économie  : mémoire d'études approfondies sur les implications de la révolution cognitive en sciences sociales pour les fondements de l'épistémologie de la science économique : ordres et désordres de l'intelligence de l'économie ou intelligence de l'économie des ordres et désordres, les représentations de l'économie sont-elles autonomes ?  / Yae͏̈l Dosquet  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/167796240/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Crédit, consommation et occupation dans la pensée de Thorstein Veblen  / Alfonso Giuliani  ; sous la direction de Bernard Paulré et de Guglielmo Forges Davanzati / Lille : Atelier national de reproduction des thèses , 2012</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/11462545X/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La compétitivité française dans l'industrie automobile  / Lester Bernard  ; [sous la direction du]  Professeur Bernard Paulré / [S.l.] : [s.n.] , 2006</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/083552162/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Place et implications des médicaments génériques dans l'industrie pharmaceutique  / Marie Bangoura  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2004</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/091989469/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Efficacité innovatrice et compétences de zones géographiques à forte concentration de recherche et développement  : les cas de Grenoble et du sud de l'Île de France  / Laurent Zibell  ; sous la direction de Bernard Paulré / [S.l.] : [s.n.] , 2005</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/069863202/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les alliances stratégiques dans le secteur de l'automobile  / Stéphane Pézard  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/246986719/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Caractéristiques et déterminants des taux de croissance des firmes  : investigations empiriques  / Alexander Coad  ; sous la direction de Bernard Paulre / Grenoble : Atelier national de reproduction des thèses , 2007</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/049462075/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Coopérations horizontales entre concurrents et politique européenne de la concurrence  / Béatrice Dumont  ; sous la direction de Bernard Paulré /  , 1997</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/04157964X/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Dynamique et simulation des marches de matière plastique  / Arif Arryman  ; sous la direction de Bernard Paulré /  , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/099535203/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les politiques de la science et de la technologie  : la fin des modèles?  / Philippe Bourgeois  ; sous la direction de Bernard Paulré /  , 2005</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/114626723/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La compétitivité de la France dans les technologies de l'information et de la communication  / Gontran Filet  ; sous la direction de Monsieur Bernard Paulré / [S.l.] : [s.n.] , 2006</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059383011/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L' impact de la net économie sur le secteur bancaire  / Duc Duy Tran  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/150819420/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Essais sur la structure et la dynamique du capitalisme contemporain et de la division internationale du travail  / Didier Lebert  ; sous la direction de Bernard Paulré /  , 2010</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/117943223/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Caractéristiques et déterminants des taux de croissance des firmes  : investigations empiriques  / Alexander Coad  ; sous la direction de Bernard Paulre /  , 2007</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/091985099/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Dépenses publiques de soutien à la recherche et développement  : approche comparative du cas français  / Mafini Dosso  ; sous la direction de Bernard Paulré / [S.l.] : [s.n.] , 2005</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/066958962/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Dépenses publiques et croissance vs. état et développement  : d'une problématique à l'autre  / Rémy Herrera  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/089057953/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'industrie des semi-conducteurs et la loi de Moore  / Soukaina Tahiri  ; sous la direction de M. le professeur Bernard Paulre / [S.l.] : [s.n.] , 2004</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059352809/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les pouvoirs publics dans le système d'innovation coréen  / In-Su Woo  ; sous la dir. de Bernard Paulre / [S.l.] : [s.n.] , 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/244407320/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La place des PME dans les exportations, la croissance, l'emploi et l'innovation  : une approche empirique et comparative  / Humberto Cesar Lopez Rizzo  ; sous la direction de Bernard Paulré /  , 2014</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/070325960/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'influence des processus de sélection interne sur les performances des firmes  : un modèle évolutionniste de micro-simulation  / Nadia Jacoby  ; sous la direction de Bernard Paulré /  , 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/049466615/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le "paradoxe de la productivité" de Solow  : une explication par la complexité du système "solution informatique"  / Az-Eddine Bennani  ; sos la direction de Bernard Paulré /  , 1998</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/264544455/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Division technique, division cognitive  : une mise en perspective historique et théorique  / Saïd Mahrez  ; sous la direction de Bernard Paulré /  , 2013</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/089290828/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'historiographie du DVD  / Valérie Derlon  ; sous la direction de Monsieur Bernard Paulre / [S.l.] : [s.n.] , 2004</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/08929193X/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Analyse du secteur du matériel médical  : cas du marché français  / Mohamed Ali Mahsni  ; directeur de mémoire Bernard Paulré / [S.l.] : [s.n.] , 2004</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/049607898/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'émergence industrielle  : un nouvel objet d'étude  / Laurent Le Dortz  ; sous la direction de Bernard Paulré /  , 1997</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/168436795/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le recentrage des entreprises non financières  : analyse sur une longue période en Europe et aux États-Unis  / Hafida El Younsi  ; sous la direction de Bernard Paulré /  , 2012</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/059377119/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le capital risque en Europe  / Faissal Laaguili  ; sous la dir. de Bernard Paulré / [S.l.] : [s.n.] , 2001</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/169602885/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Prédiction des résultats de la R&amp;D coopérative en Europe  : compétences collectives et cultures  = = Outcome predictors of co-operative R&amp;D in Europe : =organisational capabilities and cultures  / Laurent Zibell  ; sous la direction de Peter M. Allen et Bernard Paulré / Lille : Atelier national de reproduction des thèses , 2011</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/247133108/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Une approche émistémologique de la notion de capital  / Michel Kourbatoff  ; sous la direction de Bernard Paulré / Lille : Atelier national de reproduction des thèses , 2008</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/083915400/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Perspectives de réorganisation du secteur des télécommunications en Europe depuis sa libéralisation en 1998  / Hélène Kaeppelin  ; sous la dir. de Monsieur le Professeur Bernard Paulre / [S.l.] : [s.n.] , 2003</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/091958946/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La Chine  : bientôt un grand pays high-tech ?  : analyse diagnostique sur l'industrie de haute technologie chinoise  / Min Hui  ; sous la direction de Bernard Paulré / [S.l.] : [s.n.] , 2005</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/041581962/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Critères de flexibilité dans les systèmes de production  : analyse et évaluation par simulation  / Javier Pereira  ; sous la direction de Bernard Paulré /  , 1995</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/053663683/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'agent et la non-naturalité de l'objet économique  / Emmanuel Henry  ; sous la dir. de Bernard Paulre /  , 1999</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/138875154/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Une approche émistémologique de la notion de capital  / Michel Kourbatoff  ; sous la direction de Bernard Paulré /  , 2008</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/177464992/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La théorie de Tibor Scitovsky sur les consommations induites  / Viviana Di Giovinazzo  ; tutori del dottorando Annalisa rosseli, Bernard Paulré / Lille : Atelier national de reproduction des thèses , 2013</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2014PA010083/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La place des PME dans les exportations, la croissance, l'emploi et l'innovation : une approche empirique et comparative / Humberto Cesar Lopez Rizzo le 2014 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2013PA010022/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Division technique, division cognitive : une mise en perspective historique et théorique / Saïd Mahrez le 2013 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2012PA010038/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le recentrage des entreprises non financières : analyse sur une longue période en Europe et aux États-Unis / Hafida El Younsi le 2012 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2011PA010008/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Crédit, consommation et occupation dans la pensée de Thorstein Veblen / Alfonso Giuliani le 2011 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2010PA010067/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Essais sur la structure et la dynamique du capitalisme contemporain et de la division internationale du travail / Didier Lebert le 2010 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2010PA010059/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les modèles différents de développement du capital-risque : inspiration pour la Chine / Hongye Yu le 2010 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2010PA010015/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Prédiction des résultats de la R&amp;D coopérative en Europe : compétences collectives et cultures / Laurent Zibell le 2010 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2009PA010008/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>La théorie de Tibor Scitovsky sur les consommations induites / Viviana Di Giovinazzo le 2009 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2008PA010076/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Une approche émistémologique de la notion de capital / MIchel Kourbatoff le 2008 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2007PA010010/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Caractéristiques et déterminants des taux de croissance des firmes : investigations empiriques / Alexander Coad le 2007 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2005PA010039/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Les politiques de la science et de la technologie : la fin des modèles? / Philippe Bourgeois le 2005 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/2002PA010063/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'influence des processus de sélection interne sur les performances des firmes : un modèle évolutionniste de micro-simulation / Nadia Jacoby le 2002 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1999PA010052/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'agent et la non-naturalité de l'objet économique / Emmanuel Henry le 1999 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1998PA010070/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Le "paradoxe de la productivité" de Solow : une explication par la complexité du système "solution informatique" / Az-Eddine Bennani le 1998 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1997PA010069/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>L'émergence industrielle : un nouvel objet d'étude / Laurent Le Dortz le 1997 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1997PA010076/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Coopérations horizontales entre concurrents et politique européenne de la concurrence / Béatrice Dumont le 1997 [ Paris 1 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995PA090021/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Critères de flexibilité dans les systèmes de production : analyse et évaluation par simulation / Javier Pereira le 1995 [ Paris 9 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.theses.fr/1995PA090018/id">
+      <marcrel:ths rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Dynamique et simulation des marches de matière plastique / Arif Arryman le 1995 [ Paris 9 ] </dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/069702128/id">
+      <marcrel:aft rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Sommes-nous sortis du capitalisme industriel ?  / François Chesnais, Antonella Corsani, Jean-Claude Delaunay... [et al.]  ; sous la direction de Carlo Vercellone  ; postface de Bernard Paulré / Paris : La Dispute , impr. 2002, cop. 2003</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/003056937/id">
+      <marcrel:edt rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Théorie générale des systèmes  / Ludwig von Bertalanffy  ; préface de Ervin Laszlo  ; traduit par Jean-Benoist Chabrol  ; mise à jour bibliographique de Bernard Paulré / [Nouvelle édition] / Paris : Dunod , DL 1993</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/074154575/id">
+      <marcrel:edt rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Théorie générale des systèmes  / Ludwig Von Bertalanffy  ; préface de Ervin Laszlo  ; traduit par Jean-Benoîst Chabrol  ; mise à jour bibliographique de Bernard Paulré / Paris : Dunod , DL 2002</dcterms:bibliographicCitation>
+   </bibo:Document>
+   <bibo:Document rdf:about="https://www.sudoc.fr/165053437/id">
+      <marcrel:edt rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:bibliographicCitation>Théorie générale des systèmes  / Ludwig von Bertalanffy  ; [préface de Ervin Laszlo  ; traduit par Jean-Benoit (i.e. Benoîst) Chabrol  ; mise à jour bibliographique (1993) de Bernard Paulré] / Paris : Dunod , DL 2012</dcterms:bibliographicCitation>
+   </bibo:Document>
+</rdf:RDF>

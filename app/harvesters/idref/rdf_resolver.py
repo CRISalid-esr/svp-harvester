@@ -29,7 +29,7 @@ class RdfResolver:
         """
         response_text = await self.http_client.get(document_uri)
 
-        cleaned_response_text = self.clean_response_text(response_text)
+        cleaned_response_text = self._clean_response_text(response_text)
 
         try:
             graph = Graph().parse(data=cleaned_response_text, format=output_format)
@@ -39,7 +39,7 @@ class RdfResolver:
                 f"Error while parsing the RDF from {document_uri} : {cleaned_response_text}"
             ) from error
 
-    def clean_response_text(self, response_text: str) -> str:
+    def _clean_response_text(self, response_text: str) -> str:
         """
         Clean the response text by removing empty date fields.
 
