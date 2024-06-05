@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:bibo="http://purl.org/ontology/bibo/"
+          xmlns:bio="http://purl.org/vocab/bio/0.1/"
+          xmlns:bnf-onto="http://data.bnf.fr/ontology/bnf-onto/"
+          xmlns:dbpedia-owl="http://dbpedia.org/ontology/"
+          xmlns:dbpprop="http://dbpedia.org/property/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dcterms="http://purl.org/dc/terms/"
+          xmlns:fb="http://rdf.freebase.com/ns/"
+          xmlns:foaf="http://xmlns.com/foaf/0.1/"
+          xmlns:frbr="http://purl.org/vocab/frbr/core#"
+          xmlns:isni="http://isni.org/ontology#"
+          xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+          xmlns:org="http://www.w3.org/ns/org#"
+          xmlns:owl="http://www.w3.org/2002/07/owl#"
+          xmlns:rdau="http://rdaregistry.info/Elements/u/"
+          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+          xmlns:schema="http://schema.org/"
+          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+          xmlns:sudoc="http://www.idref.fr/ns/"
+          xmlns:vivo="http://vivoweb.org/ontology/core#"><!--
+            Data provider : ABES
+            Stable URL
+            RDF modelization to be enriched and amended
+            Contact : idref at abes dot org
+        -->
+   <bibo:Document rdf:about="http://www.idref.fr/027060918">
+      <foaf:primaryTopic rdf:resource="http://www.idref.fr/027060918/id"/>
+      <dcterms:identifier>027060918</dcterms:identifier>
+      <dcterms:creator rdf:resource="http://www.idref.fr/033702462/id"/>
+      <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1978-04-21</dcterms:created>
+      <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2024-05-08T12:42:07</dcterms:modified>
+      <skos:editorialNote>La Causalité en économie / Bernard Paulré, 1985</skos:editorialNote>
+      <skos:editorialNote>Systémique : théorie et applications / Francis Le Gallou et Bernadette Bouchon-Meunier, coordonnateurs, 1992, p. VII</skos:editorialNote>
+      <skos:editorialNote>https://www.pantheonsorbonne.fr/page-perso/paulre, 20220922 : Professeur émérite "Economie industrielle, Economie de l'innovation, Economie d'entreprise" ; Affectation(s) : ISST : Institut des sciences sociales du travail</skos:editorialNote>
+   </bibo:Document>
+   <foaf:Person rdf:about="http://www.idref.fr/027060918/id">
+      <bnf-onto:FRBNF rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11918824</bnf-onto:FRBNF>
+      <!--IdHAL-->
+      <owl:sameAs rdf:resource="https://data.hal.science/author/bernard-paulre#foaf:Person"/>
+      <!--ORCID-->
+      <vivo:orcidId>0000-0002-1279-3218</vivo:orcidId>
+      <owl:sameAs rdf:resource="https://orcid.org/0000-0002-1279-3218"/>
+      <!--ISNI-->
+      <owl:sameAs rdf:resource="http://isni.org/isni/0000000117840530"/>
+      <isni:identifierValid>0000000117840530</isni:identifierValid>
+      <!--BNF-->
+      <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb119188246#foaf:Person"/>
+      <!--VIAF-->
+      <owl:sameAs rdf:resource="http://viaf.org/viaf/162558235"/>
+      <!--PERSEE-->
+      <owl:sameAs rdf:resource="https://www.persee.fr/authority/148973"/>
+      <foaf:gender>male</foaf:gender>
+      <skos:prefLabel>Paulré, Bernard (19..-....)</skos:prefLabel>
+      <foaf:familyName>Paulré</foaf:familyName>
+      <foaf:givenName>Bernard</foaf:givenName>
+      <foaf:name>Bernard Paulré</foaf:name>
+      <bio:event>
+         <bio:Birth rdf:about="http://www.idref.fr/027060918/birth">
+            <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">19XX</dcterms:date>
+         </bio:Birth>
+      </bio:event>
+      <dbpedia-owl:citizenship rdf:resource="http://sws.geonames.org/3017382/"/>
+      <dcterms:language rdf:resource="http://lexvo.org/id/iso639-3/fra"/>
+      <!--rdau:P60492 : has biographical information-->
+      <rdau:P60492>Docteur ès sciences économiques. Professeur à l'Université Paris-Dauphine et à l'Université de technologie de Compiègne (en 1992)</rdau:P60492>
+      <rdau:P60492>Professeur émérite en Économie industrielle, Économie de l'innovation, Économie d'entreprise de l'université Paris 1 Panthéon-Sorbonne</rdau:P60492>
+      <org:memberOf>
+         <foaf:Organization rdf:about="http://www.idref.fr/067106471/id">
+            <skos:prefLabel xml:lang="fr">Institut des sciences sociales du travail (Bourg-la-Reine, Hauts-de-Seine) (1951-....)</skos:prefLabel>
+         </foaf:Organization>
+      </org:memberOf>
+      <org:hasMembership>
+         <org:Membership rdf:about="http://www.idref.fr/027060918/affiliation/1">
+            <org:organization>
+               <foaf:Organization rdf:about="http://www.idref.fr/067106471/id">
+                  <skos:prefLabel>Institut des sciences sociales du travail (Bourg-la-Reine, Hauts-de-Seine ; 1951-....)</skos:prefLabel>
+               </foaf:Organization>
+            </org:organization>
+            <dcterms:date rdf:datatype="http://www.w3.org/2001/XMLSchema#date"/>
+         </org:Membership>
+      </org:hasMembership>
+   </foaf:Person>
+</rdf:RDF>

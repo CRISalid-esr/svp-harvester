@@ -93,6 +93,13 @@ def fixture_sudoc_rdf_graph_for_hash_2(_base_path) -> Graph:
     return _sudoc_rdf_graph_from_file(_base_path, "document_for_hash_2")
 
 
+@pytest.fixture(name="sudoc_rdf_xml_with_empty_date_fields")
+def fixture_sudoc_rdf_xml_with_empty_date_fields(_base_path) -> str:
+    """Rdf xml from sudoc rdf file"""
+    file_path = "data/sudoc_rdf/document_with_empty_date_fields.rdf"
+    return _rdf_xml_file_content(_base_path, file_path)
+
+
 @pytest.fixture(name="sudoc_rdf_xml_for_doc")
 def fixture_sudoc_rdf_xml_for_doc(_base_path) -> str:
     """Rdf xml from sudoc rdf file"""
