@@ -28,16 +28,19 @@ class RdfResolver:
         :return: A generator of results
         """
         response_text = await self.http_client.get(document_uri)
+        if response_text:
+            cleaned_response_text = self._clean_response_text(response_text)
 
-        cleaned_response_text = self._clean_response_text(response_text)
-
-        try:
-            graph = Graph().parse(data=cleaned_response_text, format=output_format)
-            return graph
-        except (ParserError, SAXParseException) as error:
-            raise UnexpectedFormatException(
-                f"Error while parsing the RDF from {document_uri} : {cleaned_response_text}"
-            ) from error
+            try:
+                graph = Graph().parse(data=cleaned_response_text, format=output_format)
+                return graph
+            except (ParserError, SAXParseException) as error:
+                raise UnexpectedFormatException(
+                    f"Error while parsing the RDF from {document_uri} : {cleaned_response_text}"
+                ) from error
+        raise UnexpectedFormatException(
+            f"Empty response from {document_uri} : {response_text}"
+        )
 
     def _clean_response_text(self, response_text: str) -> str:
         """
