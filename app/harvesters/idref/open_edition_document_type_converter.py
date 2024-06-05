@@ -15,7 +15,7 @@ class OpenEditionDocumentTypeConverter(AbstractDocumentTypeConverter):
     TYPES_MAPPING = {
         "article": (f"{RDF['BIBO']}Article", "Article"),
         "introduction": (f"{RDF['BIBO']}Chapter", "Chapter"),
-        "review": (f"{RDF['BIBO']}Article", "Article"),
+        "review": (f"{RDF['SPAR']}ReviewPaper,", "Review Paper"),
         "archaelogical note": (f"{RDF['BIBO']}Note", "Note"),
         "chapter": (f"{RDF['BIBO']}Chapter", "Chapter"),
     }
