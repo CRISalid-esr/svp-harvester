@@ -32,6 +32,7 @@ class OpenAlexDocumentTypeConverter(AbstractDocumentTypeConverter):
         ),
         "peer-review": (f"{RDF['COAR']}H9BQ-739P", "Peer review"),
         "reference-entry": (f"{RDF['BIBO']}Document", "Document"),
+        "review": (f"{RDF['SPAR']}ReviewPaper,", "Review Paper"),
         "report": (f"{RDF['SPAR']}Report", "Report"),
         "standard": (f"{RDF['BIBO']}Standard", "Standard"),
         "preprint": (f"{RDF['SPAR']}Preprint", "Preprint"),
