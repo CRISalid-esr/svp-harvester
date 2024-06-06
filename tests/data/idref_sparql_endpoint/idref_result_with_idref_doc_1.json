@@ -41,6 +41,10 @@
       "lang": "fr"
     }
   },
+  "equivalent": [
+    "http://www.sudoc.fr/010658998/id",
+    "http://www.sudoc.fr/126384835/id"
+  ],
   "doi": "",
   "secondary_source": "IDREF"
 }

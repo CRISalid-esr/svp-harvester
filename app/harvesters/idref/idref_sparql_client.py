@@ -66,7 +66,7 @@ class IdrefSparqlClient:
         client: SPARQLClient = self._get_client()
         try:
             response = await client.query(query)
-            # agregate results
+            # aggregate results
             publications = {}
             for result in response.get("results", {}).get("bindings", []):
                 if not any(
@@ -75,6 +75,7 @@ class IdrefSparqlClient:
                 ):
                     continue
                 pub = result.get("pub", {}).get("value", "")
+                # create a new publication if it does not exist
                 if pub not in publications:
                     publications[pub] = {
                         "uri": pub,
@@ -89,9 +90,10 @@ class IdrefSparqlClient:
                         "type": [],
                         "altLabel": [],
                         "subject": {},
+                        "equivalent": [],
                         "doi": result.get("doi", {}).get("value", ""),
                     }
-                # replace by a loop
+                # add the data to the publication
                 for key in [
                     "type",
                     "title",
@@ -102,6 +104,7 @@ class IdrefSparqlClient:
                     "contributorName",
                     "contributorFamilyName",
                     "contributorGivenName",
+                    "equivalent",
                 ]:
                     if (
                         result.get(key, {}).get("value", "")
