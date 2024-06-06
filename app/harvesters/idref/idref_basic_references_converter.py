@@ -62,6 +62,10 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
             new_ref.contributions.append(contribution)
 
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
+        for equivalent in dict_payload.get("equivalent", []):
+            new_ref.identifiers.append(
+                ReferenceIdentifier(value=equivalent, type="uri")
+            )
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
