@@ -328,7 +328,7 @@ async def test_hal_harvester_register_document_type_in_db(
 
 
 @pytest.mark.asyncio
-async def test_hal_harvester_registers_docs_in_db(
+async def test_harvester_version_number_increased(
     hal_harvester: HalHarvester,
     hal_harvesting_db_model_id_hal_i,
     hal_api_client_mock,
@@ -336,8 +336,8 @@ async def test_hal_harvester_registers_docs_in_db(
     async_session: AsyncSession,
 ):
     """
-    Test that if we harvest the same data twice, with increased hervester vesion number,
-    a reference event of type unchanged is created its flag enhanced is set to True
+    Test that if we harvest the same data twice, with increased harvester vesion number,
+    a reference event of type unchanged is created, its flag enhanced is set to True
     and a new version of the reference is created
 
     :param hal_harvester:
@@ -380,6 +380,9 @@ async def test_hal_harvester_registers_docs_in_db(
         result = (await async_session.execute(stmt)).unique()
         results = list(result)
         assert len(results) == 2
+        # reorder results by reference event id
+        if results[0][1].id > results[1][1].id:
+            results = [results[1], results[0]]
         reference2 = results[1][0]
         reference_event = results[1][1]
         assert reference_event.type == ReferenceEvent.Type.UNCHANGED.value
