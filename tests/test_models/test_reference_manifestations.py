@@ -43,3 +43,16 @@ async def test_manifestation_without_page_fails(async_session: AsyncSession):
     async_session.add(manifestation)
     with pytest.raises(IntegrityError):
         await async_session.commit()
+
+
+async def test_manifestation_without_download_url_succeeds(async_session: AsyncSession):
+    """
+    GIVEN a manifestation without a download URL
+    WHEN the manifestation is created
+    THEN check the manifestation is created
+    """
+    manifestation = ReferenceManifestation(page="http://example.com")
+    async_session.add(manifestation)
+    await async_session.commit()
+    await async_session.refresh(manifestation)
+    assert manifestation.page == "http://example.com"

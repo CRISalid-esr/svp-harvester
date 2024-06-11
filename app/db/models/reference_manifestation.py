@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, validates, relationship
 
 from app.db.session import Base
 from app.utilities.url_utilities import is_web_url
@@ -14,8 +15,14 @@ class ReferenceManifestation(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     page: Mapped[str] = mapped_column(nullable=False)
     download_url: Mapped[str] = mapped_column(nullable=True)
+    reference: Mapped["app.db.models.reference.Reference"] = relationship(
+        "app.db.models.reference.Reference",
+        back_populates="manifestations",
+        lazy="raise",
+    )
+    reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"))
 
-    def _validate_url(self, key, url):
+    def _validate_url(self, key, url) -> str:
         """
         Validate that the given URL is valid and starts with http or https.
 
@@ -28,9 +35,23 @@ class ReferenceManifestation(Base):
         return url
 
     @validates("page")
-    def validate_page(self, key, page):
+    def _validate_page(self, key, page) -> str:
+        """
+        Validate that the page URL is valid.
+
+        :param key:
+        :param page:
+        :return:
+        """
         return self._validate_url(key, page)
 
     @validates("download_url")
-    def validate_download_url(self, key, download_url):
+    def _validate_download_url(self, key, download_url) -> str:
+        """
+        Validate that the download URL is valid.
+
+        :param key:
+        :param download_url:
+        :return:
+        """
         return self._validate_url(key, download_url)
