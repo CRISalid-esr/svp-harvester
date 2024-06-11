@@ -9,6 +9,7 @@ from app.models.concepts import Concept
 from app.models.contribution import Contribution
 from app.models.document_type import DocumentType
 from app.models.issue import Issue
+from app.models.reference_manifestation import ReferenceManifestation
 from app.models.reference_identifier import ReferenceIdentifier
 from app.models.subtitles import Subtitle
 from app.models.titles import Title
@@ -25,6 +26,7 @@ class Reference(BaseModel):
     harvester: str
     harvester_version: str
     identifiers: List[ReferenceIdentifier] = []
+    manifestations: List[ReferenceManifestation] = []
     titles: List[Title] = []
     subtitles: List[Subtitle] = []
     abstracts: List[Abstract] = []

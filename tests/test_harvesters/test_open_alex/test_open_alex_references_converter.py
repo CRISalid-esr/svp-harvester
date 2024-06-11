@@ -91,6 +91,25 @@ async def test_convert(open_alex_api_work: dict):
     assert expected_issn in test_reference.issue.journal.issn
     assert test_reference.issued == expected_issued_date
     assert test_reference.created == expected_created_date
+    assert len(test_reference.manifestations) == 3
+    assert (
+        test_reference.manifestations[0].page
+        == "https://doi.org/10.1103/physrevb.37.785"
+    )
+    assert test_reference.manifestations[0].download_url == None
+    assert (
+        test_reference.manifestations[1].page
+        == "https://cdr.lib.unc.edu/downloads/p2677460w"
+    )
+    assert (
+        test_reference.manifestations[1].download_url
+        == "https://cdr.lib.unc.edu/downloads/p2677460w"
+    )
+    assert (
+        test_reference.manifestations[2].page
+        == "https://pubmed.ncbi.nlm.nih.gov/9944570"
+    )
+    assert test_reference.manifestations[2].download_url == None
 
 
 @pytest.mark.parametrize(

@@ -8,7 +8,6 @@ from app.harvesters.idref.persee_references_converter import PerseeReferencesCon
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     """
     GIVEN a IdrefReferencesConverter instance and a Idref Sparql result for a document
