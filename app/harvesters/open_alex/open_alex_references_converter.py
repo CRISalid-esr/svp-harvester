@@ -200,8 +200,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 )
             except ValueError as error:
                 logger.error(
-                    f"OpenAlex reference converter cannot create reference manifestation from locations in"
-                    f" {json_payload['id']}: {error}"
+                    "OpenAlex reference converter cannot "
+                    "create reference manifestation from locations in "
+                    f"{json_payload['id']}: {error}"
                 )
 
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
