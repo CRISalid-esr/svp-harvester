@@ -47,9 +47,6 @@ def test_is_web_url():
     assert not is_web_url("https://example.com:443/")
     assert not is_web_url("http://example.com:80/page")
     assert not is_web_url("https://example.com:443/page")
-    # | ERROR    | app.harvesters.open_alex.open_alex_references_converter:_add_reference_manifestations:202 - OpenAlex reference converter cannot create reference manifestation from locations in https://openalex.org/W2910239314: Page URL https://hal.science/hal-01987430 is not a valid URL
-    # 2024-06-12 06:33:04.950 | ERROR    | app.harvesters.open_alex.open_alex_references_converter:_add_reference_manifestations:202 - OpenAlex reference converter cannot create reference manifestation from locations in https://openalex.org/W2910239314: Download_url URL https://hal.science/hal-01987430/document is not a valid URL
-    # 2024-06-12 06:33:04.950 | ERROR    | app.harvesters.open_alex.open_alex_references_converter:_add_reference_manifestations:202 - OpenAlex reference converter cannot create reference manifestation from locations in https://openalex.org/W2910239314: Page URL https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf is not a valid URL
     assert is_web_url("https://hal.science/hal-01987430")
     assert is_web_url("https://hal.science/hal-01987430/document")
     assert is_web_url(
