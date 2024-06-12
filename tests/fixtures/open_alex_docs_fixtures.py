@@ -14,7 +14,7 @@ def fixture_open_alex_api_work(_base_path) -> dict:
 
 
 @pytest.fixture(name="open_alex_work_with_various_locations")
-def fixture_open_alex_api_work(_base_path) -> dict:
+def fixture_open_alex_work_with_various_locations(_base_path) -> dict:
     """
     Generate a OpenAlex API response for work  with various locations in JSON format
     :param _base_path: test data directory base
