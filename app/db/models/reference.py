@@ -22,6 +22,9 @@ from app.db.models.document_type import DocumentType  # pylint: disable=unused-i
 from app.db.models.reference_identifier import (  # pylint: disable=unused-import
     ReferenceIdentifier,
 )
+from app.db.models.reference_manifestation import (  # pylint: disable=unused-import
+    ReferenceManifestation,
+)
 from app.db.models.book import Book  # pylint: disable=unused-import
 
 
@@ -52,6 +55,15 @@ class Reference(Base, VersionedRecord):
         lazy="joined",
     )
 
+    manifestations: Mapped[
+        List["app.db.models.reference_manifestation.ReferenceManifestation"]
+    ] = relationship(
+        "app.db.models.reference_manifestation.ReferenceManifestation",
+        back_populates="reference",
+        cascade="all, delete-orphan",
+        lazy="joined",
+    )
+
     titles: Mapped[List["app.db.models.title.Title"]] = relationship(
         "app.db.models.title.Title",
         back_populates="reference",
@@ -77,30 +89,30 @@ class Reference(Base, VersionedRecord):
         lazy="noload",
     )
 
-    document_type: Mapped[
-        List["app.db.models.document_type.DocumentType"]
-    ] = relationship(
-        "app.db.models.document_type.DocumentType",
-        secondary=references_document_type_table,
-        lazy="joined",
+    document_type: Mapped[List["app.db.models.document_type.DocumentType"]] = (
+        relationship(
+            "app.db.models.document_type.DocumentType",
+            secondary=references_document_type_table,
+            lazy="joined",
+        )
     )
 
-    reference_events: Mapped[
-        List["app.db.models.reference_event.ReferenceEvent"]
-    ] = relationship(
-        "app.db.models.reference_event.ReferenceEvent",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="raise",
+    reference_events: Mapped[List["app.db.models.reference_event.ReferenceEvent"]] = (
+        relationship(
+            "app.db.models.reference_event.ReferenceEvent",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="raise",
+        )
     )
 
-    contributions: Mapped[
-        List["app.db.models.contribution.Contribution"]
-    ] = relationship(
-        "app.db.models.contribution.Contribution",
-        back_populates="reference",
-        cascade="all, delete",
-        lazy="joined",
+    contributions: Mapped[List["app.db.models.contribution.Contribution"]] = (
+        relationship(
+            "app.db.models.contribution.Contribution",
+            back_populates="reference",
+            cascade="all, delete",
+            lazy="joined",
+        )
     )
 
     issue_id: Mapped[int] = mapped_column(ForeignKey("issues.id"), nullable=True)

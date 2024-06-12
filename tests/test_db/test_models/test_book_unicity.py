@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.book import Book
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_two_books_cant_have_the_same_source_and_isbn(
     async_session: AsyncSession,
@@ -55,7 +54,6 @@ async def test_two_books_cant_have_the_same_source_and_isbn(
     await async_session.rollback()
 
 
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_books_can_have_same_isbn_with_different_sources(
     async_session: AsyncSession,

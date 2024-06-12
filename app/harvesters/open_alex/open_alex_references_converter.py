@@ -10,6 +10,7 @@ from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
+from app.db.models.reference_manifestation import ReferenceManifestation
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -60,6 +61,11 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         async for reference_identifier in self._add_reference_identifiers(json_payload):
             new_ref.identifiers.append(reference_identifier)
+
+        async for reference_manifestation in self._add_reference_manifestations(
+            json_payload
+        ):
+            new_ref.manifestations.append(reference_manifestation)
 
         journal = await self._journal(json_payload)
         if journal:
@@ -167,7 +173,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         )
         return issue
 
-    async def _add_reference_identifiers(self, json_payload: dict) -> str:
+    async def _add_reference_identifiers(
+        self, json_payload: dict
+    ) -> AsyncGenerator[ReferenceIdentifier, None]:
         try:
             for id_key in json_payload["ids"]:
                 if id_key not in self.REFERENCE_IDENTIFIERS_IGNORE:
@@ -176,6 +184,26 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                     )
         except KeyError:
             yield
+
+    async def _add_reference_manifestations(
+        self, json_payload: dict
+    ) -> AsyncGenerator[ReferenceManifestation, None]:
+        for location in json_payload.get("locations", []):
+            page = location.get("landing_page_url")
+            download_url = location.get("pdf_url")
+            if page is None:
+                continue
+            try:
+                yield ReferenceManifestation(
+                    page=page,
+                    download_url=download_url,
+                )
+            except ValueError as error:
+                logger.error(
+                    "OpenAlex reference converter cannot "
+                    "create reference manifestation from locations in "
+                    f"{json_payload['id']}: {error}"
+                )
 
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
         contribution_informations = []

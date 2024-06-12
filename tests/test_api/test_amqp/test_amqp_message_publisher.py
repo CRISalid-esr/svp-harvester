@@ -5,7 +5,6 @@ from unittest.mock import Mock
 
 import pytest
 from aio_pika import Exchange, DeliveryMode
-from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
@@ -73,6 +72,7 @@ async def test_publish_created_reference(
                 "harvester": "hal",
                 "harvester_version": "0.0.0",
                 "identifiers": [],
+                "manifestations": [],
                 "titles": [{"value": "title", "language": "fr"}],
                 "subtitles": [{"value": "subtitle", "language": "fr"}],
                 "abstracts": [],
