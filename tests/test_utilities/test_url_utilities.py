@@ -47,3 +47,8 @@ def test_is_web_url():
     assert not is_web_url("https://example.com:443/")
     assert not is_web_url("http://example.com:80/page")
     assert not is_web_url("https://example.com:443/page")
+    assert is_web_url("https://hal.science/hal-01987430")
+    assert is_web_url("https://hal.science/hal-01987430/document")
+    assert is_web_url(
+        "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )

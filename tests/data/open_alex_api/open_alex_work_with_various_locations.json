@@ -1,0 +1,1125 @@
+{
+  "id": "https://openalex.org/W2910239314",
+  "doi": "https://doi.org/10.1088/1361-648x/aaf7eb",
+  "title": "Ultrafast electron-lattice thermalization in copper and other noble metal nanoparticles",
+  "display_name": "Ultrafast electron-lattice thermalization in copper and other noble metal nanoparticles",
+  "publication_year": 2019,
+  "publication_date": "2019-01-08",
+  "ids": {
+    "openalex": "https://openalex.org/W2910239314",
+    "doi": "https://doi.org/10.1088/1361-648x/aaf7eb",
+    "mag": "2910239314",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/30620724"
+  },
+  "language": "en",
+  "primary_location": {
+    "is_oa": false,
+    "landing_page_url": "https://doi.org/10.1088/1361-648x/aaf7eb",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S190924190",
+      "display_name": "Journal of physics. Condensed matter",
+      "issn_l": "0953-8984",
+      "issn": [
+        "0953-8984",
+        "1361-648X"
+      ],
+      "is_oa": false,
+      "is_in_doaj": false,
+      "host_organization": "https://openalex.org/P4310320083",
+      "host_organization_name": "IOP Publishing",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310311669",
+        "https://openalex.org/P4310320083"
+      ],
+      "host_organization_lineage_names": [
+        "Institute of Physics",
+        "IOP Publishing"
+      ],
+      "type": "journal"
+    },
+    "license": null,
+    "license_id": null,
+    "version": null,
+    "is_accepted": false,
+    "is_published": false
+  },
+  "type": "article",
+  "type_crossref": "journal-article",
+  "indexed_in": [
+    "crossref",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://hal.science/hal-01987430/document",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5018981229",
+        "display_name": "Denis Mongin",
+        "orcid": "https://orcid.org/0000-0002-4801-8395"
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210133140",
+          "display_name": "Institut Lumi\u00e8re Mati\u00e8re",
+          "ror": "https://ror.org/0323bey33",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I100532134",
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I203339264",
+            "https://openalex.org/I4210098836",
+            "https://openalex.org/I4210133140"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Denis Mongin",
+      "raw_affiliation_strings": [
+        "Institut Lumi\u00e8re Mati\u00e8re [Villeurbanne]"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5062970962",
+        "display_name": "Paolo Maioli",
+        "orcid": "https://orcid.org/0000-0002-4199-8810"
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Paolo Maioli",
+      "raw_affiliation_strings": [
+        "FemtoNanoOptics"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5041719915",
+        "display_name": "Julien Burgin",
+        "orcid": null
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210154987",
+          "display_name": "Laboratoire Ondes et Mati\u00e8re d'Aquitaine",
+          "ror": "https://ror.org/05qsp5m64",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I15057530",
+            "https://openalex.org/I4210098836",
+            "https://openalex.org/I4210154987"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Julien Burgin",
+      "raw_affiliation_strings": [
+        "Laboratoire Ondes et Mati\u00e8re d'Aquitaine"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5049432661",
+        "display_name": "P. Langot",
+        "orcid": null
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210154987",
+          "display_name": "Laboratoire Ondes et Mati\u00e8re d'Aquitaine",
+          "ror": "https://ror.org/05qsp5m64",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I15057530",
+            "https://openalex.org/I4210098836",
+            "https://openalex.org/I4210154987"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Pierre Langot",
+      "raw_affiliation_strings": [
+        "Laboratoire Ondes et Mati\u00e8re d'Aquitaine"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5083608612",
+        "display_name": "E. Cottancin",
+        "orcid": "https://orcid.org/0000-0002-1185-770X"
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Emmanuel Cottancin",
+      "raw_affiliation_strings": [
+        "Agr\u00e9gats et nanostructures"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5079772228",
+        "display_name": "Sergio D\u2019Addato",
+        "orcid": "https://orcid.org/0000-0002-2002-2069"
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I122346577",
+          "display_name": "University of Modena and Reggio Emilia",
+          "ror": "https://ror.org/02d4c4y02",
+          "country_code": "IT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I122346577"
+          ]
+        }
+      ],
+      "countries": [
+        "IT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Sergio D\u2019Addato",
+      "raw_affiliation_strings": [
+        "Universit\u00e0 degli Studi di Modena e Reggio Emilia = University of Modena and Reggio Emilia"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5060192997",
+        "display_name": "B. Canut",
+        "orcid": null
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Bruno Canut",
+      "raw_affiliation_strings": [
+        "INL - Spectroscopies et Nanomat\u00e9riaux"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5033691359",
+        "display_name": "Mona Tr\u00e9guer",
+        "orcid": null
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210110196",
+          "display_name": "Institut de Chimie de la Mati\u00e8re Condens\u00e9e de Bordeaux",
+          "ror": "https://ror.org/01nw6qk38",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I15057530",
+            "https://openalex.org/I4210110196",
+            "https://openalex.org/I4210128300",
+            "https://openalex.org/I4210160189"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Mona Treguer",
+      "raw_affiliation_strings": [
+        "Institut de Chimie de la Mati\u00e8re Condens\u00e9e de Bordeaux"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5073026886",
+        "display_name": "Aur\u00e9lien Crut",
+        "orcid": "https://orcid.org/0000-0003-2185-709X"
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Aur\u00e9lien Crut",
+      "raw_affiliation_strings": [
+        "FemtoNanoOptics"
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5054003346",
+        "display_name": "Fabrice Vall\u00e9e",
+        "orcid": "https://orcid.org/0000-0001-8204-3626"
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Fabrice Vall\u00e9e",
+      "raw_affiliation_strings": [
+        "FemtoNanoOptics"
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5043001559",
+        "display_name": "Natalia Del Fatti",
+        "orcid": "https://orcid.org/0000-0002-8074-256X"
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Natalia Del Fatti",
+      "raw_affiliation_strings": [
+        "FemtoNanoOptics"
+      ]
+    }
+  ],
+  "countries_distinct_count": 2,
+  "institutions_distinct_count": 4,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "has_fulltext": true,
+  "fulltext_origin": "pdf",
+  "cited_by_count": 20,
+  "cited_by_percentile_year": {
+    "min": 93,
+    "max": 94
+  },
+  "biblio": {
+    "volume": "31",
+    "issue": "8",
+    "first_page": "084001",
+    "last_page": "084001"
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10131",
+    "display_name": "Plasmonic Nanoparticles: Synthesis, Properties, and Applications",
+    "score": 0.9993,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2504",
+      "display_name": "Electronic, Optical and Magnetic Materials"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/25",
+      "display_name": "Materials Science"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/3",
+      "display_name": "Physical Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10131",
+      "display_name": "Plasmonic Nanoparticles: Synthesis, Properties, and Applications",
+      "score": 0.9993,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2504",
+        "display_name": "Electronic, Optical and Magnetic Materials"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/25",
+        "display_name": "Materials Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11177",
+      "display_name": "Quantum Coherence in Photosynthesis and Aqueous Systems",
+      "score": 0.9981,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3107",
+        "display_name": "Atomic and Molecular Physics, and Optics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/31",
+        "display_name": "Physics and Astronomy"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12202",
+      "display_name": "Ice Nucleation and Melting Phenomena",
+      "score": 0.9935,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1902",
+        "display_name": "Atmospheric Science"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/19",
+        "display_name": "Earth and Planetary Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+  ],
+  "concepts": [
+  ],
+  "mesh": [],
+  "locations_count": 7,
+  "locations": [
+    {
+      "is_oa": false,
+      "landing_page_url": "https://doi.org/10.1088/1361-648x/aaf7eb",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S190924190",
+        "display_name": "Journal of physics. Condensed matter",
+        "issn_l": "0953-8984",
+        "issn": [
+          "0953-8984",
+          "1361-648X"
+        ],
+        "is_oa": false,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/P4310320083",
+        "host_organization_name": "IOP Publishing",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310311669",
+          "https://openalex.org/P4310320083"
+        ],
+        "host_organization_lineage_names": [
+          "Institute of Physics",
+          "IOP Publishing"
+        ],
+        "type": "journal"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": false,
+      "landing_page_url": "https://hal.science/hal-01987430",
+      "pdf_url": null,
+      "source": null,
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": true,
+      "landing_page_url": "https://hal.archives-ouvertes.fr/hal-01987430",
+      "pdf_url": "https://hal.science/hal-01987430/document",
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "French National Centre for Scientific Research",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "French National Centre for Scientific Research"
+        ],
+        "type": "repository"
+      },
+      "license": "cc-by-nc-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": true,
+      "landing_page_url": "http://hdl.handle.net/11380/1169511",
+      "pdf_url": "https://iris.unimore.it/bitstream/11380/1169511/1/CuFASTNPJPCMpostprint.pdf",
+      "source": {
+        "id": "https://openalex.org/S4377196326",
+        "display_name": "Iris Unimore (University of Modena and Reggio Emilia)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/I122346577",
+        "host_organization_name": "University of Modena and Reggio Emilia",
+        "host_organization_lineage": [
+          "https://openalex.org/I122346577"
+        ],
+        "host_organization_lineage_names": [
+          "University of Modena and Reggio Emilia"
+        ],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": true,
+      "landing_page_url": "https://hal.archives-ouvertes.fr/hal-01987430/file/MonginJP-CM2019_postprint.pdf",
+      "pdf_url": "https://hal.archives-ouvertes.fr/hal-01987430/file/MonginJP-CM2019_postprint.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "French National Centre for Scientific Research",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "French National Centre for Scientific Research"
+        ],
+        "type": "repository"
+      },
+      "license": "cc-by-nc-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": true,
+      "landing_page_url": "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf",
+      "pdf_url": "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "French National Centre for Scientific Research",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "French National Centre for Scientific Research"
+        ],
+        "type": "repository"
+      },
+      "license": "cc-by-nc-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/30620724",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [
+          "National Institutes of Health"
+        ],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    }
+  ],
+  "best_oa_location": {
+    "is_oa": true,
+    "landing_page_url": "https://hal.archives-ouvertes.fr/hal-01987430",
+    "pdf_url": "https://hal.science/hal-01987430/document",
+    "source": {
+      "id": "https://openalex.org/S4306402512",
+      "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": true,
+      "is_in_doaj": false,
+      "host_organization": "https://openalex.org/I1294671590",
+      "host_organization_name": "French National Centre for Scientific Research",
+      "host_organization_lineage": [
+        "https://openalex.org/I1294671590"
+      ],
+      "host_organization_lineage_names": [
+        "French National Centre for Scientific Research"
+      ],
+      "type": "repository"
+    },
+    "license": "cc-by-nc-sa",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 0.9,
+      "id": "https://metadata.un.org/sdg/7",
+      "display_name": "Affordable and clean energy"
+    }
+  ],
+  "grants": [],
+  "datasets": [],
+  "versions": [],
+  "referenced_works_count": 59,
+  "referenced_works": [
+    "https://openalex.org/W1969830382",
+    "https://openalex.org/W1973503469",
+    "https://openalex.org/W1976363223",
+    "https://openalex.org/W1977024975",
+    "https://openalex.org/W1977241182",
+    "https://openalex.org/W1977696372",
+    "https://openalex.org/W1979929022",
+    "https://openalex.org/W1983092532",
+    "https://openalex.org/W1989409538",
+    "https://openalex.org/W1991551871",
+    "https://openalex.org/W2001498052",
+    "https://openalex.org/W2001591769",
+    "https://openalex.org/W2001857755",
+    "https://openalex.org/W2003687357",
+    "https://openalex.org/W2009915134",
+    "https://openalex.org/W2016428817",
+    "https://openalex.org/W2017451986",
+    "https://openalex.org/W2017693717",
+    "https://openalex.org/W2018175939",
+    "https://openalex.org/W2022253724",
+    "https://openalex.org/W2026788232",
+    "https://openalex.org/W2027105180",
+    "https://openalex.org/W2027243019",
+    "https://openalex.org/W2027253829",
+    "https://openalex.org/W2036047546",
+    "https://openalex.org/W2036155045",
+    "https://openalex.org/W2036891205",
+    "https://openalex.org/W2042518384",
+    "https://openalex.org/W2050723344",
+    "https://openalex.org/W2051834351",
+    "https://openalex.org/W2055628807",
+    "https://openalex.org/W2060831210",
+    "https://openalex.org/W2061558462",
+    "https://openalex.org/W2062263728",
+    "https://openalex.org/W2068144092",
+    "https://openalex.org/W2069076572",
+    "https://openalex.org/W2075803436",
+    "https://openalex.org/W2076328079",
+    "https://openalex.org/W2076849967",
+    "https://openalex.org/W2078101478",
+    "https://openalex.org/W2082533936",
+    "https://openalex.org/W2083926174",
+    "https://openalex.org/W2087432272",
+    "https://openalex.org/W2091398242",
+    "https://openalex.org/W2095554346",
+    "https://openalex.org/W2108582743",
+    "https://openalex.org/W2110614738",
+    "https://openalex.org/W2112165279",
+    "https://openalex.org/W2132905138",
+    "https://openalex.org/W2145687484",
+    "https://openalex.org/W2166475097",
+    "https://openalex.org/W2316968996",
+    "https://openalex.org/W2319288250",
+    "https://openalex.org/W2516284415",
+    "https://openalex.org/W2574947961",
+    "https://openalex.org/W2625885472",
+    "https://openalex.org/W2783245743",
+    "https://openalex.org/W2801703569",
+    "https://openalex.org/W2893032548"
+  ],
+  "related_works": [
+    "https://openalex.org/W4327992512",
+    "https://openalex.org/W4320854791",
+    "https://openalex.org/W4300667691",
+    "https://openalex.org/W4297789168",
+    "https://openalex.org/W4293568266",
+    "https://openalex.org/W3160049553",
+    "https://openalex.org/W3102583328",
+    "https://openalex.org/W2600893875",
+    "https://openalex.org/W2081209813",
+    "https://openalex.org/W1550659842"
+  ],
+  "ngrams_url": "https://api.openalex.org/works/W2910239314/ngrams",
+  "abstract_inverted_index": {
+    "Using": [
+      0
+    ],
+    "time-resolved": [
+      1,
+      121
+    ],
+    "ultrafast": [
+      2
+    ],
+    "pump-probe": [
+      3
+    ],
+    "spectroscopy": [
+      4
+    ],
+    "we": [
+      5,
+      105
+    ],
+    "investigated": [
+      6
+    ],
+    "the": [
+      7,
+      56,
+      65,
+      68,
+      76,
+      81,
+      84,
+      87,
+      95,
+      107,
+      112,
+      124,
+      149,
+      159,
+      165,
+      171
+    ],
+    "electron-lattice": [
+      8,
+      88,
+      116
+    ],
+    "energy": [
+      9,
+      117
+    ],
+    "transfer": [
+      10,
+      118
+    ],
+    "in": [
+      11,
+      25,
+      30,
+      43,
+      55,
+      90,
+      94,
+      123,
+      137,
+      170
+    ],
+    "small": [
+      12
+    ],
+    "copper": [
+      13
+    ],
+    "nanospheres": [
+      14,
+      136
+    ],
+    "with": [
+      15,
+      40,
+      45,
+      102
+    ],
+    "diameters": [
+      16
+    ],
+    "ranging": [
+      17
+    ],
+    "from": [
+      18,
+      120,
+      143
+    ],
+    "3.2": [
+      19
+    ],
+    "to": [
+      20,
+      38,
+      64,
+      75
+    ],
+    "23": [
+      21
+    ],
+    "nm,": [
+      22
+    ],
+    "either": [
+      23
+    ],
+    "embedded": [
+      24
+    ],
+    "a": [
+      26,
+      31,
+      144,
+      155
+    ],
+    "glass": [
+      27
+    ],
+    "or": [
+      28,
+      100
+    ],
+    "dispersed": [
+      29
+    ],
+    "solvent.": [
+      32
+    ],
+    "Electron-lattice": [
+      33
+    ],
+    "scattering": [
+      34,
+      89
+    ],
+    "rate": [
+      35
+    ],
+    "is": [
+      36
+    ],
+    "shown": [
+      37
+    ],
+    "increase": [
+      39,
+      101
+    ],
+    "size": [
+      41
+    ],
+    "reduction,": [
+      42
+    ],
+    "agreement": [
+      44
+    ],
+    "our": [
+      46
+    ],
+    "previous": [
+      47
+    ],
+    "results": [
+      48,
+      85
+    ],
+    "obtained": [
+      49
+    ],
+    "on": [
+      50,
+      86,
+      134,
+      148,
+      154
+    ],
+    "gold": [
+      51,
+      135
+    ],
+    "and": [
+      52,
+      126,
+      130,
+      153
+    ],
+    "silver": [
+      53
+    ],
+    "nanoparticles": [
+      54
+    ],
+    "low": [
+      57
+    ],
+    "excitation": [
+      58,
+      128
+    ],
+    "regime.": [
+      59
+    ],
+    "We": [
+      60
+    ],
+    "attribute": [
+      61
+    ],
+    "this": [
+      62
+    ],
+    "effect": [
+      63
+    ],
+    "reduction": [
+      66
+    ],
+    "of": [
+      67,
+      71,
+      115,
+      158,
+      167,
+      173
+    ],
+    "screening": [
+      69
+    ],
+    "efficiency": [
+      70
+    ],
+    "electron-phonon": [
+      72
+    ],
+    "interactions": [
+      73
+    ],
+    "close": [
+      74
+    ],
+    "nanoparticle": [
+      77,
+      103,
+      160
+    ],
+    "surface.": [
+      78
+    ],
+    "To": [
+      79
+    ],
+    "understand": [
+      80
+    ],
+    "discrepancy": [
+      82
+    ],
+    "between": [
+      83
+    ],
+    "different": [
+      91
+    ],
+    "metals": [
+      92
+    ],
+    "reported": [
+      93
+    ],
+    "literature": [
+      96
+    ],
+    "(reduction,": [
+      97
+    ],
+    "no": [
+      98
+    ],
+    "dependence": [
+      99
+    ],
+    "size),": [
+      104
+    ],
+    "discuss": [
+      106
+    ],
+    "experimental": [
+      108
+    ],
+    "conditions": [
+      109
+    ],
+    "required": [
+      110
+    ],
+    "for": [
+      111
+    ],
+    "accurate": [
+      113
+    ],
+    "determination": [
+      114
+    ],
+    "time": [
+      119
+    ],
+    "investigations": [
+      122
+    ],
+    "weak": [
+      125
+    ],
+    "strong": [
+      127
+    ],
+    "regimes": [
+      129
+    ],
+    "present": [
+      131
+    ],
+    "power-dependent": [
+      132
+    ],
+    "experiments": [
+      133
+    ],
+    "solution.": [
+      138
+    ],
+    "Our": [
+      139
+    ],
+    "findings": [
+      140
+    ],
+    "are": [
+      141
+    ],
+    "derived": [
+      142
+    ],
+    "theoretical": [
+      145
+    ],
+    "analysis": [
+      146
+    ],
+    "based": [
+      147
+    ],
+    "two-temperature": [
+      150
+    ],
+    "model": [
+      151
+    ],
+    "predictions": [
+      152
+    ],
+    "complete": [
+      156
+    ],
+    "modeling": [
+      157
+    ],
+    "transient": [
+      161
+    ],
+    "extinction": [
+      162
+    ],
+    "cross-section": [
+      163
+    ],
+    "through": [
+      164
+    ],
+    "resolution": [
+      166
+    ],
+    "Boltzmann": [
+      168
+    ],
+    "equation": [
+      169
+    ],
+    "presence": [
+      172
+    ],
+    "hot": [
+      174
+    ],
+    "electrons.": [
+      175
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W2910239314",
+  "counts_by_year": [
+    {
+      "year": 2024,
+      "cited_by_count": 2
+    },
+    {
+      "year": 2023,
+      "cited_by_count": 3
+    },
+    {
+      "year": 2022,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2021,
+      "cited_by_count": 7
+    },
+    {
+      "year": 2020,
+      "cited_by_count": 4
+    }
+  ],
+  "updated_date": "2024-05-26T22:31:15.310471",
+  "created_date": "2019-01-25"
+}

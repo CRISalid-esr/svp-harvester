@@ -4,7 +4,6 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
-
 from app.harvesters.open_alex.open_alex_references_converter import (
     OpenAlexReferencesConverter,
 )
@@ -110,6 +109,74 @@ async def test_convert(open_alex_api_work: dict):
         == "https://pubmed.ncbi.nlm.nih.gov/9944570"
     )
     assert test_reference.manifestations[2].download_url == None
+
+
+@pytest.mark.asyncio
+async def test_convert_work_with_various_locations(
+    open_alex_work_with_various_locations: dict,
+):
+    """
+    Given a reference with multiple locations,
+    When the converter is called,
+    Then the converter should return a reference with multiple manifestations
+
+    :param open_alex_work_with_various_locations:
+    :return:
+    """
+    converter_under_tests = OpenAlexReferencesConverter()
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_work_with_various_locations["id"],
+        payload=open_alex_work_with_various_locations,
+        formatter_name="OPEN_ALEX",
+    )
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+    assert len(test_reference.manifestations) == 7
+    assert (
+        test_reference.manifestations[0].page
+        == "https://doi.org/10.1088/1361-648x/aaf7eb"
+    )
+    assert test_reference.manifestations[0].download_url == None
+    assert test_reference.manifestations[1].page == "https://hal.science/hal-01987430"
+    assert test_reference.manifestations[1].download_url == None
+    assert (
+        test_reference.manifestations[2].page
+        == "https://hal.archives-ouvertes.fr/hal-01987430"
+    )
+    assert (
+        test_reference.manifestations[2].download_url
+        == "https://hal.science/hal-01987430/document"
+    )
+    assert (
+        test_reference.manifestations[3].page == "http://hdl.handle.net/11380/1169511"
+    )
+    assert (
+        test_reference.manifestations[3].download_url
+        == "https://iris.unimore.it/bitstream/11380/1169511/1/CuFASTNPJPCMpostprint.pdf"
+    )
+    assert (
+        test_reference.manifestations[4].page
+        == "https://hal.archives-ouvertes.fr/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )
+    assert (
+        test_reference.manifestations[4].download_url
+        == "https://hal.archives-ouvertes.fr/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )
+    assert (
+        test_reference.manifestations[5].page
+        == "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )
+    assert (
+        test_reference.manifestations[5].download_url
+        == "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )
+    assert (
+        test_reference.manifestations[6].page
+        == "https://pubmed.ncbi.nlm.nih.gov/30620724"
+    )
+    assert test_reference.manifestations[6].download_url == None
 
 
 @pytest.mark.parametrize(

@@ -63,8 +63,9 @@ def _publish_requests(args):
                 name = f"{row.get('last_name', '')}, {row.get('first_name', '')}"
             payload = {
                 "type": "person",
+                "reply": True,
                 "identifiers_safe_mode": False,
-                "events": ["created", "updated", "deleted"],
+                "events": ["created", "updated", "deleted", "unchanged"],
                 "harvesters": harvesters,
                 "fields": {
                     "name": name,
