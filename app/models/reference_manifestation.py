@@ -10,3 +10,4 @@ class ReferenceManifestation(BaseModel):
 
     page: HttpUrl
     download_url: HttpUrl | None = None
+    additional_files: list[HttpUrl] | None = []
