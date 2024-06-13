@@ -14,6 +14,12 @@ def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
     return hal_api_docs_for_researcher["response"]["docs"]
 
 
+@pytest.fixture(name="hal_api_response_with_uris")
+def fixture_hal_api_response_with_uris(hal_api_docs_for_researcher_with_uris):
+    """Return the list of dictionaries references from hal response"""
+    return hal_api_docs_for_researcher_with_uris["response"]["docs"]
+
+
 async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
     converter_under_tests = HalReferencesConverter()
@@ -114,3 +120,79 @@ async def test_convert_with_date_exception(fixture, expected_output, caplog, req
         assert reference.created is None
         assert "Hal reference converter cannot create" in caplog.text
         assert expected_output in caplog.text
+
+@pytest.mark.current
+async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: dict):
+    """
+    Given a list of docs where the first is a publication without files
+    When the converter is called with the first doc
+    Then it should return a reference with a single manifestion whith uri_s as page field
+
+
+    :param hal_api_docs_for_researcher_with_uris:
+    :return:
+    """
+    converter_under_tests = HalReferencesConverter()
+    doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][0]
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+    )
+    reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=reference)
+    assert len(reference.manifestations) == 1
+    assert reference.manifestations[0].page == doc["uri_s"]
+
+
+@pytest.mark.current
+async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict):
+    """
+    Given a list of docs where the second is a publication with a sigle file in fileMain_s
+    When the converter is called with the second doc
+    Then it should return a reference with a single manifestion whith uri_s as page field
+    and the fileMain_s as download_url field
+
+    :param hal_api_docs_for_researcher_with_uris:
+    :return:
+    """
+    converter_under_tests = HalReferencesConverter()
+    doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][1]
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+    )
+    reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=reference)
+    assert len(reference.manifestations) == 1
+    assert reference.manifestations[0].page == doc["uri_s"]
+    assert reference.manifestations[0].download_url == doc["fileMain_s"]
+
+
+@pytest.mark.current
+async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dict):
+    """
+    Given a list of docs where the third is a publication with multiple files in files_s
+    When the converter is called with the third doc
+    Then it should return a reference with a single manifestion whith uri_s as page field
+    and the fileMain_s as download_url field
+    and the files after the first one from files_s as additional_files
+
+    :param hal_api_docs_for_researcher_with_uris:
+    :return:
+    """
+    converter_under_tests = HalReferencesConverter()
+    doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][2]
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+    )
+    reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=reference)
+    assert len(reference.manifestations) == 1
+    assert reference.manifestations[0].page == doc["uri_s"]
+    assert reference.manifestations[0].download_url == doc["fileMain_s"]
+    assert len(reference.manifestations[0].additional_files) == 1
+    assert reference.manifestations[0].additional_files[0] == doc["files_s"][1]

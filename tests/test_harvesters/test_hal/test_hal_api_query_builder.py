@@ -1,4 +1,5 @@
 """ Test for the hal api query builder"""
+
 from urllib.parse import parse_qs
 
 import pytest
@@ -11,12 +12,12 @@ def fixture_hal_api_query_builder():
     """fixture for HalApiQueryBuilder instance"""
     hal_query = HalApiQueryBuilder()
 
-    hal_query.fields = ["field1", "field2", "field3"]  # Set fields in fixture
-    hal_query.doc_types = ["ART", "OUV", "COUV"]  # Set doc_types in fixture
-    hal_query.sort_parameter = "test_key_parameter"  # Set sort_parameter in fixture
-    hal_query.sort_direction = "dsc"  # Set sort_direction in fixture
+    hal_query.fields = ["field1", "field2", "field3"]
+    hal_query.doc_types = ["ART", "OUV", "COUV"]
+    hal_query.sort_parameter = "test_key_parameter"
+    hal_query.sort_direction = "dsc"
 
-    yield hal_query  # yield is used here instead of return for future flexibility
+    yield hal_query
 
 
 def test_set_query(hal_query_builder):
