@@ -3,7 +3,6 @@ import pytest
 from app.utilities.url_utilities import is_web_url
 
 
-@pytest.mark.current
 def test_is_web_url():
     """
     Test that is_web_url returns True for valid URLs and False for invalid URLs
