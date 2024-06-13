@@ -7,6 +7,7 @@
       {
         "docid": "1-will-not-change",
         "halId_s": "1-will-not-change",
+        "uri_s": "https://hal.science/hal-01-will-not-change",
         "citationRef_s": "<i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165",
         "citationFull_s": "Alessandro Buccheri. Costruire l'umano in termini vegetali: phyo e physis nella tragedia greca. <i>I quaderni del ramo d'oro</i>, 2012, 5, pp.137-165. <a target=\"_blank\" href=\"https://hal.science/hal-01-will-not-change\">&#x27E8;hal-01-will-not-change&#x27E9;</a>",
         "it_title_s": [
@@ -58,6 +59,7 @@
       {
         "docid": "2-will-change",
         "halId_s": "2-will-change",
+        "uri_s": "https://hal.science/hal-02-will-change",
         "citationRef_s": "<i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>",
         "citationFull_s": "Manon Brouillet, Alessandro Buccheri. Agents, intentionnalités et modes d’agir dans l’Antiquité. <i>Cahiers \"Mondes Anciens\" </i>, 2019, 12, <a target=\"_blank\" href=\"https://dx.doi.org/10.4000/mondesanciens.2441\">&#x27E8;10.4000/mondesanciens.2441&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-02-will-change\">&#x27E8;hal-02-will-change&#x27E9;</a>",
         "en_title_s": [
@@ -103,6 +105,7 @@
       {
         "docid": "3-will-disappear",
         "halId_s": "3-will-disappear",
+        "uri_s": "https://hal.science/hal-03-will-disappear",
         "citationRef_s": "William M. Short. <i>Embodiment in Latin Semantics</i>, pp.141-176, 2016, <a target=\"_blank\" href=\"https://dx.doi.org/10.1075/slcs.174.06buc\">&#x27E8;10.1075/slcs.174.06buc&#x27E9;</a>",
         "citationFull_s": "Alessandro Buccheri. The metaphorical structuring of kinship in Latin. William M. Short. <i>Embodiment in Latin Semantics</i>, pp.141-176, 2016, <a target=\"_blank\" href=\"https://dx.doi.org/10.1075/slcs.174.06buc\">&#x27E8;10.1075/slcs.174.06buc&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-03-will-disappear\">&#x27E8;hal-03-will-disappear&#x27E9;</a>",
         "en_title_s": [

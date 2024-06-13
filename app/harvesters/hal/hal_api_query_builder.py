@@ -49,6 +49,11 @@ class HalApiQueryBuilder:
         "bookTitle_s",
         "publisher_s",
         "isbn_s",
+        "uri_s",
+        "fileMain_s",
+        "files_s",
+        "publisherLink_s",
+        "linkExtUrl_s",
     ]
 
     DEFAULT_SORT_PARAMETER = "halId_s"

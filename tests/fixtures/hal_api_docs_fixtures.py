@@ -33,6 +33,16 @@ def fixture_hal_api_docs_for_researcher(_base_path) -> dict:
     return _hal_api_json_data_from_file(_base_path, "docs_for_researcher")
 
 
+@pytest.fixture(name="hal_api_docs_for_researcher_with_uris")
+def fixture_hal_api_docs_for_researcher_with_uris(_base_path) -> dict:
+    """
+    Generate a HAL API response for a researcher in JSON format
+    :param _base_path: test data directory base
+    :return: HAL API response for one researcher in JSON format
+    """
+    return _hal_api_json_data_from_file(_base_path, "docs_for_researcher_with_uris")
+
+
 @pytest.fixture(name="hal_api_docs_for_researcher_version_1")
 def fixture_hal_api_docs_for_researcher_version_1(_base_path) -> dict:
     """

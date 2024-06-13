@@ -9,6 +9,7 @@ from app.db.models.book import Book
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
+from app.db.models.reference_manifestation import ReferenceManifestation
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -108,6 +109,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
             ):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
+
+        self._add_hal_manifestation(json_payload, new_ref)
 
         self._add_issued_date(json_payload, new_ref)
 
@@ -393,3 +396,28 @@ class HalReferencesConverter(AbstractReferencesConverter):
         :return: 2 letters language code
         """
         return multilang_field_name.split("_")[0]
+
+    def _add_hal_manifestation(self, raw_data, new_ref):
+        uri = raw_data.get("uri_s", None)
+        if uri is None:
+            raise UnexpectedFormatException(
+                f"uri_s is missing for halId_s: {raw_data['halId_s']}"
+            )
+        download_url = raw_data.get("fileMain_s", None)
+        if download_url is None:
+            download_url = raw_data.get("linkExtUrl_s", None)
+        additional_files = raw_data.get("files_s", [])
+        # keep only files after the first one
+        additional_files = additional_files[1:]
+        try:
+            new_ref.manifestations.append(
+                ReferenceManifestation(
+                    page=uri,
+                    download_url=download_url,
+                    additional_files=additional_files,
+                )
+            )
+        except ValueError as error:
+            raise UnexpectedFormatException(
+                f"Error while creating manifestation for halId_s: {raw_data['halId_s']}"
+            ) from error
