@@ -110,7 +110,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 new_ref.subjects.append(subject)
         await self._add_contributions(json_payload, new_ref)
 
-        await self._add_hal_manifestation(json_payload, new_ref)
+        self._add_hal_manifestation(json_payload, new_ref)
 
         self._add_issued_date(json_payload, new_ref)
 
@@ -397,200 +397,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         """
         return multilang_field_name.split("_")[0]
 
-    # What we receive :
-    # [
-    #       {
-    #         "_comment": "Basic use case with uri_s only and no files",
-    #         "docid": "3068",
-    #         "citationRef_s": "<i>Physical Review E : Statistical, Nonlinear, and Soft Matter Physics</i>, 2003, 67, pp.051910",
-    #         "citationFull_s": "A. Crut, D. Lasne, Jean-François Allemand, M. Dahan, P. Desbiolles. Transverse fluctuations of single DNA molecules attached to a surface by their extremities. <i>Physical Review E : Statistical, Nonlinear, and Soft Matter Physics</i>, 2003, 67, pp.051910. <a target=\"_blank\" href=\"https://hal.science/hal-00002447\">&#x27E8;hal-00002447&#x27E9;</a>",
-    #         "en_title_s": [
-    #           "Transverse fluctuations of single DNA molecules attached to a surface by their extremities"
-    #         ],
-    #         "journalId_i": 21487,
-    #         "journalTitle_s": "Physical Review E : Statistical, Nonlinear, and Soft Matter Physics",
-    #         "journalPublisher_s": "American Physical Society",
-    #         "journalIssn_s": "1539-3755",
-    #         "journalEissn_s": "1550-2376",
-    #         "halId_s": "hal-00002447",
-    #         "uri_s": "https://hal.science/hal-00002447",
-    #         "docType_s": "ART",
-    #         "page_s": "051910",
-    #         "volume_s": "67",
-    #         "producedDate_tdate": "2003-01-01T00:00:00Z",
-    #         "publicationDate_tdate": "2003-01-01T00:00:00Z"
-    #       },
-    #       {
-    #         "_comment": "Basic use case with uri_s and a single file",
-    #         "docid": "440439",
-    #         "citationRef_s": "<i>Physical Review B: Condensed Matter and Materials Physics (1998-2015)</i>, 2009, 80 (19), pp.195406. <a target=\"_blank\" href=\"https://dx.doi.org/10.1103/PhysRevB.80.195406\">&#x27E8;10.1103/PhysRevB.80.195406&#x27E9;</a>",
-    #         "citationFull_s": "Vincent Juvé, Mattia Scardamaglia, Paolo Maioli, Aurélien Crut, Samy Merabia, et al.. Cooling dynamics and thermal interface resistance of glass-embedded metal nanoparticles. <i>Physical Review B: Condensed Matter and Materials Physics (1998-2015)</i>, 2009, 80 (19), pp.195406. <a target=\"_blank\" href=\"https://dx.doi.org/10.1103/PhysRevB.80.195406\">&#x27E8;10.1103/PhysRevB.80.195406&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-00440439\">&#x27E8;hal-00440439&#x27E9;</a>",
-    #         "linkExtUrl_s": "http://arxiv.org/pdf/0912.3058",
-    #         "linkExtId_s": "arxiv",
-    #         "en_title_s": [
-    #           "Cooling dynamics and thermal interface resistance of glass-embedded metal nanoparticles"
-    #         ],
-    #         "journalId_i": 17977,
-    #         "journalTitle_s": "Physical Review B: Condensed Matter and Materials Physics (1998-2015)",
-    #         "journalPublisher_s": "American Physical Society",
-    #         "journalIssn_s": "1098-0121",
-    #         "journalEissn_s": "1550-235X",
-    #         "halId_s": "hal-00440439",
-    #         "uri_s": "https://hal.science/hal-00440439",
-    #         "docType_s": "ART",
-    #         "issue_s": [
-    #           "19"
-    #         ],
-    #         "page_s": "195406",
-    #         "volume_s": "80",
-    #         "doiId_s": "10.1103/PhysRevB.80.195406",
-    #         "arxivId_s": "0912.3058",
-    #         "producedDate_tdate": "2009-11-05T00:00:00Z",
-    #         "publicationDate_tdate": "2009-11-05T00:00:00Z",
-    #         "fileMain_s": "https://hal.science/hal-00440439/document",
-    #         "files_s": [
-    #           "https://hal.science/hal-00440439/file/Juve_et_al._PRB_2009.pdf"
-    #         ]
-    #       },
-    #       {
-    #         "_comment": "Basic use case with uri_s and multiple files",
-    #         "docid": "1714043",
-    #         "citationRef_s": "<i>Journal of Physical Chemistry C</i>, 2015, 119 (3), pp.1591-1599. <a target=\"_blank\" href=\"https://dx.doi.org/10.1021/jp511070h\">&#x27E8;10.1021/jp511070h&#x27E9;</a>",
-    #         "citationFull_s": "Tatjana Stoll, Paolo Maioli, Aurélien Crut, Julien Burgin, Pierre Langot, et al.. Ultrafast Acoustic Vibrations of Bimetallic Nanoparticles. <i>Journal of Physical Chemistry C</i>, 2015, 119 (3), pp.1591-1599. <a target=\"_blank\" href=\"https://dx.doi.org/10.1021/jp511070h\">&#x27E8;10.1021/jp511070h&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-01115164\">&#x27E8;hal-01115164&#x27E9;</a>",
-    #         "linkExtUrl_s": "https://hal.archives-ouvertes.fr/hal-01115164/file/StollJPC-c2015_Postprint.pdf",
-    #         "linkExtId_s": "openaccess",
-    #         "en_title_s": [
-    #           "Ultrafast Acoustic Vibrations of Bimetallic Nanoparticles"
-    #         ],
-    #         "en_abstract_s": [
-    #           "Investigations of the ultrafast acoustic response of metal nanosystems yield important information on the validity of continuous elastic mechanics at the nanoscale and also provide an optical way to probe nanoobject morphologies. In this context, we used femtosecond time-resolved pump-probe spectroscopy to study two classes of bimetallic nanoparticles: chemically synthesized AuAg nanospheres in water in the 20-45 nm size range, both with alloyed and segregated core-shell morphologies, and mass-selected glass-embedded PtAu core-shell nanospheres in the very small size range (2.3-2.5 nm), synthesized by physical methods. The analysis of the corresponding breathing mode periods demonstrates validity of the predictions of the continuous elastic model for bimetallic nanoobjects with the investigated sizes, morphologies and composition. Moreover, discrimination of nanoparticles internal structure (alloy or core-shell) by measurement of their acoustic response is also demonstrated."
-    #         ],
-    #         "journalId_i": 16014,
-    #         "journalTitle_s": "Journal of Physical Chemistry C",
-    #         "journalPublisher_s": "American Chemical Society",
-    #         "journalIssn_s": "1932-7447",
-    #         "journalEissn_s": "1932-7455",
-    #         "halId_s": "hal-01115164",
-    #         "uri_s": "https://hal.science/hal-01115164",
-    #         "docType_s": "ART",
-    #         "issue_s": [
-    #           "3"
-    #         ],
-    #         "page_s": "1591-1599",
-    #         "volume_s": "119",
-    #         "doiId_s": "10.1021/jp511070h",
-    #         "producedDate_tdate": "2015-01-01T00:00:00Z",
-    #         "publicationDate_tdate": "2015-01-01T00:00:00Z",
-    #         "fileMain_s": "https://hal.science/hal-01115164/document",
-    #         "files_s": [
-    #           "https://hal.science/hal-01115164/file/StollJPC-c2015_Postprint.pdf",
-    #           "https://hal.science/hal-01115164/file/annexe.pdf"
-    #         ]
-    #       },
-    #       {
-    #         "_comment": "Use case with uri_s file only available from external source linkExtUrl_s",
-    #         "docid": "3118741",
-    #         "citationRef_s": "<i>Advanced Optical Materials</i>, 2016, 4 (4), pp.567-577. <a target=\"_blank\" href=\"https://dx.doi.org/10.1002/adom.201500548\">&#x27E8;10.1002/adom.201500548&#x27E9;</a>",
-    #         "citationFull_s": "Etienne Pertreux, Anna Lombardi, Ileana Florea, Miguel Spuch-Calvar, Sergio Gómez-Graña, et al.. Surface plasmon resonance of an individual nano-object on an absorbing substrate : quantitative effects of distance and 3D orientation. <i>Advanced Optical Materials</i>, 2016, 4 (4), pp.567-577. <a target=\"_blank\" href=\"https://dx.doi.org/10.1002/adom.201500548\">&#x27E8;10.1002/adom.201500548&#x27E9;</a>. <a target=\"_blank\" href=\"https://hal.science/hal-01309285\">&#x27E8;hal-01309285&#x27E9;</a>",
-    #         "linkExtUrl_s": "https://api.istex.fr/ark:/67375/WNG-WBH7WTX8-W/fulltext.pdf?sid=hal",
-    #         "linkExtId_s": "istex",
-    #         "en_title_s": [
-    #           "Surface plasmon resonance of an individual nano-object on an absorbing substrate : quantitative effects of distance and 3D orientation"
-    #         ],
-    #         "en_abstract_s": [
-    #           "Modification of the plasmonic response of a metal nano-object due to interaction with a substrate is experimentally investigated measuring the quantitative optical extinction spectra of individual nano-objects with various elongated shapes (bipyramids and rods) deposited on a dielectric (silica) or absorbing (carbon) membrane. Apart from the expected dependence of the nanoparticle surface plasmon resonance (SPR) frequency on the nature of the substrate, large substrate and particle shape dependent modifications of its SPR width are demonstrated. These dependencies are ascribed to strong localization of the electromagnetic field associated with the longitudinal SPR of an elongated nano-object around its tips, leading to different interaction with the substrate depending on the particle shape and 3D orientation relative to the substrate. Both parameters have been precisely determined by electron tomography, permitting excellent reproduction of the experimental data. Experiments performed on silver-encapsulated bipyramids, whose shape evolves from a pyramidal one towards a cylindrical one, further confirm this effect."
-    #         ],
-    #         "halId_s": "hal-01309285",
-    #         "uri_s": "https://hal.science/hal-01309285",
-    #         "docType_s": "ART",
-    #         "producedDate_tdate": "2016-01-01T00:00:00Z",
-    #         "publicationDate_tdate": "2016-01-01T00:00:00Z"
-    #       }
-    #     ]
-    #
-    #
-    # @pytest.mark.current
-    # async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: dict):
-    #     """
-    #     Given a list of docs where the first is a publication without files
-    #     When the converter is called with the first doc
-    #     Then it should return a reference with a single manifestion whith uri_s as page field
-    #
-    #
-    #     :param hal_api_docs_for_researcher_with_uris:
-    #     :return:
-    #     """
-    #     converter_under_tests = HalReferencesConverter()
-    #     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][0]
-    #     result = JsonHarvesterRawResult(
-    #         source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
-    #     )
-    #     reference = converter_under_tests.build(
-    #         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
-    #     )
-    #     await converter_under_tests.convert(raw_data=result, new_ref=reference)
-    #     assert len(reference.manifestations) == 1
-    #     assert reference.manifestations[0].page == doc["uri_s"]
-    #
-    #
-    # @pytest.mark.current
-    # async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict):
-    #     """
-    #     Given a list of docs where the second is a publication with a sigle file in fileMain_s
-    #     When the converter is called with the second doc
-    #     Then it should return a reference with a single manifestion whith uri_s as page field
-    #     and the fileMain_s as download_url field
-    #
-    #     :param hal_api_docs_for_researcher_with_uris:
-    #     :return:
-    #     """
-    #     converter_under_tests = HalReferencesConverter()
-    #     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][1]
-    #     result = JsonHarvesterRawResult(
-    #         source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
-    #     )
-    #     reference = converter_under_tests.build(
-    #         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
-    #     )
-    #     await converter_under_tests.convert(raw_data=result, new_ref=reference)
-    #     assert len(reference.manifestations) == 1
-    #     assert reference.manifestations[0].page == doc["uri_s"]
-    #     assert reference.manifestations[0].download_url == doc["fileMain_s"]
-    #
-    #
-    # @pytest.mark.current
-    # async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dict):
-    #     """
-    #     Given a list of docs where the third is a publication with multiple files in files_s
-    #     When the converter is called with the third doc
-    #     Then it should return a reference with a single manifestion whith uri_s as page field
-    #     and the fileMain_s as download_url field
-    #     and the files after the first one from files_s as additional_files
-    #
-    #     :param hal_api_docs_for_researcher_with_uris:
-    #     :return:
-    #     """
-    #     converter_under_tests = HalReferencesConverter()
-    #     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][2]
-    #     result = JsonHarvesterRawResult(
-    #         source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
-    #     )
-    #     reference = converter_under_tests.build(
-    #         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
-    #     )
-    #     await converter_under_tests.convert(raw_data=result, new_ref=reference)
-    #     assert len(reference.manifestations) == 1
-    #     assert reference.manifestations[0].page == doc["uri_s"]
-    #     assert reference.manifestations[0].download_url == doc["fileMain_s"]
-    #     assert len(reference.manifestations[0].additional_files) == 1
-    #     assert reference.manifestations[0].additional_files[0] == doc["files_s"][1]
     def _add_hal_manifestation(self, raw_data, new_ref):
-        # add a manifestation to the reference
-        # take uri_s as page or raise an error if not present
-        # take fileMain_s as download_url or linkExtUrl_s if not present
-        # or None if neither is present
-        # if fileMain_s is present, take all files_s as additional_files but ignore the first one
-
         uri = raw_data.get("uri_s", None)
         if uri is None:
             raise UnexpectedFormatException(
@@ -600,9 +407,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
         if download_url is None:
             download_url = raw_data.get("linkExtUrl_s", None)
         additional_files = raw_data.get("files_s", [])
-        if download_url is None and len(additional_files) > 0:
-            download_url = additional_files.pop(0)
-        # a ValueError could be raised if one of the URI is not a valid URI
+        # keep only files after the first one
+        additional_files = additional_files[1:]
         try:
             new_ref.manifestations.append(
                 ReferenceManifestation(
