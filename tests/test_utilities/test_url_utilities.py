@@ -1,6 +1,9 @@
+import pytest
+
 from app.utilities.url_utilities import is_web_url
 
 
+@pytest.mark.current
 def test_is_web_url():
     """
     Test that is_web_url returns True for valid URLs and False for invalid URLs
@@ -51,4 +54,7 @@ def test_is_web_url():
     assert is_web_url("https://hal.science/hal-01987430/document")
     assert is_web_url(
         "https://hal.science/hal-01987430/file/MonginJP-CM2019_postprint.pdf"
+    )
+    assert is_web_url(
+        "https://lirias.kuleuven.be/bitstream/123456789/625218/2/Medeghini%20Crut%20Gandolfi%20NanoLetters%202018.pdf"
     )

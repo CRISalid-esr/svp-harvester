@@ -11,6 +11,6 @@ def is_web_url(url: str) -> bool:
     url_regex = re.compile(
         r"^(https?://)?"  # http:// or https://
         r"(([A-Za-z0-9-]+\.)+[A-Za-z]{2,7})"  # domain
-        r"(/[A-Za-z0-9-._~:/?#[\]@!$&\'()*+,;=]*)?$"  # path and query
+        r"(/[A-Za-z0-9-._~:/?#[\]%@!$&\'()*+,;=]*)?$"  # path and query
     )
     return re.match(url_regex, url) is not None
