@@ -121,6 +121,7 @@ async def test_convert_with_date_exception(fixture, expected_output, caplog, req
         assert "Hal reference converter cannot create" in caplog.text
         assert expected_output in caplog.text
 
+
 async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: dict):
     """
     Given a list of docs where the first is a publication without files
@@ -144,7 +145,6 @@ async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: 
     assert reference.manifestations[0].page == doc["uri_s"]
 
 
-@pytest.mark.current
 async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict):
     """
     Given a list of docs where the second is a publication with a sigle file in fileMain_s
