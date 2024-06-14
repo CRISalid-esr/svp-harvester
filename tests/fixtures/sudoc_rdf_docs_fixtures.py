@@ -28,7 +28,7 @@ def fixture_sudoc_rdf_result_for_doc(sudoc_rdf_graph_for_doc) -> RdfResult:
 
 
 @pytest.fixture(name="sudoc_rdf_result_for_thesis")
-def fixture_sudoc_rdf_result_for_doc(sudoc_rdf_graph_for_thesis) -> RdfResult:
+def fixture_sudoc_rdf_result_for_thesis(sudoc_rdf_graph_for_thesis) -> RdfResult:
     """Rdf result from sudoc wrapped in a RdfHarvesterRawResult"""
     return RdfResult(
         payload=sudoc_rdf_graph_for_thesis,
