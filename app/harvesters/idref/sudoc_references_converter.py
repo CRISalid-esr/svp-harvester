@@ -1,12 +1,16 @@
+import re
+
 import rdflib
 from loguru import logger
-from rdflib import DC, DCTERMS, Graph, Literal, Namespace
+from rdflib import DC, DCTERMS, Graph, Literal, Namespace, URIRef
 from semver import Version
 
 from app.db.models.book import Book
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
+from app.db.models.reference_manifestation import ReferenceManifestation
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -39,6 +43,8 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     RDF_BIBO = Namespace("http://purl.org/ontology/bibo/")
     FABIO_NAMESPACE = Namespace("http://purl.org/spar/fabio/")
     RDAU = Namespace("http://rdaregistry.info/Elements/u/")
+    RDAM = Namespace("http://rdaregistry.info/Elements/m/")
+    RDAC = Namespace("http://rdaregistry.info/Elements/c/")
 
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
@@ -51,6 +57,8 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             )
 
         self._add_created_date(raw_data.payload, raw_data.source_identifier, new_ref)
+
+        self._add_manifestations(raw_data.payload, raw_data.source_identifier, new_ref)
 
         await self._get_subjects(raw_data.payload, raw_data.source_identifier, new_ref)
 
@@ -224,6 +232,43 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             source=self._get_source(),
         ):
             yield contribution
+
+    def _add_manifestations(self, pub_graph, uri, new_ref):
+        for raw_uri in pub_graph.subjects(predicate=None, object=URIRef(uri)):
+            new_ref.manifestations.append(ReferenceManifestation(page=str(raw_uri)))
+        nnt_found = False
+        for theses_fr_uri in pub_graph.objects(
+            rdflib.term.URIRef(uri), self.RDF_BIBO.uri
+        ):
+            # the uri finishing by /document redirects to hal.science
+            if not theses_fr_uri.value.endswith("/document"):
+                try:
+                    new_ref.manifestations.append(
+                        ReferenceManifestation(page=theses_fr_uri.value)
+                    )
+                except ValueError as e:
+                    logger.error(
+                        "Unable to register theses.fr URI  for SUDOC "
+                        f"URI {uri} : {theses_fr_uri.value} {e}"
+                    )
+            if not nnt_found:
+                nnt = re.search(
+                    r"^https?://www.theses.fr/([^/]+)/.+", theses_fr_uri.value
+                )
+                if nnt:
+                    new_ref.identifiers.append(
+                        ReferenceIdentifier(value=nnt.groups()[0], type="nnt")
+                    )
+                    nnt_found = True
+
+        # take rdam:P30135 as another manifestation
+        for uri1 in pub_graph.objects(rdflib.term.URIRef(uri), self.RDAM.P30135):
+            try:
+                new_ref.manifestations.append(ReferenceManifestation(page=str(uri1)))
+            except ValueError as e:
+                logger.error(
+                    f"Unable to register alternative URI: {uri1} for SUDOC URI {uri} : {e}"
+                )
 
     def _get_source(self):
         return "sudoc"

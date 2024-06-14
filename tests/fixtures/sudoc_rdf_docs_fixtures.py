@@ -27,6 +27,16 @@ def fixture_sudoc_rdf_result_for_doc(sudoc_rdf_graph_for_doc) -> RdfResult:
     )
 
 
+@pytest.fixture(name="sudoc_rdf_result_for_thesis")
+def fixture_sudoc_rdf_result_for_thesis(sudoc_rdf_graph_for_thesis) -> RdfResult:
+    """Rdf result from sudoc wrapped in a RdfHarvesterRawResult"""
+    return RdfResult(
+        payload=sudoc_rdf_graph_for_thesis,
+        source_identifier=URIRef("http://www.sudoc.fr/253147565/id"),
+        formatter_name=IdrefHarvester.Formatters.SUDOC_RDF.value,
+    )
+
+
 @pytest.fixture(name="sudoc_rdf_result_for_doc_with_invalid_created")
 def fixture_sudoc_rdf_result_for_doc_with_invalid_created(
     sudoc_rdf_graph_for_doc_with_invalid_created,
@@ -91,6 +101,12 @@ def fixture_sudoc_rdf_graph_for_hash_1(_base_path) -> Graph:
 def fixture_sudoc_rdf_graph_for_hash_2(_base_path) -> Graph:
     """Rdf graph from sudoc rdf file"""
     return _sudoc_rdf_graph_from_file(_base_path, "document_for_hash_2")
+
+
+@pytest.fixture(name="sudoc_rdf_graph_for_thesis")
+def fixture_sudoc_rdf_graph_for_thesis(_base_path) -> Graph:
+    """Rdf graph from sudoc rdf file"""
+    return _sudoc_rdf_graph_from_file(_base_path, "thesis")
 
 
 @pytest.fixture(name="sudoc_rdf_xml_with_empty_date_fields")

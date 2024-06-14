@@ -159,3 +159,42 @@ async def test_convert_with_invalid_date_format(
     assert test_reference.created is None
     assert "Sudoc reference converter cannot create" in caplog.text
     assert "Could not parse date" in caplog.text
+
+
+async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
+    """
+    GIVEN a SudocReferencesConverter instance and a Sudoc RDF result for a thesis
+    WHEN the convert method is called
+    THEN it should return a Reference instance with theses.fr URI and NNT
+
+    :param sudoc_rdf_result_for_thesis:
+    :return:
+    """
+    converter_under_tests = SudocReferencesConverter()
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_thesis,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
+    await converter_under_tests.convert(
+        raw_data=sudoc_rdf_result_for_thesis, new_ref=test_reference
+    )
+    assert test_reference.source_identifier == str(
+        sudoc_rdf_result_for_thesis.source_identifier
+    )
+    assert any(
+        manifestation.page == "http://www.sudoc.fr/253147565"
+        for manifestation in test_reference.manifestations
+    )
+    assert any(
+        manifestation.page == "http://www.theses.fr/2020UPAST005/abes"
+        for manifestation in test_reference.manifestations
+    )
+    assert any(
+        manifestation.page == "https://pastel.hal.science/tel-03129996"
+        for manifestation in test_reference.manifestations
+    )
+    # there should be an identifier of type nnt with value 2020UPAST005
+    assert any(
+        identifier.type == "nnt" and identifier.value == "2020UPAST005"
+        for identifier in test_reference.identifiers
+    )
