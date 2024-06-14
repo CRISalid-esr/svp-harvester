@@ -104,7 +104,7 @@ def fixture_sudoc_rdf_graph_for_hash_2(_base_path) -> Graph:
 
 
 @pytest.fixture(name="sudoc_rdf_graph_for_thesis")
-def fixture_sudoc_rdf_graph_for_hash_2(_base_path) -> Graph:
+def fixture_sudoc_rdf_graph_for_thesis(_base_path) -> Graph:
     """Rdf graph from sudoc rdf file"""
     return _sudoc_rdf_graph_from_file(_base_path, "thesis")
 
