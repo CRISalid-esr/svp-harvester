@@ -167,7 +167,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 source=self._harvester(),
                 journal=journal,
                 volume=volume,
-                number=[number],
+                number=[] if number is None else [number],
                 source_identifier=source_identifier,
             )
         )

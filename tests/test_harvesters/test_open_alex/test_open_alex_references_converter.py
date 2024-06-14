@@ -218,3 +218,30 @@ async def test_convert_with_date_exception(
     assert getattr(test_reference, reference_field) is None
     assert "OpenAlex reference converter cannot create" in caplog.text
     assert expected_log in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_convert_without_issue_number(open_alex_api_work: dict):
+    """
+    Given a reference with issue number set to None,
+    When the converter is called,
+    Then the converter should return a reference with issue number set to []
+
+    :param open_alex_api_work:
+    :return:
+    """
+    converter_under_tests = OpenAlexReferencesConverter()
+
+    # set None as biblio.issue value
+    open_alex_api_work["biblio"]["issue"] = None
+
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_api_work["id"],
+        payload=open_alex_api_work,
+        formatter_name="OPEN_ALEX",
+    )
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+    assert test_reference.issue.number == []
