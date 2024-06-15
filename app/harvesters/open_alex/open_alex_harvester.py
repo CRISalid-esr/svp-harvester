@@ -22,8 +22,8 @@ class OpenAlexHarvester(AbstractHarvester):
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}
 
     supported_identifier_types = ["orcid"]
-
-    VERSION: Version = VersionInfo.parse("1.3.0")
+    # 1.3.1 : fix [None] issue number issue https://github.com/CRISalid-esr/svp-harvester/issues/623
+    VERSION: Version = VersionInfo.parse("1.3.1")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """
