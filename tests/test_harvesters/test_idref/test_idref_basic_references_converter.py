@@ -7,6 +7,7 @@ from app.harvesters.idref.idref_basic_references_converter import (
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
 
 
+@pytest.mark.current
 @pytest.mark.asyncio
 async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     """
@@ -53,3 +54,7 @@ async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     assert test_reference.identifiers[1].value in equivalent_identifiers
     assert test_reference.identifiers[2].value in equivalent_identifiers
     assert test_reference.identifiers[1].value != test_reference.identifiers[2].value
+    assert len(test_reference.manifestations) == 3
+    assert test_reference.manifestations[0].page == basic_idref_source_identifier
+    assert test_reference.manifestations[1].page in equivalent_identifiers
+    assert test_reference.manifestations[2].page in equivalent_identifiers
