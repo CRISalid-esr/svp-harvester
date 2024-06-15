@@ -1,11 +1,9 @@
-from loguru import logger
 from rdflib import FOAF, URIRef
 from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
-from app.db.models.reference_manifestation import ReferenceManifestation
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
@@ -62,23 +60,12 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
             source="idref",
         ):
             new_ref.contributions.append(contribution)
+
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
-        try:
-            new_ref.manifestations.append(ReferenceManifestation(page=uri))
-        except ValueError as error:
-            logger.error(
-                f"Error while creating manifestation from Idref URI {uri} : {error}"
-            )
         for equivalent in dict_payload.get("equivalent", []):
             new_ref.identifiers.append(
                 ReferenceIdentifier(value=equivalent, type="uri")
             )
-            try:
-                new_ref.manifestations.append(ReferenceManifestation(page=equivalent))
-            except ValueError as error:
-                logger.error(
-                    f"Error while creating manifestation from Idref URI {equivalent} : {error}"
-                )
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
