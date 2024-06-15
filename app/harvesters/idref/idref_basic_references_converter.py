@@ -62,9 +62,6 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
             source="idref",
         ):
             new_ref.contributions.append(contribution)
-        idref = dict_payload.get("identifier", None)
-        if idref:
-            new_ref.identifiers.append(ReferenceIdentifier(value=idref, type="idref"))
         new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
         try:
             new_ref.manifestations.append(ReferenceManifestation(page=uri))
