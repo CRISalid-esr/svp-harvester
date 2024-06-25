@@ -200,7 +200,6 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     )
 
 
-@pytest.mark.current
 async def test_nnt_fount_in_manifestation_uri(
     sudoc_rdf_result_for_thesis_with_nnt_in_manifestation_uri,
 ):
