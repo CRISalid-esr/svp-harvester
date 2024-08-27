@@ -1,15 +1,15 @@
 Harvesters : ScanR
 =====================================
 
-Data source
------------
-
-SoVisu+ ScanR Harvester fetches data from the latest ScanR API.
-
 .. note:: The ScanR Harvester requires identifiers and credentials from the ScanR API, currently under development and not yet released to the public.
     Obtain these by contacting the ScanR team.
     They should be integrated into the harvester's environment variables.
     The harvester will be updated once the new API is released to the public.
+
+Data source
+-----------
+
+SoVisu+ ScanR Harvester fetches data from the latest ScanR API.
 
 Supported identifiers
 ---------------------
