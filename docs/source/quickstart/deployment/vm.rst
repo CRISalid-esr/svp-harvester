@@ -47,7 +47,6 @@ In the PostgreSQL shell:
    CREATE USER svph_user WITH PASSWORD 'svph_word';
    GRANT ALL PRIVILEGES ON DATABASE svph TO svph_user;
    ALTER DATABASE svph OWNER TO svph_user;
-   \q
 
 Create a ``.env`` file from ``.env.example``:
 

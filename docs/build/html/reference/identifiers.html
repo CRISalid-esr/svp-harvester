@@ -50,7 +50,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/development.html">Quick start : development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="entities.html">Reference : entity resolution</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference : identifiers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference : identifiers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#people-identifiers">People identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structures-identifiers">Structures identifiers</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../harvesters/idref.html">Harvesters : Idref</a></li>
@@ -86,6 +90,38 @@
              
   <section id="reference-identifiers">
 <h1>Reference : identifiers<a class="headerlink" href="#reference-identifiers" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>In this application, an entity (person or structure) is considered as a <strong>list of identifiers</strong>.
+This list of identifiers is provided by the user, and it is important to note,
+that the application is not able to align the identifiers of the entity with the ones provided by the user.
+The application is also unable to complete the missing identifiers.</p>
+</div>
+<section id="people-identifiers">
+<h2>People identifiers<a class="headerlink" href="#people-identifiers" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>list of supported identifiers
+an entity is considered as a list of identifiers
+The user is responsible for providing the list of identifiers
+The application support those identifiers:</p>
+</div>
+<p>The following identifiers are currently supported for people entities:</p>
+<ul class="simple">
+<li><p><strong>idHal_s</strong>: Works with the <strong>Hal</strong> and <strong>ScanR</strong> harvesters. This identifier is a string composed of the first and last name.</p></li>
+<li><p><strong>idHal_i</strong>: Works only with the <strong>Hal</strong> harvester. This identifier is an integer, and each one is unique.</p></li>
+<li><p><strong>ORCID</strong>: Works with the <strong>Hal</strong>, <strong>IdRef</strong>, <strong>ScanR</strong>, and <strong>OpenAlex</strong> harvesters. The ORCID is a 16-digit identifier formatted as <cite>0000-0000-0000-000X</cite>, where the last digit is a checksum (which can be a number or the letter ‘X’).</p></li>
+<li><p><strong>IdRef</strong>: Works with the <strong>IdRef</strong> and <strong>ScanR</strong> harvesters. This identifier is a unique, 9-digit number.</p></li>
+<li><p><strong>Scopus EID</strong>: Works only with the <strong>Scopus</strong> harvester. This identifier is unique to Scopus, and each researcher has their own Scopus ID.</p></li>
+</ul>
+</section>
+<section id="structures-identifiers">
+<h2>Structures identifiers<a class="headerlink" href="#structures-identifiers" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At present, the application does not support handling <strong>Structure entities</strong>. However, this feature will be added in a future update. This section will be updated as soon as the feature is added.</p>
+</div>
+</section>
 </section>
 
 
