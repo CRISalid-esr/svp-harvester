@@ -1,7 +1,12 @@
 Harvesters : Scopus
 =====================================
 
-.. note:: The Scopus Harvester requires a valid Scopus API key and institution token to work.
+.. note:: The Scopus Harvester requires the following:
+
+    - A valid Scopus API key
+    - A valid Scopus institution token
+
+    Add these to the environment variables SCOPUS_API_KEY and SCOPUS_INST_TOKEN
 
 Data source
 -----------

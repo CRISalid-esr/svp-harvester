@@ -1,9 +1,13 @@
 Harvesters : ScanR
 =====================================
 
-.. note:: The ScanR Harvester requires identifiers and credentials from the ScanR API, currently under development and not yet released to the public.
-    Obtain these by contacting the ScanR team.
-    They should be integrated into the harvester's environment variables.
+.. note:: The ScanR Harvester requires the following identifiers and credentials from the ScanR API, currently under development and not yet released to the public.
+
+    - Obtain SCANR_ES_HOST
+    - Obtain SCANR_ES_USER
+    - Obtain SCANR_ES_PASSWORD
+
+    Then add them to the environment variables of the project.
     The harvester will be updated once the new API is released to the public.
 
 Data source

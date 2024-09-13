@@ -51,8 +51,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/entities.html">Reference : entity resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html">Reference : identifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id1">People Identifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id2">Structures Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hal.html">Harvesters : Hal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="idref.html">Harvesters : Idref</a></li>
@@ -95,9 +93,13 @@
 <h1>Harvesters : ScanR<a class="headerlink" href="#harvesters-scanr" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The ScanR Harvester requires identifiers and credentials from the ScanR API, currently under development and not yet released to the public.
-Obtain these by contacting the ScanR team.
-They should be integrated into the harvester’s environment variables.
+<p>The ScanR Harvester requires the following identifiers and credentials from the ScanR API, currently under development and not yet released to the public.</p>
+<ul class="simple">
+<li><p>Obtain SCANR_ES_HOST</p></li>
+<li><p>Obtain SCANR_ES_USER</p></li>
+<li><p>Obtain SCANR_ES_PASSWORD</p></li>
+</ul>
+<p>Then add them to the environment variables of the project.
 The harvester will be updated once the new API is released to the public.</p>
 </div>
 <section id="data-source">
