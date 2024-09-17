@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harvesters : Hal &mdash; SoVisu+ Harvester V0.1 documentation</title>
+  <title>Job: Concept Dereferencing &mdash; SoVisu+ Harvester V0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" type="text/css" />
@@ -20,8 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Harvesters : Idref" href="idref.html" />
-    <link rel="prev" title="Harvesters: Overview" href="overview.html" /> 
+    <link rel="prev" title="Harvesters : Scopus" href="../harvesters/scopus.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,18 +52,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html">Reference : identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id1">People Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id2">Structures Identifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Harvesters: Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Harvesters : Hal</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#data-source">Data source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-identifiers">Supported identifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-conversion">Data conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/overview.html">Harvesters: Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/hal.html">Harvesters : Hal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/idref.html">Harvesters : Idref</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/scanr.html">Harvesters : ScanR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/openalex.html">Harvesters : OpenAlex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../harvesters/scopus.html">Harvesters : Scopus</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Job: Concept Dereferencing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-job">Run the job</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="idref.html">Harvesters : Idref</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scanr.html">Harvesters : ScanR</a></li>
-<li class="toctree-l1"><a class="reference internal" href="openalex.html">Harvesters : OpenAlex</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scopus.html">Harvesters : Scopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../jobs/concept_dereferencing.html">Job: Concept Dereferencing</a></li>
 </ul>
 
         </div>
@@ -81,9 +79,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Harvesters : Hal</li>
+      <li class="breadcrumb-item active">Job: Concept Dereferencing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/harvesters/hal.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/jobs/concept_dereferencing.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -91,29 +89,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="harvesters-hal">
-<h1>Harvesters : Hal<a class="headerlink" href="#harvesters-hal" title="Link to this heading"></a></h1>
-<section id="data-source">
-<h2>Data source<a class="headerlink" href="#data-source" title="Link to this heading"></a></h2>
-<p>SoVisu+ Hal Harvester fetches data from the <a class="reference external" href="https://api.archives-ouvertes.fr/docs/search">Hal API</a>.</p>
+  <section id="job-concept-dereferencing">
+<h1>Job: Concept Dereferencing<a class="headerlink" href="#job-concept-dereferencing" title="Link to this heading"></a></h1>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<p>This background job is responsible for dereferencing concepts in the database, if they failed to be dereferenced during the harvesting process.
+It will update the concepts in the database with the information from the external source.</p>
 </section>
-<section id="supported-identifiers">
-<h2>Supported identifiers<a class="headerlink" href="#supported-identifiers" title="Link to this heading"></a></h2>
-<p>The following identifiers are handled by the harvester:</p>
+<section id="run-the-job">
+<h2>Run the job<a class="headerlink" href="#run-the-job" title="Link to this heading"></a></h2>
+<p>It can be run with three different processes:</p>
 <ul class="simple">
-<li><p>idHal_i</p></li>
-<li><p>idHal_s</p></li>
-<li><p>ORCID</p></li>
+<li><p>Using a script that runs the job once. This script is located at <cite>scripts/concept_dereferencing.py</cite>. To run it, execute the following command:</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For SoVisu+ Hal Harvester, Hal identifiers have priority over ORCID. In case where both idHal_i and idHal_s are provided, idHal_i is used. SoVisu+ Hal Harvester will not check the alignment between idHal_i and idHal_s, as the client is supposed to provide consistent data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>execute_job.py<span class="w"> </span>--job_name<span class="w"> </span>concept_dereferencing
+</pre></div>
 </div>
-</section>
-<section id="data-conversion">
-<h2>Data conversion<a class="headerlink" href="#data-conversion" title="Link to this heading"></a></h2>
-<p>Hal document types are mapped to RDF classes following the table provided in <a class="reference external" href="https://www.esup-portail.org/wiki/pages/viewpage.action?pageId=1352335371#GECMod%C3%A9lisation-MappingHAL-SoVisu+">CRISalid data model documentation</a>.</p>
-<p>Hal authors qualities are mapped to LoC roles following the table provided in <a class="reference external" href="https://www.esup-portail.org/wiki/pages/viewpage.action?pageId=1352335371#GECMod%C3%A9lisation-Typologiedesr%C3%B4les">CRISalid data model documentation</a>.</p>
+<ul class="simple">
+<li><p>Using a POST request to the API endpoint <cite>/api/v1/jobs/concept_dereferencing</cite></p></li>
+<li><p>Setting up a cron job to run the script periodically. It can be configured in the file <cite>jobs.yml</cite>.</p></li>
+</ul>
 </section>
 </section>
 
@@ -121,8 +116,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="overview.html" class="btn btn-neutral float-left" title="Harvesters: Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="idref.html" class="btn btn-neutral float-right" title="Harvesters : Idref" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../harvesters/scopus.html" class="btn btn-neutral float-left" title="Harvesters : Scopus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

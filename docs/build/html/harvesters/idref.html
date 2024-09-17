@@ -51,10 +51,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/model.html">Reference : model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/entities.html">Reference : entity resolution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html">Reference : identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id1">People Identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/identifiers.html#id2">Structures Identifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Harvesters: Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hal.html">Harvesters : Hal</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Harvesters : Idref</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Harvesters : Idref</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-source">Data source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-identifiers">Supported identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-conversion">Data conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sub-harvesters">Sub-Harvesters</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="scanr.html">Harvesters : ScanR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="openalex.html">Harvesters : OpenAlex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scopus.html">Harvesters : Scopus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jobs/concept_dereferencing.html">Job: Concept Dereferencing</a></li>
 </ul>
 
         </div>
@@ -83,6 +94,33 @@
              
   <section id="harvesters-idref">
 <h1>Harvesters : Idref<a class="headerlink" href="#harvesters-idref" title="Link to this heading"></a></h1>
+<section id="data-source">
+<h2>Data source<a class="headerlink" href="#data-source" title="Link to this heading"></a></h2>
+<p>SoVisu+ idref Harvester fetches data from the <a class="reference external" href="https://data.idref.fr/sparql">Idref SPARQL Endpoint</a>.</p>
+</section>
+<section id="supported-identifiers">
+<h2>Supported identifiers<a class="headerlink" href="#supported-identifiers" title="Link to this heading"></a></h2>
+<p>The following identifiers are handled by the harvester:</p>
+<ul class="simple">
+<li><p>idref</p></li>
+<li><p>ORCID</p></li>
+</ul>
+</section>
+<section id="data-conversion">
+<h2>Data conversion<a class="headerlink" href="#data-conversion" title="Link to this heading"></a></h2>
+<p>Idref document types are mapped to RDF classes, and authors qualities are mapped to LoC roles following the tables provided in <a class="reference external" href="https://www.esup-portail.org/wiki/pages/viewpage.action?pageId=1452441617">CRISalid data model documentation</a>.</p>
+</section>
+<section id="sub-harvesters">
+<h2>Sub-Harvesters<a class="headerlink" href="#sub-harvesters" title="Link to this heading"></a></h2>
+<p>Idref Harvester provides multiple sub-harvesters to gather additional data in case where the data provided by the main harvester is not enough.</p>
+<p>The currently available sub-harvesters are:</p>
+<ul class="simple">
+<li><p>OpenEdition Harvester, who gather data from the <a class="reference external" href="http://oai.openedition.org/?verb=ListRecords&amp;metadataPrefix=oai_dc">OpenEdition API</a></p></li>
+<li><p>Persee Harvester, who fetches data from the Persee RDF endpoint</p></li>
+<li><p>SciencePlus Harvester who fetches data from the SciencePlus RDF endpoint</p></li>
+<li><p>SUDOC Harvester who fetches data from the SUDOC RDF endpoint</p></li>
+</ul>
+</section>
 </section>
 
 
