@@ -6,6 +6,10 @@ from app.services.identifiers.rules.hal_id_from_hal_url import HalIdFromHalUrlRu
 
 
 class IdentifierInferenceService:
+    """
+    Service to infer missing identifiers for a reference
+    """
+
     class Rule(Enum):
         HAL_ID_FROM_HAL_URL = HalIdFromHalUrlRule
 

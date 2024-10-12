@@ -13,4 +13,3 @@ class IdentifierInferenceRule(ABC):
         """
         Infer identifiers for a reference
         """
-        pass
