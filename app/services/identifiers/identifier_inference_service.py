@@ -11,6 +11,10 @@ class IdentifierInferenceService:
     """
 
     class Rule(Enum):
+        """
+        Enum of available rules with associated classes
+        """
+
         HAL_ID_FROM_HAL_URL = HalIdFromHalUrlRule
 
     @classmethod
