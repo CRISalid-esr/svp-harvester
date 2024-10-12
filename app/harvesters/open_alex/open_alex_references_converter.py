@@ -24,6 +24,9 @@ from app.harvesters.open_alex.open_alex_document_type_converter import (
 )
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.identifiers.identifier_inference_service import (
+    IdentifierInferenceService,
+)
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.utilities.date_utilities import check_valid_iso8601_date
@@ -84,6 +87,10 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         issue = json_payload.get("publication_date")
         if issue:
             self._add_issued_date(issue, json_payload, new_ref)
+        IdentifierInferenceService().infer_identifiers(
+            reference=new_ref,
+            rules=[IdentifierInferenceService.Rule.HAL_ID_FROM_HAL_URL],
+        )
 
     def _add_issued_date(self, issue, json_payload, new_ref):
         try:

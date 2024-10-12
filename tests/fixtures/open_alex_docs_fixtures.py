@@ -24,6 +24,18 @@ def fixture_open_alex_work_with_various_locations(_base_path) -> dict:
         _base_path, "open_alex_work_with_various_locations"
     )
 
+@pytest.fixture(name="open_alex_work_with_hal_locations")
+def fixture_open_alex_work_with_hal_locations(_base_path) -> dict:
+    """
+    Generate a OpenAlex API response for work  with location from hal
+    to check if Hal identifiers are inferred from HAL URLs
+    :param _base_path: test data directory base
+    :return: OpenAlex API response for a publication in JSON format
+    """
+    return _open_alex_api_json_data_from_file(
+        _base_path, "open_alex_work_with_hal_locations"
+    )
+
 
 @pytest.fixture(name="open_alex_api_work_to_hash")
 def fixture_open_alex_api_to_hash(_base_path) -> dict:
