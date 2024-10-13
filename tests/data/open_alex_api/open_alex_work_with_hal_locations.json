@@ -1,0 +1,589 @@
+{
+  "id": "https://openalex.org/W1592538674",
+  "doi": null,
+  "title": "50 years of Archaeology in Southeast Asia: Essays in honour of Ian Glover.",
+  "display_name": "50 years of Archaeology in Southeast Asia: Essays in honour of Ian Glover.",
+  "publication_year": 2010,
+  "publication_date": "2010-01-01",
+  "ids": {
+    "openalex": "https://openalex.org/W1592538674",
+    "mag": "1592538674"
+  },
+  "language": "en",
+  "primary_location": {
+    "is_oa": false,
+    "landing_page_url": "https://hal.parisnanterre.fr/hal-01655811",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402512",
+      "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": true,
+      "is_in_doaj": false,
+      "is_core": false,
+      "host_organization": "https://openalex.org/I1294671590",
+      "host_organization_name": "Centre National de la Recherche Scientifique",
+      "host_organization_lineage": [
+        "https://openalex.org/I1294671590"
+      ],
+      "host_organization_lineage_names": [
+        "Centre National de la Recherche Scientifique"
+      ],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": null,
+    "is_accepted": false,
+    "is_published": false
+  },
+  "type": "preprint",
+  "type_crossref": "book",
+  "indexed_in": [],
+  "open_access": {
+    "is_oa": false,
+    "oa_status": "closed",
+    "oa_url": null,
+    "any_repository_has_fulltext": false
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5027899818",
+        "display_name": "B\u00e9r\u00e9nice Bellina",
+        "orcid": "https://orcid.org/0000-0001-8790-1394"
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210124102",
+          "display_name": "Mondes Iranien et Indien",
+          "ror": "https://ror.org/02n9cps64",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I159885104",
+            "https://openalex.org/I162346809",
+            "https://openalex.org/I182627622",
+            "https://openalex.org/I4210124102",
+            "https://openalex.org/I4210150854"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "B\u00e9r\u00e9nice Bellina",
+      "raw_affiliation_strings": [
+        "Mondes Iranien et Indien - UMR 7528"
+      ],
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Mondes Iranien et Indien - UMR 7528",
+          "institution_ids": [
+            "https://openalex.org/I4210124102"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5072020134",
+        "display_name": "Elisabeth A. Bacus",
+        "orcid": null
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Elisabeth A. Bacus",
+      "raw_affiliation_strings": [
+        "College of Arts and Sciences"
+      ],
+      "affiliations": [
+        {
+          "raw_affiliation_string": "College of Arts and Sciences",
+          "institution_ids": []
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5054786344",
+        "display_name": "Thomas Oliver Pryce",
+        "orcid": "https://orcid.org/0000-0002-7290-141X"
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210124102",
+          "display_name": "Mondes Iranien et Indien",
+          "ror": "https://ror.org/02n9cps64",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I159885104",
+            "https://openalex.org/I162346809",
+            "https://openalex.org/I182627622",
+            "https://openalex.org/I4210124102",
+            "https://openalex.org/I4210150854"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Thomas Pryce",
+      "raw_affiliation_strings": [
+        "Mondes Iranien et Indien - UMR 7528"
+      ],
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Mondes Iranien et Indien - UMR 7528",
+          "institution_ids": [
+            "https://openalex.org/I4210124102"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5033382292",
+        "display_name": "Jan Wisseman-Christie",
+        "orcid": null
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210127917",
+          "display_name": "Center for South Asian Studies",
+          "ror": "https://ror.org/03m8ekn10",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I162346809",
+            "https://openalex.org/I4210127917",
+            "https://openalex.org/I4210150854",
+            "https://openalex.org/I90669466"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Jan Wisseman-Christie",
+      "raw_affiliation_strings": [
+        "Centre for South-East Asian Studies"
+      ],
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Centre for South-East Asian Studies",
+          "institution_ids": [
+            "https://openalex.org/I4210127917"
+          ]
+        }
+      ]
+    }
+  ],
+  "institution_assertions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 2,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 146,
+  "citation_normalized_percentile": {
+    "value": 0.998358,
+    "is_in_top_1_percent": true,
+    "is_in_top_10_percent": true
+  },
+  "cited_by_percentile_year": {
+    "min": 98,
+    "max": 99
+  },
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T13002",
+    "display_name": "Politics and Society in Southeast Asia",
+    "score": 0.9536,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3320",
+      "display_name": "Political Science and International Relations"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/33",
+      "display_name": "Social Sciences"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T13002",
+      "display_name": "Politics and Society in Southeast Asia",
+      "score": 0.9536,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3320",
+        "display_name": "Political Science and International Relations"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11256",
+      "display_name": "Democratization and Decentralization in Indonesia",
+      "score": 0.9334,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3312",
+        "display_name": "Sociology and Political Science"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/honour",
+      "display_name": "Honour",
+      "score": 0.95919335
+    }
+  ],
+  "concepts": [],
+  "mesh": [],
+  "locations_count": 4,
+  "locations": [
+    {
+      "is_oa": false,
+      "landing_page_url": "https://hal.parisnanterre.fr/hal-01655811",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "Centre National de la Recherche Scientifique",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "Centre National de la Recherche Scientifique"
+        ],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": false,
+      "landing_page_url": "https://hal.parisnanterre.fr//hal-01655811",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "Centre National de la Recherche Scientifique",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "Centre National de la Recherche Scientifique"
+        ],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": false,
+      "landing_page_url": "https://hal.science/hal-00601752",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "Centre National de la Recherche Scientifique",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "Centre National de la Recherche Scientifique"
+        ],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    },
+    {
+      "is_oa": false,
+      "landing_page_url": "https://hal.archives-ouvertes.fr/hal-00601752",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL (Le Centre pour la Communication Scientifique Directe)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "host_organization": "https://openalex.org/I1294671590",
+        "host_organization_name": "Centre National de la Recherche Scientifique",
+        "host_organization_lineage": [
+          "https://openalex.org/I1294671590"
+        ],
+        "host_organization_lineage_names": [
+          "Centre National de la Recherche Scientifique"
+        ],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false
+    }
+  ],
+  "best_oa_location": null,
+  "sustainable_development_goals": [
+    {
+      "score": 0.75,
+      "id": "https://metadata.un.org/sdg/2",
+      "display_name": "Zero hunger"
+    }
+  ],
+  "grants": [],
+  "datasets": [],
+  "versions": [],
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W48399548",
+    "https://openalex.org/W4230470883",
+    "https://openalex.org/W3045808900",
+    "https://openalex.org/W2529481115",
+    "https://openalex.org/W2384165012",
+    "https://openalex.org/W2339741834",
+    "https://openalex.org/W2329262290",
+    "https://openalex.org/W2324015870",
+    "https://openalex.org/W2298590211",
+    "https://openalex.org/W1955288054"
+  ],
+  "abstract_inverted_index": {
+    "Contents:": [
+      0
+    ],
+    "Part": [
+      1,
+      18,
+      26,
+      33,
+      39
+    ],
+    "I:": [
+      2
+    ],
+    "Overviews": [
+      3
+    ],
+    "of": [
+      4,
+      12
+    ],
+    "Ian": [
+      5
+    ],
+    "C.": [
+      6
+    ],
+    "Glover's": [
+      7
+    ],
+    "Contributions": [
+      8
+    ],
+    "to": [
+      9,
+      23
+    ],
+    "the": [
+      10
+    ],
+    "Archaeology": [
+      11,
+      43
+    ],
+    "Island": [
+      13
+    ],
+    "and": [
+      14,
+      30,
+      37,
+      42
+    ],
+    "Mainland": [
+      15
+    ],
+    "Southeast": [
+      16
+    ],
+    "Asia": [
+      17
+    ],
+    "II:": [
+      19
+    ],
+    "Subsistence": [
+      20
+    ],
+    "Strategies:": [
+      21
+    ],
+    "Hunter-Gatherers": [
+      22
+    ],
+    "Early": [
+      24,
+      31
+    ],
+    "Agriculture": [
+      25
+    ],
+    "III:": [
+      27
+    ],
+    "Social": [
+      28
+    ],
+    "Complexity": [
+      29
+    ],
+    "States": [
+      32
+    ],
+    "IV:": [
+      34
+    ],
+    "Craft": [
+      35
+    ],
+    "Production": [
+      36
+    ],
+    "Exchange": [
+      38
+    ],
+    "V:": [
+      40
+    ],
+    "Colonialism": [
+      41
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W1592538674",
+  "counts_by_year": [
+    {
+      "year": 2023,
+      "cited_by_count": 14
+    },
+    {
+      "year": 2022,
+      "cited_by_count": 5
+    },
+    {
+      "year": 2021,
+      "cited_by_count": 3
+    },
+    {
+      "year": 2020,
+      "cited_by_count": 10
+    },
+    {
+      "year": 2019,
+      "cited_by_count": 64
+    },
+    {
+      "year": 2018,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2017,
+      "cited_by_count": 8
+    },
+    {
+      "year": 2016,
+      "cited_by_count": 12
+    },
+    {
+      "year": 2015,
+      "cited_by_count": 7
+    },
+    {
+      "year": 2014,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2013,
+      "cited_by_count": 7
+    },
+    {
+      "year": 2012,
+      "cited_by_count": 2
+    }
+  ],
+  "updated_date": "2024-10-02T07:28:02.936657",
+  "created_date": "2016-06-24"
+}

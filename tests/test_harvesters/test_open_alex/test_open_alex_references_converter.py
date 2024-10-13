@@ -245,3 +245,36 @@ async def test_convert_without_issue_number(open_alex_api_work: dict):
     )
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
     assert test_reference.issue.number == []
+
+
+@pytest.mark.asyncio
+async def test_convert_work_with_hal_locations(
+    open_alex_work_with_hal_locations: dict,
+):
+    """
+    Given a reference with a location from hal
+    When the converter is called
+    Then the converter should infer Hal identifiers from HAL URLs
+
+    :param open_alex_work_with_various_locations:
+    :return:
+    """
+    converter_under_tests = OpenAlexReferencesConverter()
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_work_with_hal_locations["id"],
+        payload=open_alex_work_with_hal_locations,
+        formatter_name="OPEN_ALEX",
+    )
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+    assert len(test_reference.identifiers) == 2
+    assert any(
+        manifestation.page == "https://hal.parisnanterre.fr/hal-01655811"
+        for manifestation in test_reference.manifestations
+    )
+    assert any(
+        identifier.value == "hal-01655811" and identifier.type == "hal"
+        for identifier in test_reference.identifiers
+    )
