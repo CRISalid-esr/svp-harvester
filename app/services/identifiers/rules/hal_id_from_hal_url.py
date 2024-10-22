@@ -12,6 +12,7 @@ class HalIdFromHalUrlRule(IdentifierInferenceRule):
     """
     Rule to infer HAL identifier from HAL URL
     """
+    # TODO: EXPORT accepted_pattern
     accepted_patterns = ["hal", "halshs", "medihal", "inria", "acs", "sic", "tel", "jpa",
                          "dumas", "ineris", "in2p3", "inserm", "cea", "lirmm", "insu",
                          "pasteur"]
