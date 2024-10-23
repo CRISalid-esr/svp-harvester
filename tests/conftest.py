@@ -3,11 +3,12 @@ from os import environ
 from typing import AsyncGenerator
 from unittest import mock
 
+from pytest import LogCaptureFixture
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from starlette.testclient import TestClient
-
+from loguru import logger
 from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
 from app.services.concepts.abes_concept_solver import AbesConceptSolver
@@ -234,3 +235,25 @@ def fixture_mock_scanr_elastic_client(fake_scanr_elastic_client_perform_search):
     with mock.patch.object(ScanRElasticClient, "perform_search") as mock_solve:
         mock_solve.side_effect = fake_scanr_elastic_client_perform_search
         yield mock_solve
+
+
+@pytest.fixture(autouse=True)
+def caplog(caplog: LogCaptureFixture):  # pylint: disable=redefined-outer-name
+    """
+    Make pytest work with loguru. See:
+    https://loguru.readthedocs.io/en/stable/resources/migration.html#making-things-work-with-pytest-and-caplog
+    :param caplog: pytest fixture
+    :return: loguru compatible caplog
+    """
+    handler_id = logger.add(
+        caplog.handler,
+        format="{message}",
+        level=0,
+        filter=lambda record: record["level"].no >= caplog.handler.level,
+        enqueue=False,
+    )
+    yield caplog
+    try:
+        logger.remove(handler_id)
+    except ValueError:
+        pass
