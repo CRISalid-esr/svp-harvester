@@ -80,8 +80,7 @@ class AMQPInterface:
         :return: None
         """
         self.pika_exchange = await self.pika_channel.declare_exchange(
-            self.settings.amqp_exchange_name,
-            ExchangeType.TOPIC,
+            self.settings.amqp_exchange_name, ExchangeType.TOPIC, durable=True
         )
 
     async def _bind_queue(self) -> None:
