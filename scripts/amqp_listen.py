@@ -20,8 +20,7 @@ async def main() -> None:
         channel = await connection.channel()
 
         publication_exchange = await channel.declare_exchange(
-            "publications",
-            ExchangeType.TOPIC,
+            "publications", ExchangeType.TOPIC, durable=True
         )
 
         await channel.set_qos(prefetch_count=10)

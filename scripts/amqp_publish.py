@@ -22,8 +22,7 @@ async def main() -> None:
         channel = await connection.channel()
 
         publication_exchange = await channel.declare_exchange(
-            "publications",
-            ExchangeType.TOPIC,
+            "publications", ExchangeType.TOPIC, durable=True
         )
 
         # open identifiers_data.csv and read it line by line
