@@ -29,6 +29,8 @@ else:  # pragma: no cover
         pool_size=settings.db_pool_size,
         max_overflow=2000,
         pool_timeout=60,
+        pool_pre_ping=True,
+        pool_recycle=900,
     )
 async_session = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()
