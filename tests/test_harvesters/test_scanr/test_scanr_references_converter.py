@@ -82,7 +82,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_abstracts == expected_abstracts
         assert test_reference.document_type[0].uri == expected_document_type["uri"]
         assert test_reference.document_type[0].label == expected_document_type["label"]
-        assert any(
+        assert all(
             identifier.value in expected_reference_identifiers
             for identifier in test_reference.identifiers
         )

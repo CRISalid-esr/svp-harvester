@@ -51,9 +51,9 @@ class SvpHarvester(FastAPI):
                 f"JEL Sparql endpoint has been set to {settings.svp_jel_proxy_url}"
             )
         else:
-            logger.warning(
+            logger.info(
                 "JEL Sparql endpoint has not been set, "
-                "JEL concepts URIs wille be resolved against ZBW Skosmos instance"
+                "JEL concepts URIs will be resolved against ZBW Skosmos instance"
             )
 
         # Remove default logger and add custom logger

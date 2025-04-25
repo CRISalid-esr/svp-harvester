@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class ReferenceIdentifier(BaseModel):
@@ -10,3 +10,13 @@ class ReferenceIdentifier(BaseModel):
 
     type: str
     value: str
+
+    @field_validator("value")
+    @classmethod
+    def _normalize_doi(cls, v, info):
+        if info.data.get("type") == "doi":
+            prefixes = ["urn:doi:", "https://doi.org/"]
+            for prefix in prefixes:
+                if v.lower().startswith(prefix):
+                    return v[len(prefix) :]
+        return v
