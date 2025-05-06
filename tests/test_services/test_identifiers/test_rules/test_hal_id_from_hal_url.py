@@ -33,6 +33,7 @@ import pytest
         (None, None),
         ("https://halshs.archives-ouvertes.fr/halshs-02008468", "halshs-02008468"),
         ("https://hal.archives-ouvertes.fr/halshs-02008468", "halshs-02008468"),
+        ("https://halshs.archives-ouvertes.fr/halshs-01275331/", "halshs-01275331"),
     ],
     ids=[
         "test_extract_hal_id",
@@ -44,6 +45,7 @@ import pytest
         "test_extract_hal_id_without_url",
         "test_extract_hal_id_from_halshs_archives_ouvertes",
         "test_extract_hal_id_from_hal_archives_ouvertes",
+        "test_extract_hal_id_from_halshs_archives_ouvertes_with_trailing_slash",
     ],
 )
 def test_hal_id_from_hal_url(url_to_test, expected_value):
