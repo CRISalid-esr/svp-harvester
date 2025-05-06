@@ -52,7 +52,7 @@ async def test_open_edition_convert_for_rfd_result(
         abstract.value.startswith(expected_french_abstract_beginning)
         for abstract in test_reference.abstracts
     )
-    assert any(
+    assert all(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers
     )

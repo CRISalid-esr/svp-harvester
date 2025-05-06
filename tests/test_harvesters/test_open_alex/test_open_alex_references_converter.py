@@ -41,7 +41,7 @@ async def test_convert(open_alex_api_work: dict):
 
     expected_reference_identifier = [
         "https://openalex.org/W2023271753",
-        "https://doi.org/10.1103/physrevb.37.785",
+        "10.1103/physrevb.37.785",
         "https://pubmed.ncbi.nlm.nih.gov/9944570",
     ]
 
@@ -78,7 +78,7 @@ async def test_convert(open_alex_api_work: dict):
             contribution.rank
             == expected_contributors_name_rank[contribution.contributor.name]
         )
-    assert any(
+    assert all(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers
     )
