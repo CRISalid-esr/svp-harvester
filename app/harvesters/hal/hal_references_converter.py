@@ -120,6 +120,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
         self._add_created_date(json_payload, new_ref)
 
+        self._add_collection_codes(json_payload, new_ref)
+
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
 
@@ -165,6 +167,18 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 f"Hal reference converter cannot create issued date from publicationDate_tdate in"
                 f" {json_payload['halId_s']}: {error}"
             )
+
+    def _add_collection_codes(self, json_payload, new_ref):
+        """
+        Add collection codes to the reference
+        :param json_payload: raw data from HAL
+        :param new_ref: Reference object
+        :return: None
+        """
+        collection_codes = json_payload.get("collCode_s", [])
+        if isinstance(collection_codes, str):
+            collection_codes = [collection_codes]
+        new_ref.hal_collection_codes = collection_codes
 
     def _harvester(self) -> str:
         return "HAL"

@@ -58,6 +58,7 @@ class HalApiQueryBuilder:
         "publisherLink_s",
         "linkExtUrl_s",
         "label_xml",
+        "collCode_s",
     ]
 
     DEFAULT_SORT_PARAMETER = "halId_s"

@@ -1,0 +1,41 @@
+{
+  "response": {
+    "numFound": 67,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "_comment": "Short list of collection codes",
+        "docid": "3068",
+        "citationRef_s": "<i>Physical Review E : Statistical, Nonlinear, and Soft Matter Physics</i>, 2003, 67, pp.051910",
+        "citationFull_s": "A. Crut, D. Lasne, Jean-François Allemand, M. Dahan, P. Desbiolles. Transverse fluctuations of single DNA molecules attached to a surface by their extremities. <i>Physical Review E : Statistical, Nonlinear, and Soft Matter Physics</i>, 2003, 67, pp.051910. <a target=\"_blank\" href=\"https://hal.science/hal-00002447\">&#x27E8;hal-00002447&#x27E9;</a>",
+        "en_title_s": [
+          "Transverse fluctuations of single DNA molecules attached to a surface by their extremities"
+        ],
+        "journalId_i": 21487,
+        "journalTitle_s": "Physical Review E : Statistical, Nonlinear, and Soft Matter Physics",
+        "journalPublisher_s": "American Physical Society",
+        "journalIssn_s": "1539-3755",
+        "journalEissn_s": "1550-2376",
+        "halId_s": "hal-00002447",
+        "uri_s": "https://hal.science/hal-00002447",
+        "docType_s": "ART",
+        "page_s": "051910",
+        "volume_s": "67",
+        "publicationDate_s": "2003",
+        "producedDate_tdate": "2003-01-01T00:00:00Z",
+        "publicationDate_tdate": "2003-01-01T00:00:00Z",
+        "collCode_s": [
+          "SHS",
+          "CNRS",
+          "UNIV-PICARDIE",
+          "LASSP",
+          "AO-DROIT",
+          "LARA",
+          "U-PICARDIE",
+          "CURAPP-ESS"
+        ]
+      }
+    ]
+  }
+}

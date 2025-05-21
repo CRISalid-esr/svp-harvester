@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import List
 
 from semver import VersionInfo
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from app.db.models.abstract import Abstract
 from app.db.models.references_subject import references_subjects_table
@@ -142,6 +143,10 @@ class Reference(Base, VersionedRecord):
     # raw_issued preserves original date as string
     raw_issued: Mapped[str] = mapped_column(nullable=True)
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)
+
+    hal_collection_codes: Mapped[List[str]] = mapped_column(
+        ARRAY(String), nullable=False, default=[]
+    )
 
     @validates("harvester_version")
     def _validate_version(self, key, version):

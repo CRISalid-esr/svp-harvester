@@ -25,6 +25,7 @@ async def test_orphan_titles_deletion(async_session: AsyncSession):
         hash="hash",
         version=0,
         titles=[title],
+        hal_collection_codes=[],
     )
     async_session.add(reference)
     await async_session.commit()
@@ -63,6 +64,7 @@ async def test_reference_with_issue_and_journal(async_session: AsyncSession):
         version=0,
         titles=[Title(value="Fake scientific article", language="en")],
         issue=issue,
+        hal_collection_codes=[],
     )
     async_session.add(reference)
     await async_session.commit()
@@ -80,6 +82,7 @@ async def test_reference_with_issue_and_journal(async_session: AsyncSession):
     assert reference.issue.date == "2021"
     assert reference.titles[0].value == "Fake scientific article"
     assert reference.titles[0].language == "en"
+    assert reference.hal_collection_codes == []
     await async_session.delete(reference)
 
 
@@ -134,6 +137,7 @@ async def test_issue_is_deleted_when_journal_is_deleted(async_session: AsyncSess
     )
     reference: Reference = (await async_session.execute(query)).scalar()
     assert reference.issue is None
+    assert reference.hal_collection_codes == []
 
 
 async def test_reference_is_not_deleted_when_issue_is_deleted(
@@ -187,6 +191,7 @@ async def test_reference_is_not_deleted_when_issue_is_deleted(
     reference: Reference = (await async_session.execute(query)).scalar()
     assert reference is not None
     assert reference.issue is None
+    assert reference.hal_collection_codes == []
     # the journal still exists
     query = select(Journal).where(Journal.id == journal_id)
     journal: Journal = (await async_session.execute(query)).scalar()
@@ -223,6 +228,7 @@ async def test_journal_and_issue_not_deleted_when_reference_deleted(
         version=0,
         titles=[Title(value="Fake scientific article", language="en")],
         issue=issue,
+        hal_collection_codes=[],
     )
     async_session.add(reference)
     await async_session.commit()
@@ -255,3 +261,47 @@ async def test_journal_and_issue_not_deleted_when_reference_deleted(
     await async_session.delete(issue)
     await async_session.delete(journal)
     await async_session.commit()
+
+
+async def test_reference_with_collection_codes(async_session: AsyncSession):
+    """
+    GIVEN a reference with a collection code
+    WHEN the reference is created
+    THEN check the reference has the correct attributes
+    """
+    reference = Reference(
+        source_identifier="source_identifier_1234",
+        harvester="harvester",
+        hash="hash",
+        version=0,
+        titles=[Title(value="Fake scientific article", language="en")],
+        hal_collection_codes=[
+            "SHS",
+            "UNIV-PARIS7",
+            "UPMC",
+            "UNIV-LYON1",
+            "UNIV-PSUD",
+            "UNIV-STRASBG1",
+            "INRA",
+            "IFR69",
+            "UNIV-STRASBG",
+            "UNIV-PARIS-SACLAY",
+        ],
+    )
+    async_session.add(reference)
+    await async_session.commit()
+    reference_id = reference.id
+    query = select(Reference).where(Reference.id == reference_id)
+    reference: Reference = (await async_session.execute(query)).scalar()
+    assert reference.hal_collection_codes == [
+        "SHS",
+        "UNIV-PARIS7",
+        "UPMC",
+        "UNIV-LYON1",
+        "UNIV-PSUD",
+        "UNIV-STRASBG1",
+        "INRA",
+        "IFR69",
+        "UNIV-STRASBG",
+        "UNIV-PARIS-SACLAY",
+    ]

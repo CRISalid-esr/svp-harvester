@@ -2,10 +2,7 @@ import pytest
 
 from app.services.identifiers.rules.hal_id_from_hal_url import HalIdFromHalUrlRule
 
-import pytest
 
-
-@pytest.mark.current
 @pytest.mark.parametrize(
     "url_to_test, expected_value",
     [

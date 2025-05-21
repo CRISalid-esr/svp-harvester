@@ -44,4 +44,5 @@ class Reference(BaseModel):
     raw_issued: str | None = None
     issued: datetime | None = None
     created: datetime | None = None
+    hal_collection_codes: List[str] = []
     version: int
