@@ -45,4 +45,5 @@ class Reference(BaseModel):
     issued: datetime | None = None
     created: datetime | None = None
     hal_collection_codes: List[str] = []
+    hal_submit_type: str | None = None
     version: int

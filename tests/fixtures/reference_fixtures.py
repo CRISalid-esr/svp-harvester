@@ -5,7 +5,7 @@ from app.db.models.concept import Concept as DbConcept
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.label import Label
-from app.db.models.reference import Reference as DbReference
+from app.db.models.reference import Reference as DbReference, HalSubmitType
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
 
@@ -26,6 +26,8 @@ async def fixture_reference_db_model() -> DbReference:
         raw_issued="2017",
         issued=isodate.parse_datetime("2017-01-01T00:00:00"),
         created=isodate.parse_datetime("2018-02-02T10:00:00"),
+        hal_collection_codes=["UGFP", "UGA", "UMR5434"],
+        hal_submit_type=HalSubmitType.NOTICE,
     )
     reference.subjects.append(
         DbConcept(

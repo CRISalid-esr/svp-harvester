@@ -1,35 +1,30 @@
 from datetime import datetime
+from enum import Enum
 from typing import List
 
 from semver import VersionInfo
 from sqlalchemy import ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.db.models.abstract import Abstract
-from app.db.models.references_subject import references_subjects_table
 from app.db.models.references_document_type import references_document_type_table
+from app.db.models.references_subject import references_subjects_table
 from app.db.models.versioned_record import VersionedRecord
 from app.db.session import Base
 
+
 # temporary imports
-from app.db.models.contribution import Contribution  # pylint: disable=unused-import
-from app.db.models.contributor import Contributor  # pylint: disable=unused-import
-from app.db.models.issue import Issue  # pylint: disable=unused-import
-from app.db.models.organization import Organization  # pylint: disable=unused-import
-from app.db.models.title import Title  # pylint: disable=unused-import
-from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
-from app.db.models.document_type import DocumentType  # pylint: disable=unused-import
-from app.db.models.reference_identifier import (  # pylint: disable=unused-import
-    ReferenceIdentifier,
-)
-from app.db.models.reference_manifestation import (  # pylint: disable=unused-import
-    ReferenceManifestation,
-)
-from app.db.models.book import Book  # pylint: disable=unused-import
-from app.db.models.contributor_identifier import (  # pylint: disable=unused-import
-    ContributorIdentifier,
-)
+
+
+class HalSubmitType(Enum):
+    """
+    Possible values for the hal_submit_type field
+    """
+
+    NOTICE = "notice"
+    FILE = "file"
+    ANNEX = "annex"
 
 
 class Reference(Base, VersionedRecord):
@@ -147,6 +142,17 @@ class Reference(Base, VersionedRecord):
     hal_collection_codes: Mapped[List[str]] = mapped_column(
         ARRAY(String), nullable=False, default=[]
     )
+
+    hal_submit_type: Mapped[str] = mapped_column(nullable=True)
+
+    @validates("hal_submit_type")
+    def _validate_hal_submit_type(self, key, value):
+        if value is None:
+            return value
+        try:
+            return HalSubmitType(value).value
+        except ValueError as exc:
+            raise ValueError(f"Invalid value: {value} for field {key}") from exc
 
     @validates("harvester_version")
     def _validate_version(self, key, version):

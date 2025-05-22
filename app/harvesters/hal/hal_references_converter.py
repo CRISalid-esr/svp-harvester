@@ -7,7 +7,7 @@ from semver import Version
 from app.db.models.abstract import Abstract
 from app.db.models.book import Book
 from app.db.models.journal import Journal
-from app.db.models.reference import Reference
+from app.db.models.reference import Reference, HalSubmitType
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference_manifestation import ReferenceManifestation
 from app.db.models.subtitle import Subtitle
@@ -120,7 +120,9 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
         self._add_created_date(json_payload, new_ref)
 
-        self._add_collection_codes(json_payload, new_ref)
+        self._add_hal_collection_codes(json_payload, new_ref)
+
+        self._add_hal_submit_type(json_payload, new_ref)
 
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
@@ -168,7 +170,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 f" {json_payload['halId_s']}: {error}"
             )
 
-    def _add_collection_codes(self, json_payload, new_ref):
+    @staticmethod
+    def _add_hal_collection_codes(json_payload, new_ref):
         """
         Add collection codes to the reference
         :param json_payload: raw data from HAL
@@ -179,6 +182,24 @@ class HalReferencesConverter(AbstractReferencesConverter):
         if isinstance(collection_codes, str):
             collection_codes = [collection_codes]
         new_ref.hal_collection_codes = collection_codes
+
+    @staticmethod
+    def _add_hal_submit_type(json_payload: dict, new_ref: Reference) -> None:
+        """
+        Extract and validate the HAL submit type from payload, if present.
+        Sets one of: 'notice', 'file', 'annex'
+        """
+        raw_value = json_payload.get("submitType_s", None)
+        if raw_value is None:
+            return
+
+        try:
+            new_ref.hal_submit_type = HalSubmitType(raw_value)
+        except ValueError:
+            logger.warning(
+                "Invalid halSubmitType_s: "
+                f"'{raw_value}' in HAL payload {json_payload.get('halId_s')}"
+            )
 
     def _harvester(self) -> str:
         return "HAL"

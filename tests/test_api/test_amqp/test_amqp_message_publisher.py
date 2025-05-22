@@ -92,6 +92,8 @@ async def test_publish_created_reference(
                 "raw_issued": "2017",
                 "issued": "2017-01-01 00:00:00",
                 "created": "2018-02-02 10:00:00",
+                "hal_collection_codes": ["UGFP", "UGA", "UMR5434"],
+                "hal_submit_type": "notice",
                 "version": 0,
             },
             "enhanced": False,

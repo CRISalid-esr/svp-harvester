@@ -7,6 +7,7 @@ from sqlalchemy.orm import joinedload
 
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
+from app.db.models.reference import HalSubmitType
 from app.db.models.reference import Reference
 from app.db.models.title import Title
 
@@ -305,3 +306,47 @@ async def test_reference_with_collection_codes(async_session: AsyncSession):
         "UNIV-STRASBG",
         "UNIV-PARIS-SACLAY",
     ]
+
+
+@pytest.mark.asyncio
+async def test_reference_with_valid_hal_submit_type(async_session):
+    """
+    GIVEN a reference with a valid hal_submit_type
+    WHEN the reference is created
+    THEN the value is stored and retrieved correctly
+    """
+    reference = Reference(
+        source_identifier="source_identifier_valid_type",
+        harvester="hal",
+        hash="abc123",
+        version=1,
+        titles=[Title(value="With HAL submit type", language="en")],
+        hal_collection_codes=[],
+        hal_submit_type=HalSubmitType.FILE.value,
+    )
+    async_session.add(reference)
+    await async_session.commit()
+    reference_id = reference.id
+
+    query = select(Reference).where(Reference.id == reference_id)
+    reference: Reference = (await async_session.execute(query)).unique().scalar()
+    assert reference.hal_submit_type == "file"
+
+
+@pytest.mark.asyncio
+async def test_reference_with_invalid_hal_submit_type_raises():
+    """
+    GIVEN a reference with an invalid hal_submit_type
+    WHEN it is added to the session
+    THEN a ValueError is raised at validation time
+    """
+    with pytest.raises(ValueError, match="Invalid hal_submit_type: invalid_type"):
+        Reference(
+            source_identifier="source_identifier_invalid_type",
+            harvester="hal",
+            hash="xyz456",
+            version=1,
+            titles=[Title(value="Invalid HAL submit type", language="en")],
+            hal_collection_codes=[],
+            hal_submit_type="invalid_type",
+        )
