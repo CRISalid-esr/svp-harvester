@@ -37,7 +37,7 @@ def test_custom_metadata_validation_fails_when_no_schema_registered():
     with pytest.raises(ValueError) as exc_info:
         DbReference(
             source_identifier="123",
-            harvester="hal",
+            harvester="not-exists",
             version=0,
             hash="abc",
             harvester_version="1.0.0",
@@ -46,4 +46,4 @@ def test_custom_metadata_validation_fails_when_no_schema_registered():
                 "hal_collection_codes": ["ABC"],
             },
         )
-    assert "No schema registered for hal harvester" in str(exc_info.value)
+    assert "No schema registered for not-exists harvester" in str(exc_info.value)

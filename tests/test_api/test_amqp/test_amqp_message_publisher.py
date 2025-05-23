@@ -49,6 +49,8 @@ async def test_publish_harvesting_status(
 
 @pytest.mark.asyncio
 async def test_publish_created_reference(
+    # just to trigger custom metadata model registration
+    test_app,  # pylint: disable=unused-argument
     async_session: AsyncSession,
     mocked_message: Mock,
     mocked_exchange: Exchange,
@@ -69,7 +71,7 @@ async def test_publish_created_reference(
             "type": "created",
             "reference": {
                 "source_identifier": "123456789",
-                "harvester": "hal",
+                "harvester": "HAL",
                 "harvester_version": "0.0.0",
                 "identifiers": [],
                 "manifestations": [],
