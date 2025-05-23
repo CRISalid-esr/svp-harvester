@@ -4,7 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.models.contribution import Contribution
-from app.db.models.reference import HalSubmitType
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
@@ -68,7 +68,7 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_raw_issued_date = "2016"
     expected_issued_date = datetime.datetime(2016, 1, 1, 0, 0)
     expected_created_date = datetime.datetime(2016, 1, 1, 0, 0)
-    expected_hal_submit_type = HalSubmitType.NOTICE
+    expected_hal_submit_type = HalCustomMetadataSchema.HalSubmitType.NOTICE
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -124,7 +124,10 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
                 identifier.type == type_ and identifier.value == value
                 for identifier in test_reference.identifiers
             )
-        assert test_reference.hal_submit_type == expected_hal_submit_type.value
+        assert (
+            test_reference.custom_metadata["hal_submit_type"]
+            == expected_hal_submit_type.value
+        )
 
 
 async def test_convert_response_with_inconsistent_structured_names(
@@ -278,7 +281,7 @@ async def test_publication_with_collection_codes(
     )
     await converter_under_tests.convert(raw_data=result, new_ref=reference)
     assert len(reference.manifestations) == 1
-    assert reference.hal_collection_codes == [
+    assert reference.custom_metadata["hal_collection_codes"] == [
         "SHS",
         "CNRS",
         "UNIV-PICARDIE",

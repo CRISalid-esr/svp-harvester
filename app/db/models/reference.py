@@ -1,10 +1,9 @@
 from datetime import datetime
-from enum import Enum
-from typing import List
+from typing import List, ClassVar
 
+from pydantic import BaseModel
 from semver import VersionInfo
-from sqlalchemy import ForeignKey, String
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.db.models.abstract import Abstract
@@ -13,18 +12,24 @@ from app.db.models.references_subject import references_subjects_table
 from app.db.models.versioned_record import VersionedRecord
 from app.db.session import Base
 
-
 # temporary imports
-
-
-class HalSubmitType(Enum):
-    """
-    Possible values for the hal_submit_type field
-    """
-
-    NOTICE = "notice"
-    FILE = "file"
-    ANNEX = "annex"
+from app.db.models.contribution import Contribution  # pylint: disable=unused-import
+from app.db.models.contributor import Contributor  # pylint: disable=unused-import
+from app.db.models.issue import Issue  # pylint: disable=unused-import
+from app.db.models.organization import Organization  # pylint: disable=unused-import
+from app.db.models.title import Title  # pylint: disable=unused-import
+from app.db.models.subtitle import Subtitle  # pylint: disable=unused-import
+from app.db.models.document_type import DocumentType  # pylint: disable=unused-import
+from app.db.models.reference_identifier import (  # pylint: disable=unused-import
+    ReferenceIdentifier,
+)
+from app.db.models.reference_manifestation import (  # pylint: disable=unused-import
+    ReferenceManifestation,
+)
+from app.db.models.book import Book  # pylint: disable=unused-import
+from app.db.models.contributor_identifier import (  # pylint: disable=unused-import
+    ContributorIdentifier,
+)
 
 
 class Reference(Base, VersionedRecord):
@@ -139,20 +144,33 @@ class Reference(Base, VersionedRecord):
     raw_issued: Mapped[str] = mapped_column(nullable=True)
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)
 
-    hal_collection_codes: Mapped[List[str]] = mapped_column(
-        ARRAY(String), nullable=False, default=[]
-    )
+    custom_metadata_schema_registry: ClassVar[dict[str, type[BaseModel]]] = {}
+    custom_metadata: Mapped[dict] = mapped_column(JSON, nullable=True)
 
-    hal_submit_type: Mapped[str] = mapped_column(nullable=True)
+    @classmethod
+    def register_custom_metadata_schema(cls, harvester: str, schema: type[BaseModel]):
+        """
+        Register a custom metadata schema for a specific harvester.
+        :param harvester: code of the harvester e.g. 'HAL'
+        :param schema: schema class to validate the custom metadata
+        :return:
+        """
+        cls.custom_metadata_schema_registry[harvester] = schema
 
-    @validates("hal_submit_type")
-    def _validate_hal_submit_type(self, key, value):
-        if value is None:
-            return value
-        try:
-            return HalSubmitType(value).value
-        except ValueError as exc:
-            raise ValueError(f"Invalid value: {value} for field {key}") from exc
+    @validates("custom_metadata")
+    def _validate_custom_metadata(self, key, value):
+        schema_cls = self.custom_metadata_schema_registry.get(self.harvester)
+        if schema_cls:
+            try:
+                schema_cls(**value)
+                return value
+            except ValueError as exc:
+                raise ValueError(
+                    f"Invalid custom_metadata for {self.harvester} harvester: {exc}"
+                ) from exc
+        raise ValueError(
+            f"No schema registered for {self.harvester} harvester,{key}   {value} rejected"
+        )
 
     @validates("harvester_version")
     def _validate_version(self, key, version):
