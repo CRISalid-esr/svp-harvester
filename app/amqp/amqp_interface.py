@@ -1,5 +1,6 @@
 import asyncio
 from asyncio import sleep
+from urllib.parse import quote
 
 import aio_pika
 from aio_pika import ExchangeType
@@ -70,7 +71,9 @@ class AMQPInterface:
 
     async def _attach_message_processing_workers(self):
         self.message_processing_workers = []
-        self.inner_tasks_queue = asyncio.Queue(maxsize=self.settings.inner_task_queue_length)
+        self.inner_tasks_queue = asyncio.Queue(
+            maxsize=self.settings.inner_task_queue_length
+        )
         for worker_id in range(self.settings.inner_task_parallelism_limit):
             processor = await self._message_processor()
             self.message_processing_workers.append(
@@ -113,8 +116,10 @@ class AMQPInterface:
             message_id = message.message_id
             logger.info(f"Accepted new message : {message_id}")
             await self.inner_tasks_queue.put(message)
-            logger.debug(f"Current size of inner tasks queue after adding message:"
-                         f" {self.inner_tasks_queue.qsize()}")
+            logger.debug(
+                f"Current size of inner tasks queue after adding message:"
+                f" {self.inner_tasks_queue.qsize()}"
+            )
 
     async def _declare_exchange(self) -> None:
         """
@@ -139,9 +144,9 @@ class AMQPInterface:
             await self.pika_queue.bind(self.pika_exchange, routing_key=key)
 
     async def _connect(self) -> None:
-        self.pika_connexion: aio_pika.Connection = await aio_pika.connect_robust(
-            f"amqp://{self.settings.amqp_user}:"
-            f"{self.settings.amqp_password}"
-            f"@{self.settings.amqp_host}/",
-        )
+        user = quote(self.settings.amqp_user)
+        password = quote(self.settings.amqp_password)
+        host = self.settings.amqp_host
+        url = f"amqp://{user}:{password}@{host}/"
+        self.pika_connexion: aio_pika.Connection = await aio_pika.connect_robust(url)
         self.pika_channel = await self.pika_connexion.channel(publisher_confirms=True)
