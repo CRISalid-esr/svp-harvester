@@ -2,6 +2,7 @@ import re
 from typing import Generator, Set
 
 from loguru import logger
+from pydantic import ValidationError
 from semver import Version
 
 from app.db.models.abstract import Abstract
@@ -16,6 +17,7 @@ from app.harvesters.abstract_references_converter import AbstractReferencesConve
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 from app.harvesters.hal.hal_document_type_converter import HalDocumentTypeConverter
 from app.harvesters.hal.hal_roles_converter import HalRolesConverter
 from app.harvesters.hal.hal_tei_interface import HalTEIDecoder
@@ -120,6 +122,10 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
         self._add_created_date(json_payload, new_ref)
 
+        self._add_hal_collection_codes(json_payload, new_ref)
+
+        self._add_hal_submit_type(json_payload, new_ref)
+
         new_ref.page = json_payload.get("page_s", None)
         journal = await self._journal(json_payload)
 
@@ -164,6 +170,63 @@ class HalReferencesConverter(AbstractReferencesConverter):
             logger.error(
                 f"Hal reference converter cannot create issued date from publicationDate_tdate in"
                 f" {json_payload['halId_s']}: {error}"
+            )
+
+    @staticmethod
+    def _add_hal_collection_codes(json_payload: dict, new_ref):
+        """
+        Extract HAL collection codes and set them in custom_metadata.
+        Ensures proper formatting and logs validation errors.
+        """
+        collection_codes = json_payload.get("collCode_s", [])
+        if isinstance(collection_codes, str):
+            collection_codes = [collection_codes]
+
+        custom_metadata = new_ref.custom_metadata or {}
+
+        try:
+            updated_metadata = HalCustomMetadataSchema(
+                **{**custom_metadata, "hal_collection_codes": collection_codes}
+            )
+            new_ref.custom_metadata = updated_metadata.model_dump()
+        except ValidationError as e:
+            logger.warning(
+                "Invalid HAL custom metadata for reference %s: %s",
+                new_ref.source_identifier,
+                e.json(),
+            )
+
+    @staticmethod
+    def _add_hal_submit_type(json_payload: dict, new_ref: Reference) -> None:
+        """
+        Extract and validate the HAL submit type from payload, if present.
+        Sets one of: 'notice', 'file', 'annex' into new_ref.custom_metadata.
+        """
+        raw_value = json_payload.get("submitType_s")
+        if raw_value is None:
+            return
+
+        try:
+            submit_type = HalCustomMetadataSchema.HalSubmitType(raw_value)
+        except ValueError:
+            logger.warning(
+                "Invalid halSubmitType_s: '%s' in HAL payload %s",
+                raw_value,
+                json_payload.get("halId_s"),
+            )
+            return
+
+        custom_metadata = new_ref.custom_metadata or {}
+        try:
+            updated_metadata = HalCustomMetadataSchema(
+                **{**custom_metadata, "hal_submit_type": submit_type}
+            )
+            new_ref.custom_metadata = updated_metadata.model_dump()
+        except ValidationError as e:
+            logger.warning(
+                "Validation error in HAL custom metadata for HAL ID %s: %s",
+                json_payload.get("halId_s"),
+                e.json(),
             )
 
     def _harvester(self) -> str:

@@ -9,6 +9,7 @@ from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.title import Title
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 
 
 @pytest.mark.asyncio
@@ -80,6 +81,7 @@ async def test_reference_with_issue_and_journal(async_session: AsyncSession):
     assert reference.issue.date == "2021"
     assert reference.titles[0].value == "Fake scientific article"
     assert reference.titles[0].language == "en"
+    assert reference.custom_metadata is None
     await async_session.delete(reference)
 
 
@@ -134,6 +136,7 @@ async def test_issue_is_deleted_when_journal_is_deleted(async_session: AsyncSess
     )
     reference: Reference = (await async_session.execute(query)).scalar()
     assert reference.issue is None
+    assert reference.custom_metadata is None
 
 
 async def test_reference_is_not_deleted_when_issue_is_deleted(
@@ -187,6 +190,7 @@ async def test_reference_is_not_deleted_when_issue_is_deleted(
     reference: Reference = (await async_session.execute(query)).scalar()
     assert reference is not None
     assert reference.issue is None
+    assert reference.custom_metadata is None
     # the journal still exists
     query = select(Journal).where(Journal.id == journal_id)
     journal: Journal = (await async_session.execute(query)).scalar()
@@ -255,3 +259,99 @@ async def test_journal_and_issue_not_deleted_when_reference_deleted(
     await async_session.delete(issue)
     await async_session.delete(journal)
     await async_session.commit()
+
+
+async def test_reference_with_collection_codes(async_session: AsyncSession):
+    """
+    GIVEN a reference with a collection code
+    WHEN the reference is created
+    THEN check the reference has the correct attributes
+    """
+    reference = Reference(
+        source_identifier="source_identifier_1234",
+        harvester="HAL",
+        hash="hash",
+        version=0,
+        titles=[Title(value="Fake scientific article", language="en")],
+        custom_metadata=HalCustomMetadataSchema(
+            hal_collection_codes=[
+                "SHS",
+                "UNIV-PARIS7",
+                "UPMC",
+                "UNIV-LYON1",
+                "UNIV-PSUD",
+                "UNIV-STRASBG1",
+                "INRA",
+                "IFR69",
+                "UNIV-STRASBG",
+                "UNIV-PARIS-SACLAY",
+            ],
+            hal_submit_type=HalCustomMetadataSchema.HalSubmitType.NOTICE,
+        ).model_dump(),
+    )
+    async_session.add(reference)
+    await async_session.commit()
+    reference_id = reference.id
+    query = select(Reference).where(Reference.id == reference_id)
+    reference: Reference = (await async_session.execute(query)).scalar()
+    assert reference.custom_metadata["hal_collection_codes"] == [
+        "SHS",
+        "UNIV-PARIS7",
+        "UPMC",
+        "UNIV-LYON1",
+        "UNIV-PSUD",
+        "UNIV-STRASBG1",
+        "INRA",
+        "IFR69",
+        "UNIV-STRASBG",
+        "UNIV-PARIS-SACLAY",
+    ]
+    assert reference.custom_metadata["hal_submit_type"] == "notice"
+
+
+@pytest.mark.asyncio
+async def test_reference_with_valid_hal_submit_type(async_session):
+    """
+    GIVEN a reference with a valid hal_submit_type
+    WHEN the reference is created
+    THEN the value is stored and retrieved correctly
+    """
+    reference = Reference(
+        source_identifier="source_identifier_valid_type",
+        harvester="HAL",
+        hash="abc123",
+        version=1,
+        titles=[Title(value="With HAL submit type", language="en")],
+        custom_metadata=HalCustomMetadataSchema(
+            hal_collection_codes=[],
+            hal_submit_type=HalCustomMetadataSchema.HalSubmitType.FILE.value,
+        ).model_dump(),
+    )
+    async_session.add(reference)
+    await async_session.commit()
+    reference_id = reference.id
+
+    query = select(Reference).where(Reference.id == reference_id)
+    reference: Reference = (await async_session.execute(query)).unique().scalar()
+    assert reference.custom_metadata["hal_submit_type"] == "file"
+
+
+@pytest.mark.asyncio
+async def test_reference_with_invalid_hal_submit_type_raises():
+    """
+    GIVEN a reference with an invalid hal_submit_type
+    WHEN it is added to the session
+    THEN a ValueError is raised at validation time
+    """
+    with pytest.raises(ValueError, match="Input should be 'notice', 'file' or 'annex'"):
+        Reference(
+            source_identifier="source_identifier_invalid_type",
+            harvester="HAL",
+            hash="xyz456",
+            version=1,
+            titles=[Title(value="Invalid HAL submit type", language="en")],
+            custom_metadata=HalCustomMetadataSchema(
+                hal_collection_codes=[],
+                hal_submit_type="invalid_type",
+            ).model_dump(),
+        )

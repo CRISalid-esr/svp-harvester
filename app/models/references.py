@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -44,4 +44,5 @@ class Reference(BaseModel):
     raw_issued: str | None = None
     issued: datetime | None = None
     created: datetime | None = None
+    custom_metadata: Optional[dict] = None
     version: int

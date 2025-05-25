@@ -1,13 +1,14 @@
 from datetime import datetime
-from typing import List
+from typing import List, ClassVar
 
+from pydantic import BaseModel
 from semver import VersionInfo
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.db.models.abstract import Abstract
-from app.db.models.references_subject import references_subjects_table
 from app.db.models.references_document_type import references_document_type_table
+from app.db.models.references_subject import references_subjects_table
 from app.db.models.versioned_record import VersionedRecord
 from app.db.session import Base
 
@@ -142,6 +143,34 @@ class Reference(Base, VersionedRecord):
     # raw_issued preserves original date as string
     raw_issued: Mapped[str] = mapped_column(nullable=True)
     created: Mapped[datetime] = mapped_column(nullable=True, index=True)
+
+    custom_metadata_schema_registry: ClassVar[dict[str, type[BaseModel]]] = {}
+    custom_metadata: Mapped[dict] = mapped_column(JSON, nullable=True)
+
+    @classmethod
+    def register_custom_metadata_schema(cls, harvester: str, schema: type[BaseModel]):
+        """
+        Register a custom metadata schema for a specific harvester.
+        :param harvester: code of the harvester e.g. 'HAL'
+        :param schema: schema class to validate the custom metadata
+        :return:
+        """
+        cls.custom_metadata_schema_registry[harvester] = schema
+
+    @validates("custom_metadata")
+    def _validate_custom_metadata(self, key, value):
+        schema_cls = self.custom_metadata_schema_registry.get(self.harvester)
+        if schema_cls:
+            try:
+                schema_cls(**value)
+                return value
+            except ValueError as exc:
+                raise ValueError(
+                    f"Invalid custom_metadata for {self.harvester} harvester: {exc}"
+                ) from exc
+        raise ValueError(
+            f"No schema registered for {self.harvester} harvester,{key}   {value} rejected"
+        )
 
     @validates("harvester_version")
     def _validate_version(self, key, version):

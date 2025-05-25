@@ -8,6 +8,7 @@ from app.db.models.label import Label
 from app.db.models.reference import Reference as DbReference
 from app.db.models.subtitle import Subtitle
 from app.db.models.title import Title
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 
 
 @pytest_asyncio.fixture(name="reference_db_model")
@@ -18,7 +19,7 @@ async def fixture_reference_db_model() -> DbReference:
     """
     reference = DbReference(
         source_identifier="123456789",
-        harvester="hal",
+        harvester="HAL",
         hash="hash1",
         version=0,
         titles=[Title(value="title", language="fr")],
@@ -26,6 +27,10 @@ async def fixture_reference_db_model() -> DbReference:
         raw_issued="2017",
         issued=isodate.parse_datetime("2017-01-01T00:00:00"),
         created=isodate.parse_datetime("2018-02-02T10:00:00"),
+        custom_metadata=HalCustomMetadataSchema(
+            hal_collection_codes=["UGFP", "UGA", "UMR5434"],
+            hal_submit_type=HalCustomMetadataSchema.HalSubmitType.NOTICE,
+        ).model_dump(),
     )
     reference.subjects.append(
         DbConcept(

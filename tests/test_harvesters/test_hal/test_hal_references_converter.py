@@ -4,6 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.models.contribution import Contribution
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
@@ -18,6 +19,14 @@ def fixture_hal_api_cleaned_response(hal_api_docs_for_researcher):
 def fixture_hal_api_response_with_uris(hal_api_docs_for_researcher_with_uris):
     """Return the list of dictionaries references from hal response"""
     return hal_api_docs_for_researcher_with_uris["response"]["docs"]
+
+
+@pytest.fixture(name="hal_api_response_with_collection_codes")
+def fixture_hal_api_response_with_coll_codes(
+    hal_api_docs_for_researcher_with_collection_codes,
+):
+    """Return the list of dictionaries references from hal response"""
+    return hal_api_docs_for_researcher_with_collection_codes["response"]["docs"]
 
 
 # for hal_api_docs_with_inconsistent_structured_names
@@ -59,6 +68,7 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_raw_issued_date = "2016"
     expected_issued_date = datetime.datetime(2016, 1, 1, 0, 0)
     expected_created_date = datetime.datetime(2016, 1, 1, 0, 0)
+    expected_hal_submit_type = HalCustomMetadataSchema.HalSubmitType.NOTICE
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
@@ -114,6 +124,10 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
                 identifier.type == type_ and identifier.value == value
                 for identifier in test_reference.identifiers
             )
+        assert (
+            test_reference.custom_metadata["hal_submit_type"]
+            == expected_hal_submit_type.value
+        )
 
 
 async def test_convert_response_with_inconsistent_structured_names(
@@ -243,3 +257,37 @@ async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dic
     assert reference.manifestations[0].download_url == doc["fileMain_s"]
     assert len(reference.manifestations[0].additional_files) == 1
     assert reference.manifestations[0].additional_files[0] == doc["files_s"][1]
+
+
+async def test_publication_with_collection_codes(
+    hal_api_response_with_collection_codes: dict,
+):
+    """
+    Given a list of docs where the second is a publication with a single file in fileMain_s
+    When the converter is called with the second doc
+    Then it should return a reference with a single manifestation with uri_s as page field
+    and the fileMain_s as download_url field
+
+    :param hal_api_docs_for_researcher_with_uris:
+    :return:
+    """
+    converter_under_tests = HalReferencesConverter()
+    doc = hal_api_response_with_collection_codes[0]
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+    )
+    reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=reference)
+    assert len(reference.manifestations) == 1
+    assert reference.custom_metadata["hal_collection_codes"] == [
+        "SHS",
+        "CNRS",
+        "UNIV-PICARDIE",
+        "LASSP",
+        "AO-DROIT",
+        "LARA",
+        "U-PICARDIE",
+        "CURAPP-ESS",
+    ]

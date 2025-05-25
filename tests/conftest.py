@@ -59,6 +59,18 @@ def fixture_test_client(test_app: FastAPI) -> TestClient:
     return TestClient(test_app)
 
 
+@pytest.fixture(autouse=True, name="custom_metadata_schema")
+def fixture_custom_metadata_schema():
+    """
+    Cancel the automatic registration of the custom metadata schema
+    :return:
+    """
+    # pylint: disable=import-outside-toplevel
+    from app.main import SvpHarvester
+
+    SvpHarvester.register_custom_metadata_schemas()
+
+
 @pytest.fixture(autouse=True, name="event_loop")
 def fixture_event_loop():
     """Provide an event loop for all tests"""
@@ -151,10 +163,10 @@ def fake_idref_concept_uri_solver(concept_informations: ConceptInformations):
     """
     Fake idref concept solver for tests
 
-    :param concept_id: concept id to solve
+    :param concept_informations: concept informations to solve
     :return: fake uri
     """
-    pass
+    concept_informations
 
 
 def fake_abes_concept_solver(concept_informations: ConceptInformations):

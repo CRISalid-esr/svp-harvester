@@ -13,8 +13,10 @@ from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.api.routes.healthness import router as healthness_router
 from app.config import get_app_settings
+from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
+from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 from app.redis.redis_pool import RedisPool
 from app.settings.app_env_types import AppEnvTypes
 
@@ -33,6 +35,8 @@ class SvpHarvester(FastAPI):
         self.amqp_interface: AMQPInterface | None = None
 
         settings = get_app_settings()
+
+        self.register_custom_metadata_schemas()
 
         self.include_router(
             api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
@@ -70,6 +74,14 @@ class SvpHarvester(FastAPI):
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
+
+    @staticmethod
+    def register_custom_metadata_schemas():
+        """
+        Register custom metadata schemas for specific harvesters.
+        :return: None
+        """
+        Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
 
     @logger.catch(reraise=True)
     async def check_db_connexion(self) -> None:
