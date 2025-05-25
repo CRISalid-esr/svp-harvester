@@ -263,9 +263,9 @@ async def test_publication_with_collection_codes(
     hal_api_response_with_collection_codes: dict,
 ):
     """
-    Given a list of docs where the second is a publication with a sigle file in fileMain_s
+    Given a list of docs where the second is a publication with a single file in fileMain_s
     When the converter is called with the second doc
-    Then it should return a reference with a single manifestion whith uri_s as page field
+    Then it should return a reference with a single manifestation with uri_s as page field
     and the fileMain_s as download_url field
 
     :param hal_api_docs_for_researcher_with_uris:
