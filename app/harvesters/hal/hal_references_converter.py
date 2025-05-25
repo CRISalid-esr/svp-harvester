@@ -221,7 +221,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             updated_metadata = HalCustomMetadataSchema(
                 **{**custom_metadata, "hal_submit_type": submit_type}
             )
-            new_ref.custom_metadata = updated_metadata.dict()
+            new_ref.custom_metadata = updated_metadata.model_dump()
         except ValidationError as e:
             logger.warning(
                 "Validation error in HAL custom metadata for HAL ID %s: %s",
