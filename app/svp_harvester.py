@@ -36,7 +36,7 @@ class SvpHarvester(FastAPI):
 
         settings = get_app_settings()
 
-        Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
+        self.register_custom_metadata_schemas()
 
         self.include_router(
             api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
@@ -74,6 +74,14 @@ class SvpHarvester(FastAPI):
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
+
+    @staticmethod
+    def register_custom_metadata_schemas():
+        """
+        Register custom metadata schemas for specific harvesters.
+        :return: None
+        """
+        Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
 
     @logger.catch(reraise=True)
     async def check_db_connexion(self) -> None:
