@@ -1,5 +1,3 @@
-# file: tests/models/test_custom_metadata_validation.py
-
 import pytest
 
 from app.db.models.reference import Reference as DbReference
