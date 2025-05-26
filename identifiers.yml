@@ -22,3 +22,6 @@
 - key: scopus_eid
   label: ScopusEID
   priority: 7
+- key: eppn
+  label: EPPN
+  priority: 8
