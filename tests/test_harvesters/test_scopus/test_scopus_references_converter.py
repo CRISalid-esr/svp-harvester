@@ -12,7 +12,9 @@ from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 
 
 @pytest.mark.asyncio
-async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
+async def test_convert(
+    scopus_xml_raw_result_for_doc: XMLHarvesterRawResult,
+):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
     converter_under_test = ScopusReferencesConverter()
 
@@ -79,6 +81,8 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
         assert contribution.role == expected_role
         for affiliation in contribution.affiliations:
             assert affiliation.name in expected_affiliation
+            assert affiliation.source == "scopus"
+            assert affiliation.type == "institution"
     assert test_reference.page == expected_page
     assert test_reference.issue.journal.issn == expected_issn
     assert test_reference.issue.journal.eissn == expected_eissn
@@ -97,17 +101,13 @@ async def test_convert(scopus_xml_raw_result_for_doc: XMLHarvesterRawResult):
             assert contributor is not None
             assert len(contributor.identifiers) == 2
             assert any(
-                [
-                    identifier.type == "orcid"
-                    and identifier.value == "https://orcid.org/0000-0002-5201-3968"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == "orcid"
+                and identifier.value == "https://orcid.org/0000-0002-5201-3968"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "scopus" and identifier.value == "57539748900"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == "scopus" and identifier.value == "57539748900"
+                for identifier in contributor.identifiers
             )
 
 
