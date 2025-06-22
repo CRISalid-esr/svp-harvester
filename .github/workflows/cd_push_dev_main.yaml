@@ -80,7 +80,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: crisalidesr/svp-harvester:v0.21-dev
+          tags: |
+            crisalidesr/svp-harvester:v0.22-dev
+            crisalidesr/svp-harvester:latest
           build-args: |
             GIT_COMMIT=${{ github.sha }}
             GIT_BRANCH=${{ github.ref_name }}
