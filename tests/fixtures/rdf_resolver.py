@@ -3,7 +3,7 @@ import pytest
 from rdflib import Graph
 
 from app.harvesters.idref.rdf_resolver import RdfResolver
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 
 
 @pytest.fixture(name="fake_rdf_resolver_fixture")

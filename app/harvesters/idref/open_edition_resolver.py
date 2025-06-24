@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 
+from app.harvesters.exceptions.external_endpoint_failure import (
+    handle_external_endpoint_failure,
+)
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
@@ -49,11 +52,12 @@ class OpenEditionResolver:
             f"Unknown type reference: {type_reference} for {records} {identifier}"
         )
 
-    async def fetch(self, document_uri: str) -> ET.Element:
+    @handle_external_endpoint_failure("OpenEdition")
+    async def fetch(self, url: str) -> ET.Element:
         """
         Get the record XML from OAI Open Edition
         """
-        records, identifier, type_reference = self._parse_uri(document_uri)
+        records, identifier, type_reference = self._parse_uri(url)
         document_url = self._create_uri(records, identifier, type_reference)
         response_text = await self.http_client.get(document_url)
         try:

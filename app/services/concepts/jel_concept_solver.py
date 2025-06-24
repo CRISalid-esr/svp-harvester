@@ -2,7 +2,7 @@ from abc import ABC
 
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 
 
 class JelConceptSolver(ConceptSolver, ABC):

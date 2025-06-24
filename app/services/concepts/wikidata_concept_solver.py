@@ -2,15 +2,18 @@ import json
 import re
 from typing import List
 
-import aiohttp
-from loguru import logger
+from aiohttp import ClientTimeout
 from rdflib import Literal
 
 from app.db.models.concept import Concept as DbConcept
 from app.db.models.label import Label as DbLabel
+from app.http_client import get_aiohttp_session
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import (
+    handle_concept_dereferencing_error,
+    DereferencingError,
+)
 
 
 class WikidataConceptSolver(ConceptSolver):
@@ -18,85 +21,63 @@ class WikidataConceptSolver(ConceptSolver):
     Wikidata concept solver
     """
 
+    @handle_concept_dereferencing_error
     async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """
         Solves a Wikidata concept from a concept id
         :param concept_informations: concept informations
         :return: Concept
         """
-        try:
-            async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(self.timeout))
-            ) as session:
-                async with session.get(concept_informations.url) as response:
-                    if not 200 <= response.status < 300:
-                        raise DereferencingError(
-                            f"Endpoint returned status {response.status} "
-                            f"while dereferencing Wikidata concept "
-                            f"{concept_informations.uri} "
-                            f"from url {concept_informations.url}"
-                        )
-                    json_response = await response.json()
+        session = get_aiohttp_session()
+        request_timeout = ClientTimeout(total=float(self.timeout))
 
-                    concept_data: json = json_response["entities"].get(
-                        concept_informations.code, None
-                    )
+        async with session.get(
+            concept_informations.url, timeout=request_timeout
+        ) as response:
+            if not 200 <= response.status < 300:
+                raise DereferencingError(
+                    f"Endpoint returned status {response.status} "
+                    f"while dereferencing Wikidata concept "
+                    f"{concept_informations.uri} "
+                    f"from url {concept_informations.url}"
+                )
+            json_response = await response.json()
 
-                    # If the code is not found, it may be a redirect,
-                    # so we take the only entity in the response
-                    if concept_data is None and len(json_response["entities"]) == 1:
-                        concept_data = list(json_response["entities"].values())[0]
+        concept_data = json_response["entities"].get(concept_informations.code)
 
-                    concept = DbConcept(uri=concept_informations.uri)
+        if concept_data is None and len(json_response["entities"]) == 1:
+            concept_data = list(json_response["entities"].values())[0]
 
-                    self._add_labels(
-                        concept=concept,
-                        labels=[
-                            Literal(pair["value"], lang=pair["language"])
-                            for language_value_pairs in self._alt_labels(
-                                concept_data
-                            ).values()
-                            for pair in language_value_pairs
-                        ],
-                        preferred=False,
-                    )
-                    self._add_labels(
-                        concept=concept,
-                        labels=[
-                            Literal(pair["value"], lang=pair["language"])
-                            for pair in self._pref_labels(concept_data).values()
-                        ],
-                        preferred=True,
-                    )
-                    return concept
+        concept = DbConcept(uri=concept_informations.uri)
 
-        except aiohttp.ClientError as error:
-            logger.error(
-                f"Endpoint failure while dereferencing {concept_informations.uri}"
-                f"at url {concept_informations.url} with message {error}"
-            )
-            raise DereferencingError(
-                f"Endpoint failure while dereferencing {concept_informations.uri}"
-                f"at url {concept_informations.url} with message {error}"
-            ) from error
-        except Exception as error:
-            logger.error(
-                f"Exception failure dereferencing {concept_informations.uri}"
-                f"at url {concept_informations.url} with message {error}"
-            )
-            raise DereferencingError(
-                f"Exception failure dereferencing {concept_informations.uri}"
-                f"at url {concept_informations.url} with message {error}"
-            ) from error
+        self._add_labels(
+            concept=concept,
+            labels=[
+                Literal(pair["value"], lang=pair["language"])
+                for language_value_pairs in self._alt_labels(concept_data).values()
+                for pair in language_value_pairs
+            ],
+            preferred=False,
+        )
+        self._add_labels(
+            concept=concept,
+            labels=[
+                Literal(pair["value"], lang=pair["language"])
+                for pair in self._pref_labels(concept_data).values()
+            ],
+            preferred=True,
+        )
+        return concept
 
     def _alt_labels(self, concept_data: json) -> List[str]:
         return concept_data.get("aliases", {})
 
-    # pylint: disable=unused-argument
     def _pref_labels(self, concept_data: json) -> List[str]:
         return concept_data.get("labels", {})
 
-    def _add_labels(self, concept: DbConcept, labels: dict, preferred: bool = True):
+    def _add_labels(
+        self, concept: DbConcept, labels: list[Literal], preferred: bool = True
+    ):
         def interesting_languages(language):
             return language in self.settings.concept_languages or language is None
 

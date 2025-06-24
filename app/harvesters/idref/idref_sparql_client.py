@@ -5,11 +5,12 @@ import aiohttp
 from aiosparql.client import SPARQLClient
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.http_client import get_aiohttp_connector
 from app.utilities.execution_timer_wrapper import execution_timer
 
 DATA_IDREF_FR_URL = "https://data.idref.fr/sparql"
 
-IDREF_SPARQL_DEFAULT_TIMEOUT = 20
+IDREF_SPARQL_DEFAULT_TIMEOUT = 30
 
 
 class IdrefSparqlClient:
@@ -228,6 +229,12 @@ class IdrefSparqlClient:
     def _get_client(self) -> SPARQLClient:
         return SPARQLClient(
             DATA_IDREF_FR_URL,
-            connector=aiohttp.TCPConnector(limit=0),
-            timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
+            connector=get_aiohttp_connector(),
+            timeout=aiohttp.ClientTimeout(
+                total=20,  # overall cap on the request lifecycle
+                connect=5,  # max time to establish TCP connection
+                sock_read=15,  # max time to wait for server response data
+                sock_connect=5,  # max time to establish socket (useful behind proxies)
+            ),
+            connector_owner=False,
         )

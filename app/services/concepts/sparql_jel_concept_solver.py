@@ -5,8 +5,9 @@ from rdflib import Literal
 
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
+from app.http_client import get_aiohttp_connector
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.jel_concept_solver import JelConceptSolver
 
 
@@ -34,7 +35,7 @@ class SparqlJelConceptSolver(JelConceptSolver):
         ), "SVP_JEL_PROXY_URL environment variable must be set"
         return SPARQLClient(
             settings.svp_jel_proxy_url,
-            connector=aiohttp.TCPConnector(limit=0),
+            connector=get_aiohttp_connector(),
             timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
         )
 

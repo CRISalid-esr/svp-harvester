@@ -1,10 +1,11 @@
 from loguru import logger
+
 from app.db.daos.concept_dao import ConceptDAO
+from app.db.session import async_session
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.jobs.abstract_offline_job import AbstractOfflineJob
-from app.db.session import async_session
 
 
 class ConceptDereferencingJob(AbstractOfflineJob):
@@ -40,5 +41,5 @@ class ConceptDereferencingJob(AbstractOfflineJob):
                 except DereferencingError as e:
                     logger.error(f"Error while dereferencing concept {concept}: {e}")
                 concept = await ConceptDAO(session).get_random_concept_not_dereferenced(
-                    exclude_ids=already_seen
+                    exclude_ids=list(already_seen)
                 )

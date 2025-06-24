@@ -17,6 +17,7 @@ from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
 from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
+from app.http_client import close as close_http_client
 from app.redis.redis_pool import RedisPool
 from app.settings.app_env_types import AppEnvTypes
 
@@ -74,6 +75,7 @@ class SvpHarvester(FastAPI):
         if settings.amqp_enabled:
             self.add_event_handler("startup", self.open_rabbitmq_connexion)
             self.add_event_handler("shutdown", self.close_rabbitmq_connexion)
+        self.add_event_handler("shutdown", self.close_http_client_session)
 
     @staticmethod
     def register_custom_metadata_schemas():
@@ -82,6 +84,13 @@ class SvpHarvester(FastAPI):
         :return: None
         """
         Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
+
+    @staticmethod
+    async def close_http_client_session() -> None:
+        """Gracefully shutdown shared aiohttp session and connector."""
+        logger.info("Closing shared aiohttp HTTP client session")
+        await close_http_client()
+        logger.info("HTTP client session closed")
 
     @logger.catch(reraise=True)
     async def check_db_connexion(self) -> None:

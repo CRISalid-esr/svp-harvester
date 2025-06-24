@@ -5,7 +5,9 @@ from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.services.organizations.organization_solver import OrganizationSolver
 from app.services.organizations.ror_organization_solver import RorOrganizationSolver
 from app.services.organizations.scopus_organization_solver import (

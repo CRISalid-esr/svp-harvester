@@ -30,13 +30,15 @@ from app.harvesters.abstract_harvester_raw_result import AbstractHarvesterRawRes
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_factory import ConceptFactory
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_service import HashService
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.merge_organization import merge_organization
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.services.organizations.organization_factory import OrganizationFactory
 from app.utilities.execution_timer_wrapper import execution_timer
 
@@ -68,7 +70,7 @@ class AbstractReferencesConverter(ABC):
         first_name: str | None = None
         last_name: str | None = None
         identifier: str | None = None
-        ext_identifiers: List[dict[str, str]] = None
+        ext_identifiers: List[dict[str, str]] | None = None
 
     async def _contributions(
         self,

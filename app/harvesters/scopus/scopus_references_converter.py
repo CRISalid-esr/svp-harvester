@@ -25,7 +25,9 @@ from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_key_xml import HashKeyXML
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 from app.utilities.string_utilities import normalize_string

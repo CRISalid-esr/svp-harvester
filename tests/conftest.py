@@ -13,7 +13,7 @@ from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
 from app.services.concepts.abes_concept_solver import AbesConceptSolver
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.sparql_idref_concept_solver import SparqlIdRefConceptSolver
 from app.harvesters.scanr.scanr_elastic_client import ScanRElasticClient
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
@@ -226,6 +226,13 @@ def fixture_fake_scanr_elastic_client_perform_search(
     scanr_api_docs_from_publication,
     scanr_api_docs_from_person,
 ):
+    """
+    Fake Scanr Elastic client to simulate the perform_search method
+    :param scanr_api_docs_from_publication:
+    :param scanr_api_docs_from_person:
+    :return:
+    """
+
     async def fake_scanr_elastic_client(
         selected_index: str,
         base_size: int = 200,

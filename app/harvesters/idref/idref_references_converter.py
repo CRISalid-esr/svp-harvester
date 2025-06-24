@@ -30,7 +30,7 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     """
 
     def __init__(self):
-        self.secondary_converter: AbstractReferencesConverter = None
+        self.secondary_converter: AbstractReferencesConverter | None = None
 
     def build(
         self, raw_data: AbstractHarvesterRawResult, harvester_version: Version

@@ -114,8 +114,9 @@ class AMQPInterface:
                 continue
             try:
                 message = await self.pika_queue.get(no_ack=True, fail=False)
-            except TimeoutError:
-                logger.error("Timeout error while getting message from queue")
+            except asyncio.TimeoutError:
+                logger.warning("Timeout while waiting for a message from queue")
+                await asyncio.sleep(0.5)
                 continue
             if message is None:
                 await asyncio.sleep(0.5)

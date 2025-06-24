@@ -32,7 +32,7 @@ class ConceptSolver(ABC):
     async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """
         Solves a concept from informations
-        :param concept_informations: availablke informations
+        :param concept_informations: available informations
         :return: Concept
         """
 

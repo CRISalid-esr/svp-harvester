@@ -1,10 +1,14 @@
-from typing import Generator
 import xml.etree.ElementTree as ET
-import aiohttp
+from typing import Generator
+
 import rdflib
 
 from app.config import get_app_settings
-from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.harvesters.exceptions.external_endpoint_failure import (
+    ExternalEndpointFailure,
+    handle_external_endpoint_failure,
+)
+from app.http_client import get_aiohttp_session
 
 
 class ScopusClient:
@@ -25,45 +29,37 @@ class ScopusClient:
     def __init__(self) -> None:
         self.settings = get_app_settings()
 
-    async def fetch(self, query_string: str, start=0) -> Generator[dict, None, None]:
+    @handle_external_endpoint_failure("Scopus")
+    async def fetch(self, url: str, start=0) -> Generator[dict, None, None]:
         """
         Fetch the results from Scopus API
         """
+        session = get_aiohttp_session()
+        query = (
+            f"{self.SCOPUS_URL}?{url}&apiKey={self.settings.scopus_api_key}"
+            f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE&start={start}"
+        )
+        async with session.get(
+            query,
+            headers={"Accept": "application/xml"},
+        ) as resp:
+            if resp.status == 200:
+                xml = await resp.text()
+                root = ET.fromstring(xml)
+                count = root.find("opensearch:totalResults", self.NAMESPACE).text
+                if int(count) == 0:
+                    yield
+                else:
+                    for doc in root.findall(".//default:entry", self.NAMESPACE):
+                        yield doc
 
-        try:
-            async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=None),
-                headers={"Accept": "application/xml"},
-            ) as session:
-                query = (
-                    f"{self.SCOPUS_URL}?{query_string}&apiKey={self.settings.scopus_api_key}"
-                    f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE&start={start}"
+                # If there are more than 25 results, fetch the next 25 asynchrounously
+                # as is the limit of the Scopus API
+                if int(count) > start + 25:
+                    async for doc in self.fetch(url, start=start + 25):
+                        yield doc
+            else:
+                raise ExternalEndpointFailure(
+                    f"Error code from Scopus API for request: {url} "
+                    f"With code {resp.status}"
                 )
-                async with session.get(query) as resp:
-                    if resp.status == 200:
-                        xml = await resp.text()
-                        root = ET.fromstring(xml)
-                        count = root.find(
-                            "opensearch:totalResults", self.NAMESPACE
-                        ).text
-                        if int(count) == 0:
-                            yield
-                        else:
-                            for doc in root.findall(".//default:entry", self.NAMESPACE):
-                                yield doc
-
-                        # If there are more than 25 results, fetch the next 25 asynchrounously
-                        # as is the limit of the Scopus API
-                        if int(count) > start + 25:
-                            async for doc in self.fetch(query_string, start=start + 25):
-                                yield doc
-                    else:
-                        raise ExternalEndpointFailure(
-                            f"Error code from Scopus API for request: {query_string} "
-                            f"With code {resp.status}"
-                        )
-
-        except aiohttp.ClientConnectionError as error:
-            raise ExternalEndpointFailure(
-                f"Cant connect to Scopus API for request: {query_string} with error {error}"
-            ) from error

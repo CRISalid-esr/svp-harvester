@@ -17,7 +17,7 @@ from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
 
-DEFAULT_RESULT_TIMEOUT = 600
+DEFAULT_RESULT_TIMEOUT = 6000
 
 
 class AMQPMessageProcessor:
@@ -145,7 +145,7 @@ class AMQPMessageProcessor:
 
     @staticmethod
     async def _get_message_payload(message, start_time, worker_id):
-        payload: bytes = None
+        payload: bytes | None = None
         async with message.process(ignore_processed=True):
             payload = message.body
             ack_time = datetime.now()

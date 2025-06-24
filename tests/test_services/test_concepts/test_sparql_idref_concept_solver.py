@@ -6,7 +6,7 @@ import pytest
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.sparql_idref_concept_solver import SparqlIdRefConceptSolver
 
 
@@ -18,11 +18,11 @@ def fixture_mock_idref_concept_solver():
 
 @pytest.fixture(name="idref_sparql_endpoint_client_mock_with_concept")
 def fixture_idref_sparql_endpoint_client_mock_with_concept(
-        idref_sparql_endpoint_response_for_concept: dict,
+    idref_sparql_endpoint_response_for_concept: dict,
 ):
     """Retrieval service mock to detect run method calls."""
     with mock.patch.object(
-            aiosparql.client.SPARQLClient, "query"
+        aiosparql.client.SPARQLClient, "query"
     ) as aiosparql_client_query:
         aiosparql_client_query.return_value = idref_sparql_endpoint_response_for_concept
         yield aiosparql_client_query
@@ -30,23 +30,27 @@ def fixture_idref_sparql_endpoint_client_mock_with_concept(
 
 @pytest.fixture(name="idref_sparql_endpoint_client_mock_with_concept_multilang")
 def fixture_idref_sparql_endpoint_client_mock_with_concept_multilang(
-        idref_sparql_endpoint_response_for_concept_multilang: dict,
+    idref_sparql_endpoint_response_for_concept_multilang: dict,
 ):
     """Retrieval service mock to detect run method calls."""
     with mock.patch.object(
-            aiosparql.client.SPARQLClient, "query"
+        aiosparql.client.SPARQLClient, "query"
     ) as aiosparql_client_query:
-        aiosparql_client_query.return_value = idref_sparql_endpoint_response_for_concept_multilang
+        aiosparql_client_query.return_value = (
+            idref_sparql_endpoint_response_for_concept_multilang
+        )
         yield aiosparql_client_query
 
 
-@pytest.fixture(name="idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages")
+@pytest.fixture(
+    name="idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages"
+)
 def fixture_idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages(
-        idref_sparql_endpoint_response_for_concept_non_preferred_languages: dict,
+    idref_sparql_endpoint_response_for_concept_non_preferred_languages: dict,
 ):
     """Retrieval service mock to detect run method calls."""
     with mock.patch.object(
-            aiosparql.client.SPARQLClient, "query"
+        aiosparql.client.SPARQLClient, "query"
     ) as aiosparql_client_query:
         aiosparql_client_query.return_value = (
             idref_sparql_endpoint_response_for_concept_non_preferred_languages
@@ -56,7 +60,7 @@ def fixture_idref_sparql_endpoint_client_mock_with_concept_non_preferred_languag
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_raises_value_error_with_fantasy_string(
-        idref_sparql_endpoint_client_mock_with_concept
+    idref_sparql_endpoint_client_mock_with_concept,
 ):
     """
     GIVEN an idref concept solver
@@ -72,15 +76,15 @@ async def test_idref_concept_solver_raises_value_error_with_fantasy_string(
         solver.complete_information(concept_informations)
         await solver.solve(concept_informations)
     assert (
-            exception_info.value.args[0]
-            == f"Invalid idref concept id or uri http://www.idref.fr/{concept_id}/id"
+        exception_info.value.args[0]
+        == f"Invalid idref concept id or uri http://www.idref.fr/{concept_id}/id"
     )
     idref_sparql_endpoint_client_mock_with_concept.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_return_db_concept_from_uri(
-        idref_sparql_endpoint_client_mock_with_concept
+    idref_sparql_endpoint_client_mock_with_concept,
 ):
     """
     GIVEN an idref concept solver
@@ -111,7 +115,7 @@ async def test_idref_concept_solver_return_db_concept_from_uri(
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_returns_db_concept_from_numeric_id(
-        idref_sparql_endpoint_client_mock_with_concept # pylint: disable=unused-argument
+    idref_sparql_endpoint_client_mock_with_concept,  # pylint: disable=unused-argument
 ):
     """
     GIVEN an idref concept solver
@@ -136,7 +140,7 @@ async def test_idref_concept_solver_returns_db_concept_from_numeric_id(
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_return_db_concept_from_numeric_id_and_source(
-        idref_sparql_endpoint_client_mock_with_concept
+    idref_sparql_endpoint_client_mock_with_concept,
 ):
     """
     GIVEN an idref concept solver
@@ -158,7 +162,7 @@ async def test_idref_concept_solver_return_db_concept_from_numeric_id_and_source
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_returns_concepts_in_preferred_language(
-        idref_sparql_endpoint_client_mock_with_concept_multilang,
+    idref_sparql_endpoint_client_mock_with_concept_multilang,
 ):
     """
     GIVEN an idref concept solver and "fr", "en" as preferred languages
@@ -177,34 +181,34 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
     # 3 preflabels, one in french, one in english, one in unspecified language
     assert len([label for label in result.labels if label.preferred]) == 3
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language == "fr" and label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "fr" and label.preferred
+            ]
+        )
+        == 1
     )
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language == "en" and label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "en" and label.preferred
+            ]
+        )
+        == 1
     )
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language is None and label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and label.preferred
+            ]
+        )
+        == 1
     )
     assert "Cuisine" in [
         label.value
@@ -224,24 +228,24 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
     # 2 altlabels, one in english, one in unspecified language
     assert len([label for label in result.labels if not label.preferred]) == 2
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language == "en" and not label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language == "en" and not label.preferred
+            ]
+        )
+        == 1
     )
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language is None and not label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is None and not label.preferred
+            ]
+        )
+        == 1
     )
     assert "Culinary art" in [
         label.value
@@ -257,7 +261,7 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
 
 @pytest.mark.asyncio
 async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
-        idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages,
+    idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages,
 ):
     """
     GIVEN an idref concept solver and "fr", "en" as preferred languages
@@ -277,24 +281,24 @@ async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     assert len([label for label in result.labels if label.preferred]) == 1
     assert len([label for label in result.labels if not label.preferred]) == 0
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language is not None and label.preferred
-                ]
-            )
-            == 1
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is not None and label.preferred
+            ]
+        )
+        == 1
     )
     assert (
-            len(
-                [
-                    label
-                    for label in result.labels
-                    if label.language is not None and not label.preferred
-                ]
-            )
-            == 0
+        len(
+            [
+                label
+                for label in result.labels
+                if label.language is not None and not label.preferred
+            ]
+        )
+        == 0
     )
     assert result.labels[0].value in [
         "Cucina",

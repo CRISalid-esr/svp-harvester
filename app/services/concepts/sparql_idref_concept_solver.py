@@ -10,7 +10,7 @@ from app.harvesters.idref.idref_sparql_query_builder import (
 )
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 
 
 class SparqlIdRefConceptSolver(ConceptSolver):
@@ -18,9 +18,7 @@ class SparqlIdRefConceptSolver(ConceptSolver):
     IdRef concept solver
     """
 
-    def complete_information(self,
-                             concept_informations: ConceptInformations
-                             ) -> None:
+    def complete_information(self, concept_informations: ConceptInformations) -> None:
         # pylint:disable=duplicate-code
         """
         Build url, code and/or uri from concept information
@@ -41,7 +39,7 @@ class SparqlIdRefConceptSolver(ConceptSolver):
                     f"Unable to extract code from uri {concept_informations.uri}"
                 )
         assert (
-                concept_informations.code is not None
+            concept_informations.code is not None
         ), "Concept information may not be None at this point"
         if not concept_informations.code[0:-1].isdigit():
             raise DereferencingError(
@@ -68,7 +66,7 @@ class SparqlIdRefConceptSolver(ConceptSolver):
 
         concept = DbConcept(uri=concept_informations.uri)
 
-        if 'pref_labels' in returned_concept:
+        if "pref_labels" in returned_concept:
             self._add_labels(
                 concept,
                 list(
@@ -84,7 +82,7 @@ class SparqlIdRefConceptSolver(ConceptSolver):
                 True,
             )
 
-        if 'alt_labels' in returned_concept:
+        if "alt_labels" in returned_concept:
             self._add_labels(
                 concept,
                 list(
