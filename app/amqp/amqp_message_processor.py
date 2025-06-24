@@ -50,6 +50,7 @@ class AMQPMessageProcessor:
         :return: None
         """
         message: IncomingMessage | None = None
+        payload = None
 
         while True:
             requeue = False
@@ -86,7 +87,7 @@ class AMQPMessageProcessor:
                 end_time = datetime.now()
                 logger.warning(
                     f"Performance : Message  processed by {worker_id} "
-                    f"in {end_time - start_time} for payload {payload}"
+                    f"in {end_time - start_time} for payload {payload if payload else 'None'}"
                 )
 
     async def _post_process_message(self, message, requeue, worker_id):

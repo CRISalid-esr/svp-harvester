@@ -59,15 +59,23 @@ class AMQPInterface:
     async def stop_listening(self) -> None:
         """Stop listening to AMQP queue"""
         try:
-            await asyncio.wait_for(
-                self.inner_tasks_queue.join(),
-                timeout=self.settings.amqp_wait_before_shutdown,
-            )
+            if self.inner_tasks_queue is None:
+                logger.warning("Inner tasks queue is not initialized, skipping join.")
+            else:
+                logger.info("Waiting for inner tasks queue to be empty before shutdown")
+                await asyncio.wait_for(
+                    self.inner_tasks_queue.join(),
+                    timeout=self.settings.amqp_wait_before_shutdown,
+                )
         finally:
-            for worker in self.message_processing_workers:
+            for worker in self.message_processing_workers or []:
                 worker.cancel()
-            await self.pika_channel.close()
-            await self.pika_connexion.close()
+            if self.pika_channel:
+                logger.info("Closing AMQP channel")
+                await self.pika_channel.close()
+            if self.pika_connexion:
+                logger.info("Closing AMQP connection")
+                await self.pika_connexion.close()
 
     async def _attach_message_processing_workers(self):
         self.message_processing_workers = []
