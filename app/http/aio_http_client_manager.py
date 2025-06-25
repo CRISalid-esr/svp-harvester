@@ -1,68 +1,116 @@
-from asyncio import Lock
+import asyncio
+import gc
 from typing import Optional
 
 import aiohttp
+from loguru import logger
 
 from app.config import get_app_settings
 
 
 class AioHttpClientManager:
-    """
-    Manages a shared aiohttp ClientSession and TCPConnector for the application.
-    """
-
     _connector: Optional[aiohttp.TCPConnector] = None
     _session: Optional[aiohttp.ClientSession] = None
-    _lock: Lock = Lock()
-
-    @classmethod
-    async def get_connector(cls) -> aiohttp.TCPConnector:
-        """
-        Get the aiohttp TCP connector, creating it if it does not exist.
-        :return:
-        """
-        if cls._connector is not None:
-            return cls._connector
-
-        settings = get_app_settings()
-        cls._connector = aiohttp.TCPConnector(
-            limit=settings.http_client_limit,
-            ttl_dns_cache=settings.http_client_ttl_dns_cache,
-        )
-        return cls._connector
+    _lock = asyncio.Lock()
+    _usage_counter = 0
+    _renew_threshold = 100
+    _grace_period = 60  # seconds
 
     @classmethod
     async def get_session(cls) -> aiohttp.ClientSession:
         """
-        Get the aiohttp ClientSession, creating it if it does not exist or is closed.
-        :return:
+        Get the aiohttp ClientSession with a configured connector and timeout.
+        The session is renewed after a fixed usage threshold, and the old one is
+        closed after a grace period.
+        :return: aiohttp.ClientSession instance
         """
-        if cls._session is not None and not cls._session.closed:
-            return cls._session
-
         async with cls._lock:
             if cls._session is None or cls._session.closed:
-                settings = get_app_settings()
-                timeout = aiohttp.ClientTimeout(
-                    total=settings.http_client_timeout_total
+                await cls._init()
+
+            cls._usage_counter += 1
+            logger.debug(f"aiohttp usage counter (session): {cls._usage_counter}")
+
+            if cls._usage_counter >= cls._renew_threshold:
+                logger.error(
+                    f"Renewing aiohttp session after {cls._usage_counter} requests"
                 )
-                connector = await cls.get_connector()
-                cls._session = aiohttp.ClientSession(
-                    connector=connector,
-                    timeout=timeout,
+                old_session = cls._session
+                old_connector = cls._connector
+                asyncio.create_task(cls._schedule_cleanup(old_session, old_connector))
+                await cls._init()
+                cls._usage_counter = 0
+
+            return cls._session
+
+    @classmethod
+    async def get_connector(cls) -> aiohttp.TCPConnector:
+        """
+        Get the aiohttp TCP connector with configured limits and DNS cache TTL.
+        If uninitialized, it is created.
+        :return: aiohttp.TCPConnector instance
+        """
+        async with cls._lock:
+            if cls._connector is None or cls._connector.closed:
+                await cls._init()
+
+            cls._usage_counter += 1
+            logger.debug(f"aiohttp usage counter (connector): {cls._usage_counter}")
+
+            if cls._usage_counter >= cls._renew_threshold:
+                logger.error(
+                    f"Renewing aiohttp session after {cls._usage_counter} requests"
                 )
-        return cls._session
+                old_session = cls._session
+                old_connector = cls._connector
+                asyncio.create_task(cls._schedule_cleanup(old_session, old_connector))
+                await cls._init()
+                cls._usage_counter = 0
+
+            return cls._connector
+
+    @classmethod
+    async def _init(cls):
+        settings = get_app_settings()
+        cls._connector = aiohttp.TCPConnector(
+            limit=settings.http_client_limit,
+            ttl_dns_cache=settings.http_client_ttl_dns_cache,
+            enable_cleanup_closed=True,
+        )
+        cls._session = aiohttp.ClientSession(
+            connector=cls._connector,
+            timeout=aiohttp.ClientTimeout(total=settings.http_client_timeout_total),
+        )
+
+    @classmethod
+    async def _schedule_cleanup(
+        cls,
+        session: Optional[aiohttp.ClientSession],
+        connector: Optional[aiohttp.TCPConnector],
+    ):
+        await asyncio.sleep(cls._grace_period)
+        try:
+            if session is not None and not session.closed:
+                await session.close()
+            if connector is not None and not connector.closed:
+                await connector.close()
+            gc.collect()
+            logger.error(
+                f"Closed aiohttp session and connector: {session}, {connector}"
+            )
+        except Exception:
+            logger.error(f"Error during aiohttp cleanup: {session}, {connector}")
 
     @classmethod
     async def close(cls):
         """
-        Close the aiohttp ClientSession and TCPConnector gracefully.
-        :return:
+        Close the aiohttp session and connector if they are open.
         """
-        if cls._session is not None:
-            await cls._session.close()
+        async with cls._lock:
+            if cls._session:
+                await cls._session.close()
+            if cls._connector:
+                await cls._connector.close()
             cls._session = None
-
-        if cls._connector is not None:
-            await cls._connector.close()
             cls._connector = None
+            cls._usage_counter = 0
