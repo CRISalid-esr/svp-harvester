@@ -59,6 +59,7 @@ class ScopusClient:
                     async for doc in self.fetch(url, start=start + 25):
                         yield doc
             else:
+                await resp.release()
                 raise ExternalEndpointFailure(
                     f"Error code from Scopus API for request: {url} "
                     f"With code {resp.status}"

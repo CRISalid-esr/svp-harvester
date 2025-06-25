@@ -37,6 +37,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
             concept_informations.url, timeout=request_timeout
         ) as response:
             if not 200 <= response.status < 300:
+                await response.release()
                 raise DereferencingError(
                     f"Endpoint returned status {response.status}"
                     f" while dereferencing RDF concept {concept_informations.uri}"

@@ -28,6 +28,7 @@ class ResolverHTTPClient:
         async with session.get(url, timeout=request_timeout) as resp:
             if resp.status == 200:
                 return await resp.text()
+            await resp.release()
             raise ExternalEndpointFailure(
                 f"Error code while resolving URI : {url} with code {resp.status}"
             )

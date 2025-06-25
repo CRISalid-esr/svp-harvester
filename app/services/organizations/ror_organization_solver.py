@@ -62,6 +62,7 @@ class RorOrganizationSolver(OrganizationSolver):
             timeout=request_timeout,
         ) as response:
             if not 200 <= response.status < 300:
+                await response.release()
                 raise timeout(
                     f"Endpoint returned status {response.status}"
                     f" while dereferencing ROR organization"

@@ -67,6 +67,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(idref_url, timeout=request_timeout) as response:
             if not 200 <= response.status < 300:
+                await response.release()
                 raise DereferencingError(
                     f"Endpoint returned status {response.status}"
                     f" while dereferencing {idref_url}"

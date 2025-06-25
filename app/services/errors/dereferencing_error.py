@@ -76,7 +76,7 @@ def handle_organization_dereferencing_error(platform: str):
                     "Invalid response payload from organization identifier "
                     f"from {platform}: {org_info}"
                 ) from e
-            except (aiohttp.ClientTimeout, asyncio.TimeoutError) as e:
+            except asyncio.TimeoutError as e:
                 raise DereferencingError(
                     "Timeout while dereferencing organization identifier "
                     f"from {platform}: {org_info}"

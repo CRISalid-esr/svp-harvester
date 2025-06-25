@@ -49,6 +49,7 @@ class OpenAlexClient:
                         break
                     page_number += 1
                 else:
+                    await resp.release()
                     raise ExternalEndpointFailure(
                         f"Error code from OpenAlex API for request : {url} "
                         f"with code {resp.status}"

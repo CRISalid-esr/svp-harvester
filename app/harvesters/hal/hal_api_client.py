@@ -61,6 +61,7 @@ class HalApiClient:
                         continue
                     yield doc
             else:
+                await resp.release()
                 raise ExternalEndpointFailure(
                     f"Error code from HAL API for request : {url} "
                     f"with code {resp.status}"

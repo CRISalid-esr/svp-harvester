@@ -125,6 +125,9 @@ class AppSettings(BaseSettings):
     idref_concepts_publications_caching_duration: int = 90 * 24 * 3600
     wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600
 
+    enable_concept_dereferencing: bool = True
+    enable_organizations_dereferencing: bool = True
+
     institution_name: str = "XYZ University"
 
     git_commit: str = "-"
