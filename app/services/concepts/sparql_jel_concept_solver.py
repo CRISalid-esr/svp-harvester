@@ -5,10 +5,10 @@ from rdflib import Literal
 
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
-from app.http_client import get_aiohttp_connector
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.jel_concept_solver import JelConceptSolver
+from app.services.errors.dereferencing_error import DereferencingError
 
 
 class SparqlJelConceptSolver(JelConceptSolver):
@@ -28,14 +28,15 @@ class SparqlJelConceptSolver(JelConceptSolver):
     }
     """
 
-    def _get_client(self) -> SPARQLClient:
+    async def _get_client(self) -> SPARQLClient:
         settings = get_app_settings()
         assert (
             settings.svp_jel_proxy_url is not None
         ), "SVP_JEL_PROXY_URL environment variable must be set"
+        connector = await AioHttpClientManager.get_connector()
         return SPARQLClient(
             settings.svp_jel_proxy_url,
-            connector=get_aiohttp_connector(),
+            connector=connector,
             timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
         )
 
@@ -48,7 +49,7 @@ class SparqlJelConceptSolver(JelConceptSolver):
         :return: Concept
         """
         query = self.QUERY_TEMPLATE.replace("URI", concept_informations.uri)
-        client: SPARQLClient = self._get_client()
+        client: SPARQLClient = await self._get_client()
         try:
             sparql_response = await client.query(query)
             concept = DbConcept(uri=concept_informations.uri)

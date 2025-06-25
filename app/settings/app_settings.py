@@ -79,7 +79,7 @@ class AppSettings(BaseSettings):
     db_pool_size: int = 200
     max_overflow: int = 100
 
-    http_client_limit: int = 1000
+    http_client_limit: int = 100
     http_client_ttl_dns_cache: int = 300
     http_client_timeout_total: float = 30.0
 

@@ -10,7 +10,7 @@ from app.harvesters.exceptions.external_endpoint_failure import (
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 class HalApiClient:
@@ -34,7 +34,7 @@ class HalApiClient:
         :param url: the query string to send to the HAL API
         :return: A generator of results
         """
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         logger.info(f"Fetching HAL API with query: {self.HAL_API_URL}/?{url}")
         async with session.get(

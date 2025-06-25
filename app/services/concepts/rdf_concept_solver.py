@@ -7,7 +7,7 @@ from rdflib import SKOS, Graph, term
 from rdflib.term import Node
 
 from app.db.models.concept import Concept as DbConcept
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
 from app.services.errors.dereferencing_error import (
@@ -30,7 +30,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
         :param concept_informations: concept informations
         :return: Concept
         """
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
 
         async with session.get(

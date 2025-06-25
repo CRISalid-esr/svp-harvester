@@ -17,7 +17,7 @@ from app.db.models.reference import Reference
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
 from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
-from app.http_client import close as close_http_client
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.redis.redis_pool import RedisPool
 from app.settings.app_env_types import AppEnvTypes
 
@@ -89,7 +89,7 @@ class SvpHarvester(FastAPI):
     async def close_http_client_session() -> None:
         """Gracefully shutdown shared aiohttp session and connector."""
         logger.info("Closing shared aiohttp HTTP client session")
-        await close_http_client()
+        await AioHttpClientManager.close()
         logger.info("HTTP client session closed")
 
     @logger.catch(reraise=True)

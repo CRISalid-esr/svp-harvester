@@ -7,7 +7,7 @@ from app.amqp.amqp_interface import AMQPInterface
 from app.config import get_app_settings
 from app.db.models.reference import Reference
 from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
-from app.http_client import close as close_http_client
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 async def main():
@@ -32,7 +32,7 @@ async def main():
         # here
         logger.exception(f"Unhandled exception in listener: {exc}")
     finally:
-        await close_http_client()
+        await AioHttpClientManager.close()
         try:
             await amqp_interface.stop_listening()
         except asyncio.TimeoutError:

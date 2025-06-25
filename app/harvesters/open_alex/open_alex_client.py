@@ -7,7 +7,7 @@ from app.harvesters.exceptions.external_endpoint_failure import (
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 class OpenAlexClient:
@@ -26,7 +26,7 @@ class OpenAlexClient:
         :return: A generator of results
         """
         page_number = 1
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         while True:
             paginated_query = f"{url}&page={page_number}&per_page={self.PER_PAGE}"
             async with session.get(f"{self.OPEN_ALEX_URL}?{paginated_query}") as resp:

@@ -5,7 +5,7 @@ from aiohttp import ClientTimeout
 
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.errors.dereferencing_error import (
     handle_organization_dereferencing_error,
 )
@@ -54,7 +54,7 @@ class RorOrganizationSolver(OrganizationSolver):
             )
         ]
         seen.append("ror")
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
 
         async with session.get(

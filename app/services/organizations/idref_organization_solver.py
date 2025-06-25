@@ -7,7 +7,7 @@ from rdflib import OWL, Graph, term
 
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.errors.dereferencing_error import (
     DereferencingError,
     handle_organization_dereferencing_error,
@@ -63,7 +63,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         idref_url, idref_uri = self._build_url_from_organization_id(
             organization_information.identifier
         )
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(idref_url, timeout=request_timeout) as response:
             if not 200 <= response.status < 300:

@@ -8,7 +8,7 @@ from app.harvesters.exceptions.external_endpoint_failure import (
     ExternalEndpointFailure,
     handle_external_endpoint_failure,
 )
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 class ScopusClient:
@@ -34,7 +34,7 @@ class ScopusClient:
         """
         Fetch the results from Scopus API
         """
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         query = (
             f"{self.SCOPUS_URL}?{url}&apiKey={self.settings.scopus_api_key}"
             f"&insttoken={self.settings.scopus_inst_token}&view=COMPLETE&start={start}"

@@ -4,7 +4,7 @@ from app.harvesters.exceptions.external_endpoint_failure import (
     ExternalEndpointFailure,
     handle_external_endpoint_failure,
 )
-from app.http_client import get_aiohttp_session
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 class ResolverHTTPClient:
@@ -23,7 +23,7 @@ class ResolverHTTPClient:
         :param url: the URL to fetch
         :return: the document as text
         """
-        session = get_aiohttp_session()
+        session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(url, timeout=request_timeout) as resp:
             if resp.status == 200:
