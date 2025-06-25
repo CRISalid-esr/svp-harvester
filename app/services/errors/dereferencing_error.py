@@ -16,6 +16,12 @@ class DereferencingError(Exception):
 
 
 def handle_concept_dereferencing_error(func):
+    """
+    Decorator to handle errors during concept dereferencing.
+    :param func:
+    :return:
+    """
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
@@ -55,6 +61,12 @@ def handle_concept_dereferencing_error(func):
 
 
 def handle_organization_dereferencing_error(platform: str):
+    """
+    Decorator to handle errors during organization dereferencing.
+    :param platform: The platform from which the organization identifier is dereferenced.
+    :return:
+    """
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
