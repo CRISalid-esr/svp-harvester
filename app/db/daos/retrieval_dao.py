@@ -7,15 +7,15 @@ from sqlalchemy.orm import joinedload
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.issue import Issue
-from app.db.models.references_document_type import references_document_type_table
 from app.db.models.document_type import DocumentType
 from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.identifier import Identifier
-from app.db.models.reference_event import ReferenceEvent
-from app.db.models.retrieval import Retrieval
+from app.db.models.issue import Issue
 from app.db.models.reference import Reference
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.references_document_type import references_document_type_table
+from app.db.models.retrieval import Retrieval
 from app.models.people import Person
 from app.utilities.string_utilities import split_string
 
@@ -99,17 +99,7 @@ class RetrievalDAO(AbstractDAO):
         stmt = (
             select(Retrieval)
             .options(
-                joinedload(Retrieval.harvestings)
-                .joinedload(Harvesting.reference_events)
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.contributions)
-                )
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.identifiers)
-                )
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.document_type)
-                )
+                joinedload(Retrieval.harvestings).noload(Harvesting.reference_events)
             )
             .where(Retrieval.id == retrieval_id)
         )

@@ -116,7 +116,7 @@ class Reference(Base, VersionedRecord):
         "app.db.models.contribution.Contribution",
         back_populates="reference",
         cascade="all, delete",
-        lazy="joined",
+        lazy="raise",
     )
 
     issue_id: Mapped[int] = mapped_column(
