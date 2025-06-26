@@ -14,6 +14,7 @@ def execution_timer(function):
     :param function:
     :return:
     """
+
     def sync_wrapper(*args, **kwargs):
         if get_app_settings().app_env != AppEnvTypes.PROD:
             start = time.time()
@@ -21,9 +22,10 @@ def execution_timer(function):
             duration = time.time() - start
             function_name = function.__name__
             function_path = inspect.getfile(function)
-            logger.info(
+            logger.debug(
                 f"Execution time of {function_name} (defined in {function_path}): {duration} "
-                f"seconds")
+                f"seconds"
+            )
         else:
             result = function(*args, **kwargs)
         return result
@@ -35,9 +37,10 @@ def execution_timer(function):
             duration = time.time() - start
             function_name = function.__name__
             function_path = inspect.getfile(function)
-            logger.info(
+            logger.debug(
                 f"Execution time of {function_name} (defined in {function_path}): {duration} "
-                f"seconds")
+                f"seconds"
+            )
         else:
             result = await function(*args, **kwargs)
         return result

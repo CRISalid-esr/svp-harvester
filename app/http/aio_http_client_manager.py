@@ -32,7 +32,7 @@ class AioHttpClientManager:
             logger.debug(f"aiohttp usage counter (session): {cls._usage_counter}")
 
             if cls._usage_counter >= cls._renew_threshold:
-                logger.error(
+                logger.debug(
                     f"Renewing aiohttp session after {cls._usage_counter} requests"
                 )
                 old_session = cls._session
@@ -58,7 +58,7 @@ class AioHttpClientManager:
             logger.debug(f"aiohttp usage counter (connector): {cls._usage_counter}")
 
             if cls._usage_counter >= cls._renew_threshold:
-                logger.error(
+                logger.debug(
                     f"Renewing aiohttp session after {cls._usage_counter} requests"
                 )
                 old_session = cls._session
@@ -95,11 +95,11 @@ class AioHttpClientManager:
             if connector is not None and not connector.closed:
                 await connector.close()
             gc.collect()
-            logger.error(
+            logger.debug(
                 f"Closed aiohttp session and connector: {session}, {connector}"
             )
         except Exception:
-            logger.error(f"Error during aiohttp cleanup: {session}, {connector}")
+            logger.debug(f"Error during aiohttp cleanup: {session}, {connector}")
 
     @classmethod
     async def close(cls):
