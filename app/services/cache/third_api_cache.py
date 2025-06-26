@@ -1,7 +1,7 @@
 import pickle
 from typing import Any
 
-import aioredis
+import redis.asyncio as redis
 from loguru import logger
 
 from app.config import get_app_settings
@@ -33,15 +33,11 @@ class ThirdApiCache:
                         return pickle.loads(value)
                     except pickle.UnpicklingError:
                         logger.error(
-                            f"Cannot unpickle value from Redis for {api_name}:{key}, "
-                            f"will not use it"
+                            f"Cannot unpickle value from Redis for {api_name}:{key}"
                         )
                         return None
-        except aioredis.exceptions.ConnectionError as e:
-            logger.error(
-                f"Cannot connect to Redis cache (with error {e}),"
-                f"aborting cache retrieval for {api_name}:{key}"
-            )
+        except redis.exceptions.ConnectionError as e:
+            logger.error(f"Cannot connect to Redis for {api_name}:{key}: {e}")
             return None
 
     @staticmethod
@@ -57,24 +53,24 @@ class ThirdApiCache:
         """
         settings = get_app_settings()
         if not settings.third_api_caching_enabled:
-            return None
+            return
         try:
             expiration_time = getattr(settings, f"{api_name}_caching_duration")
         except AttributeError:
             logger.error(
-                f"Cannot find caching duration for {api_name}, will use default value"
-                f"please set {api_name}_caching_duration in settings"
-                f"or in uppercase {api_name.upper()}_CACHING_DURATION in environment variables"
-                f"to avoid this error in the future"
+                f"Cannot find caching duration for {api_name}, will use default value.\n"
+                f"Please set {api_name}_caching_duration in settings or "
+                f"{api_name.upper()}_CACHING_DURATION in env vars."
             )
             expiration_time = settings.third_api_default_caching_duration
+
         try:
             serialized_value = pickle.dumps(value)
         except pickle.PicklingError:
-            logger.error(
-                f"Cannot pickle value to Redis for {api_name}:{key}, will not cache it"
-            )
+            logger.error(f"Cannot pickle value for Redis cache {api_name}:{key}")
             return
+
         async with RedisPool().get_connection() as conn:
-            await conn.set(name=f"{api_name}:{key}", value=serialized_value)
-            await conn.expire(name=f"{api_name}:{key}", time=expiration_time)
+            await conn.set(
+                name=f"{api_name}:{key}", value=serialized_value, ex=expiration_time
+            )

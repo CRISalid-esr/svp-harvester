@@ -146,24 +146,6 @@ yarl = ">=1.17.0,<2.0"
 speedups = ["Brotli", "aiodns (>=3.3.0)", "brotlicffi"]
 
 [[package]]
-name = "aioredis"
-version = "2.0.1"
-description = "asyncio (PEP 3156) Redis support"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "aioredis-2.0.1-py3-none-any.whl", hash = "sha256:9ac0d0b3b485d293b8ca1987e6de8658d7dafcca1cddfcd1d506cae8cdebfdd6"},
-    {file = "aioredis-2.0.1.tar.gz", hash = "sha256:eaa51aaf993f2d71f54b70527c440437ba65340588afeb786cd87c55c89cd98e"},
-]
-
-[package.dependencies]
-async-timeout = "*"
-typing-extensions = "*"
-
-[package.extras]
-hiredis = ["hiredis (>=1.0)"]
-
-[[package]]
 name = "aiormq"
 version = "6.8.0"
 description = "Pure python AMQP asynchronous client library"
@@ -198,13 +180,17 @@ version = "0.12.0"
 description = "An asynchronous SPARQL library using aiohttp"
 optional = false
 python-versions = ">=3.6.0"
-files = [
-    {file = "aiosparql-0.12.0-py3-none-any.whl", hash = "sha256:f4a6cdfe8026a5a0914afae4caa881901d135ae2f0539cbb01e1ef7f6818e890"},
-    {file = "aiosparql-0.12.0.tar.gz", hash = "sha256:3c9873e1d74e0be2c7b932308b3267f42071ac3eaceaec4a97b1067a30df5829"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 aiohttp = ">=3.5.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/CRISalid-esr/aiosparql.git"
+reference = "master"
+resolved_reference = "48829527026fda605c4416ea08773af44202aa9f"
 
 [[package]]
 name = "alabaster"
@@ -2219,6 +2205,25 @@ lxml = ["lxml (>=4.3.0,<5.0.0)"]
 networkx = ["networkx (>=2.0.0,<3.0.0)"]
 
 [[package]]
+name = "redis"
+version = "6.2.0"
+description = "Python client for Redis database and key-value store"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "redis-6.2.0-py3-none-any.whl", hash = "sha256:c8ddf316ee0aab65f04a11229e94a64b2618451dab7a67cb2f77eb799d872d5e"},
+    {file = "redis-6.2.0.tar.gz", hash = "sha256:e821f129b75dde6cb99dd35e5c76e8c49512a5a0d8dfdc560b2fbd44b85ca977"},
+]
+
+[package.dependencies]
+async-timeout = {version = ">=4.0.3", markers = "python_full_version < \"3.11.3\""}
+
+[package.extras]
+hiredis = ["hiredis (>=3.2.0)"]
+jwt = ["pyjwt (>=2.9.0)"]
+ocsp = ["cryptography (>=36.0.1)", "pyopenssl (>=20.0.1)", "requests (>=2.31.0)"]
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -3114,4 +3119,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a61a5a1184e73ebba1841fb3224a5f6954d2bf86da13b56d8eb4fd4943cb3392"
+content-hash = "b87bc027c2521bb466182f85e11ca5e77ba2abf14d873299588f292e9e7c73b0"

@@ -188,7 +188,9 @@ class AMQPMessageProcessor:
             service = RetrievalService(
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode", False),
                 nullify=json_payload.get("nullify", False),
-                harvesters=json_payload.get("harvesters", []),
+                # harvesters=json_payload.get("harvesters", []),
+                # harvesters=["openalex", "idref", "hal", "ror", "scopus"],
+                harvesters=["openalex"],
                 events=json_payload.get("events", []),
             )
             # Create a queue to get results back
