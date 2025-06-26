@@ -1,5 +1,6 @@
 import asyncio
 
+import uvloop
 from loguru import logger
 from starlette.datastructures import State
 
@@ -44,6 +45,7 @@ async def main():
 
 
 if __name__ == "__main__":
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
