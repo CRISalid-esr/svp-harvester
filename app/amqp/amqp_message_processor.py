@@ -41,7 +41,7 @@ class AMQPMessageProcessor:
         self._init_publisher()
 
     def _init_publisher(self) -> None:
-        self.publisher = AMQPMessagePublisher(self.exchange)
+        self.publisher = AMQPMessagePublisher(self.exchange, self.reconnect_event)
 
     async def wait_for_message(self, worker_id: int) -> None:
         """

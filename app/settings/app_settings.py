@@ -61,6 +61,8 @@ class AppSettings(BaseSettings):
     amqp_harvesting_event_routing_key: str = "event.references.harvesting.state"
     amqp_retrieval_event_routing_key: str = "event.references.retrieval.state"
 
+    amqp_auto_reconnect: bool = True
+
     harvesters_settings_file: str = settings_file_path(filename="harvesters.yml")
     harvesters: list = lst_from_yml(yml_file=harvesters_settings_file)
 

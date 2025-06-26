@@ -109,18 +109,19 @@ class AMQPInterface:
                 await asyncio.sleep(0.1)
                 continue
             if self.app_state.amqp_disconnected:
-                logger.warning("AMQP disconnected. Pausing message consumption.")
+                if self.settings.amqp_auto_reconnect:
+                    await self._reconnect()
                 await asyncio.sleep(0.1)
                 continue
             try:
                 message = await self.pika_queue.get(no_ack=True, fail=False)
             except asyncio.TimeoutError:
-                logger.warning("Timeout while waiting for a message from queue")
+                logger.debug("Timeout while waiting for a message from queue")
                 await asyncio.sleep(0.5)
                 continue
             if message is None:
                 await asyncio.sleep(0.5)
-                logger.warning("No message received, go on listening")
+                logger.debug("No message received, go on listening")
                 continue
             message_id = message.message_id
             logger.info(f"Accepted new message : {message_id}")
@@ -159,3 +160,19 @@ class AMQPInterface:
         url = f"amqp://{user}:{password}@{host}/"
         self.pika_connexion: aio_pika.Connection = await aio_pika.connect_robust(url)
         self.pika_channel = await self.pika_connexion.channel(publisher_confirms=True)
+
+    async def _reconnect(self):
+        logger.warning("Attempting to reconnect to AMQP...")
+        try:
+            await self.stop_listening()
+            await asyncio.sleep(1)  # Avoid rapid reconnect loops
+
+            await self._connect()
+            await self._declare_exchange()
+            await self._bind_queue()
+
+            self.app_state.amqp_disconnected = False
+            logger.info("Successfully reconnected to AMQP.")
+        except Exception as e:
+            logger.error(f"AMQP reconnection failed: {e}")
+            self.app_state.amqp_disconnected = True
