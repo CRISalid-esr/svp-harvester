@@ -36,10 +36,10 @@ from app.services.hash.hash_service import HashService
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.merge_organization import merge_organization
+from app.services.organizations.organization_factory import OrganizationFactory
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
 )
-from app.services.organizations.organization_factory import OrganizationFactory
 from app.utilities.execution_timer_wrapper import execution_timer
 
 
@@ -359,87 +359,46 @@ class AbstractReferencesConverter(ABC):
         concept_informations: ConceptInformations,
         new_attempt: bool = False,
     ):
-        concept = None
-        # Look for the concept in the database
-        async with async_session() as session:
-            async with session.begin_nested():
-                # First we resolve the uri of the concept
-                ConceptFactory.complete_information(concept_informations)
-                concept = await ConceptDAO(session).get_concept_by_uri(
-                    concept_informations.uri
-                )
-                # If the concept is not in the database, try to create it by dereferencing the uri
-        if concept is not None:
-            return concept
-        try:
-            concept = await ConceptFactory.solve(concept_informations)
-        except DereferencingError as error:
-            # If the dereferencing fails, create a concept with the uri and the label
-            logger.error(
-                "Dereferencing failure for concept "
-                f"{concept_informations.uri} with error: {error}"
-            )
-            concept = Concept(uri=concept_informations.uri)
-            if concept_informations.label is not None:
-                concept.labels.append(
-                    Label(
-                        value=concept_informations.label,
-                        language=concept_informations.language,
-                    )
-                )
-        async with async_session() as session:
-            async with session.begin_nested():
-                session.add(concept)
-                try:
-                    await session.commit()
-                except IntegrityError as error:
-                    # The concept has been created by another process,
-                    # during resolution process,
-                    # so rollback the current transaction
-                    # and get the concept from the database
-                    assert new_attempt is False, (
-                        f"Unique uri {concept_informations.uri} violation "
-                        "cannot occur twice "
-                        f"during concept creation : {error}"
-                    )
-                    await session.rollback()
-                    concept = await self._get_or_create_concept_by_uri(
-                        concept_informations=concept_informations, new_attempt=True
-                    )
-        return concept
+        ConceptFactory.complete_information(concept_informations)
 
-    async def _get_or_create_concepts_by_uri(
-        self,
-        concept_informations: List[ConceptInformations],
-    ):
-        db_concepts = []
-        # get all the concepts from the database in one query
         async with async_session() as session:
-            db_concepts = await ConceptDAO(session).get_concepts_by_uri(
-                [
-                    concept_information.uri
-                    for concept_information in concept_informations
-                ]
+            concept = await ConceptDAO(session).get_concept_by_uri(
+                concept_informations.uri
             )
-        concepts_dereferencing_coroutines = []
-        # for each concept information, check if the concept is in the db_concepts list
-        # if not, create a coroutine to dereference the concept
-        for concept_information in concept_informations:
-            if not any(
-                concept.uri == concept_information.uri for concept in db_concepts
-            ):
-                concepts_dereferencing_coroutines.append(
-                    self._get_or_create_concept_by_uri(
-                        concept_information, new_attempt=False
-                    )
+            if concept is not None:
+                return concept
+
+            try:
+                concept = await ConceptFactory.solve(concept_informations)
+            except DereferencingError as error:
+                # If the dereferencing fails, create a concept with the uri and the label
+                logger.error(
+                    "Dereferencing failure for concept "
+                    f"{concept_informations.uri} with error: {error}"
                 )
-        # wait for all the coroutines to finish
-        concepts_dereferencing_results = await asyncio.gather(
-            *concepts_dereferencing_coroutines
-        )
-        # add the dereferenced concepts to the db_concepts list
-        db_concepts.extend(concepts_dereferencing_results)
-        return db_concepts
+                concept = Concept(uri=concept_informations.uri)
+                if concept_informations.label is not None:
+                    concept.labels.append(
+                        Label(
+                            value=concept_informations.label,
+                            language=concept_informations.language,
+                        )
+                    )
+
+            try:
+                session.add(concept)
+                await session.commit()
+            except IntegrityError as error:
+                assert new_attempt is False, (
+                    f"Unique uri {concept_informations.uri} violation "
+                    "cannot occur twice during concept creation: {error}"
+                )
+                await session.rollback()
+                return await self._get_or_create_concept_by_uri(
+                    concept_informations=concept_informations, new_attempt=True
+                )
+
+            return concept
 
     async def _get_or_create_document_type_by_uri(
         self, uri: str, label: str | None, new_attempt: bool = False
