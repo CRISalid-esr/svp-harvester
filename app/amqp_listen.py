@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 import uvloop
 from loguru import logger
@@ -6,9 +7,8 @@ from starlette.datastructures import State
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.config import get_app_settings
-from app.db.models.reference import Reference
-from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 from app.http.aio_http_client_manager import AioHttpClientManager
+from app.models.custom_medatata import register_custom_metadata_schemas
 
 
 async def main():
@@ -16,10 +16,17 @@ async def main():
     Main function to run the standalone AMQP listener service.
     :return:
     """
+    settings = get_app_settings()
+    logger.remove()
+    logger.add(
+        settings.logger_sink,
+        level=settings.loguru_level,
+        **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
+    )
+
     logger.info("Starting standalone AMQP listener service")
 
-    settings = get_app_settings()
-    Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
+    register_custom_metadata_schemas()
     app_state = State()
     amqp_interface = AMQPInterface(settings, app_state)
 
@@ -30,7 +37,6 @@ async def main():
     except asyncio.CancelledError:
         logger.info("Received cancellation signal, shutting down.")
     except Exception as exc:  # pylint: disable=broad-exception-caught
-        # here
         logger.exception(f"Unhandled exception in listener: {exc}")
     finally:
         await AioHttpClientManager.close()
