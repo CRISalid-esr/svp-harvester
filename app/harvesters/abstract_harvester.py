@@ -1,3 +1,5 @@
+import asyncio
+import gc
 import traceback
 from abc import ABC, abstractmethod
 from asyncio import Queue
@@ -161,23 +163,22 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                         or (new_ref_is_enhanced and self.fetch_enhancements)
                     ):
                         await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
-                    reference_event: Optional[
-                        ReferenceEvent
+                    reference_event_id_and_type: Optional[
+                        Tuple[int, str]
                     ] = await self._handle_converted_result(
                         new_ref=new_ref,
                         old_ref=old_ref,
                         comparaison_hash=comparaison_hash,
                         references_recorder=references_recorder,
                     )
-                    if reference_event is not None:
+                    if reference_event_id_and_type is not None:
                         await self._put_in_queue(
                             {
                                 "type": "ReferenceEvent",
-                                "id": reference_event.id,
-                                "change": reference_event.type,
+                                "id": reference_event_id_and_type[0],
+                                "change": reference_event_id_and_type[1],
                             }
                         )
-                        del reference_event
                 except UnexpectedFormatException as error:
                     # If an UnexpectedFormatException bubbles up to this point
                     # it means that one of the references could not be converted
@@ -190,6 +191,8 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     del new_ref, raw_data
                     if old_ref is not None:
                         del old_ref
+                    asyncio.sleep(0)
+                    gc.collect()
             await self._register_deleted_references(
                 existing_reference_identifiers=existing_reference_identifiers,
                 previous_reference_ids_and_source_ids=previous_reference_ids_and_source_ids,
@@ -226,7 +229,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         old_ref: Reference,
         comparaison_hash: str,
         references_recorder: ReferencesRecorder,
-    ) -> Optional[ReferenceEvent]:
+    ) -> Optional[Tuple[int, str]]:
         reference_event: Optional[ReferenceEvent] = None
 
         if old_ref is not None:
@@ -265,7 +268,9 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
             reference_event = await references_recorder.register_creation(
                 new_ref=new_ref,
             )
-        return reference_event
+        if reference_event is None:
+            return None
+        return reference_event.id, reference_event.type
 
     async def _register_deleted_references(
         self,
