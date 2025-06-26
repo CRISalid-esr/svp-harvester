@@ -4,6 +4,7 @@ from similarity.jarowinkler import JaroWinkler
 from similarity.normalized_levenshtein import NormalizedLevenshtein
 
 from app.config import get_app_settings
+from app.db.daos.concept_dao import ConceptDAO
 from app.db.models.abstract import Abstract
 from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
@@ -11,6 +12,7 @@ from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
+from app.db.session import async_session
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -263,17 +265,25 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             label_dict = subject.get("label", {})
             concept_label, concept_language = self._get_concept_label(label_dict)
 
-            db_concept = await self._get_or_create_concept_by_uri(
-                ConceptInformations(
-                    code=concept_id,
-                    label=concept_label,
-                    language=concept_language,
-                    source=concept_source,
-                )
+            concept_info = ConceptInformations(
+                code=concept_id,
+                label=concept_label,
+                language=concept_language,
+                source=concept_source,
             )
-            for label in db_concept.labels:
-                labels_with_source.setdefault(label.language, []).append(label.value)
-            yield db_concept
+
+            await self._get_or_create_concept_by_uri(concept_info)
+
+            # Reload to ensure the instance is attached and labels are accessible
+            async with async_session() as session:
+                db_concept = await ConceptDAO(session).get_concept_by_uri(
+                    concept_info.uri
+                )
+                for label in db_concept.labels:
+                    labels_with_source.setdefault(label.language, []).append(
+                        label.value
+                    )
+                yield db_concept
 
         for subject in subjects_without_source:
             label_dict = subject.get("label", {})
