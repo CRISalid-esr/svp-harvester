@@ -400,6 +400,39 @@ class AbstractReferencesConverter(ABC):
 
             return concept
 
+    async def _get_or_create_concepts_by_uri(
+        self,
+        concept_informations: List[ConceptInformations],
+    ):
+        db_concepts = []
+        # get all the concepts from the database in one query
+        async with async_session() as session:
+            db_concepts = await ConceptDAO(session).get_concepts_by_uri(
+                [
+                    concept_information.uri
+                    for concept_information in concept_informations
+                ]
+            )
+        concepts_dereferencing_coroutines = []
+        # for each concept information, check if the concept is in the db_concepts list
+        # if not, create a coroutine to dereference the concept
+        for concept_information in concept_informations:
+            if not any(
+                concept.uri == concept_information.uri for concept in db_concepts
+            ):
+                concepts_dereferencing_coroutines.append(
+                    self._get_or_create_concept_by_uri(
+                        concept_information, new_attempt=False
+                    )
+                )
+        # wait for all the coroutines to finish
+        concepts_dereferencing_results = await asyncio.gather(
+            *concepts_dereferencing_coroutines
+        )
+        # add the dereferenced concepts to the db_concepts list
+        db_concepts.extend(concepts_dereferencing_results)
+        return db_concepts
+
     async def _get_or_create_document_type_by_uri(
         self, uri: str, label: str | None, new_attempt: bool = False
     ):
