@@ -188,9 +188,7 @@ class AMQPMessageProcessor:
             service = RetrievalService(
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode", False),
                 nullify=json_payload.get("nullify", False),
-                # harvesters=json_payload.get("harvesters", []),
-                # harvesters=["openalex", "idref", "hal", "ror", "scopus"],
-                harvesters=["openalex"],
+                harvesters=json_payload.get("harvesters", []),
                 events=json_payload.get("events", []),
             )
             # Create a queue to get results back
@@ -237,43 +235,59 @@ class AMQPMessageProcessor:
     async def _wait_for_retrieval_result(
         self, result_queue: asyncio.Queue, retrieval: Retrieval, timeout: int
     ):
+        """
+        Wait for retrieval results on a queue and publish them.
+        Terminates on timeout or cancellation, and ensures the queue is drained properly.
+        """
         try:
             while True:
-                result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
+                try:
+                    result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
+                except asyncio.TimeoutError:
+                    logger.error(
+                        f"Retrieval {retrieval.id} results timeout after {timeout}s"
+                    )
+                    break
                 logger.debug(f"Got result {result} for retrieval: {retrieval.id}")
-                asyncio.create_task(self.publisher.publish(result))
-                await asyncio.sleep(0)
-        except asyncio.TimeoutError:
-            message = f"Retrieval {retrieval.id} results timeout"
-            logger.warning(message)
+                await self.publisher.publish(result)
+                result_queue.task_done()
+
+        except asyncio.CancelledError:
+            logger.warning(f"Retrieval {retrieval.id} result listener was cancelled")
             await self.publisher.publish(
                 {
                     "type": "Retrieval",
                     "error": True,
-                    "message": message,
+                    "message": f"Retrieval {retrieval.id} result processing cancelled",
                     "id": retrieval.id,
                 }
             )
-        except KeyboardInterrupt:
-            message = f"Retrieval {retrieval.id} results processing has been cancelled"
-            logger.warning(message)
+            raise
+
+        except Exception as e:
+            logger.exception(
+                f"Unexpected error during retrieval {retrieval.id} results processing"
+            )
             await self.publisher.publish(
                 {
                     "type": "Retrieval",
                     "error": True,
-                    "message": message,
+                    "message": f"Exception: {e}",
                     "id": retrieval.id,
                 }
             )
-        except Exception as exception:
-            message = f"Exception during retrieval {retrieval.id} results processing: {exception}"
-            logger.error(message)
-            await self.publisher.publish(
-                {
-                    "type": "Retrieval",
-                    "error": True,
-                    "message": message,
-                    "id": retrieval.id,
-                }
+            raise
+
+        finally:
+            logger.debug(
+                f"Retrieval {retrieval.id} result listener exiting. Draining queue..."
             )
-            raise exception
+            # Drain any remaining items to prevent hanging `join()` if used
+            while not result_queue.empty():
+                result_queue.get_nowait()
+                result_queue.task_done()
+
+            await result_queue.join()
+            logger.debug(
+                f"Retrieval {retrieval.id} result queue drained and listener exited"
+            )
