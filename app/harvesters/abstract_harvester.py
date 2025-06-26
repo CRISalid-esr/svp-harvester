@@ -125,6 +125,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         try:
             raw_data: AbstractHarvesterRawResult
             async for raw_data in self.fetch_results():
+                old_ref: Optional[Reference] = None
                 if raw_data in (None, "end"):
                     break
                 try:
@@ -191,7 +192,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     del new_ref, raw_data
                     if old_ref is not None:
                         del old_ref
-                    asyncio.sleep(0)
+                    await asyncio.sleep(0)
                     gc.collect()
             await self._register_deleted_references(
                 existing_reference_identifiers=existing_reference_identifiers,
