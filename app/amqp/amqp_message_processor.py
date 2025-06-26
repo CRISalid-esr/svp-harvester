@@ -277,17 +277,3 @@ class AMQPMessageProcessor:
                 }
             )
             raise
-
-        finally:
-            logger.debug(
-                f"Retrieval {retrieval.id} result listener exiting. Draining queue..."
-            )
-            # Drain any remaining items to prevent hanging `join()` if used
-            while not result_queue.empty():
-                result_queue.get_nowait()
-                result_queue.task_done()
-
-            await result_queue.join()
-            logger.debug(
-                f"Retrieval {retrieval.id} result queue drained and listener exited"
-            )
