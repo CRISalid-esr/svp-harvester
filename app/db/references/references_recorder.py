@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from app.db.daos.reference_dao import ReferenceDAO
 from app.db.daos.reference_event_dao import ReferenceEventDAO
@@ -31,7 +31,7 @@ class ReferencesRecorder:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=self.harvesting.id,
-                    reference=new_ref,
+                    reference_id=new_ref.id,
                     event_type=ReferenceEvent.Type.CREATED,
                 )
 
@@ -52,7 +52,7 @@ class ReferencesRecorder:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=self.harvesting.id,
-                    reference=new_ref,
+                    reference_id=new_ref.id,
                     event_type=ReferenceEvent.Type.UPDATED,
                     enhanced=enhanced,
                 )
@@ -78,7 +78,7 @@ class ReferencesRecorder:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=self.harvesting.id,
-                    reference=reference_to_register,
+                    reference_id=reference_to_register.id,
                     event_type=ReferenceEvent.Type.UNCHANGED,
                     enhanced=enhanced,
                 )
@@ -98,29 +98,29 @@ class ReferencesRecorder:
             )
             return ref
 
-    async def register_deletion(self, old_ref: Reference) -> ReferenceEvent:
+    async def register_deletion(self, old_ref_id: int) -> ReferenceEvent:
         """
         Register an event for a deleted reference
 
-        :param old_ref: the reference that was deleted
+        :param old_ref_id: id of the old reference that was deleted
         :return: the reference event related to the deletion
         """
         async with async_session() as session:
             async with session.begin():
                 return await ReferenceEventDAO(session).create_reference_event(
                     harvesting_id=self.harvesting.id,
-                    reference=old_ref,
+                    reference_id=old_ref_id,
                     event_type=ReferenceEvent.Type.DELETED,
                 )
 
     async def get_matching_references_before_harvesting(
         self, entity_id: int
-    ) -> List[Reference]:
+    ) -> List[Tuple[int, str]]:
         """
         Get the previously harvested references for an entity
 
         :param entity_id: id of the entity
-        :return: list of references
+        :return: list of reference tuples (reference_id, source_identifier)
         """
         async with async_session() as session:
             async with session.begin():

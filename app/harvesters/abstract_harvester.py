@@ -1,7 +1,7 @@
 import traceback
 from abc import ABC, abstractmethod
 from asyncio import Queue
-from typing import Optional, AsyncGenerator, Type, List
+from typing import Optional, AsyncGenerator, Type, List, Tuple
 
 from asyncpg import PostgresConnectionError
 from loguru import logger
@@ -113,19 +113,19 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         references_recorder = ReferencesRecorder(
             harvesting=(await self.get_harvesting())
         )
-        previous_references: list[Reference] = (
+        previous_reference_ids_and_source_ids: List[Tuple[int, str]] = (
             await references_recorder.get_matching_references_before_harvesting(
                 entity_id=self.entity_id
             )
             or []
         )
-        existing_references: list[Reference] = []
+        existing_reference_identifiers: list[str] = []
         try:
             raw_data: AbstractHarvesterRawResult
             async for raw_data in self.fetch_results():
+                if raw_data in (None, "end"):
+                    break
                 try:
-                    if raw_data is None or raw_data == "end":
-                        break
                     new_ref = self.converter.build(
                         raw_data=raw_data, harvester_version=self.get_version()
                     )
@@ -135,7 +135,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     comparaison_hash = new_ref.hash
                     new_ref_is_enhanced = False
                     if old_ref is not None:
-                        existing_references.append(old_ref)
+                        existing_reference_identifiers.append(old_ref.source_identifier)
                         new_ref_is_enhanced = VersionInfo.parse(
                             new_ref.harvester_version
                         ) > VersionInfo.parse(old_ref.harvester_version)
@@ -177,6 +177,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                                 "change": reference_event.type,
                             }
                         )
+                        del reference_event
                 except UnexpectedFormatException as error:
                     # If an UnexpectedFormatException bubbles up to this point
                     # it means that one of the references could not be converted
@@ -184,9 +185,14 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     # so we handle and continue
                     await self.handle_error(error)
                     continue
+                finally:
+                    # Free memory before next iteration
+                    del new_ref, raw_data
+                    if old_ref is not None:
+                        del old_ref
             await self._register_deleted_references(
-                existing_references=existing_references,
-                previous_references=previous_references,
+                existing_reference_identifiers=existing_reference_identifiers,
+                previous_reference_ids_and_source_ids=previous_reference_ids_and_source_ids,
                 references_recorder=references_recorder,
             )
             await self._update_harvesting_state(Harvesting.State.COMPLETED)
@@ -263,23 +269,20 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
 
     async def _register_deleted_references(
         self,
-        existing_references: List[Reference],
-        previous_references: List[Reference],
+        existing_reference_identifiers: List[str],
+        previous_reference_ids_and_source_ids: List[Tuple[int, str]],
         references_recorder: ReferencesRecorder,
     ):
         if ReferenceEvent.Type.DELETED.value not in self.event_types:
             return
-        existing_references_identifiers = list(
-            map(lambda ref: str(ref.source_identifier), existing_references)
-        )
-        deleted_references = [
-            ref
-            for ref in previous_references
-            if str(ref.source_identifier) not in existing_references_identifiers
+        deleted_references_ids = [
+            ref_id
+            for ref_id, source_id in previous_reference_ids_and_source_ids
+            if source_id not in existing_reference_identifiers
         ]
-        for reference in deleted_references:
+        for reference_id in deleted_references_ids:
             reference_event = await references_recorder.register_deletion(
-                old_ref=reference,
+                old_ref_id=reference_id
             )
             await self._put_in_queue(
                 {

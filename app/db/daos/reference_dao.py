@@ -1,5 +1,6 @@
 import datetime
-from typing import List
+from typing import List, Tuple
+
 from sqlalchemy import and_, or_, select, func
 from sqlalchemy.orm import joinedload, raiseload
 
@@ -9,11 +10,11 @@ from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.identifier import Identifier
 from app.db.models.issue import Issue
+from app.db.models.person import Person
 from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.retrieval import Retrieval
 from app.db.models.title import Title
-from app.db.models.person import Person
 from app.models.reference_summary import ReferenceSummary
 from app.utilities.string_utilities import split_string
 
@@ -29,7 +30,7 @@ class ReferenceDAO(AbstractDAO):
         entity_id: int,
         harvester: str,
         harvesting_id: int,
-    ) -> list[Reference]:
+    ) -> List[Tuple[int, str]]:
         """
         Get the references discovered by the harvesting that occurred before the given harvesting
         for the given entity and harvester
@@ -37,7 +38,7 @@ class ReferenceDAO(AbstractDAO):
         :param harvesting_id: id of the current harvesting
         :param entity_id: id of the entity
         :param harvester: harvester name of the harvesting
-        :return: list of references
+        :return: list of reference tuples (reference_id, source_identifier)
         """
         # Fin the last completed harvesting id
         # for the given entity and harvester
@@ -53,16 +54,15 @@ class ReferenceDAO(AbstractDAO):
         # find all references related to the last harvesting
         # that are not of "deleted" type
         query = (
-            select(Reference)
-            .options(raiseload("*"))
+            select(Reference.id, Reference.source_identifier)
             .join(ReferenceEvent)
             .join(
                 subquery, ReferenceEvent.harvesting_id == subquery.c.max_harvesting_id
             )
             .where(ReferenceEvent.type != ReferenceEvent.Type.DELETED.value)
         )
-        # return the references
-        return (await self.db_session.execute(query)).unique().scalars().all() or []
+        result = await self.db_session.execute(query)
+        return result.all() or []
 
     async def get_references_by_source_identifier(
         self, source_identifier: str, harvester: str

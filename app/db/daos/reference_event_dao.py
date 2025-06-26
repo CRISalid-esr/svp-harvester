@@ -20,7 +20,7 @@ class ReferenceEventDAO(AbstractDAO):
 
     async def create_reference_event(
         self,
-        reference: Reference,
+        reference_id: int,
         harvesting_id: int,
         event_type: ReferenceEvent.Type,
         enhanced: bool = False,
@@ -28,7 +28,7 @@ class ReferenceEventDAO(AbstractDAO):
         """
         Create a reference event for a reference
 
-        :param reference: reference to which the event is related
+        :param reference_id: id of the reference to which the event is related
         :param harvesting_id: harvesting id to which the event belongs
         :param event_type: state of the event
         :param enhanced: if the harvester version is increased
@@ -38,7 +38,7 @@ class ReferenceEventDAO(AbstractDAO):
         reference_event = ReferenceEvent(
             type=event_type.value, harvesting_id=harvesting_id, enhanced=enhanced
         )
-        reference_event.reference = reference
+        reference_event.reference_id = reference_id
         self.db_session.add(reference_event)
         return reference_event
 
