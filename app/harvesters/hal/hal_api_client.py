@@ -18,7 +18,7 @@ class HalApiClient:
 
     HAL_API_URL = "https://api.archives-ouvertes.fr/search"
 
-    def __init__(self, timeout: int = 30):
+    def __init__(self, timeout: int = 60):
         """
         Initialize the HAL API client.
 
@@ -35,7 +35,14 @@ class HalApiClient:
         :return: A generator of results
         """
         session = await AioHttpClientManager.get_session()
-        request_timeout = ClientTimeout(total=float(self.timeout))
+        request_timeout = (
+            ClientTimeout(
+                total=self.timeout,  # overall cap on the request lifecycle
+                connect=10,  # max time to establish TCP connection
+                sock_read=30,  # max time to wait for server response data
+                sock_connect=10,  # max time to establish socket (useful behind proxies)
+            ),
+        )
         logger.info(f"Fetching HAL API with query: {self.HAL_API_URL}/?{url}")
         async with session.get(
             f"{self.HAL_API_URL}/?{url}", timeout=request_timeout

@@ -102,26 +102,31 @@ class AMQPInterface:
     async def _listen_to_messages(self):
         while True:
             if self.inner_tasks_queue.full():
-                logger.debug(
+                logger.warning(
                     f"Queue is full with {self.inner_tasks_queue.qsize()} messages, "
                     f"pausing message consumption."
                 )
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1)
                 continue
             if self.app_state.amqp_disconnected:
                 if self.settings.amqp_auto_reconnect:
+                    logger.warning("AMQP is disconnected, waiting for reconnection")
                     await self._reconnect()
-                await asyncio.sleep(0.1)
+                else:
+                    logger.warning(
+                        "AMQP is disconnected and auto-reconnect is disabled"
+                    )
+                await asyncio.sleep(1)
                 continue
             try:
                 message = await self.pika_queue.get(no_ack=True, fail=False)
             except asyncio.TimeoutError:
-                logger.debug("Timeout while waiting for a message from queue")
-                await asyncio.sleep(0.5)
+                logger.warning("Timeout while waiting for a message from queue")
+                await asyncio.sleep(2)
                 continue
             if message is None:
-                await asyncio.sleep(0.5)
-                logger.debug("No message received, go on listening")
+                await asyncio.sleep(5)
+                logger.info("No message received, go on listening")
                 continue
             message_id = message.message_id
             logger.info(f"Accepted new message : {message_id}")

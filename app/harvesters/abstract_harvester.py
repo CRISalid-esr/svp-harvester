@@ -205,17 +205,17 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         # harvester should let external ExternalEndpointFailure bubble up to this point
         # because the harvesting cant recover from them
         except ExternalEndpointFailure as error:
-            await self.handle_error(error)
+            await self.handle_error(error, with_stack=True)
         # if an UnexpectedFormatException bubbles up to this point
         # it means that the harvester prefers to stop delivering results
         # but results may have been delivered before the exception
         # An harvester could decide to handle this exception on a lower level
         # and continue to deliver results
         except UnexpectedFormatException as error:
-            await self.handle_error(error)
+            await self.handle_error(error, with_stack=True)
         # Database failure
         except (ConnectionError, PostgresConnectionError) as connection_error:
-            await self.handle_error(connection_error)
+            await self.handle_error(connection_error, with_stack=True)
         except SqlTimeoutError as connection_error:
             await self.handle_error(connection_error)
         # this is for debugging purpose only

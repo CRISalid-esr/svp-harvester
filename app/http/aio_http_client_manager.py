@@ -14,7 +14,7 @@ class AioHttpClientManager:
     _lock = asyncio.Lock()
     _usage_counter = 0
     _renew_threshold = 100
-    _grace_period = 60  # seconds
+    _grace_period = 300  # seconds
 
     @classmethod
     async def get_session(cls) -> aiohttp.ClientSession:

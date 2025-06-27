@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import AsyncGenerator
+from venv import logger
 
 import aiohttp
 from aiosparql.client import SPARQLClient
@@ -224,7 +225,8 @@ class IdrefSparqlClient:
         for source, prefixes in self.DATA_SOURCES_PREFIXES.items():
             if any(uri.startswith(prefix) for prefix in prefixes):
                 return source.value
-        raise ExternalEndpointFailure(f"Unknown data source for uri {uri}")
+        logger.error(f"Unknown data source for uri {uri}")
+        return None
 
     async def _get_client(self) -> SPARQLClient:
         connector = await AioHttpClientManager.get_connector()
@@ -232,10 +234,10 @@ class IdrefSparqlClient:
             DATA_IDREF_FR_URL,
             connector=connector,
             timeout=aiohttp.ClientTimeout(
-                total=20,  # overall cap on the request lifecycle
-                connect=5,  # max time to establish TCP connection
-                sock_read=15,  # max time to wait for server response data
-                sock_connect=5,  # max time to establish socket (useful behind proxies)
+                total=50,  # overall cap on the request lifecycle
+                connect=10,  # max time to establish TCP connection
+                sock_read=30,  # max time to wait for server response data
+                sock_connect=10,  # max time to establish socket (useful behind proxies)
             ),
             connector_owner=False,
         )
