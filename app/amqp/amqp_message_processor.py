@@ -62,7 +62,6 @@ class AMQPMessageProcessor:
                     message, start_time, worker_id
                 )
                 await self._process_message(payload)
-                self.tasks_queue.task_done()
                 logger.debug(
                     f"Message {message.message_id}  processed by {worker_id} in "
                     f"{datetime.now() - start_time}"
@@ -84,6 +83,7 @@ class AMQPMessageProcessor:
                 requeue = await self._handle_unexpected_error(exception, worker_id)
             finally:
                 await self._post_process_message(message, requeue, worker_id)
+                self.tasks_queue.task_done()
                 end_time = datetime.now()
                 logger.warning(
                     f"Performance : Message  processed by {worker_id} "
@@ -104,7 +104,6 @@ class AMQPMessageProcessor:
                     f"AMQP error during message nack for {worker_id} : {nack_error}"
                 )
                 self.reconnect_event.set()
-            self.tasks_queue.task_done()
 
     async def _handle_unexpected_error(self, exception, worker_id):
         logger.error(
@@ -253,17 +252,7 @@ class AMQPMessageProcessor:
                 result_queue.task_done()
 
         except asyncio.CancelledError:
-            logger.warning(f"Retrieval {retrieval.id} result listener was cancelled")
-            await self.publisher.publish(
-                {
-                    "type": "Retrieval",
-                    "error": True,
-                    "message": f"Retrieval {retrieval.id} result processing cancelled",
-                    "id": retrieval.id,
-                }
-            )
-            raise
-
+            logger.debug(f"Retrieval {retrieval.id} result listener stopped")
         except Exception as e:
             logger.exception(
                 f"Unexpected error during retrieval {retrieval.id} results processing"
