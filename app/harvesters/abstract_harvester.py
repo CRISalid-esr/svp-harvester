@@ -186,7 +186,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     # it means that one of the references could not be converted
                     # but the harvester can continue to deliver results
                     # so we handle and continue
-                    await self.handle_error(error)
+                    await self.handle_error(error, with_stack=True)
                     continue
                 finally:
                     # Free memory before next iteration
@@ -218,7 +218,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         except (ConnectionError, PostgresConnectionError) as connection_error:
             await self.handle_error(connection_error, with_stack=True)
         except SqlTimeoutError as connection_error:
-            await self.handle_error(connection_error)
+            await self.handle_error(connection_error, with_stack=True)
         # this is for debugging purpose only
         # as no other exception types are expected during normal execution
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -322,13 +322,13 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     self.harvesting_id, error
                 )
 
-    async def handle_error(self, error: Exception, with_stack: bool = False) -> None:
+    async def handle_error(self, error: Exception, with_stack: bool = True) -> None:
         """
         Persist and notify an error occurred during the harvesting
         :param error: The error object
         :return: None
         """
-        logger.error(error)
+        logger.error(error, exc_info=with_stack)
         if with_stack:
             logger.error(traceback.format_exc())
         await self._update_harvesting_state(Harvesting.State.FAILED)

@@ -17,7 +17,7 @@ class AioHttpClientManager:
     _session: Optional[aiohttp.ClientSession] = None
     _lock = asyncio.Lock()
     _usage_counter = 0
-    _renew_threshold = 100000
+    _renew_threshold = 1000
     _grace_period = 300  # seconds
 
     @classmethod
