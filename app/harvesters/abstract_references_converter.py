@@ -391,7 +391,7 @@ class AbstractReferencesConverter(ABC):
             except IntegrityError as error:
                 assert new_attempt is False, (
                     f"Unique uri {concept_informations.uri} violation "
-                    "cannot occur twice during concept creation: {error}"
+                    f"cannot occur twice during concept creation: {error}"
                 )
                 await session.rollback()
                 return await self._get_or_create_concept_by_uri(
