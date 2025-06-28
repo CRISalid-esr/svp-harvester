@@ -11,6 +11,7 @@ from starlette.testclient import TestClient
 from loguru import logger
 from app.db.models.concept import Concept as DbConcept
 from app.db.session import engine, Base
+from app.models.custom_medatata import register_custom_metadata_schemas
 from app.services.concepts.abes_concept_solver import AbesConceptSolver
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.errors.dereferencing_error import DereferencingError
@@ -65,10 +66,7 @@ def fixture_custom_metadata_schema():
     Cancel the automatic registration of the custom metadata schema
     :return:
     """
-    # pylint: disable=import-outside-toplevel
-    from app.main import SvpHarvester
-
-    SvpHarvester.register_custom_metadata_schemas()
+    register_custom_metadata_schemas()
 
 
 @pytest.fixture(autouse=True, name="event_loop")
