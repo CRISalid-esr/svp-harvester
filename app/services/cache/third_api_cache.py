@@ -4,6 +4,7 @@ from typing import Any
 from loguru import logger
 
 from app.config import get_app_settings
+
 # from app.redis.fake_redis_pool import FakeRedisPool as RedisPool
 from app.redis.redis_pool import RedisPool
 
