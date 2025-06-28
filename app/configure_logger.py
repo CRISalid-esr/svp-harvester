@@ -1,9 +1,11 @@
+import sys
+
 from loguru import logger
 
 from app.config import get_app_settings
 
 
-def _configure_logger():
+def configure_logger():
     """
     Configure the logger
     :return:

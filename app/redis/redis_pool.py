@@ -60,5 +60,5 @@ class RedisPool:
             async with self.get_connection() as conn:
                 await conn.ping()
                 return True
-        except redis.exceptions.ConnectionError:
+        except ConnectionError:
             return False

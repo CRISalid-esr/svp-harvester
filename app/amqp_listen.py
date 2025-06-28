@@ -5,7 +5,7 @@ from loguru import logger
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.config import get_app_settings
-from app.configure_logger import _configure_logger
+from app.configure_logger import configure_logger
 from app.http.aio_http_client_manager import AioHttpClientManager
 from app.models.custom_medatata import register_custom_metadata_schemas
 
@@ -15,12 +15,12 @@ async def main():
     Main function to run the standalone AMQP listener service.
     :return:
     """
-    _configure_logger()
+    configure_logger()
     register_custom_metadata_schemas()
     await _listen_to_rabbitmq()
 
 
-async def _listen_to_rabbitmq(settings):
+async def _listen_to_rabbitmq():
     settings = get_app_settings()
     amqp_interface = AMQPInterface(settings)
     try:

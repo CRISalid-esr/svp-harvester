@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 class FakeRedisPool:
     """
     Fake RedisPool singleton that always returns None for get() operations.
@@ -31,7 +32,6 @@ class FakeRedisPool:
             Simulate closing the Redis connection.
             :return:
             """
-            pass
 
         async def set(self, name, value, ex=None):  # pylint: disable=unused-argument
             """
@@ -41,9 +41,12 @@ class FakeRedisPool:
             :param ex:
             :return:
             """
-            pass
 
     class Connexion:
+        """
+        Context manager for the fake Redis connection.
+        """
+
         def __init__(self):
             self.conn = FakeRedisPool.FakeRedis()
 
