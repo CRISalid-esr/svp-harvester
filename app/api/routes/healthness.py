@@ -21,7 +21,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     response_model=HealthCheck,
 )
-async def get_health(request: Request, response: Response) -> HealthCheck:
+async def get_health(_request: Request, _response: Response) -> HealthCheck:
     """
     ## Perform a Health Check
     Endpoint to perform a healthcheck on.
