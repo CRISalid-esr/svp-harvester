@@ -101,7 +101,7 @@ class AMQPInterface:
                     logger.debug(
                         f"Message queued. Inner queue size: {self.inner_tasks_queue.qsize()}"
                     )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             logger.error(f"Exception during AMQP listening: {e}", exc_info=True)
 
     async def _declare_exchange(self) -> None:
