@@ -3,4 +3,8 @@ from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchem
 
 
 def register_custom_metadata_schemas():
+    """
+    Register custom metadata schemas for HAL.
+    :return: None
+    """
     Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
