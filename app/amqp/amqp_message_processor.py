@@ -41,7 +41,7 @@ class AMQPMessageProcessor:
         self._init_publisher()
 
     def _init_publisher(self) -> None:
-        self.publisher = AMQPMessagePublisher(self.exchange, self.reconnect_event)
+        self.publisher = AMQPMessagePublisher(self.exchange)
 
     async def wait_for_message(self, worker_id: int) -> None:
         """
@@ -54,41 +54,44 @@ class AMQPMessageProcessor:
 
         while True:
             requeue = False
+            message = await self.tasks_queue.get()
             start_time = datetime.now()
-            try:
-                message = await self.tasks_queue.get()
-                start_time = datetime.now()
-                payload = await self._get_message_payload(
-                    message, start_time, worker_id
-                )
-                await self._process_message(payload)
-                logger.debug(
-                    f"Message {message.message_id}  processed by {worker_id} in "
-                    f"{datetime.now() - start_time}"
-                )
-            except ChannelInvalidStateError as channel_error:
-                await self._handle_channel_failure(channel_error, worker_id)
-                return
-            except AMQPError as ack_error:
-                requeue = await self._handle_amqp_error(ack_error, worker_id)
-            except KeyboardInterrupt as keyboard_interrupt:
-                await self._handle_application_stop(
-                    keyboard_interrupt, message, worker_id
-                )
-            except InvalidEntityError as invalid_entity_error:
-                requeue = await self._handle_invalid_entity(invalid_entity_error)
-            except (ConnectionError, PostgresConnectionError) as connection_error:
-                requeue = await self._handle_database_error(connection_error, worker_id)
-            except Exception as exception:  # pylint: disable=broad-exception-caught
-                requeue = await self._handle_unexpected_error(exception, worker_id)
-            finally:
-                await self._post_process_message(message, requeue, worker_id)
-                self.tasks_queue.task_done()
-                end_time = datetime.now()
-                logger.warning(
-                    f"Performance : Message  processed by {worker_id} "
-                    f"in {end_time - start_time} for payload {payload if payload else 'None'}"
-                )
+            async with message.process(ignore_processed=True):
+                payload = message.body
+                try:
+                    await self._process_message(payload)
+                    await message.ack()
+                    logger.debug(
+                        f"Message {message.message_id}  processed by {worker_id} in "
+                        f"{datetime.now() - start_time}"
+                    )
+                except ChannelInvalidStateError as channel_error:
+                    await self._handle_channel_failure(channel_error, worker_id)
+                    return
+                except AMQPError as ack_error:
+                    await self._handle_amqp_error(ack_error, worker_id)
+                    requeue = True
+                except KeyboardInterrupt as keyboard_interrupt:
+                    await self._handle_application_stop(
+                        keyboard_interrupt, message, worker_id
+                    )
+                except InvalidEntityError as invalid_entity_error:
+                    await self._handle_invalid_entity(invalid_entity_error)
+                    requeue = False  # TODO implement dead letter queue
+                except (ConnectionError, PostgresConnectionError) as connection_error:
+                    await self._handle_database_error(connection_error, worker_id)
+                    requeue = True
+                except Exception as exception:  # pylint: disable=broad-exception-caught
+                    await self._handle_unexpected_error(exception, worker_id)
+                    requeue = True
+                finally:
+                    await self._post_process_message(message, requeue, worker_id)
+                    self.tasks_queue.task_done()
+                    end_time = datetime.now()
+                    logger.warning(
+                        f"Performance : Message  processed by {worker_id} "
+                        f"in {end_time - start_time} for payload {payload if payload else 'None'}"
+                    )
 
     async def _post_process_message(self, message, requeue, worker_id):
         if message is not None and not message.processed:
@@ -110,18 +113,15 @@ class AMQPMessageProcessor:
             f"Unexpected exception during {worker_id} message processing: {exception}"
         )
         logger.error(traceback.format_exc())
-        return True
 
     async def _handle_database_error(self, connection_error, worker_id):
         logger.error(
             f"Connection refused during {worker_id} message processing : {connection_error}"
         )
-        return True
 
     @staticmethod
     async def _handle_invalid_entity(invalid_entity_error):
         logger.error(f"Invalid entity submitted : {invalid_entity_error}")
-        return False
 
     @staticmethod
     async def _handle_application_stop(keyboard_interrupt, message, worker_id):
@@ -133,7 +133,6 @@ class AMQPMessageProcessor:
     async def _handle_amqp_error(self, ack_error, worker_id):
         logger.error(f"AMQP error occurred during {worker_id} message ack: {ack_error}")
         self.reconnect_event.set()
-        return True
 
     async def _handle_channel_failure(self, channel_error, worker_id):
         logger.error(

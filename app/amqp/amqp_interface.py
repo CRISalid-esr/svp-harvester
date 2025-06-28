@@ -5,7 +5,6 @@ from urllib.parse import quote
 import aio_pika
 from aio_pika import ExchangeType
 from loguru import logger
-from starlette.datastructures import State
 
 from app.amqp.amqp_message_processor import AMQPMessageProcessor
 from app.settings.app_settings import AppSettings
@@ -17,7 +16,9 @@ DEFAULT_RESULT_TIMEOUT = 600
 class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
-    def __init__(self, settings: AppSettings, state: State):
+    INNER_TASKS_QUEUE_LENGTH = 10000
+
+    def __init__(self, settings: AppSettings):
         """
         Init AMQP Connexion class
 
@@ -26,8 +27,6 @@ class AMQPInterface:
 
         """
         self.settings = settings
-        self.app_state = state
-        self.app_state.amqp_disconnected = False
         self.pika_queue: aio_pika.Queue | None = None
         self.pika_channel: aio_pika.Channel | None = None
         self.pika_exchange: aio_pika.Exchange | None = None
@@ -43,18 +42,7 @@ class AMQPInterface:
         await self._declare_exchange()
         await self._attach_message_processing_workers()
         await self._bind_queue()
-        asyncio.create_task(self._listen_for_reconnect())
         await sleep(0)
-
-    async def _listen_for_reconnect(self):
-        """Listen for reconnect signals from worker tasks."""
-        await self.reconnect_event.wait()  # Wait until reconnect is triggered
-        logger.error("Reconnect signal received. Positioning flag in app state.")
-        self.app_state.amqp_disconnected = True
-
-    async def listen(self):
-        """Listen to AMQP queue"""
-        await self._listen_to_messages()
 
     async def stop_listening(self) -> None:
         """Stop listening to AMQP queue"""
@@ -79,9 +67,7 @@ class AMQPInterface:
 
     async def _attach_message_processing_workers(self):
         self.message_processing_workers = []
-        self.inner_tasks_queue = asyncio.Queue(
-            maxsize=self.settings.inner_task_queue_length
-        )
+        self.inner_tasks_queue = asyncio.Queue(maxsize=self.INNER_TASKS_QUEUE_LENGTH)
         for worker_id in range(self.settings.inner_task_parallelism_limit):
             processor = await self._message_processor()
             self.message_processing_workers.append(
@@ -99,42 +85,24 @@ class AMQPInterface:
             reconnect_event=self.reconnect_event,
         )
 
-    async def _listen_to_messages(self):
-        while True:
-            if self.inner_tasks_queue.full():
-                logger.warning(
-                    f"Queue is full with {self.inner_tasks_queue.qsize()} messages, "
-                    f"pausing message consumption."
-                )
-                await asyncio.sleep(1)
-                continue
-            if self.app_state.amqp_disconnected:
-                if self.settings.amqp_auto_reconnect:
-                    logger.warning("AMQP is disconnected, waiting for reconnection")
-                    await self._reconnect()
-                else:
-                    logger.warning(
-                        "AMQP is disconnected and auto-reconnect is disabled"
+    async def listen(self):
+        """Listen to AMQP queue using prefetch-based flow control."""
+        if not self.pika_queue:
+            logger.error("Cannot listen: pika_queue is not initialized.")
+            return
+
+        logger.info("Starting AMQP listening loop (prefetch-controlled)")
+
+        try:
+            async with self.pika_queue.iterator() as queue_iter:
+                async for message in queue_iter:
+                    logger.debug(f"Received message: {message.body}")
+                    await self.inner_tasks_queue.put(message)
+                    logger.debug(
+                        f"Message queued. Inner queue size: {self.inner_tasks_queue.qsize()}"
                     )
-                await asyncio.sleep(1)
-                continue
-            try:
-                message = await self.pika_queue.get(no_ack=True, fail=False)
-            except asyncio.TimeoutError:
-                logger.warning("Timeout while waiting for a message from queue")
-                await asyncio.sleep(2)
-                continue
-            if message is None:
-                await asyncio.sleep(5)
-                logger.info("No message received, go on listening")
-                continue
-            message_id = message.message_id
-            logger.info(f"Accepted new message : {message_id}")
-            await self.inner_tasks_queue.put(message)
-            logger.debug(
-                f"Current size of inner tasks queue after adding message:"
-                f" {self.inner_tasks_queue.qsize()}"
-            )
+        except Exception as e:
+            logger.error(f"Exception during AMQP listening: {e}", exc_info=True)
 
     async def _declare_exchange(self) -> None:
         """
@@ -147,9 +115,6 @@ class AMQPInterface:
 
     async def _bind_queue(self) -> None:
         # Bind service message queue to publication exchange
-        await self.pika_channel.set_qos(
-            prefetch_count=self.settings.amqp_prefetch_count
-        )
         self.pika_queue = await self.pika_channel.declare_queue(
             self.settings.amqp_queue_name,
             durable=True,
@@ -165,19 +130,6 @@ class AMQPInterface:
         url = f"amqp://{user}:{password}@{host}/"
         self.pika_connexion: aio_pika.Connection = await aio_pika.connect_robust(url)
         self.pika_channel = await self.pika_connexion.channel(publisher_confirms=True)
-
-    async def _reconnect(self):
-        logger.warning("Attempting to reconnect to AMQP...")
-        try:
-            await self.stop_listening()
-            await asyncio.sleep(1)  # Avoid rapid reconnect loops
-
-            await self._connect()
-            await self._declare_exchange()
-            await self._bind_queue()
-
-            self.app_state.amqp_disconnected = False
-            logger.info("Successfully reconnected to AMQP.")
-        except Exception as e:
-            logger.error(f"AMQP reconnection failed: {e}")
-            self.app_state.amqp_disconnected = True
+        await self.pika_channel.set_qos(
+            prefetch_count=self.settings.amqp_prefetch_count
+        )

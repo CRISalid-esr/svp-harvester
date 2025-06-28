@@ -3,7 +3,6 @@ import sys
 
 import uvloop
 from loguru import logger
-from starlette.datastructures import State
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.config import get_app_settings
@@ -17,19 +16,13 @@ async def main():
     :return:
     """
     settings = get_app_settings()
-    logger.remove()
-    logger.add(
-        settings.logger_sink,
-        level=settings.loguru_level,
-        **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
-    )
-
-    logger.info("Starting standalone AMQP listener service")
-
+    await _configure_logger(settings)
     register_custom_metadata_schemas()
-    app_state = State()
-    amqp_interface = AMQPInterface(settings, app_state)
+    await _listen_to_rabbitmq(settings)
 
+
+async def _listen_to_rabbitmq(settings):
+    amqp_interface = AMQPInterface(settings)
     try:
         await amqp_interface.connect()
         logger.info("Connected to RabbitMQ. Starting listener loop.")
@@ -48,6 +41,16 @@ async def main():
             logger.exception(f"Error during shutdown: {e}")
         else:
             logger.info("Graceful shutdown complete")
+
+
+async def _configure_logger(settings):
+    logger.remove()
+    logger.add(
+        settings.logger_sink,
+        level=settings.loguru_level,
+        **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
+    )
+    logger.info("Starting standalone AMQP listener service")
 
 
 if __name__ == "__main__":
