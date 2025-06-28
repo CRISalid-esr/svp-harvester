@@ -7,16 +7,40 @@ class FakeRedisPool:
     _instance = None
 
     class FakeRedis:
-        async def get(self, name=None):
+        """
+        Fake Redis client that simulates a Redis connection.
+        """
+
+        async def get(self, name=None):  # pylint: disable=unused-argument
+            """
+            Simulate a Redis get operation.
+            :param name:
+            :return:
+            """
             return None
 
         async def ping(self):
+            """
+            Simulate a Redis ping operation.
+            :return:
+            """
             return True  # Optional: let ping pass if check_ready() is used
 
         async def close(self):
+            """
+            Simulate closing the Redis connection.
+            :return:
+            """
             pass
 
-        async def set(self, name, value, ex=None):
+        async def set(self, name, value, ex=None):  # pylint: disable=unused-argument
+            """
+            Simulate a Redis set operation.
+            :param name:
+            :param value:
+            :param ex:
+            :return:
+            """
             pass
 
     class Connexion:
@@ -35,7 +59,15 @@ class FakeRedisPool:
         return cls._instance
 
     def get_connection(self):
+        """
+        Get a fake Redis connection.
+        :return:
+        """
         return FakeRedisPool.Connexion()
 
     async def check_ready(self) -> bool:
+        """
+        Check if the Redis connection is ready.
+        :return:
+        """
         return True  # Simulate that Redis is always ready
