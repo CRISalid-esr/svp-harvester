@@ -77,7 +77,7 @@ class AMQPMessageProcessor:
                     )
                 except InvalidEntityError as invalid_entity_error:
                     await self._handle_invalid_entity(invalid_entity_error)
-                    requeue = False  # TODO implement dead letter queue
+                    requeue = False  # except if we implement dead letter queue
                 except (ConnectionError, PostgresConnectionError) as connection_error:
                     await self._handle_database_error(connection_error, worker_id)
                     requeue = True
