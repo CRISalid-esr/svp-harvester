@@ -35,14 +35,13 @@ class HalApiClient:
         :return: A generator of results
         """
         session = await AioHttpClientManager.get_session()
-        request_timeout = (
-            ClientTimeout(
-                total=self.timeout,  # overall cap on the request lifecycle
-                connect=10,  # max time to establish TCP connection
-                sock_read=30,  # max time to wait for server response data
-                sock_connect=10,  # max time to establish socket (useful behind proxies)
-            ),
+        request_timeout = ClientTimeout(
+            total=self.timeout,  # overall cap on the request lifecycle
+            connect=10,  # max time to establish TCP connection
+            sock_read=30,  # max time to wait for server response data
+            sock_connect=10,  # max time to establish socket (useful behind proxies)
         )
+
         logger.info(f"Fetching HAL API with query: {self.HAL_API_URL}/?{url}")
         async with session.get(
             f"{self.HAL_API_URL}/?{url}", timeout=request_timeout
