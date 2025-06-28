@@ -9,6 +9,10 @@ from app.config import get_app_settings
 
 
 class AioHttpClientManager:
+    """
+    A singleton manager for aiohttp ClientSession and TCPConnector.
+    """
+
     _connector: Optional[aiohttp.TCPConnector] = None
     _session: Optional[aiohttp.ClientSession] = None
     _lock = asyncio.Lock()
@@ -98,7 +102,7 @@ class AioHttpClientManager:
             logger.debug(
                 f"Closed aiohttp session and connector: {session}, {connector}"
             )
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             logger.debug(f"Error during aiohttp cleanup: {session}, {connector}")
 
     @classmethod
