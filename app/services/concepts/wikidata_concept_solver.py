@@ -21,6 +21,7 @@ class WikidataConceptSolver(ConceptSolver):
     Wikidata concept solver
     """
 
+    # pylint: disable=duplicate-code
     @handle_concept_dereferencing_error
     async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
         """

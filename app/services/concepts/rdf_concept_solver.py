@@ -22,6 +22,7 @@ class RdfConceptSolver(ConceptSolver, ABC):
     Abstract mother class for concept solvers using RDF
     """
 
+    # pylint: disable=duplicate-code
     @execution_timer
     @handle_concept_dereferencing_error
     async def solve(self, concept_informations: ConceptInformations) -> DbConcept:
