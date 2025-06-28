@@ -36,6 +36,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
 
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: SparqlRawResult, new_ref: Reference) -> None:
+        # pylint: disable=too-many-locals
         dict_payload: dict = raw_data.payload
         uri = raw_data.source_identifier
         self._fetch_issued_date(new_ref, dict_payload, uri)
