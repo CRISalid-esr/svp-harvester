@@ -105,7 +105,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         :return: A generator of results
         """
 
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,too-many-statements
     async def run(self) -> None:
         """
         Run the harvester asynchronously
