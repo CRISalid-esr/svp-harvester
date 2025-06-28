@@ -256,12 +256,16 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             else:
                 subjects_without_source.append(subject)
         labels_with_source = {}
-        await self._yield_concepts_with_sources(
+
+        async for concept in self._yield_concepts_with_sources(
             subjects_with_source, labels_with_source
-        )
-        await self._yield_concepts_without_sources(
+        ):
+            yield concept
+
+        async for concept in self._yield_concepts_without_sources(
             subjects_without_source, labels_with_source
-        )
+        ):
+            yield concept
 
     async def _yield_concepts_without_sources(
         self, subjects_without_source, labels_with_source
