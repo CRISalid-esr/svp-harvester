@@ -45,9 +45,17 @@ class RedisPool:
             )
 
     def get_connection(self) -> redis.Redis:
+        """
+        Get a Redis connection from the pool.
+        :return: Redis connection wrapped in a context manager.
+        """
         return RedisPool.Connexion(conn=redis.Redis(connection_pool=self.pool))
 
     async def check_ready(self) -> bool:
+        """
+        Check if the Redis connection is ready.
+        :return: bool: True if the connection is ready, False otherwise.
+        """
         try:
             async with self.get_connection() as conn:
                 await conn.ping()
