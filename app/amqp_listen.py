@@ -1,11 +1,11 @@
 import asyncio
-import sys
 
 import uvloop
 from loguru import logger
 
 from app.amqp.amqp_interface import AMQPInterface
 from app.config import get_app_settings
+from app.configure_logger import _configure_logger
 from app.http.aio_http_client_manager import AioHttpClientManager
 from app.models.custom_medatata import register_custom_metadata_schemas
 
@@ -15,13 +15,13 @@ async def main():
     Main function to run the standalone AMQP listener service.
     :return:
     """
-    settings = get_app_settings()
-    await _configure_logger(settings)
+    _configure_logger()
     register_custom_metadata_schemas()
-    await _listen_to_rabbitmq(settings)
+    await _listen_to_rabbitmq()
 
 
 async def _listen_to_rabbitmq(settings):
+    settings = get_app_settings()
     amqp_interface = AMQPInterface(settings)
     try:
         await amqp_interface.connect()
@@ -41,16 +41,6 @@ async def _listen_to_rabbitmq(settings):
             logger.exception(f"Error during shutdown: {e}")
         else:
             logger.info("Graceful shutdown complete")
-
-
-async def _configure_logger(settings):
-    logger.remove()
-    logger.add(
-        settings.logger_sink,
-        level=settings.loguru_level,
-        **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
-    )
-    logger.info("Starting standalone AMQP listener service")
 
 
 if __name__ == "__main__":

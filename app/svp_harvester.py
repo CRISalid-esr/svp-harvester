@@ -1,5 +1,4 @@
 import asyncio
-import sys
 
 from aiormq import AMQPConnectionError
 from fastapi import FastAPI
@@ -13,6 +12,7 @@ from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.api.routes.healthness import router as healthness_router
 from app.config import get_app_settings
+from app.configure_logger import _configure_logger
 from app.db.session import async_session
 from app.gui.routes.gui import router as gui_router
 from app.http.aio_http_client_manager import AioHttpClientManager
@@ -60,13 +60,8 @@ class SvpHarvester(FastAPI):
                 "JEL concepts URIs will be resolved against ZBW Skosmos instance"
             )
 
-        # Remove default logger and add custom logger
-        logger.remove()
-        logger.add(
-            settings.logger_sink,
-            level=settings.loguru_level,
-            **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
-        )
+        _configure_logger()
+
         self.add_exception_handler(ValidationError, http422_error_handler)
         self.add_event_handler("startup", self.check_db_connexion)
         if settings.third_api_caching_enabled:
