@@ -5,6 +5,8 @@ import redis.asyncio as redis
 from loguru import logger
 
 from app.config import get_app_settings
+
+# from app.redis.fake_redis_pool import FakeRedisPool as RedisPool
 from app.redis.redis_pool import RedisPool
 
 
@@ -37,6 +39,7 @@ class ThirdApiCache:
                         )
                         return None
         except redis.exceptions.ConnectionError as e:
+            # except Exception as e:
             logger.error(f"Cannot connect to Redis for {api_name}:{key}: {e}")
             return None
 
