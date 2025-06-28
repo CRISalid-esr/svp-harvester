@@ -225,7 +225,7 @@ class IdrefSparqlClient:
         for source, prefixes in self.DATA_SOURCES_PREFIXES.items():
             if any(uri.startswith(prefix) for prefix in prefixes):
                 return source.value
-        logger.error(f"Unknown data source for uri {uri}")
+        logger.error("Unknown data source for uri %s", uri)
         return None
 
     async def _get_client(self) -> SPARQLClient:
