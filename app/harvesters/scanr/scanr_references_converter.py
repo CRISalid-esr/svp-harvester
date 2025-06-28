@@ -256,6 +256,44 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             else:
                 subjects_without_source.append(subject)
         labels_with_source = {}
+        await self._yield_concepts_with_sources(
+            subjects_with_source, labels_with_source
+        )
+        await self._yield_concepts_without_sources(
+            subjects_without_source, labels_with_source
+        )
+
+    async def _yield_concepts_without_sources(
+        self, subjects_without_source, labels_with_source
+    ):
+        for subject in subjects_without_source:
+            label_dict = subject.get("label", {})
+            concept_label, concept_language = self._get_concept_label(label_dict)
+            labels_to_compare_to = []
+            if concept_language is not None and concept_language in labels_with_source:
+                labels_to_compare_to = labels_with_source[concept_language]
+            else:
+                labels_to_compare_to = [
+                    label for labels in labels_with_source.values() for label in labels
+                ]
+
+            if any(
+                self._duplicate_or_almost(concept_label, label_to_compare_to)
+                for label_to_compare_to in labels_to_compare_to
+            ):
+                continue
+            labels_with_source.setdefault(concept_language, []).append(concept_label)
+            db_concept = await self._get_or_create_concept_by_label(
+                ConceptInformations(
+                    label=concept_label,
+                    language=concept_language,
+                )
+            )
+            yield db_concept
+
+    async def _yield_concepts_with_sources(
+        self, subjects_with_source, labels_with_source
+    ):
         for subject in subjects_with_source:
             concept_id = subject.get("code")
 
@@ -284,31 +322,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                         label.value
                     )
                 yield db_concept
-
-        for subject in subjects_without_source:
-            label_dict = subject.get("label", {})
-            concept_label, concept_language = self._get_concept_label(label_dict)
-            labels_to_compare_to = []
-            if concept_language is not None and concept_language in labels_with_source:
-                labels_to_compare_to = labels_with_source[concept_language]
-            else:
-                labels_to_compare_to = [
-                    label for labels in labels_with_source.values() for label in labels
-                ]
-
-            if any(
-                self._duplicate_or_almost(concept_label, label_to_compare_to)
-                for label_to_compare_to in labels_to_compare_to
-            ):
-                continue
-            labels_with_source.setdefault(concept_language, []).append(concept_label)
-            db_concept = await self._get_or_create_concept_by_label(
-                ConceptInformations(
-                    label=concept_label,
-                    language=concept_language,
-                )
-            )
-            yield db_concept
 
     @staticmethod
     def _get_concept_source(concept_type):
