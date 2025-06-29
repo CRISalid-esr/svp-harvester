@@ -18,7 +18,7 @@ class HalApiClient:
 
     HAL_API_URL = "https://api.archives-ouvertes.fr/search"
 
-    def __init__(self, timeout: int = 60):
+    def __init__(self, timeout: int = 7):
         """
         Initialize the HAL API client.
 

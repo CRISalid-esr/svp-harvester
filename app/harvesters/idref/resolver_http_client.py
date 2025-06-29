@@ -12,7 +12,7 @@ class ResolverHTTPClient:
     Generic HTTP client for resolving URIs
     """
 
-    def __init__(self, timeout: int = 30):
+    def __init__(self, timeout: int = 7):
         self.timeout = timeout
 
     @handle_external_endpoint_failure("external resolver")

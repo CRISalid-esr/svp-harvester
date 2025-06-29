@@ -7,7 +7,7 @@ from app.db.models.concept import Concept as DbConcept
 from app.db.models.label import Label as DbLabel
 from app.services.concepts.concept_informations import ConceptInformations
 
-DEFAULT_CONCEPTS_TIMEOUT = 10
+DEFAULT_CONCEPTS_TIMEOUT = 7
 
 
 class ConceptSolver(ABC):

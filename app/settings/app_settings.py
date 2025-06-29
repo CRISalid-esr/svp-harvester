@@ -82,7 +82,7 @@ class AppSettings(BaseSettings):
 
     http_client_limit: int = 100
     http_client_ttl_dns_cache: int = 300
-    http_client_timeout_total: float = 30.0
+    http_client_timeout_total: float = 7.0
 
     scanr_es_host: str = "https://host_name.com/"
     scanr_es_user: str = "johndoe"

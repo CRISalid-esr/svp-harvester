@@ -4,7 +4,7 @@ from typing import List
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 
-ORGANISATION_SOLVER_DEFAULT_TIMEOUT = 10
+ORGANISATION_SOLVER_DEFAULT_TIMEOUT = 7
 
 
 class OrganizationSolver(ABC):
