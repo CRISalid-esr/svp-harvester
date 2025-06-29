@@ -1,6 +1,8 @@
 import inspect
+import traceback
 from functools import wraps
 from typing import Callable
+from venv import logger
 
 
 class ExternalEndpointFailure(Exception):
@@ -35,6 +37,8 @@ def handle_external_endpoint_failure(source: str):
             try:
                 return await fn(*args, **kwargs)
             except Exception as e:
+                logger.error(f"{source} failure: {e}")
+                logger.error(traceback.format_exc())
                 raise ExternalEndpointFailure(f"{source} failure") from e
 
         return asyncfunc_wrapper
