@@ -46,13 +46,16 @@ class ScopusClient:
             if resp.status == 200:
                 xml = await resp.text()
                 root = ET.fromstring(xml)
-                count = root.find("opensearch:totalResults", self.NAMESPACE).text
-                if int(count) == 0:
-                    yield
-                else:
-                    for doc in root.findall(".//default:entry", self.NAMESPACE):
-                        yield doc
 
+                count_elem = root.find("opensearch:totalResults", self.NAMESPACE)
+                count = int(count_elem.text) if count_elem is not None else 0
+                if count == 0:
+                    return
+                entries = root.findall(".//default:entry", self.NAMESPACE)
+                del root, xml
+                for doc in entries:
+                    yield doc
+                    del doc
                 # If there are more than 25 results, fetch the next 25 asynchrounously
                 # as is the limit of the Scopus API
                 if int(count) > start + 25:
