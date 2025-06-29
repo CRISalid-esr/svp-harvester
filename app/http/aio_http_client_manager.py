@@ -79,7 +79,7 @@ class AioHttpClientManager:
         cls._connector = aiohttp.TCPConnector(
             limit=settings.http_client_limit,
             ttl_dns_cache=settings.http_client_ttl_dns_cache,
-            enable_cleanup_closed=True,
+            enable_cleanup_closed=False,
         )
         cls._session = aiohttp.ClientSession(
             connector=cls._connector,
