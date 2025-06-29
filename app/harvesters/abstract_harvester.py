@@ -328,7 +328,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         :param error: The error object
         :return: None
         """
-        logger.error(error, exc_info=with_stack)
+        logger.error(error)
         if with_stack:
             logger.error(traceback.format_exc())
         await self._update_harvesting_state(Harvesting.State.FAILED)
