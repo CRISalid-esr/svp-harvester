@@ -1,7 +1,5 @@
-import asyncio
-import json
-
 import aio_pika
+import orjson
 from aio_pika import DeliveryMode
 from aiormq import AMQPError, ChannelInvalidStateError
 from loguru import logger
@@ -32,7 +30,7 @@ class AMQPMessagePublisher:
             return
 
         message = aio_pika.Message(
-            json.dumps(payload, default=str).encode(),
+            orjson.dumps(payload, default=str),
             delivery_mode=DeliveryMode.PERSISTENT,
         )
         try:
@@ -40,7 +38,9 @@ class AMQPMessagePublisher:
                 message=message,
                 routing_key=routing_key,
             )
-            logger.debug(f"Message published to {routing_key} queue : {payload}")
+            logger.debug(
+                f"Message published to {routing_key} queue : {message.body[:150]}..."
+            )
         except AMQPError as e:
             logger.error(
                 f"AMQP error occurred while publishing message to {routing_key} queue: {e}\n"
@@ -51,24 +51,20 @@ class AMQPMessagePublisher:
                 f"Channel state error occurred while publishing message to "
                 f"{routing_key} queue: {e}\nPayload: {payload}"
             )
+        finally:
+            del message, payload
 
     @staticmethod
     async def _build_message(content) -> tuple[str | None, str | None]:
-        task = None
-        if content.get("type") == "Retrieval":
-            task = asyncio.create_task(
-                AMQPRetrievalMessageFactory(content).build_message()
-            )
-        elif content.get("type") == "Harvesting":
-            task = asyncio.create_task(
-                AMQPHarvestingMessageFactory(content).build_message()
-            )
-        elif content.get("type") == "ReferenceEvent":
-            # return await AMQPReferenceEventMessageFactory(content).build_message()
-            task = asyncio.create_task(
-                AMQPReferenceEventMessageFactory(content).build_message()
-            )
-        if task:
-            await asyncio.sleep(0)
-            return await task
-        return None, None
+        factory_map = {
+            "Retrieval": AMQPRetrievalMessageFactory,
+            "Harvesting": AMQPHarvestingMessageFactory,
+            "ReferenceEvent": AMQPReferenceEventMessageFactory,
+        }
+
+        factory_class = factory_map.get(content.get("type"))
+        if not factory_class:
+            return None, None
+
+        factory = factory_class(content)
+        return await factory.build_message()
