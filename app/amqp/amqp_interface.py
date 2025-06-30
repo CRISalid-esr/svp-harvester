@@ -34,7 +34,6 @@ class AMQPInterface:
         self.inner_tasks_queue: asyncio.Queue | None = None
         self.message_processing_workers: list[asyncio.Task] | None = None
         self.keys = [self.settings.amqp_retrieval_routing_key]
-        self.reconnect_event = asyncio.Event()
 
     async def connect(self):
         """Connect to AMQP queue"""
@@ -82,7 +81,6 @@ class AMQPInterface:
             exchange=self.pika_exchange,
             tasks_queue=self.inner_tasks_queue,
             settings=self.settings,
-            reconnect_event=self.reconnect_event,
         )
 
     async def listen(self):

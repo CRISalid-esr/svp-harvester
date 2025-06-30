@@ -32,12 +32,10 @@ class AMQPMessageProcessor:
         exchange: aio_pika.Exchange,
         tasks_queue: asyncio.Queue,
         settings: AppSettings,
-        reconnect_event: asyncio.Event,
     ):
         self.exchange = exchange
         self.tasks_queue = tasks_queue
         self.settings = settings
-        self.reconnect_event = reconnect_event
         self.publisher = AMQPMessagePublisher(self.exchange)
 
     async def wait_for_message(self, worker_id: int) -> None:
@@ -98,12 +96,10 @@ class AMQPMessageProcessor:
                 logger.error(
                     f"Error during message nack for {worker_id} : {channel_error}"
                 )
-                self.reconnect_event.set()
             except AMQPError as nack_error:
                 logger.error(
                     f"AMQP error during message nack for {worker_id} : {nack_error}"
                 )
-                self.reconnect_event.set()
 
     async def _handle_unexpected_error(self, exception, worker_id):
         logger.error(
@@ -129,14 +125,12 @@ class AMQPMessageProcessor:
 
     async def _handle_amqp_error(self, ack_error, worker_id):
         logger.error(f"AMQP error occurred during {worker_id} message ack: {ack_error}")
-        self.reconnect_event.set()
 
     async def _handle_channel_failure(self, channel_error, worker_id):
         logger.error(
             f"Channel invalid state error during {worker_id} "
             f"message ack: {channel_error}"
         )
-        self.reconnect_event.set()
 
     @staticmethod
     async def _get_message_payload(message, start_time, worker_id):
