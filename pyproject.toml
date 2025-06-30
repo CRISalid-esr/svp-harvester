@@ -19,7 +19,7 @@ alembic = "^1.12.0"
 sqlalchemy = "^2.0.20"
 dataclasses-json = "^0.6.0"
 loguru = "^0.7.2"
-aio-pika = "9.4.1"
+aio-pika = "9.5.5"
 rdflib = "^7.0.0"
 uritools = "^4.0.2"
 elasticsearch = {version = "7.12.1", extras = ["async"]}
@@ -32,6 +32,7 @@ aiohttp = "^3.12.13"
 aiosparql = {git = "https://github.com/CRISalid-esr/aiosparql.git", rev = "master"}
 uvloop = "^0.21.0"
 redis = "^6.2.0"
+orjson = "^3.10.18"
 
 [tool.poetry.group.development]
 optional = true
