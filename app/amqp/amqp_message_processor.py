@@ -17,7 +17,7 @@ from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
 
-DEFAULT_RESULT_TIMEOUT = 6000
+DEFAULT_RESULT_TIMEOUT = 7200
 
 
 class AMQPMessageProcessor:
@@ -38,9 +38,6 @@ class AMQPMessageProcessor:
         self.tasks_queue = tasks_queue
         self.settings = settings
         self.reconnect_event = reconnect_event
-        self._init_publisher()
-
-    def _init_publisher(self) -> None:
         self.publisher = AMQPMessagePublisher(self.exchange)
 
     async def wait_for_message(self, worker_id: int) -> None:
@@ -196,42 +193,41 @@ class AMQPMessageProcessor:
                 )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)
+            retrieval_id = retrieval.id
+            del retrieval
             if reply_expected:
                 await self.publisher.publish(
                     {
                         "type": "Retrieval",
-                        "id": retrieval.id,
+                        "id": retrieval_id,
                     }
                 )
             # Run the retrieval
-            run_task_name = f"amqp_retrieval_service_{retrieval.id}_launcher"
+            run_task_name = f"amqp_retrieval_service_{retrieval_id}_launcher"
             # Listen for results
             if reply_expected:
-                listen = asyncio.create_task(
-                    self._wait_for_retrieval_result(
-                        result_queue=retrieval_results_queue,
-                        retrieval=retrieval,
-                        timeout=timeout,
-                    ),
-                    name=f"amqp_retrieval_service_{retrieval.id}_listener",
-                )
-
-            if reply_expected:
-                tasks = [
-                    asyncio.create_task(
-                        service.run(result_queue=retrieval_results_queue),
-                        name=run_task_name,
-                    ),
-                    listen,
-                ]
-                await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                try:
+                    async with asyncio.TaskGroup() as tg:
+                        tg.create_task(
+                            service.run(result_queue=retrieval_results_queue),
+                            name=f"amqp_retrieval_service_{retrieval_id}_launcher",
+                        )
+                        tg.create_task(
+                            self._wait_for_retrieval_result(
+                                result_queue=retrieval_results_queue,
+                                retrieval_id=retrieval_id,
+                                timeout=timeout,
+                            ),
+                            name=f"amqp_retrieval_service_{retrieval_id}_listener",
+                        )
+                except* Exception as e:
+                    logger.exception(f"Error in retrieval task group: {e}")
+                    raise
             else:
                 await service.run()
-            if reply_expected:
-                listen.cancel()
 
     async def _wait_for_retrieval_result(
-        self, result_queue: asyncio.Queue, retrieval: Retrieval, timeout: int
+        self, result_queue: asyncio.Queue, retrieval_id: Retrieval, timeout: int
     ):
         """
         Wait for retrieval results on a queue and publish them.
@@ -243,25 +239,27 @@ class AMQPMessageProcessor:
                     result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
                 except asyncio.TimeoutError:
                     logger.error(
-                        f"Retrieval {retrieval.id} results timeout after {timeout}s"
+                        f"Retrieval {retrieval_id} results timeout after {timeout}s"
                     )
                     break
-                logger.debug(f"Got result {result} for retrieval: {retrieval.id}")
-                await self.publisher.publish(result)
-                result_queue.task_done()
-
+                else:
+                    logger.debug(f"Got result {result} for retrieval: {retrieval_id}")
+                    try:
+                        await self.publisher.publish(result)
+                    finally:
+                        result_queue.task_done()
         except asyncio.CancelledError:
-            logger.debug(f"Retrieval {retrieval.id} result listener stopped")
+            logger.debug(f"Retrieval {retrieval_id} result listener stopped")
         except Exception as e:
             logger.exception(
-                f"Unexpected error during retrieval {retrieval.id} results processing"
+                f"Unexpected error during retrieval {retrieval_id} results processing"
             )
             await self.publisher.publish(
                 {
                     "type": "Retrieval",
                     "error": True,
                     "message": f"Exception: {e}",
-                    "id": retrieval.id,
+                    "id": retrieval_id,
                 }
             )
             raise
