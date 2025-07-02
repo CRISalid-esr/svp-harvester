@@ -1,7 +1,6 @@
 from sqlalchemy import select
+from sqlalchemy.orm import raiseload, selectinload
 from sqlalchemy.sql.expression import func
-
-from sqlalchemy.orm import raiseload, joinedload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.concept import Concept

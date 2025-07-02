@@ -146,7 +146,7 @@ class AMQPInterface:
                 )
                 try:
                     await self.publisher.publish(result)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     logger.exception(f"Failed to publish result: {e}")
                 finally:
                     self.result_queue.task_done()

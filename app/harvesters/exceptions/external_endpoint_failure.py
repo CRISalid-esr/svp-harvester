@@ -37,7 +37,7 @@ def handle_external_endpoint_failure(source: str):
             try:
                 return await fn(*args, **kwargs)
             except Exception as e:
-                logger.error(f"{source} failure: {e}")
+                logger.error("{source} failure: %s", e)
                 logger.error(traceback.format_exc())
                 raise ExternalEndpointFailure(f"{source} failure") from e
 

@@ -30,7 +30,7 @@ class AMQPMessagePublisher:
             return
 
         message = aio_pika.Message(
-            orjson.dumps(payload, default=str),
+            orjson.dumps(payload, default=str),  # pylint: disable=no-member
             delivery_mode=DeliveryMode.PERSISTENT,
         )
         try:

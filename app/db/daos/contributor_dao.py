@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.contributor import Contributor

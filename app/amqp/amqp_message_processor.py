@@ -14,8 +14,6 @@ from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
 
-DEFAULT_RESULT_TIMEOUT = 7200
-
 
 class AMQPMessageProcessor:
     """
@@ -139,7 +137,7 @@ class AMQPMessageProcessor:
             )
         return payload
 
-    async def _process_message(self, payload: str, timeout=DEFAULT_RESULT_TIMEOUT):
+    async def _process_message(self, payload: str):
         json_payload = json.loads(payload)
         reply_expected = json_payload.get("reply", False)
 
@@ -174,7 +172,8 @@ class AMQPMessageProcessor:
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode", False),
                 nullify=json_payload.get("nullify", False),
                 harvesters=json_payload.get("harvesters", []),
-                events=json_payload.get("events", []),
+                # events=json_payload.get("events", []),
+                events=["created", "updated", "deleted"],
             )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)
