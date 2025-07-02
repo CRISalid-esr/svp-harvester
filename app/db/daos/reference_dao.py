@@ -2,7 +2,7 @@ import datetime
 from typing import List, Tuple
 
 from sqlalchemy import and_, or_, select, func
-from sqlalchemy.orm import joinedload, raiseload
+from sqlalchemy.orm import joinedload, raiseload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
@@ -177,7 +177,7 @@ class ReferenceDAO(AbstractDAO):
         """
         stmt = (
             select(Reference)
-            .options(joinedload(Reference.contributions))
+            .options(selectinload(Reference.contributions))
             .where(Reference.id == reference_id)
         )
 
@@ -196,10 +196,9 @@ class ReferenceDAO(AbstractDAO):
         """
         query = (
             select(Reference)
-            .options(joinedload(Reference.contributions))
-            .options(joinedload(Reference.abstracts))
-            .options(joinedload(Reference.subjects))
-            .options(joinedload(Reference.issue))
+            .options(selectinload(Reference.contributions))
+            .options(selectinload(Reference.abstracts))
+            .options(selectinload(Reference.subjects))
             .options(joinedload(Reference.issue).joinedload(Issue.journal))
             .options(joinedload(Reference.book))
             .where(Reference.harvester == harvester)

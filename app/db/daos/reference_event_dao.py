@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 from sqlalchemy import select, func
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting
@@ -64,25 +64,31 @@ class ReferenceEventDAO(AbstractDAO):
         stmt = (
             select(ReferenceEvent)
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.contributions)
+                selectinload(ReferenceEvent.reference).selectinload(
+                    Reference.contributions
+                )
             )
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
+                selectinload(ReferenceEvent.reference).selectinload(Reference.subjects)
             )
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
+                selectinload(ReferenceEvent.reference).selectinload(Reference.abstracts)
             )
-            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.issue))
             .options(
-                joinedload(ReferenceEvent.reference)
-                .joinedload(Reference.issue)
-                .joinedload(Issue.journal)
+                selectinload(ReferenceEvent.reference).selectinload(Reference.issue)
             )
-            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.book))
             .options(
-                joinedload(ReferenceEvent.harvesting)
-                .joinedload(Harvesting.retrieval)
-                .joinedload(Retrieval.entity)
+                selectinload(ReferenceEvent.reference)
+                .selectinload(Reference.issue)
+                .selectinload(Issue.journal)
+            )
+            .options(
+                selectinload(ReferenceEvent.reference).selectinload(Reference.book)
+            )
+            .options(
+                selectinload(ReferenceEvent.harvesting)
+                .selectinload(Harvesting.retrieval)
+                .selectinload(Retrieval.entity)
             )
             .where(ReferenceEvent.id == reference_event_id)
         )

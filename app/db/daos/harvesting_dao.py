@@ -1,5 +1,5 @@
 from sqlalchemy import func, or_, update, select
-from sqlalchemy.orm import joinedload, raiseload, noload
+from sqlalchemy.orm import raiseload, noload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting as DbHarvesting
@@ -54,7 +54,7 @@ class HarvestingDAO(AbstractDAO):
         """
         stmt = (
             select(DbHarvesting)
-            .options(joinedload(DbHarvesting.retrieval))
+            .options(selectinload(DbHarvesting.retrieval))
             .options(noload(DbHarvesting.reference_events))
             .where(DbHarvesting.id == harvesting_id)
         )

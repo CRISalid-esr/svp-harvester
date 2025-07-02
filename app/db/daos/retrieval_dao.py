@@ -2,7 +2,7 @@ import datetime
 from typing import List, Tuple
 
 from sqlalchemy import and_, func, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, noload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
@@ -60,20 +60,20 @@ class RetrievalDAO(AbstractDAO):
         stmt = (
             select(Retrieval)
             .options(
-                joinedload(Retrieval.harvestings)
-                .joinedload(Harvesting.reference_events)
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.contributions, innerjoin=False
                     )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.abstracts, innerjoin=False
                     )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.subjects, innerjoin=False
                     )
                 )
@@ -98,9 +98,7 @@ class RetrievalDAO(AbstractDAO):
         """
         stmt = (
             select(Retrieval)
-            .options(
-                joinedload(Retrieval.harvestings).noload(Harvesting.reference_events)
-            )
+            .options(noload(Retrieval.harvestings))
             .where(Retrieval.id == retrieval_id)
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
