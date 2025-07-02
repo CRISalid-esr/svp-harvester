@@ -18,7 +18,7 @@ class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
     INNER_TASKS_QUEUE_LENGTH = 10000
-    RESULT_QUEUE_LENGTH = 15
+    RESULT_QUEUE_LENGTH = 500
 
     def __init__(self, settings: AppSettings):
         """
