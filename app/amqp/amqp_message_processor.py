@@ -3,15 +3,12 @@ import json
 import traceback
 from datetime import datetime
 
-import aio_pika
 from aio_pika import IncomingMessage
 from aiormq import ChannelInvalidStateError, AMQPError
 from asyncpg import PostgresConnectionError
 from loguru import logger
 from pydantic import ValidationError
 
-from app.amqp.amqp_message_publisher import AMQPMessagePublisher
-from app.db.models.retrieval import Retrieval
 from app.harvesters.exceptions.invalid_entity_error import InvalidEntityError
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
@@ -29,14 +26,13 @@ class AMQPMessageProcessor:
 
     def __init__(
         self,
-        exchange: aio_pika.Exchange,
-        tasks_queue: asyncio.Queue,
+        task_queue: asyncio.Queue,
+        result_queue: asyncio.Queue,
         settings: AppSettings,
     ):
-        self.exchange = exchange
-        self.tasks_queue = tasks_queue
+        self.task_queue = task_queue
+        self.result_queue = result_queue
         self.settings = settings
-        self.publisher = AMQPMessagePublisher(self.exchange)
 
     async def wait_for_message(self, worker_id: int) -> None:
         """
@@ -49,7 +45,7 @@ class AMQPMessageProcessor:
 
         while True:
             requeue = False
-            message = await self.tasks_queue.get()
+            message = await self.task_queue.get()
             start_time = datetime.now()
             async with message.process(ignore_processed=True):
                 payload = message.body
@@ -81,7 +77,7 @@ class AMQPMessageProcessor:
                     requeue = True
                 finally:
                     await self._post_process_message(message, requeue, worker_id)
-                    self.tasks_queue.task_done()
+                    self.task_queue.task_done()
                     end_time = datetime.now()
                     logger.warning(
                         f"Performance : Message  processed by {worker_id} "
@@ -151,7 +147,7 @@ class AMQPMessageProcessor:
             try:
                 person = Person(**json_payload["fields"])
             except ValidationError as validation_error:
-                await self.publisher.publish(
+                await self.result_queue.put(
                     {
                         "type": "Retrieval",
                         "error": True,
@@ -165,7 +161,7 @@ class AMQPMessageProcessor:
                 ) from validation_error
 
             if person.has_no_bibliographic_identifiers():
-                await self.publisher.publish(
+                await self.result_queue.put(
                     {
                         "type": "Retrieval",
                         "error": True,
@@ -180,80 +176,19 @@ class AMQPMessageProcessor:
                 harvesters=json_payload.get("harvesters", []),
                 events=json_payload.get("events", []),
             )
-            # Create a queue to get results back
-            if reply_expected:
-                retrieval_results_queue = asyncio.Queue(
-                    maxsize=self.MAX_EXPECTED_RESULTS
-                )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)
             retrieval_id = retrieval.id
             del retrieval
             if reply_expected:
-                await self.publisher.publish(
+                await self.result_queue.put(
                     {
                         "type": "Retrieval",
                         "id": retrieval_id,
+                        "message": "Retrieval started",
                     }
                 )
-            # Run the retrieval
-            run_task_name = f"amqp_retrieval_service_{retrieval_id}_launcher"
-            # Listen for results
             if reply_expected:
-                try:
-                    async with asyncio.TaskGroup() as tg:
-                        tg.create_task(
-                            service.run(result_queue=retrieval_results_queue),
-                            name=f"amqp_retrieval_service_{retrieval_id}_launcher",
-                        )
-                        tg.create_task(
-                            self._wait_for_retrieval_result(
-                                result_queue=retrieval_results_queue,
-                                retrieval_id=retrieval_id,
-                                timeout=timeout,
-                            ),
-                            name=f"amqp_retrieval_service_{retrieval_id}_listener",
-                        )
-                except* Exception as e:
-                    logger.exception(f"Error in retrieval task group: {e}")
-                    raise
+                await service.run(result_queue=self.result_queue)
             else:
                 await service.run()
-
-    async def _wait_for_retrieval_result(
-        self, result_queue: asyncio.Queue, retrieval_id: Retrieval, timeout: int
-    ):
-        """
-        Wait for retrieval results on a queue and publish them.
-        Terminates on timeout or cancellation, and ensures the queue is drained properly.
-        """
-        try:
-            while True:
-                try:
-                    result = await asyncio.wait_for(result_queue.get(), timeout=timeout)
-                except asyncio.TimeoutError:
-                    logger.error(
-                        f"Retrieval {retrieval_id} results timeout after {timeout}s"
-                    )
-                    break
-                else:
-                    logger.debug(f"Got result {result} for retrieval: {retrieval_id}")
-                    try:
-                        await self.publisher.publish(result)
-                    finally:
-                        result_queue.task_done()
-        except asyncio.CancelledError:
-            logger.debug(f"Retrieval {retrieval_id} result listener stopped")
-        except Exception as e:
-            logger.exception(
-                f"Unexpected error during retrieval {retrieval_id} results processing"
-            )
-            await self.publisher.publish(
-                {
-                    "type": "Retrieval",
-                    "error": True,
-                    "message": f"Exception: {e}",
-                    "id": retrieval_id,
-                }
-            )
-            raise
