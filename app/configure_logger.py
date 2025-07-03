@@ -17,4 +17,3 @@ def configure_logger():
         level=settings.loguru_level,
         **({"rotation": "100 MB"} if settings.logger_sink != sys.stderr else {}),
     )
-    logger.info("Starting standalone AMQP listener service")
