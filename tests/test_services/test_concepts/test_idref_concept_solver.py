@@ -280,9 +280,9 @@ async def test_idref_concept_solver_returns_concepts_without_language(
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await solver.solve(concept_informations)
-    idref_nolang_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/123456789.rdf"
-    )
+    args, kwargs = idref_nolang_concept_http_client_mock.call_args
+    assert idref_nolang_concept_http_client_mock.call_count == 1
+    assert args[0] == "https://www.idref.fr/123456789.rdf"
     assert len(result.labels) == 2
     assert len([label for label in result.labels if label.preferred]) == 1
     assert len([label for label in result.labels if not label.preferred]) == 1
