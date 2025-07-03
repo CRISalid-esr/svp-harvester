@@ -260,7 +260,7 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
 
 
 @pytest.mark.asyncio
-async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
+async def test_sparql_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     idref_sparql_endpoint_client_mock_with_concept_non_preferred_languages,
 ):
     """
