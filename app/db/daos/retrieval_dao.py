@@ -2,7 +2,7 @@ import datetime
 from typing import List, Tuple
 
 from sqlalchemy import and_, func, select
-from sqlalchemy.orm import joinedload, noload, selectinload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
@@ -98,8 +98,14 @@ class RetrievalDAO(AbstractDAO):
         """
         stmt = (
             select(Retrieval)
-            .options(noload(Retrieval.harvestings))
-            .where(Retrieval.id == retrieval_id)
+            # harvestings.0.reference_events.0.reference.contributions
+            #   Error extracting attribute: InvalidRequestError: 'Reference.contributions' is not available due to lazy='raise'
+            .options(
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
+                .selectinload(ReferenceEvent.reference)
+                .selectinload(Reference.contributions)
+            ).where(Retrieval.id == retrieval_id)
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
