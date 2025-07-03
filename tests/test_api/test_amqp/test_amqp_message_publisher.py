@@ -93,8 +93,8 @@ async def test_publish_created_reference(
                 "page": None,
                 "book": None,
                 "raw_issued": "2017",
-                "issued": "2017-01-01 00:00:00",
-                "created": "2018-02-02 10:00:00",
+                "issued": "2017-01-01T00:00:00",
+                "created": "2018-02-02T10:00:00",
                 "custom_metadata": {
                     "hal_collection_codes": ["UGFP", "UGA", "UMR5434"],
                     "hal_submit_type": "notice",
