@@ -42,8 +42,13 @@ async def test_reference_recorder_creates_event_for_new_reference(
         new_ref=reference,
     )
     assert reference_event is not None
-    assert reference_event.reference == reference
-    assert reference_event.reference.version == 0
+    dao = ReferenceDAO(async_session)
+    reference = await dao.get_complete_reference_by_id(reference_event.reference_id)
+    assert reference is not None
+    assert reference.source_identifier == source_identifier
+    assert reference.harvester == harvester
+    assert reference.hash == "hash1"
+    assert reference.titles[0].value == "title"
     assert reference_event.harvesting_id == harvesting_db_model_for_person_with_idref.id
     assert reference_event.type == ReferenceEvent.Type.CREATED.value
 
