@@ -179,9 +179,8 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await IdRefConceptSolver().solve(concept_informations)
-    idref_multilang_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/123456789.rdf"
-    )
+    args, kwargs = idref_multilang_concept_http_client_mock.call_args
+    assert args[0] == "https://www.idref.fr/123456789.rdf"
     assert len(result.labels) == 5
     # 3 preflabels, one in french, one in english, one in unspecified language
     assert len([label for label in result.labels if label.preferred]) == 3
