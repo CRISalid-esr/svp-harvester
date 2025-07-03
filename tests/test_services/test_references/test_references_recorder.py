@@ -96,10 +96,16 @@ async def test_reference_recorder_creates_event_for_updated_reference(
         old_ref=old_reference, new_ref=new_version_of_reference, enhanced=False
     )
     assert reference_event is not None
-    assert reference_event.reference == new_version_of_reference
-    assert reference_event.reference.version == 1
     assert reference_event.harvesting_id == harvesting_3.id
     assert reference_event.type == ReferenceEvent.Type.UPDATED.value
+    dao = ReferenceDAO(async_session)
+    reference = await dao.get_complete_reference_by_id(reference_event.reference_id)
+    assert reference.id == new_version_of_reference.id
+    assert reference.source_identifier == source_identifier
+    assert reference.harvester == harvester
+    assert reference.hash == new_version_of_reference.hash
+    assert reference.titles[0].value == "changed_title"
+
 
 
 @pytest.mark.asyncio
@@ -152,8 +158,13 @@ async def test_reference_recorder_creates_event_for_unchanged_enhanced_reference
         old_ref=old_reference, new_ref=new_version_of_reference, enhanced=True
     )
     assert reference_event is not None
-    assert reference_event.reference == new_version_of_reference
-    assert reference_event.reference.version == 1
+    dao = ReferenceDAO(async_session)
+    reference = await dao.get_complete_reference_by_id(reference_event.reference_id)
+    assert reference.id == new_version_of_reference.id
+    assert reference.source_identifier == source_identifier
+    assert reference.harvester == harvester
+    assert reference.hash == new_version_of_reference.hash
+    assert reference.titles[0].value == "changed_title"
     assert reference_event.harvesting_id == harvesting_3.id
     assert reference_event.type == ReferenceEvent.Type.UNCHANGED.value
     assert reference_event.enhanced is True
