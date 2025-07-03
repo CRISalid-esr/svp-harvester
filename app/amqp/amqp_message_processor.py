@@ -172,8 +172,7 @@ class AMQPMessageProcessor:
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode", False),
                 nullify=json_payload.get("nullify", False),
                 harvesters=json_payload.get("harvesters", []),
-                # events=json_payload.get("events", []),
-                events=["created", "updated", "deleted"],
+                events=json_payload.get("events", []),
             )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)

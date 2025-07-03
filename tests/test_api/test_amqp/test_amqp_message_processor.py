@@ -1,10 +1,9 @@
 """Test the references API."""
-
+import asyncio
 from unittest import mock
 
 import pytest
 
-from app.amqp.amqp_interface import AMQPInterface
 from app.amqp.amqp_message_processor import AMQPMessageProcessor
 from app.amqp.amqp_message_publisher import AMQPMessagePublisher
 from app.config import get_app_settings
@@ -37,9 +36,15 @@ def fixture_mock_retrieval_service_run():
 @pytest.fixture(name="message_processor")
 async def fixture_message_processor() -> AMQPMessageProcessor:
     """AMQP message processor fixture to use AMQPInterface as factory."""
-    amqp_connexion = AMQPInterface(get_app_settings())
-    # pylint: disable=protected-access
-    return await amqp_connexion._message_processor()
+    result_queue = asyncio.Queue(maxsize=100)  # or settings.RESULT_QUEUE_LENGTH
+    task_queue = asyncio.Queue(maxsize=100)  # or settings.INNER_TASKS_QUEUE_LENGTH
+
+    processor = AMQPMessageProcessor(
+        task_queue=task_queue,
+        result_queue=result_queue,
+        settings=get_app_settings(),
+    )
+    return processor
 
 
 async def test_amqp_message_runs_retrieval_service(
@@ -58,7 +63,7 @@ async def test_amqp_message_runs_retrieval_service(
     )
     with mock.patch.object(AMQPMessagePublisher, "publish", autospec=True):
         # pylint: disable=protected-access
-        await message_processor._process_message(payload, 1)
+        await message_processor._process_message(payload)
         mock_retrieval_service_init.assert_called_once()
         mock_retrieval_service_register.assert_called_once()
         _, init_args = mock_retrieval_service_init.call_args
@@ -74,6 +79,10 @@ async def test_amqp_message_runs_retrieval_service(
         mock_retrieval_service_run.assert_called_once()
 
 
+import pytest
+
+
+@pytest.mark.current
 @pytest.mark.asyncio
 async def test_amqp_message_runs_retrieval_service_with_parameters(
     message_processor: AMQPMessageProcessor,
@@ -93,7 +102,7 @@ async def test_amqp_message_runs_retrieval_service_with_parameters(
     )
     with mock.patch.object(AMQPMessagePublisher, "publish", autospec=True):
         # pylint: disable=protected-access
-        await message_processor._process_message(payload, 1)
+        await message_processor._process_message(payload)
         mock_retrieval_service_init.assert_called_once()
         mock_retrieval_service_register.assert_called_once()
         _, init_args = mock_retrieval_service_init.call_args
