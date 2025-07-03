@@ -98,14 +98,13 @@ class RetrievalDAO(AbstractDAO):
         """
         stmt = (
             select(Retrieval)
-            # harvestings.0.reference_events.0.reference.contributions
-            #   Error extracting attribute: InvalidRequestError: 'Reference.contributions' is not available due to lazy='raise'
             .options(
                 selectinload(Retrieval.harvestings)
                 .selectinload(Harvesting.reference_events)
                 .selectinload(ReferenceEvent.reference)
                 .selectinload(Reference.contributions)
-            ).where(Retrieval.id == retrieval_id)
+            )
+            .where(Retrieval.id == retrieval_id)
         )
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
