@@ -267,14 +267,15 @@ async def test_get_references_for_entity_and_harvester_returns_updated_reference
     # and we want to retrieve the reference for the previous harvesting
     dao = ReferenceDAO(async_session)
 
-    references = await dao.get_previous_references_for_entity_and_harvester(
+    reference_ids = await dao.get_previous_references_for_entity_and_harvester(
         harvester=harvester,
         entity_id=harvesting_db_model_1.retrieval.entity.id,
         harvesting_id=harvesting_db_model_2.id + 1,
     )
 
-    assert references == [reference2]
-    assert references[0].titles[0].value == "changed_title"
+    assert reference_ids == [(reference2.id, reference2.source_identifier)]
+    references = await dao.get_complete_reference_by_id(reference_ids[0][0])
+    assert references.titles[0].value == "changed_title"
 
 
 @pytest.mark.asyncio
