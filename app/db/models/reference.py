@@ -84,13 +84,13 @@ class Reference(Base, VersionedRecord):
         "app.db.models.abstract.Abstract",
         back_populates="reference",
         cascade="all, delete-orphan",
-        lazy="noload",
+        lazy="selectin",
     )
 
     subjects: Mapped[List["app.db.models.concept.Concept"]] = relationship(
         "app.db.models.concept.Concept",
         secondary=references_subjects_table,
-        lazy="noload",
+        lazy="selectin",
     )
 
     document_type: Mapped[
@@ -125,16 +125,14 @@ class Reference(Base, VersionedRecord):
     issue: Mapped["app.db.models.issue.Issue"] = relationship(
         "app.db.models.issue.Issue",
         back_populates="references",
-        lazy="noload",
+        lazy="joined",
     )
 
     book_id: Mapped[int] = mapped_column(
         ForeignKey("books.id"), nullable=True, index=True
     )
     book: Mapped["app.db.models.book.Book"] = relationship(
-        "app.db.models.book.Book",
-        back_populates="references",
-        lazy="noload",
+        "app.db.models.book.Book", back_populates="references", lazy="joined"
     )
 
     page: Mapped[str] = mapped_column(nullable=True, index=True)

@@ -64,37 +64,20 @@ class ReferenceEventDAO(AbstractDAO):
         stmt = (
             select(ReferenceEvent)
             .options(
-                selectinload(ReferenceEvent.reference).selectinload(
-                    Reference.contributions
-                )
-            )
-            .options(
-                selectinload(ReferenceEvent.reference).selectinload(Reference.subjects)
-            )
-            .options(
-                selectinload(ReferenceEvent.reference).selectinload(Reference.abstracts)
-            )
-            .options(
-                selectinload(ReferenceEvent.reference).selectinload(Reference.issue)
-            )
-            .options(
-                selectinload(ReferenceEvent.reference)
-                .selectinload(Reference.issue)
-                .selectinload(Issue.journal)
-            )
-            .options(
-                selectinload(ReferenceEvent.reference).selectinload(Reference.subjects)
-            )
-            .options(
-                selectinload(ReferenceEvent.reference).selectinload(Reference.book)
-            )
-            .options(
+                selectinload(ReferenceEvent.reference).options(
+                    selectinload(Reference.contributions),
+                    selectinload(Reference.subjects),
+                    selectinload(Reference.abstracts),
+                    selectinload(Reference.issue).selectinload(Issue.journal),
+                    selectinload(Reference.book),
+                ),
                 selectinload(ReferenceEvent.harvesting)
                 .selectinload(Harvesting.retrieval)
-                .selectinload(Retrieval.entity)
+                .selectinload(Retrieval.entity),
             )
             .where(ReferenceEvent.id == reference_event_id)
         )
+
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
     async def get_reference_events_by_day_and_type(self, past_days: int = 7) -> dict:
