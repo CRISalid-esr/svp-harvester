@@ -136,7 +136,7 @@ async def test_get_references_for_entity_and_harvester_only_returns_last_version
         entity_id=harvesting_db_model_1.retrieval.entity_id,  # the same for both
     )
 
-    assert references == [reference2]
+    assert references == [(reference2.id, reference2.source_identifier)]
     assert references[0].titles[0].value == "changed_title"
 
 

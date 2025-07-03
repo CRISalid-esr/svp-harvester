@@ -3,6 +3,7 @@
 import json
 from unittest.mock import Mock
 
+import orjson
 import pytest
 from aio_pika import Exchange, DeliveryMode
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,7 +39,7 @@ async def test_publish_harvesting_status(
     expected_sent_message_routing_key = "event.references.harvesting.state"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        json.dumps(expected_sent_message_payload).encode(),
+        orjson.dumps(expected_sent_message_payload),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(
@@ -111,7 +112,7 @@ async def test_publish_created_reference(
     expected_sent_message_routing_key = "event.references.reference.created"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        json.dumps(expected_sent_message_payload).encode(),
+        orjson.dumps(expected_sent_message_payload),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(
@@ -158,7 +159,7 @@ async def test_publish_retrieval_error(
     expected_sent_message_routing_key = "event.references.retrieval.error"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
-        json.dumps(expected_sent_message_payload).encode(),
+        orjson.dumps(expected_sent_message_payload),
         delivery_mode=DeliveryMode.PERSISTENT,
     )
     mocked_exchange.publish.assert_called_once_with(

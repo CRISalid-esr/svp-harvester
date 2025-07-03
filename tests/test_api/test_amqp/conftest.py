@@ -1,5 +1,5 @@
 from unittest import mock
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import aio_pika
 import pytest
@@ -17,10 +17,8 @@ def mock_message():
 @pytest.fixture(name="mocked_exchange")
 def mock_exchange():
     """
-    Mocked RabbitMQ exchange to control publish calls.
+    Mocked RabbitMQ exchange to control publish calls without requiring an event loop.
     """
-    mocked_exchange = Exchange(
-        Channel(Connection(URL("http://foobar"))), "tests_amqp_queue"
-    )
+    mocked_exchange = MagicMock()
     mocked_exchange.publish = AsyncMock()
     return mocked_exchange
