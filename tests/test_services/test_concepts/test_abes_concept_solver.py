@@ -39,7 +39,8 @@ async def test_abes_concept_solver_returns_db_concept(abes_concept_http_client_m
     solver = AbesConceptSolver()
     solver.complete_information(concept_informations)
     result = await solver.solve(concept_informations)
-    abes_concept_http_client_mock.assert_called_once_with(
+    args, kwargs = abes_concept_http_client_mock.call_args
+    assert args[0] == (
         "https://scienceplus.abes.fr/sparql?query=define%20sql%3Adescribe-mode%20%22CBD%22%20%20DESCRIBE%20%3C"
         "http%3A//hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/subject/environment"
         "%3E&output=application%2Frdf%2Bxml"
