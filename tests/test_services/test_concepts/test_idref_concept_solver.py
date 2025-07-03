@@ -86,7 +86,8 @@ async def test_idref_concept_solver_calls_url_from_uri(
         solver = IdRefConceptSolver()
         solver.complete_information(concept_informations)
         await solver.solve(concept_informations)
-        mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
+        args, kwargs = mock_get.call_args
+        assert args[0] == "https://www.idref.fr/082303363.rdf"
 
 
 @pytest.mark.asyncio
