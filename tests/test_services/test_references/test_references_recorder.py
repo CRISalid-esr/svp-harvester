@@ -107,7 +107,6 @@ async def test_reference_recorder_creates_event_for_updated_reference(
     assert reference.titles[0].value == "changed_title"
 
 
-
 @pytest.mark.asyncio
 async def test_reference_recorder_creates_event_for_unchanged_enhanced_reference(
     async_session: AsyncSession,
