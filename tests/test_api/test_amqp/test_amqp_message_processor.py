@@ -79,10 +79,6 @@ async def test_amqp_message_runs_retrieval_service(
         mock_retrieval_service_run.assert_called_once()
 
 
-import pytest
-
-
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_amqp_message_runs_retrieval_service_with_parameters(
     message_processor: AMQPMessageProcessor,

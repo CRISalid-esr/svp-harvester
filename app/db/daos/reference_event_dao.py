@@ -83,6 +83,9 @@ class ReferenceEventDAO(AbstractDAO):
                 .selectinload(Issue.journal)
             )
             .options(
+                selectinload(ReferenceEvent.reference).selectinload(Reference.subjects)
+            )
+            .options(
                 selectinload(ReferenceEvent.reference).selectinload(Reference.book)
             )
             .options(
