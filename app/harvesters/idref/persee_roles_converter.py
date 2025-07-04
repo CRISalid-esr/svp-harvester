@@ -12,6 +12,7 @@ class PerseeRolesConverter:
         "aut": Contribution.LOCAuthorRoles.AUT,
         "trl": Contribution.LOCAuthorRoles.TRL,
         "ctb": Contribution.LOCAuthorRoles.CTB,
+        "clb": Contribution.LOCAuthorRoles.CTB,
     }
 
     @staticmethod

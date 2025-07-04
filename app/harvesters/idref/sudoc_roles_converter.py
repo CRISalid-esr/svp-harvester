@@ -26,6 +26,10 @@ class SudocRolesConverter:
         "ctg": Contribution.LOCAuthorRoles.CTG,
         "ill": Contribution.LOCAuthorRoles.ILL,
         "pht": Contribution.LOCAuthorRoles.PHT,
+        "cmp": Contribution.LOCAuthorRoles.CMP,
+        "aqt": Contribution.LOCAuthorRoles.AQT,
+        "dgc": Contribution.LOCAuthorRoles.DGC,
+        "ccp": Contribution.LOCAuthorRoles.CCP,
     }
 
     @staticmethod
