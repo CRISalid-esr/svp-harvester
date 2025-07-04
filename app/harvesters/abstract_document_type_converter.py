@@ -12,11 +12,11 @@ class AbstractDocumentTypeConverter(ABC):
 
     RDF = {
         "BIBO": "http://purl.org/ontology/bibo/",
-        "SPAR": "http://purl.org/spar/fabio/",
-        "COAR": "http://purl.org/coar/resource_type/",
         "CERIF": "http://purl.org/cerif/frapo/",
+        "COAR": "http://purl.org/coar/resource_type/",
         "FRBR": "http://purl.org/vocab/frbr/core#",
         "RDA": "http://rdaregistry.info/Elements/c/",
+        "SPAR": "http://purl.org/spar/fabio/",
     }
 
     UNKNOWN_CODE = ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
