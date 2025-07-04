@@ -92,6 +92,8 @@ class IdrefHarvester(AbstractHarvester):
             async for doc in IdrefSparqlClient(
                 timeout=settings.idref_sparql_timeout
             ).fetch_publications(builder.build()):
+                if doc["secondary_source"] is None:
+                    continue
                 coro = self._secondary_query_process(doc)
                 # Temporary semi-sequential implementation
                 # Sudoc server does not support parallel querying beyond 5 parallel requests
@@ -174,7 +176,7 @@ class IdrefHarvester(AbstractHarvester):
         elif doc["secondary_source"] == "PERSEE":
             coro = self._query_publication_from_persee_endpoint(doc)
         else:
-            logger.info(f"Unknown source {doc['secondary_source']}")
+            logger.error(f"Unknown source {doc['secondary_source']}")
         return coro
 
     @execution_timer

@@ -36,6 +36,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
 
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: SparqlRawResult, new_ref: Reference) -> None:
+        # pylint: disable=too-many-locals
         dict_payload: dict = raw_data.payload
         uri = raw_data.source_identifier
         self._fetch_issued_date(new_ref, dict_payload, uri)
@@ -51,9 +52,14 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
             )
             for subject in dict_payload["subject"].values()
         ]
-        new_ref.subjects.extend(
-            await self._get_or_create_concepts_by_uri(concept_informations)
-        )
+        # Parralel querying of Idref to fetch concepts implies nested sqlalchemy
+        # sessions, check memory impact before using this
+        # new_ref.subjects.extend(
+        #     await self._get_or_create_concepts_by_uri(concept_informations)
+        # )
+        for concept_info in concept_informations:
+            concept = await self._get_or_create_concept_by_uri(concept_info)
+            new_ref.subjects.append(concept)
 
         for document_type in dict_payload["type"]:
             uri_type, label = IdrefDocumentTypeConverter().convert(document_type)

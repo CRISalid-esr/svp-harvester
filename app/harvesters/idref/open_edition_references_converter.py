@@ -96,7 +96,6 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
 
     async def _get_issue(self, root: ElementTree, journal: Journal) -> Issue:
         rights = self._get_term(root, "rights")
-        logger.debug(f"Rights: {rights}")
         return await self._get_or_create_issue(
             issue_informations=IssueInformations(
                 source="openedition",

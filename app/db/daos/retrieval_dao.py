@@ -2,20 +2,20 @@ import datetime
 from typing import List, Tuple
 
 from sqlalchemy import and_, func, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.daos.entity_dao import EntityDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.issue import Issue
-from app.db.models.references_document_type import references_document_type_table
 from app.db.models.document_type import DocumentType
 from app.db.models.entity import Entity
 from app.db.models.harvesting import Harvesting
 from app.db.models.identifier import Identifier
-from app.db.models.reference_event import ReferenceEvent
-from app.db.models.retrieval import Retrieval
+from app.db.models.issue import Issue
 from app.db.models.reference import Reference
+from app.db.models.reference_event import ReferenceEvent
+from app.db.models.references_document_type import references_document_type_table
+from app.db.models.retrieval import Retrieval
 from app.models.people import Person
 from app.utilities.string_utilities import split_string
 
@@ -60,20 +60,20 @@ class RetrievalDAO(AbstractDAO):
         stmt = (
             select(Retrieval)
             .options(
-                joinedload(Retrieval.harvestings)
-                .joinedload(Harvesting.reference_events)
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.contributions, innerjoin=False
                     )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.abstracts, innerjoin=False
                     )
                 )
                 .options(
-                    joinedload(ReferenceEvent.reference).joinedload(
+                    joinedload(ReferenceEvent.reference).selectinload(
                         Reference.subjects, innerjoin=False
                     )
                 )
@@ -99,17 +99,28 @@ class RetrievalDAO(AbstractDAO):
         stmt = (
             select(Retrieval)
             .options(
-                joinedload(Retrieval.harvestings)
-                .joinedload(Harvesting.reference_events)
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.contributions)
-                )
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.identifiers)
-                )
-                .options(
-                    joinedload(ReferenceEvent.reference).noload(Reference.document_type)
-                )
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
+                .selectinload(ReferenceEvent.reference)
+            )
+            .options(
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
+                .selectinload(ReferenceEvent.reference)
+                .selectinload(Reference.contributions)
+            )
+            .options(
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
+                .selectinload(ReferenceEvent.reference)
+                .selectinload(Reference.issue)
+            )
+            .options(
+                selectinload(Retrieval.harvestings)
+                .selectinload(Harvesting.reference_events)
+                .selectinload(ReferenceEvent.reference)
+                .selectinload(Reference.issue)
+                .selectinload(Issue.journal)
             )
             .where(Retrieval.id == retrieval_id)
         )

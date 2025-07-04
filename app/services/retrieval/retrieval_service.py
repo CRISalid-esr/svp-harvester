@@ -4,16 +4,17 @@ from asyncio import Queue
 from typing import Annotated, Optional, List, Type
 
 from fastapi import Depends, Body, HTTPException
+from loguru import logger
 from starlette.background import BackgroundTasks
 
 from app.api.dependencies.event_types import event_types_or_default
 from app.config import get_app_settings
 from app.db.conversions import EntityConverter
-from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.daos.harvesting_dao import HarvestingDAO
-from app.db.models.retrieval import Retrieval
-from app.db.models.harvesting import Harvesting
+from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.entity import Entity as DbEntity
+from app.db.models.harvesting import Harvesting
+from app.db.models.retrieval import Retrieval
 from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
@@ -143,8 +144,11 @@ class RetrievalService:
             harvesting_tasks_index[harvesting.id] = task
 
         while pending_harvesters:
-            _, pending_harvesters = await asyncio.wait(
+            harvester, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
+            )
+            logger.debug(
+                "Harvesting {} finished for entity id={}", harvester, self.entity.id
             )
 
     def _check_entity_declaration_and_nullification(self, entity):

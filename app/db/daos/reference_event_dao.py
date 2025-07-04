@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import sqlalchemy
 from sqlalchemy import select, func
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.harvesting import Harvesting
@@ -20,7 +20,7 @@ class ReferenceEventDAO(AbstractDAO):
 
     async def create_reference_event(
         self,
-        reference: Reference,
+        reference_id: int,
         harvesting_id: int,
         event_type: ReferenceEvent.Type,
         enhanced: bool = False,
@@ -28,7 +28,7 @@ class ReferenceEventDAO(AbstractDAO):
         """
         Create a reference event for a reference
 
-        :param reference: reference to which the event is related
+        :param reference_id: id of the reference to which the event is related
         :param harvesting_id: harvesting id to which the event belongs
         :param event_type: state of the event
         :param enhanced: if the harvester version is increased
@@ -38,7 +38,7 @@ class ReferenceEventDAO(AbstractDAO):
         reference_event = ReferenceEvent(
             type=event_type.value, harvesting_id=harvesting_id, enhanced=enhanced
         )
-        reference_event.reference = reference
+        reference_event.reference_id = reference_id
         self.db_session.add(reference_event)
         return reference_event
 
@@ -64,28 +64,20 @@ class ReferenceEventDAO(AbstractDAO):
         stmt = (
             select(ReferenceEvent)
             .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.contributions)
-            )
-            .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.subjects)
-            )
-            .options(
-                joinedload(ReferenceEvent.reference).joinedload(Reference.abstracts)
-            )
-            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.issue))
-            .options(
-                joinedload(ReferenceEvent.reference)
-                .joinedload(Reference.issue)
-                .joinedload(Issue.journal)
-            )
-            .options(joinedload(ReferenceEvent.reference).joinedload(Reference.book))
-            .options(
-                joinedload(ReferenceEvent.harvesting)
-                .joinedload(Harvesting.retrieval)
-                .joinedload(Retrieval.entity)
+                selectinload(ReferenceEvent.reference).options(
+                    selectinload(Reference.contributions),
+                    selectinload(Reference.subjects),
+                    selectinload(Reference.abstracts),
+                    selectinload(Reference.issue).selectinload(Issue.journal),
+                    selectinload(Reference.book),
+                ),
+                selectinload(ReferenceEvent.harvesting)
+                .selectinload(Harvesting.retrieval)
+                .selectinload(Retrieval.entity),
             )
             .where(ReferenceEvent.id == reference_event_id)
         )
+
         return (await self.db_session.execute(stmt)).unique().scalar_one_or_none()
 
     async def get_reference_events_by_day_and_type(self, past_days: int = 7) -> dict:

@@ -6,8 +6,9 @@ from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.abes_concept_solver import AbesConceptSolver
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.concepts.concept_solver import ConceptSolver
-from app.services.concepts.sparql_idref_concept_solver import SparqlIdRefConceptSolver
+from app.services.concepts.dummy_concept_solver import DummyConceptSolver
 from app.services.concepts.skosmos_jel_concept_solver import SkosmosJelConceptSolver
+from app.services.concepts.sparql_idref_concept_solver import SparqlIdRefConceptSolver
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
@@ -59,6 +60,10 @@ class ConceptFactory:
         cls, concept_source: ConceptInformations.ConceptSources
     ) -> ConceptSolver:
         settings = get_app_settings()
+        if settings.enable_concept_dereferencing is False:
+            # if concept dereferencing is disabled, return a dummy solver
+            # to avoid hitting external services
+            return DummyConceptSolver()
         if concept_source == ConceptInformations.ConceptSources.IDREF:
             return SparqlIdRefConceptSolver(timeout=settings.idref_concepts_timeout)
         if concept_source == ConceptInformations.ConceptSources.WIKIDATA:

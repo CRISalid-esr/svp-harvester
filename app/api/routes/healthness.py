@@ -3,8 +3,6 @@ from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.responses import Response
 
-from app.config import get_app_settings
-
 
 class HealthCheck(BaseModel):
     """Response model to validate and return when performing a health check."""
@@ -23,7 +21,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     response_model=HealthCheck,
 )
-async def get_health(request: Request, response: Response) -> HealthCheck:
+async def get_health(_request: Request, _response: Response) -> HealthCheck:
     """
     ## Perform a Health Check
     Endpoint to perform a healthcheck on.
@@ -31,9 +29,4 @@ async def get_health(request: Request, response: Response) -> HealthCheck:
     Returns:
         HealthCheck: Returns a JSON response with the health status
     """
-    if get_app_settings().amqp_enabled:
-        amqp_disconnected = request.app.state.amqp_disconnected
-        if amqp_disconnected:
-            response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return HealthCheck(status="Unhealthy")
     return HealthCheck(status="OK")

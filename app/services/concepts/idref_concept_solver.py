@@ -1,7 +1,7 @@
 import re
 
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.rdf_concept_solver import RdfConceptSolver
 
 

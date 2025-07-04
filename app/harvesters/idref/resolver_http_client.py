@@ -1,6 +1,10 @@
-import aiohttp
+from aiohttp import ClientTimeout
 
-from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.harvesters.exceptions.external_endpoint_failure import (
+    ExternalEndpointFailure,
+    handle_external_endpoint_failure,
+)
+from app.http.aio_http_client_manager import AioHttpClientManager
 
 
 class ResolverHTTPClient:
@@ -8,34 +12,23 @@ class ResolverHTTPClient:
     Generic HTTP client for resolving URIs
     """
 
-    def __init__(self, timeout: int = 30):
-        self.connector = aiohttp.TCPConnector(limit=0)
+    def __init__(self, timeout: int = 7):
         self.timeout = timeout
 
-    async def get(self, document_url: str) -> str:
+    @handle_external_endpoint_failure("external resolver")
+    async def get(self, url: str) -> str:
         """
         Get any document from remote URL as text
 
-        :param document_url: the URL to fetch
+        :param url: the URL to fetch
         :return: the document as text
         """
-        try:
-            async with aiohttp.ClientSession(
-                connector=self.connector,
-                timeout=aiohttp.ClientTimeout(total=self.timeout),
-            ) as session:
-                async with session.get(document_url) as resp:
-                    if resp.status == 200:
-                        return await resp.text()
-                    raise ExternalEndpointFailure(
-                        f"Error code while resolving URI : {document_url} "
-                        f"with code {resp.status}"
-                    )
-        except aiohttp.ClientConnectorError as error:
+        session = await AioHttpClientManager.get_session()
+        request_timeout = ClientTimeout(total=float(self.timeout))
+        async with session.get(url, timeout=request_timeout) as resp:
+            if resp.status == 200:
+                return await resp.text()
+            await resp.release()
             raise ExternalEndpointFailure(
-                f"Cant resolve URI : {document_url} with error {error}"
-            ) from error
-        except Exception as error:
-            raise ExternalEndpointFailure(
-                f"Error while resolving URI : {document_url} with error {error}"
-            ) from error
+                f"Error code while resolving URI : {url} with code {resp.status}"
+            )

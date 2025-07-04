@@ -2,7 +2,9 @@ from typing import List
 
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.services.organizations.organization_solver import OrganizationSolver
 
 

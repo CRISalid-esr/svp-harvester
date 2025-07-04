@@ -3,7 +3,7 @@
 import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.db.models.contribution import Contribution
 from app.db.models.contributor import Contributor
@@ -42,7 +42,7 @@ async def test_contributor(async_session: AsyncSession):
     stmt = (
         select(Contributor)
         .options(
-            joinedload(Contributor.contributions)
+            selectinload(Contributor.contributions)
             .joinedload(Contribution.reference)
             .joinedload(Reference.contributions)
         )

@@ -1,7 +1,7 @@
 from typing import List
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.contributor import Contributor
@@ -30,7 +30,7 @@ class ContributorDAO(AbstractDAO):
         """
         stmt = (
             select(Contributor)
-            .options(joinedload(Contributor.identifiers))
+            .options(selectinload(Contributor.identifiers))
             .where(Contributor.source == source)
             .where(Contributor.name == name)
             # where source identifier is null
@@ -49,7 +49,7 @@ class ContributorDAO(AbstractDAO):
         """
         stmt = (
             select(Contributor)
-            .options(joinedload(Contributor.identifiers))
+            .options(selectinload(Contributor.identifiers))
             .where(Contributor.source == source)
             .where(Contributor.source_identifier == source_identifier)
         )

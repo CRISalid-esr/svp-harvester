@@ -1,17 +1,23 @@
-import asyncio
 import re
 from typing import List
 from typing import Tuple
+
+from aiohttp import ClientTimeout
 from rdflib import OWL, Graph, term
 
-import aiohttp
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.db.models.organization import Organization
+from app.db.models.organization_identifier import OrganizationIdentifier
+from app.http.aio_http_client_manager import AioHttpClientManager
+from app.services.errors.dereferencing_error import (
+    DereferencingError,
+    handle_organization_dereferencing_error,
+)
 from app.services.organizations import (  # pylint: disable=cyclic-import
     organization_factory,
 )
-from app.db.models.organization import Organization
-from app.db.models.organization_identifier import OrganizationIdentifier
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.services.organizations.organization_solver import OrganizationSolver
 
 
@@ -36,6 +42,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         """
         raise NotImplementedError("IdrefOrganizationSolver.solve")
 
+    @handle_organization_dereferencing_error("Idref")
     async def solve_identities(
         self, organization_information: OrganizationInformations, seen: List[str]
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
@@ -56,56 +63,45 @@ class IdrefOrganizationSolver(OrganizationSolver):
         idref_url, idref_uri = self._build_url_from_organization_id(
             organization_information.identifier
         )
-        try:
-            async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=float(self.timeout))
-            ) as session:
-                async with session.get(idref_url) as response:
-                    if not 200 <= response.status < 300:
-                        raise DereferencingError(
-                            f"Endpoint returned status {response.status}"
-                            f" while dereferencing {idref_url}"
+        session = await AioHttpClientManager.get_session()
+        request_timeout = ClientTimeout(total=float(self.timeout))
+        async with session.get(idref_url, timeout=request_timeout) as response:
+            if not 200 <= response.status < 300:
+                await response.release()
+                raise DereferencingError(
+                    f"Endpoint returned status {response.status}"
+                    f" while dereferencing {idref_url}"
+                )
+            xml = await response.text()
+            concept_graph = Graph().parse(data=xml, format="xml")
+            # Search for sameAs identifiers
+            for uri in concept_graph.objects(term.URIRef(idref_uri), OWL.sameAs):
+                source, identifier = self._infer_source_and_id_from_uri(uri)
+
+                if source in seen or (source is None and identifier is None):
+                    continue
+                try:
+                    if source in self.IDENTITY_DEEP_SEARCH:
+                        (
+                            identifiers,
+                            seen,
+                        ) = await organization_factory.OrganizationFactory.solve_identities(
+                            OrganizationInformations(
+                                identifier=identifier, source=source
+                            ),
+                            seen,
                         )
-                    xml = await response.text()
-                    concept_graph = Graph().parse(data=xml, format="xml")
-                    # Search for sameAs identifiers
-                    for uri in concept_graph.objects(
-                        term.URIRef(idref_uri), OWL.sameAs
-                    ):
-                        source, identifier = self._infer_source_and_id_from_uri(uri)
-
-                        if source in seen or (source is None and identifier is None):
-                            continue
-                        try:
-                            if source in self.IDENTITY_DEEP_SEARCH:
-                                (
-                                    identifiers,
-                                    seen,
-                                ) = await organization_factory.OrganizationFactory.solve_identities(
-                                    OrganizationInformations(
-                                        identifier=identifier, source=source
-                                    ),
-                                    seen,
-                                )
-                                new_identifiers.extend(identifiers)
-                            elif source in self.IDENTITY_SAVE:
-                                new_identifiers.append(
-                                    OrganizationIdentifier(
-                                        type=source, value=identifier
-                                    )
-                                )
-                                seen.append(source)
-                        except ValueError:
-                            new_identifiers.append(
-                                OrganizationIdentifier(type=source, value=identifier)
-                            )
-                            seen.append(source)
-                    return new_identifiers, seen
-
-        # If the request fails, return the new identifiers with only the idref identifier
-        except aiohttp.ClientError:
-            return new_identifiers, seen
-        except asyncio.TimeoutError:
+                        new_identifiers.extend(identifiers)
+                    elif source in self.IDENTITY_SAVE:
+                        new_identifiers.append(
+                            OrganizationIdentifier(type=source, value=identifier)
+                        )
+                        seen.append(source)
+                except (ValueError, DereferencingError):
+                    new_identifiers.append(
+                        OrganizationIdentifier(type=source, value=identifier)
+                    )
+                    seen.append(source)
             return new_identifiers, seen
 
     def _build_url_from_organization_id(self, organization_id):

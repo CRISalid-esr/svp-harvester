@@ -6,7 +6,7 @@ import pytest
 from app.config import get_app_settings
 from app.db.models.concept import Concept as DbConcept
 from app.services.concepts.concept_informations import ConceptInformations
-from app.services.concepts.dereferencing_error import DereferencingError
+from app.services.errors.dereferencing_error import DereferencingError
 from app.services.concepts.idref_concept_solver import IdRefConceptSolver
 
 
@@ -86,7 +86,8 @@ async def test_idref_concept_solver_calls_url_from_uri(
         solver = IdRefConceptSolver()
         solver.complete_information(concept_informations)
         await solver.solve(concept_informations)
-        mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
+        args, kwargs = mock_get.call_args
+        assert args[0] == "https://www.idref.fr/082303363.rdf"
 
 
 @pytest.mark.asyncio
@@ -111,7 +112,8 @@ async def test_idref_concept_solver_calls_url_from_numeric_id(
         solver = IdRefConceptSolver()
         solver.complete_information(concept_informations)
         await solver.solve(concept_informations)
-        mock_get.assert_called_once_with("https://www.idref.fr/082303363.rdf")
+        args, kwargs = mock_get.call_args
+        assert args[0] == "https://www.idref.fr/082303363.rdf"
 
 
 @pytest.mark.asyncio
@@ -150,9 +152,8 @@ async def test_idref_concept_solver_returns_db_concept(idref_concept_http_client
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await solver.solve(concept_informations)
-    idref_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/082303363.rdf"
-    )
+    args, kwargs = idref_concept_http_client_mock.call_args
+    assert args[0] == "https://www.idref.fr/082303363.rdf"
     assert result is not None
     assert isinstance(result, DbConcept)
     assert result.uri == "http://www.idref.fr/082303363/id"
@@ -179,9 +180,8 @@ async def test_idref_concept_solver_returns_concepts_in_preferred_language(
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await IdRefConceptSolver().solve(concept_informations)
-    idref_multilang_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/123456789.rdf"
-    )
+    args, kwargs = idref_multilang_concept_http_client_mock.call_args
+    assert args[0] == "https://www.idref.fr/123456789.rdf"
     assert len(result.labels) == 5
     # 3 preflabels, one in french, one in english, one in unspecified language
     assert len([label for label in result.labels if label.preferred]) == 3
@@ -280,9 +280,9 @@ async def test_idref_concept_solver_returns_concepts_without_language(
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await solver.solve(concept_informations)
-    idref_nolang_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/123456789.rdf"
-    )
+    args, kwargs = idref_nolang_concept_http_client_mock.call_args
+    assert idref_nolang_concept_http_client_mock.call_count == 1
+    assert args[0] == "https://www.idref.fr/123456789.rdf"
     assert len(result.labels) == 2
     assert len([label for label in result.labels if label.preferred]) == 1
     assert len([label for label in result.labels if not label.preferred]) == 1
@@ -335,9 +335,8 @@ async def test_idref_concept_solver_returns_concepts_in_non_preferred_languages(
     solver = IdRefConceptSolver()
     solver.complete_information(concept_informations)
     result = await solver.solve(concept_informations)
-    idref_non_preferred_lang_concept_http_client_mock.assert_called_once_with(
-        "https://www.idref.fr/123456789.rdf"
-    )
+    args, kwargs = idref_non_preferred_lang_concept_http_client_mock.call_args
+    assert args[0] == "https://www.idref.fr/123456789.rdf"
     assert len(result.labels) == 1
     assert len([label for label in result.labels if label.preferred]) == 1
     assert len([label for label in result.labels if not label.preferred]) == 0

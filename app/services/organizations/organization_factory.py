@@ -3,9 +3,12 @@ from typing import List
 from app.config import get_app_settings
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
+from app.services.organizations.dummy_organization_sover import DummyOrganizationSolver
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
-from app.services.organizations.organization_data_class import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.services.organizations.organization_solver import OrganizationSolver
 from app.services.organizations.ror_organization_solver import RorOrganizationSolver
 from app.services.organizations.scopus_organization_solver import (
@@ -60,6 +63,10 @@ class OrganizationFactory:
     @classmethod
     def _create_solver(cls, organization_source) -> OrganizationSolver:
         settings = get_app_settings()
+        if settings.enable_organizations_dereferencing is False:
+            # if organization dereferencing is disabled, return a dummy solver
+            # to avoid hitting external services
+            return DummyOrganizationSolver()
         if organization_source == "hal":
             return HalOrganizationSolver(timeout=settings.hal_organizations_timeout)
         if organization_source == "idref":

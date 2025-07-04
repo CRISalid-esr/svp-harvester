@@ -1,7 +1,9 @@
+import asyncio
+import gc
 import traceback
 from abc import ABC, abstractmethod
 from asyncio import Queue
-from typing import Optional, AsyncGenerator, Type, List
+from typing import Optional, AsyncGenerator, Type, List, Tuple
 
 from asyncpg import PostgresConnectionError
 from loguru import logger
@@ -103,6 +105,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         :return: A generator of results
         """
 
+    # pylint: disable=too-many-branches,too-many-statements
     async def run(self) -> None:
         """
         Run the harvester asynchronously
@@ -113,19 +116,20 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         references_recorder = ReferencesRecorder(
             harvesting=(await self.get_harvesting())
         )
-        previous_references: list[Reference] = (
+        previous_reference_ids_and_source_ids: List[Tuple[int, str]] = (
             await references_recorder.get_matching_references_before_harvesting(
                 entity_id=self.entity_id
             )
             or []
         )
-        existing_references: list[Reference] = []
+        existing_reference_identifiers: list[str] = []
         try:
             raw_data: AbstractHarvesterRawResult
             async for raw_data in self.fetch_results():
+                old_ref: Optional[Reference] = None
+                if raw_data in (None, "end"):
+                    break
                 try:
-                    if raw_data is None or raw_data == "end":
-                        break
                     new_ref = self.converter.build(
                         raw_data=raw_data, harvester_version=self.get_version()
                     )
@@ -135,7 +139,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     comparaison_hash = new_ref.hash
                     new_ref_is_enhanced = False
                     if old_ref is not None:
-                        existing_references.append(old_ref)
+                        existing_reference_identifiers.append(old_ref.source_identifier)
                         new_ref_is_enhanced = VersionInfo.parse(
                             new_ref.harvester_version
                         ) > VersionInfo.parse(old_ref.harvester_version)
@@ -161,20 +165,20 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                         or (new_ref_is_enhanced and self.fetch_enhancements)
                     ):
                         await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
-                    reference_event: Optional[
-                        ReferenceEvent
+                    reference_event_id_and_type: Optional[
+                        Tuple[int, str]
                     ] = await self._handle_converted_result(
                         new_ref=new_ref,
                         old_ref=old_ref,
                         comparaison_hash=comparaison_hash,
                         references_recorder=references_recorder,
                     )
-                    if reference_event is not None:
+                    if reference_event_id_and_type is not None:
                         await self._put_in_queue(
                             {
                                 "type": "ReferenceEvent",
-                                "id": reference_event.id,
-                                "change": reference_event.type,
+                                "id": reference_event_id_and_type[0],
+                                "change": reference_event_id_and_type[1],
                             }
                         )
                 except UnexpectedFormatException as error:
@@ -182,11 +186,18 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     # it means that one of the references could not be converted
                     # but the harvester can continue to deliver results
                     # so we handle and continue
-                    await self.handle_error(error)
+                    await self.handle_error(error, with_stack=True)
                     continue
+                finally:
+                    # Free memory before next iteration
+                    del new_ref, raw_data
+                    if old_ref is not None:
+                        del old_ref
+                    await asyncio.sleep(0)
+                    gc.collect()
             await self._register_deleted_references(
-                existing_references=existing_references,
-                previous_references=previous_references,
+                existing_reference_identifiers=existing_reference_identifiers,
+                previous_reference_ids_and_source_ids=previous_reference_ids_and_source_ids,
                 references_recorder=references_recorder,
             )
             await self._update_harvesting_state(Harvesting.State.COMPLETED)
@@ -195,19 +206,19 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         # harvester should let external ExternalEndpointFailure bubble up to this point
         # because the harvesting cant recover from them
         except ExternalEndpointFailure as error:
-            await self.handle_error(error)
+            await self.handle_error(error, with_stack=True)
         # if an UnexpectedFormatException bubbles up to this point
         # it means that the harvester prefers to stop delivering results
         # but results may have been delivered before the exception
         # An harvester could decide to handle this exception on a lower level
         # and continue to deliver results
         except UnexpectedFormatException as error:
-            await self.handle_error(error)
+            await self.handle_error(error, with_stack=True)
         # Database failure
         except (ConnectionError, PostgresConnectionError) as connection_error:
-            await self.handle_error(connection_error)
+            await self.handle_error(connection_error, with_stack=True)
         except SqlTimeoutError as connection_error:
-            await self.handle_error(connection_error)
+            await self.handle_error(connection_error, with_stack=True)
         # this is for debugging purpose only
         # as no other exception types are expected during normal execution
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -220,7 +231,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         old_ref: Reference,
         comparaison_hash: str,
         references_recorder: ReferencesRecorder,
-    ) -> Optional[ReferenceEvent]:
+    ) -> Optional[Tuple[int, str]]:
         reference_event: Optional[ReferenceEvent] = None
 
         if old_ref is not None:
@@ -259,27 +270,26 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
             reference_event = await references_recorder.register_creation(
                 new_ref=new_ref,
             )
-        return reference_event
+        if reference_event is None:
+            return None
+        return reference_event.id, reference_event.type
 
     async def _register_deleted_references(
         self,
-        existing_references: List[Reference],
-        previous_references: List[Reference],
+        existing_reference_identifiers: List[str],
+        previous_reference_ids_and_source_ids: List[Tuple[int, str]],
         references_recorder: ReferencesRecorder,
     ):
         if ReferenceEvent.Type.DELETED.value not in self.event_types:
             return
-        existing_references_identifiers = list(
-            map(lambda ref: str(ref.source_identifier), existing_references)
-        )
-        deleted_references = [
-            ref
-            for ref in previous_references
-            if str(ref.source_identifier) not in existing_references_identifiers
+        deleted_references_ids = [
+            ref_id
+            for ref_id, source_id in previous_reference_ids_and_source_ids
+            if source_id not in existing_reference_identifiers
         ]
-        for reference in deleted_references:
+        for reference_id in deleted_references_ids:
             reference_event = await references_recorder.register_deletion(
-                old_ref=reference,
+                old_ref_id=reference_id
             )
             await self._put_in_queue(
                 {
@@ -312,7 +322,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                     self.harvesting_id, error
                 )
 
-    async def handle_error(self, error: Exception, with_stack: bool = False) -> None:
+    async def handle_error(self, error: Exception, with_stack: bool = True) -> None:
         """
         Persist and notify an error occurred during the harvesting
         :param error: The error object
@@ -341,6 +351,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         if self.result_queue is None:
             return
         await self.result_queue.put(message)
+        await asyncio.sleep(0)  # force context switch
 
     async def _get_entity(self) -> DbEntity:
         """

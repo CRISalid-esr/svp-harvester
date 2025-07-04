@@ -1,7 +1,6 @@
 from sqlalchemy import select
+from sqlalchemy.orm import raiseload, selectinload
 from sqlalchemy.sql.expression import func
-
-from sqlalchemy.orm import raiseload, joinedload
 
 from app.db.abstract_dao import AbstractDAO
 from app.db.models.concept import Concept
@@ -42,7 +41,7 @@ class ConceptDAO(AbstractDAO):
             select(Concept)
             .where(Concept.uri == uri)
             .options(raiseload("*"))
-            .options(joinedload(Concept.labels))
+            .options(selectinload(Concept.labels))
         )
         return await self.db_session.scalar(query)
 

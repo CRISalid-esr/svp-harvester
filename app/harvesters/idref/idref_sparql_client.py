@@ -1,15 +1,17 @@
 from enum import Enum
 from typing import AsyncGenerator
+from venv import logger
 
 import aiohttp
 from aiosparql.client import SPARQLClient
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.utilities.execution_timer_wrapper import execution_timer
 
 DATA_IDREF_FR_URL = "https://data.idref.fr/sparql"
 
-IDREF_SPARQL_DEFAULT_TIMEOUT = 20
+IDREF_SPARQL_DEFAULT_TIMEOUT = 30
 
 
 class IdrefSparqlClient:
@@ -65,7 +67,7 @@ class IdrefSparqlClient:
         :param query: The sparql query to send to the Idref sparql endpoint.
         :return: A generator of results.
         """
-        client: SPARQLClient = self._get_client()
+        client: SPARQLClient = await self._get_client()
         try:
             response = await client.query(query)
             # Aggregate results
@@ -159,7 +161,7 @@ class IdrefSparqlClient:
         :param query: the sparql query to send to the Idref sparql endpoint
         :return: the result as dict
         """
-        client: SPARQLClient = self._get_client()
+        client: SPARQLClient = await self._get_client()
         try:
             response = await client.query(query)
             print(query)
@@ -185,7 +187,7 @@ class IdrefSparqlClient:
         :param query: the sparql query to send to the Idref sparql endpoint
         :return: the result as dict
         """
-        client: SPARQLClient = self._get_client()
+        client: SPARQLClient = await self._get_client()
 
         try:
             response = await client.query(query)
@@ -223,11 +225,19 @@ class IdrefSparqlClient:
         for source, prefixes in self.DATA_SOURCES_PREFIXES.items():
             if any(uri.startswith(prefix) for prefix in prefixes):
                 return source.value
-        raise ExternalEndpointFailure(f"Unknown data source for uri {uri}")
+        logger.error("Unknown data source for uri %s", uri)
+        return None
 
-    def _get_client(self) -> SPARQLClient:
+    async def _get_client(self) -> SPARQLClient:
+        connector = await AioHttpClientManager.get_connector()
         return SPARQLClient(
             DATA_IDREF_FR_URL,
-            connector=aiohttp.TCPConnector(limit=0),
-            timeout=aiohttp.ClientTimeout(total=float(self.timeout)),
+            connector=connector,
+            timeout=aiohttp.ClientTimeout(
+                total=50,  # overall cap on the request lifecycle
+                connect=10,  # max time to establish TCP connection
+                sock_read=30,  # max time to wait for server response data
+                sock_connect=10,  # max time to establish socket (useful behind proxies)
+            ),
+            connector_owner=False,
         )
