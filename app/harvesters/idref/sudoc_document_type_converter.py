@@ -20,6 +20,10 @@ class SudocDocumentTypeConverter(AbstractDocumentTypeConverter):
         ),
         f"{RDF['BIBO']}Document": (f"{RDF['BIBO']}Document", "Document"),
         f"{RDF['BIBO']}Excerpt": (f"{RDF['BIBO']}Excerpt", "Excerpt"),
+        f"{RDF['BIBO']}Periodical": (
+            f"{RDF['BIBO']}Periodical",
+            "Periodical",
+        ),
         f"{RDF['BIBO']}Thesis": (
             f"{RDF['BIBO']}Thesis",
             "Thesis",
