@@ -147,7 +147,9 @@ class RetrievalService:
             harvester, pending_harvesters = await asyncio.wait(
                 pending_harvesters, return_when=asyncio.FIRST_COMPLETED
             )
-            logger.debug("Harvester %s finished for entity %s", harvester, self.entity)
+            logger.debug(
+                "Harvesting {} finished for entity id={}", harvester, self.entity.id
+            )
 
     def _check_entity_declaration_and_nullification(self, entity):
         if self.nullify:

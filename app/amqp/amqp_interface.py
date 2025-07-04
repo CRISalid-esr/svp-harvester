@@ -18,7 +18,9 @@ class AMQPInterface:
     """Rabbitmq Connexion abstraction"""
 
     INNER_TASKS_QUEUE_LENGTH = 10000
-    RESULT_QUEUE_LENGTH = 500
+
+    # When this value is reached, workers will block on publishing
+    RESULT_QUEUE_LENGTH = 10
 
     def __init__(self, settings: AppSettings):
         """
@@ -142,7 +144,7 @@ class AMQPInterface:
             while True:
                 result = await self.result_queue.get()
                 logger.debug(
-                    f"Published result. Queue size: {self.result_queue.qsize()} - Result: {result}"
+                    f"Publishing result. Queue size: {self.result_queue.qsize()} - Result: {result}"
                 )
                 try:
                     await self.publisher.publish(result)

@@ -20,8 +20,6 @@ class AMQPMessageProcessor:
     Workers to process messages from AMQP interface
     """
 
-    MAX_EXPECTED_RESULTS = 10000
-
     def __init__(
         self,
         task_queue: asyncio.Queue,
@@ -154,6 +152,7 @@ class AMQPMessageProcessor:
                         "parameters": json_payload,
                     }
                 )
+                await asyncio.sleep(0)  # force context switch
                 raise InvalidEntityError(
                     f"Entity validation error: {validation_error} in {json_payload}"
                 ) from validation_error
@@ -167,6 +166,7 @@ class AMQPMessageProcessor:
                         "parameters": json_payload,
                     }
                 )
+                await asyncio.sleep(0)  # force context switch
                 raise InvalidEntityError("No identifiers provided in {json_payload}")
             service = RetrievalService(
                 identifiers_safe_mode=json_payload.get("identifiers_safe_mode", False),
@@ -186,6 +186,7 @@ class AMQPMessageProcessor:
                         "message": "Retrieval started",
                     }
                 )
+                await asyncio.sleep(0)  # force context switch
             if reply_expected:
                 await service.run(result_queue=self.result_queue)
             else:

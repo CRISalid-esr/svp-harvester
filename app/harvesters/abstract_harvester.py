@@ -351,6 +351,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         if self.result_queue is None:
             return
         await self.result_queue.put(message)
+        await asyncio.sleep(0)  # force context switch
 
     async def _get_entity(self) -> DbEntity:
         """
