@@ -23,12 +23,18 @@ class IdrefSparqlClient:
     class DataSources(Enum):
         """Typology of data sources for which data.idref.fr gathers data"""
 
-        IDREF = "IDREF"
+        ERUDIT = "ERUDIT"
         HAL = "HAL"
-        SUDOC = "SUDOC"
-        SCIENCE_PLUS = "SCIENCE_PLUS"
+        IDREF = "IDREF"
         OPEN_EDITION = "OPEN_EDITION"
+        ORBI = "ORBI"
         PERSEE = "PERSEE"
+        SCIENCE_PLUS = "SCIENCE_PLUS"
+        SERVAL = "SERVAL"
+        SUDOC = "SUDOC"
+        UNIGE = "UNIGE"
+        ZBMATH = "ZBMATH"
+        SONAR = "SONAR"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
@@ -36,17 +42,14 @@ class IdrefSparqlClient:
     ]
 
     DATA_SOURCES_PREFIXES = {
-        DataSources.IDREF: [
-            "http://www.idref.fr/",
+        DataSources.ERUDIT: [
+            "https://www.erudit.org/",
         ],
         DataSources.HAL: [
             "https://hal.archives-ouvertes.fr/",
         ],
-        DataSources.SUDOC: [
-            "http://www.sudoc.fr/",
-        ],
-        DataSources.SCIENCE_PLUS: [
-            "http://hub.abes.fr/",
+        DataSources.IDREF: [
+            "http://www.idref.fr/",
         ],
         DataSources.OPEN_EDITION: [
             "http://journals.openedition.org/",
@@ -54,8 +57,29 @@ class IdrefSparqlClient:
             "http://books.openedition.org/",
             "https://books.openedition.org/",
         ],
+        DataSources.ORBI: [
+            "https://orbi.uliege.be/",
+        ],
         DataSources.PERSEE: [
             "http://data.persee.fr/",
+        ],
+        DataSources.SCIENCE_PLUS: [
+            "http://hub.abes.fr/",
+        ],
+        DataSources.SERVAL: [
+            "https://serval.unil.ch/",
+        ],
+        DataSources.SONAR: [
+            "https://sonar.ch/",
+        ],
+        DataSources.SUDOC: [
+            "http://www.sudoc.fr/",
+        ],
+        DataSources.UNIGE: [
+            "https://archive-ouverte.unige.ch/",
+        ],
+        DataSources.ZBMATH: [
+            "https://zbmath.org/",
         ],
     }
 
