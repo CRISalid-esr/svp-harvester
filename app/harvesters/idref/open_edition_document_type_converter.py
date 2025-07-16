@@ -16,6 +16,6 @@ class OpenEditionDocumentTypeConverter(AbstractDocumentTypeConverter):
         "article": (f"{RDF['BIBO']}Article", "Article"),
         "introduction": (f"{RDF['BIBO']}Chapter", "Chapter"),
         "review": (f"{RDF['SPAR']}ReviewPaper,", "Review Paper"),
-        "archaelogical note": (f"{RDF['BIBO']}Note", "Note"),
+        "archaeological note": (f"{RDF['BIBO']}Note", "Note"),
         "chapter": (f"{RDF['BIBO']}Chapter", "Chapter"),
     }

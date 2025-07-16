@@ -22,7 +22,7 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
         "COUV": (f"{RDF['BIBO']}Chapter", "Chapter"),
         "THESE": (f"{RDF['BIBO']}Thesis", "Thesis"),
         "OUV": (f"{RDF['BIBO']}Book", "Book"),
-        "UNDEFINDED": (f"{RDF['SPAR']}Preprint", "Preprint"),
+        "UNDEFINED": (f"{RDF['SPAR']}Preprint", "Preprint"),
         "MEM": (
             "https://vocabularies.coar-repositories.org/resource_types/c_bdcc/",
             "Master Thesis",
@@ -84,6 +84,8 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
             f"{RDF['COAR']}c_93fc",
             "Report",
         ),
+        "SON": (f"{RDF['SPAR']}AudioDocument", "AudioDocument"),
+
         # HAL docSubType_s
         "PHOTOGRAPHY": (
             f"{RDF['SPAR']}StillImage",
