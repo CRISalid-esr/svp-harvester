@@ -13,15 +13,19 @@ class SudocDocumentTypeConverter(AbstractDocumentTypeConverter):
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {
+        f"{RDF['BIBO']}Article": (f"{RDF['BIBO']}Article", "Article"),
         f"{RDF['BIBO']}Book": (
             f"{RDF['BIBO']}Book",
             "Book",
+        ),
+        f"{RDF['BIBO']}Document": (f"{RDF['BIBO']}Document", "Document"),
+        f"{RDF['BIBO']}Excerpt": (f"{RDF['BIBO']}Excerpt", "Excerpt"),
+        f"{RDF['BIBO']}Periodical": (
+            f"{RDF['BIBO']}Periodical",
+            "Periodical",
         ),
         f"{RDF['BIBO']}Thesis": (
             f"{RDF['BIBO']}Thesis",
             "Thesis",
         ),
-        f"{RDF['BIBO']}Article": (f"{RDF['BIBO']}Article", "Article"),
-        f"{RDF['BIBO']}Document": (f"{RDF['BIBO']}Document", "Document"),
-        f"{RDF['BIBO']}Excerpt": (f"{RDF['BIBO']}Excerpt", "Excerpt"),
     }

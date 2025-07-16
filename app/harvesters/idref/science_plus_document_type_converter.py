@@ -13,12 +13,12 @@ class SciencePlusDocumentTypeConverter(AbstractDocumentTypeConverter):
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {
-        f"{RDF['RDA']}C10001": (
-            f"{RDF['RDA']}C10001",
-            "Work",
-        ),
         f"{RDF['BIBO']}Article": (
             f"{RDF['BIBO']}Article",
             "Article",
+        ),
+        f"{RDF['RDA']}C10001": (
+            f"{RDF['RDA']}C10001",
+            "Work",
         ),
     }
