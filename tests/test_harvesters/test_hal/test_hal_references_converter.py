@@ -185,6 +185,7 @@ async def test_convert_with_date_exception(fixture, expected_output, caplog, req
         assert expected_output in caplog.text
 
 
+@pytest.mark.current
 async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: dict):
     """
     Given a list of docs where the first is a publication without files
@@ -208,6 +209,7 @@ async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: 
     assert reference.manifestations[0].page == doc["uri_s"]
 
 
+@pytest.mark.current
 async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict):
     """
     Given a list of docs where the second is a publication with a sigle file in fileMain_s
@@ -232,6 +234,7 @@ async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict
     assert reference.manifestations[0].download_url == doc["fileMain_s"]
 
 
+@pytest.mark.current
 async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dict):
     """
     Given a list of docs where the third is a publication with multiple files in files_s
@@ -259,6 +262,7 @@ async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dic
     assert reference.manifestations[0].additional_files[0] == doc["files_s"][1]
 
 
+@pytest.mark.current
 async def test_publication_with_collection_codes(
     hal_api_response_with_collection_codes: dict,
 ):

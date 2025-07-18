@@ -132,7 +132,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             break
 
     async def _get_issue(self, biblio_graph, uri, journal) -> Issue:
-        source_identifier = normalize_string("-".join(journal.titles)) + "-sudoc"
+        source_identifier = normalize_string("-".join(journal.source_identifier)) + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(
                 source="sudoc", source_identifier=source_identifier, journal=journal

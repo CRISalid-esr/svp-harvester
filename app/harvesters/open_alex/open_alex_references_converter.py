@@ -166,7 +166,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         volume = json_payload.get("biblio", {}).get("volume", "")
         number = json_payload.get("biblio", {}).get("issue", "")
         source_identifier = (
-            normalize_string("-".join(journal.titles))
+            normalize_string("-".join(journal.source_identifier))
             + f"-{volume}-{number}"
             + f"-{self._harvester()}"
         )

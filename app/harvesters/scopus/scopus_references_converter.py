@@ -138,7 +138,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         volume = self._get_element(entry, "prism:volume")
         number = self._get_element(entry, "prism:issueIdentifier")
         source_identifier = (
-            normalize_string("-".join(journal.titles))
+            normalize_string("-".join(journal.source_identifier))
             + f"-{volume.text if volume is not None else ''}-"
             + f"{number.text if number is not None else ''}-"
             + f"{self._harvester()}"

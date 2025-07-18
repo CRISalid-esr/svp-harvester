@@ -281,7 +281,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         volume = raw_data.get("volume_s", None)
         numbers = raw_data.get("issue_s", [])
         source_identifier = (
-            normalize_string("-".join(journal.titles))
+            normalize_string("-".join(journal.source_identifier))
             + f"-{volume}-{'-'.join(numbers)}"
             + f"-{self._harvester()}"
         )

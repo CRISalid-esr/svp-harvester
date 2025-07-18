@@ -76,6 +76,7 @@ def test_build_query_for_person_with_orcid(open_alex_query_builder):
     assert result_dict == expected_result
 
 
+@pytest.mark.current
 def test_build_query_with_indaliv_identifier_type(open_alex_query_builder):
     """Test if the set_query function raise an error if the identifier type is not valid"""
 
