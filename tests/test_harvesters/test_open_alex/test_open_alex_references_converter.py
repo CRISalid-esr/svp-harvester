@@ -50,6 +50,7 @@ async def test_convert(open_alex_api_work: dict):
     expected_page = "785-789"
     expected_volume = "37"
     expected_issue_number = ["237"]
+    expected_issue_source_identifier = 'https://openalex.org/S4210190682-37-237-OpenAlex'
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
     expected_raw_issued_date = "1988-01-15"
@@ -90,6 +91,8 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.issue.volume == expected_volume
     assert test_reference.issue.number == expected_issue_number
     assert test_reference.issue.journal.publisher == expected_publisher
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
+    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
     assert expected_issn in test_reference.issue.journal.issn
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
@@ -99,7 +102,7 @@ async def test_convert(open_alex_api_work: dict):
         test_reference.manifestations[0].page
         == "https://doi.org/10.1103/physrevb.37.785"
     )
-    assert test_reference.manifestations[0].download_url == None
+    assert test_reference.manifestations[0].download_url is None
     assert (
         test_reference.manifestations[1].page
         == "https://cdr.lib.unc.edu/downloads/p2677460w"
@@ -112,7 +115,7 @@ async def test_convert(open_alex_api_work: dict):
         test_reference.manifestations[2].page
         == "https://pubmed.ncbi.nlm.nih.gov/9944570"
     )
-    assert test_reference.manifestations[2].download_url == None
+    assert test_reference.manifestations[2].download_url is None
 
     # take contribution of rank 3
     contribution = next(c for c in test_reference.contributions if c.rank == 2)
@@ -167,9 +170,9 @@ async def test_convert_work_with_various_locations(
         test_reference.manifestations[0].page
         == "https://doi.org/10.1088/1361-648x/aaf7eb"
     )
-    assert test_reference.manifestations[0].download_url == None
+    assert test_reference.manifestations[0].download_url is None
     assert test_reference.manifestations[1].page == "https://hal.science/hal-01987430"
-    assert test_reference.manifestations[1].download_url == None
+    assert test_reference.manifestations[1].download_url is None
     assert (
         test_reference.manifestations[2].page
         == "https://hal.archives-ouvertes.fr/hal-01987430"
@@ -205,7 +208,7 @@ async def test_convert_work_with_various_locations(
         test_reference.manifestations[6].page
         == "https://pubmed.ncbi.nlm.nih.gov/30620724"
     )
-    assert test_reference.manifestations[6].download_url == None
+    assert test_reference.manifestations[6].download_url is None
 
 
 @pytest.mark.parametrize(

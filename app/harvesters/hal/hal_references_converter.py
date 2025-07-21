@@ -34,8 +34,6 @@ from app.services.organizations.organization_informations import (
 )
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
-from app.utilities.string_utilities import normalize_string
-
 
 class HalReferencesConverter(AbstractReferencesConverter):
     """
@@ -281,7 +279,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         volume = raw_data.get("volume_s", None)
         numbers = raw_data.get("issue_s", [])
         source_identifier = (
-            normalize_string(journal.source_identifier)
+            journal.source_identifier
             + f"-{volume}-{'-'.join(numbers)}"
             + f"-{self._harvester()}"
         )

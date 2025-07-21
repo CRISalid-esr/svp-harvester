@@ -30,8 +30,6 @@ from app.services.identifiers.identifier_inference_service import (
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.utilities.date_utilities import check_valid_iso8601_date
-from app.utilities.string_utilities import normalize_string
-
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
     """
@@ -166,7 +164,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         volume = json_payload.get("biblio", {}).get("volume", "")
         number = json_payload.get("biblio", {}).get("issue", "")
         source_identifier = (
-            normalize_string("-".join(journal.source_identifier))
+            journal.source_identifier
             + f"-{volume}-{number}"
             + f"-{self._harvester()}"
         )
