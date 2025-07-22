@@ -34,6 +34,8 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     expected_auth_name = "Christian Hottin"
     expected_page = "103-113"
     expected_issue = "1"
+    expected_issue_source_identifier = \
+        'http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print'
     expected_volume = "18"
     expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
     expected_publisher = "Paris : Centre Gustave Glotz"
@@ -72,6 +74,7 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     assert test_reference.identifiers[0].value == expected_source_identifier
     assert test_reference.page == expected_page
     assert expected_issue == test_reference.issue.number
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
     assert expected_volume == test_reference.issue.volume
     assert expected_journal_title in test_reference.issue.journal.titles
     assert test_reference.issue.journal.publisher == expected_publisher

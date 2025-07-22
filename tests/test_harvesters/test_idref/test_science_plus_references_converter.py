@@ -1,4 +1,5 @@
 import pytest
+import rdflib
 from semver import VersionInfo
 
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -30,6 +31,8 @@ async def test_science_plus_convert_for_rdf_result(
     )
     expected_volume = "12"
     expected_issue = "1"
+    expected_issue_source_identifier = (
+        rdflib.term.URIRef('http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/w'))
     expected_journal_title = "Cellular and Molecular Neurobiology"
 
     expected_subjects = [
@@ -66,6 +69,7 @@ async def test_science_plus_convert_for_rdf_result(
     )
     assert test_reference.issue.volume == expected_volume
     assert test_reference.issue.number == expected_issue
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
     assert expected_journal_title in test_reference.issue.journal.titles
 
 
