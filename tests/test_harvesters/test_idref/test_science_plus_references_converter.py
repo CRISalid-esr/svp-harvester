@@ -9,7 +9,6 @@ from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
 
-
 async def test_science_plus_convert_for_rdf_result(
     science_plus_rdf_result_for_doc,
 ):

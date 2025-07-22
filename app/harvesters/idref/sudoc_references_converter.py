@@ -33,7 +33,7 @@ from app.services.journal.journal_data_class import JournalInformations
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.execution_timer_wrapper import execution_timer
 from app.utilities.isbn_utilities import get_isbns
-from app.utilities.string_utilities import normalize_string, remove_after_separator
+from app.utilities.string_utilities import remove_after_separator
 
 
 class SudocReferencesConverter(AbesRDFReferencesConverter):
@@ -132,7 +132,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             break
 
     async def _get_issue(self, biblio_graph, uri, journal) -> Issue:
-        source_identifier = normalize_string("-".join(journal.source_identifier)) + "-sudoc"
+        source_identifier = journal.source_identifier + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(
                 source="sudoc", source_identifier=source_identifier, journal=journal

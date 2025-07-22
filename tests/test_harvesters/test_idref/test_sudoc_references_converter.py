@@ -37,6 +37,7 @@ async def test_convert_for_rdf_result(
     expected_created_date = datetime.date(2016, 6, 13)
     expected_raw_issued_date = "2016"
     expected_issued_date = datetime.date(2016, 1, 1)
+    expected_issue_source_identifier = 'http://www.sudoc.fr/013451154/id-sudoc'
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
@@ -79,6 +80,8 @@ async def test_convert_for_rdf_result(
     assert test_reference.created == expected_created_date
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
+    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
 
 
 @pytest.mark.asyncio
