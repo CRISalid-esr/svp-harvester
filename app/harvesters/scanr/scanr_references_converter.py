@@ -142,7 +142,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     async def _issue(self, journal: Journal) -> Issue:
         source_identifier = (
-            normalize_string("-".join(journal.source_identifier)) + "-" + self._harvester()
+            journal.source_identifier + "-" + self._harvester()
         )
         issue = await self._get_or_create_issue(
             IssueInformations(

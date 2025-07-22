@@ -12,7 +12,6 @@ from app.harvesters.xml_harvester_raw_result import XMLHarvesterRawResult
 
 
 @pytest.mark.asyncio
-@pytest.mark.current
 async def test_convert(
     scopus_xml_raw_result_for_doc: XMLHarvesterRawResult,
 ):  # pylint: disable=too-many-locals
