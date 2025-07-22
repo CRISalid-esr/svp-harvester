@@ -76,14 +76,13 @@ def test_build_query_for_person_with_orcid(open_alex_query_builder):
     assert result_dict == expected_result
 
 
-@pytest.mark.current
-def test_build_query_with_indaliv_identifier_type(open_alex_query_builder):
+def test_build_query_with_invalid_identifier_type(open_alex_query_builder):
     """Test if the set_query function raise an error if the identifier type is not valid"""
 
-    test_indaliv = "123456"
+    test_invalid = "123456"
 
     with pytest.raises(TypeError):
-        open_alex_query_builder.set_query("foobar", test_indaliv)
+        open_alex_query_builder.set_query("foobar", test_invalid)
 
 
 def test_build_query_without_set_query(open_alex_query_builder):

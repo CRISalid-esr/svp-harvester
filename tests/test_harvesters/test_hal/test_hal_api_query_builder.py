@@ -88,7 +88,6 @@ def test_build_query_with_orcid_id(hal_query_builder):
     assert result_dict == expected_result
 
 
-@pytest.mark.current
 def test_build_query_with_invalid_identifier_type(hal_query_builder):
     """Test if the set_query function raise an error if the identifier type is not valid"""
     with pytest.raises(TypeError):
