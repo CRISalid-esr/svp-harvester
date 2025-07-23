@@ -27,7 +27,7 @@ class HalHarvester(AbstractHarvester):
 
     supported_identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
 
-    VERSION: Version = VersionInfo.parse("1.10.1")
+    VERSION: Version = VersionInfo.parse("1.10.2")
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
