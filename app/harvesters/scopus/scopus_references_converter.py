@@ -30,7 +30,6 @@ from app.services.organizations.organization_informations import (
 )
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
-from app.utilities.string_utilities import normalize_string
 
 
 class ScopusReferencesConverter(AbstractReferencesConverter):
@@ -138,7 +137,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         volume = self._get_element(entry, "prism:volume")
         number = self._get_element(entry, "prism:issueIdentifier")
         source_identifier = (
-            normalize_string("-".join(journal.titles))
+            journal.source_identifier
             + f"-{volume.text if volume is not None else ''}-"
             + f"{number.text if number is not None else ''}-"
             + f"{self._harvester()}"

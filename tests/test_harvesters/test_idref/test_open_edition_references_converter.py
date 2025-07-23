@@ -42,7 +42,9 @@ async def test_open_edition_convert_for_rfd_result(
     expected_raw_issued_date = "2003-01-02T00:00:00Z"
     expected_issued_date = datetime.datetime(2003, 1, 2, 0, 0)
     expected_created_date = datetime.date(1992, 1, 1)
-
+    expected_issue_source_identifier = \
+        ("cultures_&_conflits-cecls_-_centre_d'etudes_sur_les_conflits_-_liberte_et_securite-"
+         "lharmattan-openedition-https://creativecommons.org/licenses/by-nc-nd/4.0/-openedition")
     assert test_reference.source_identifier == str(
         open_edition_xml_result_for_doc.source_identifier
     )
@@ -63,6 +65,8 @@ async def test_open_edition_convert_for_rfd_result(
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
     assert test_reference.created == expected_created_date
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
+    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
 
 
 @pytest.mark.parametrize(

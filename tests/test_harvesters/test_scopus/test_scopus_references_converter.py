@@ -61,6 +61,7 @@ async def test_convert(
     expected_journal_title = "Clinical Physiology and Functional Imaging"
     expected_volume_issue = "12"
     expected_number_issue = "1"
+    expected_issue_source_identifier = '29702-12-1-Scopus'
     expected_role = Contribution.get_url("AUT")
     expected_issued = datetime.date(2024, 1, 1)
 
@@ -88,6 +89,8 @@ async def test_convert(
     assert test_reference.issue.journal.eissn == expected_eissn
     assert expected_journal_title in test_reference.issue.journal.titles
     assert test_reference.issue.volume == expected_volume_issue
+    assert test_reference.issue.source_identifier == expected_issue_source_identifier
+    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
     assert expected_number_issue in test_reference.issue.number
     assert test_reference.issued == expected_issued
 

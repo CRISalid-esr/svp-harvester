@@ -291,3 +291,22 @@ async def test_publication_with_collection_codes(
         "U-PICARDIE",
         "CURAPP-ESS",
     ]
+
+async def test_issue_source_identifier(hal_api_docs_for_researcher_with_uris: dict):
+    """
+    Ensure that the issue source identifier is based on the journal source identifier
+
+    :param hal_api_docs_for_researcher_with_uris:
+    :return:
+    """
+    converter_under_tests = HalReferencesConverter()
+    doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][0]
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["docid"], payload=doc, formatter_name="HAL"
+    )
+    reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=reference)
+    assert reference.issue.source_identifier == '21487-67--HAL'
+    assert reference.issue.journal.source_identifier in reference.issue.source_identifier
