@@ -18,6 +18,8 @@ from app.gui.routes.gui import router as gui_router
 from app.http.aio_http_client_manager import AioHttpClientManager
 from app.models.custom_medatata import register_custom_metadata_schemas
 from app.redis.redis_pool import RedisPool
+
+# from app.redis.fake_redis_pool import FakeRedisPool as RedisPool
 from app.settings.app_env_types import AppEnvTypes
 
 

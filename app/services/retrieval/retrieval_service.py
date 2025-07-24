@@ -121,14 +121,12 @@ class RetrievalService:
         pending_harvesters = []
         harvesting_tasks_index = {}
         for harvester_name, harvester in self.harvesters.items():
-            if not harvester.is_relevant(self.entity):
-                continue
             async with async_session() as session:
                 async with session.begin():
                     harvesting = await HarvestingDAO(session).create_harvesting(
                         retrieval=self.retrieval,
                         harvester=harvester_name,
-                        state=Harvesting.State.RUNNING,
+                        state=Harvesting.State.IDLE,
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
@@ -136,8 +134,11 @@ class RetrievalService:
             harvester.set_event_types(self.retrieval.event_types)
             harvester.set_fetch_enhancements(self.fetch_enhancements)
             harvester.set_harvesting_id(harvesting.id)
+            action = (
+                harvester.run if harvester.is_relevant(self.entity) else harvester.skip
+            )
             task = asyncio.create_task(
-                harvester.run(),
+                action(),
                 name=f"{harvester_name}_harvester_retrieval_{self.retrieval.id}",
             )
             pending_harvesters.append(task)
