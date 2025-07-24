@@ -95,6 +95,11 @@ class IdrefHarvester(AbstractHarvester):
                 if doc["secondary_source"] is None:
                     continue
                 coro = self._secondary_query_process(doc)
+                if coro is None:
+                    logger.error(
+                        f"No harvester available for source {doc['secondary_source']}"
+                    )
+                    continue
                 # Temporary semi-sequential implementation
                 # Sudoc server does not support parallel querying beyond 5 parallel requests
                 # See issue #251
@@ -143,6 +148,11 @@ class IdrefHarvester(AbstractHarvester):
                 if doc["secondary_source"] == "SUDOC":
                     continue
                 coro = self._secondary_query_process(doc)
+                if coro is None:
+                    logger.error(
+                        f"No harvester available for source {doc['secondary_source']}"
+                    )
+                    continue
                 pending_queries.add(asyncio.create_task(coro))
                 while pending_queries:
                     pub = None
