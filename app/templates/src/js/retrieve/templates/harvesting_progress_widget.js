@@ -6,6 +6,8 @@ const harvesting_progress_widget = `<li class="list-group-item">
                                     <div class="spinner-border spinner-border-sm ms-auto float-end" aria-hidden="true"></div>
                                 <% } else if(state=="completed") { %>  
                                     <i class="bi bi-check-circle float-end"></i>
+                                <% } else if(state=="not_applicable") { %>  
+                                    <i class="bi bi-question-circle float-end"></i>
                                 <% } else if(state=="canceled") { %>  
                                     <i class="bi bi-slash-circle float-end"></i>
                                 <% } else if(state=="failed") { %>

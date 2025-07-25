@@ -113,7 +113,7 @@ class Control {
     finished(retrieval) {
         let completed = true;
         for (const harvesting of retrieval.harvestings) {
-            if (["completed", "failed"].indexOf(harvesting.state) === -1) {
+            if (["completed", "failed", "not_applicable"].indexOf(harvesting.state) === -1) {
                 completed = false;
             }
         }
