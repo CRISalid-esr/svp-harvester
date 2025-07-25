@@ -49,10 +49,14 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
-        assert len(json_response["harvestings"][0]["reference_events"]) == 7
-        events = json_response["harvestings"][0]["reference_events"]
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        assert len(hal_json_harvesting["reference_events"]) == 7
+        events = hal_json_harvesting["reference_events"]
         reference_1_v1_id = _extract_reference_id_by_source_identifier(
             events, "1-will-gain-second-contributor"
         )
@@ -177,8 +181,12 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        events = json_response["harvestings"][0]["reference_events"]
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        events = hal_json_harvesting["reference_events"]
         assert len(events) == 7
         reference_1_v2_id = _extract_reference_id_by_source_identifier(
             events, "1-will-gain-second-contributor"
@@ -285,13 +293,11 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             reference_3_v1_contributions, 1
         )["contributor"]["last_name"]
         assert any(
-            [
-                variant["first_name"] == previous_first_name
-                and variant["last_name"] == previous_last_name
-                for variant in _extract_contribution_by_rank(
-                    reference_3_v2_contributions, 1
-                )["contributor"]["structured_name_variants"]
-            ]
+            variant["first_name"] == previous_first_name
+            and variant["last_name"] == previous_last_name
+            for variant in _extract_contribution_by_rank(
+                reference_3_v2_contributions, 1
+            )["contributor"]["structured_name_variants"]
         )
         reference_4_v2_id = _extract_reference_id_by_source_identifier(
             events, "4-will-have-a-contributor-keeping-his-name-but-changing-his-id"

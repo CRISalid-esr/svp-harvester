@@ -53,8 +53,13 @@ async def test_fetch_unchanged_references_async_with_enhancements_returned(  # p
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        assert hal_json_harvesting["harvester"] == "hal"
         # 2. Now increase the version of the harvester
         # and launch a new retrieval with the same person and events
         # It will return the same results as the previous one
@@ -80,20 +85,21 @@ async def test_fetch_unchanged_references_async_with_enhancements_returned(  # p
             response = test_client.get(retrieval_url)
             assert response.status_code == 200
             json_response = response.json()
-            assert json_response["harvestings"][0]["state"] == "completed"
+            # filter harvestings by harvester 'hal'
+            hal_json_harvesting = [
+                h for h in json_response["harvestings"] if h["harvester"] == "hal"
+            ][0]
+            assert hal_json_harvesting is not None
+            assert hal_json_harvesting["state"] == "completed"
             # assert that all 3 references are returned with "enhanced" flag set to true
-            assert len(json_response["harvestings"][0]["reference_events"]) == 3
+            assert len(hal_json_harvesting["reference_events"]) == 3
             assert all(
                 reference_event["type"] == "unchanged"
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
+                for reference_event in hal_json_harvesting["reference_events"]
             )
             assert all(
                 reference_event["enhanced"]
-                for reference_event in json_response["harvestings"][0][
-                    "reference_events"
-                ]
+                for reference_event in hal_json_harvesting["reference_events"]
             )
 
 
@@ -136,8 +142,13 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        assert hal_json_harvesting["harvester"] == "hal"
         # 2. Now increase the version of the harvester
         # and launch a new retrieval with the same person and events
         # It will not return any reference as we don't ask for enhancements
@@ -162,9 +173,14 @@ async def test_fetch_unchanged_references_async_with_enhancements_not_returned( 
             response = test_client.get(retrieval_url)
             assert response.status_code == 200
             json_response = response.json()
-            assert json_response["harvestings"][0]["state"] == "completed"
+            # filter harvestings by harvester 'hal'
+            hal_json_harvesting = [
+                h for h in json_response["harvestings"] if h["harvester"] == "hal"
+            ][0]
+            assert hal_json_harvesting is not None
+            assert hal_json_harvesting["state"] == "completed"
             # assert that no reference is returned
-            assert len(json_response["harvestings"][0]["reference_events"]) == 0
+            assert len(hal_json_harvesting["reference_events"]) == 0
 
 
 @pytest.mark.asyncio
@@ -208,15 +224,19 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
-        # 2. Now increase the version of the harvester
-        # and launch a new retrieval with the same person and events
-        # It will return changed results
-        # reference with source_identifier "1-will-not-change" will be unchanged but enhanced
-        # reference with source_identifier "2-will-change" will be updated and enhanced
-        # reference with source_identifier "3-will-disappear" will be marked as deleted (not enhanced)
-        # reference with source_identifier "4-will-appear" will be marked as created (not enhanced)
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+    # 2. Now increase the version of the harvester
+    # and launch a new retrieval with the same person and events
+    # It will return changed results
+    # reference with source_identifier "1-will-not-change" will be unchanged but enhanced
+    # reference with source_identifier "2-will-change" will be updated and enhanced
+    # reference with source_identifier "3-will-disappear" will be marked as deleted (not enhanced)
+    # reference with source_identifier "4-will-appear" will be marked as created (not enhanced)
     with mock.patch.object(aiohttp.ClientSession, "get") as aiohttp_client_session_get:
         aiohttp_client_session_get.return_value.__aenter__.return_value.status = 200
         aiohttp_client_session_get.return_value.__aenter__.return_value.json.return_value = (
@@ -242,16 +262,19 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
             response = test_client.get(retrieval_url)
             assert response.status_code == 200
             json_response = response.json()
-            assert json_response["harvestings"][0]["state"] == "completed"
+            # filter harvestings by harvester 'hal'
+            hal_json_harvesting = [
+                h for h in json_response["harvestings"] if h["harvester"] == "hal"
+            ][0]
+            assert hal_json_harvesting is not None
+            assert hal_json_harvesting["state"] == "completed"
             # assert that the reference with source_identifier "1-will-not-change"
             # is returned as unchanged with "enhanced" flag set to true
             assert (
                 len(
                     [
                         reference_event
-                        for reference_event in json_response["harvestings"][0][
-                            "reference_events"
-                        ]
+                        for reference_event in hal_json_harvesting["reference_events"]
                         if reference_event["reference"]["source_identifier"]
                         == "1-will-not-change"
                         and reference_event["type"] == "unchanged"
@@ -266,9 +289,7 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
                 len(
                     [
                         reference_event
-                        for reference_event in json_response["harvestings"][0][
-                            "reference_events"
-                        ]
+                        for reference_event in hal_json_harvesting["reference_events"]
                         if reference_event["reference"]["source_identifier"]
                         == "2-will-change"
                         and reference_event["type"] == "updated"
@@ -283,9 +304,7 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
                 len(
                     [
                         reference_event
-                        for reference_event in json_response["harvestings"][0][
-                            "reference_events"
-                        ]
+                        for reference_event in hal_json_harvesting["reference_events"]
                         if reference_event["reference"]["source_identifier"]
                         == "3-will-disappear"
                         and reference_event["type"] == "deleted"
@@ -300,9 +319,7 @@ async def test_fetch_modified_references_async_with_enhancements_returned(  # py
                 len(
                     [
                         reference_event
-                        for reference_event in json_response["harvestings"][0][
-                            "reference_events"
-                        ]
+                        for reference_event in hal_json_harvesting["reference_events"]
                         if reference_event["reference"]["source_identifier"]
                         == "4-will-appear"
                         and reference_event["type"] == "created"

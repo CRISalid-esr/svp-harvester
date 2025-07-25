@@ -48,10 +48,14 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
-        assert len(json_response["harvestings"][0]["reference_events"]) == 1
-        events = json_response["harvestings"][0]["reference_events"]
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        assert len(hal_json_harvesting["reference_events"]) == 1
+        events = hal_json_harvesting["reference_events"]
         reference_event_id = _extract_reference_id_by_source_identifier(
             events, "halshs-02514028"
         )

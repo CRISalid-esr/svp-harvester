@@ -49,13 +49,17 @@ async def test_fetch_references_async_history(  # pylint: disable=too-many-state
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
-        assert len(json_response["harvestings"][0]["reference_events"]) == 3
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
+        assert len(hal_json_harvesting["reference_events"]) == 3
         # all reference events are of type created
         assert all(
             reference_event["type"] == "created"
-            for reference_event in json_response["harvestings"][0]["reference_events"]
+            for reference_event in hal_json_harvesting["reference_events"]
         )
     # 2. Now relaunch the same retrieval
     # It will return a new version of the results
@@ -79,16 +83,19 @@ async def test_fetch_references_async_history(  # pylint: disable=too-many-state
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
         # one and only one "deleted" event occured
         # only for reference with source identifier 3-will-disappear
         assert (
             len(
                 [
                     reference_event
-                    for reference_event in json_response["harvestings"][0][
-                        "reference_events"
-                    ]
+                    for reference_event in hal_json_harvesting["reference_events"]
                     if reference_event["type"] == "deleted"
                     and reference_event["reference"]["source_identifier"]
                     == "3-will-disappear"
@@ -117,10 +124,14 @@ async def test_fetch_references_async_history(  # pylint: disable=too-many-state
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert json_response["harvestings"][0]["harvester"] == "hal"
+        # filter harvestings by harvester 'hal'
+        hal_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "hal"
+        ][0]
+        assert hal_json_harvesting is not None
+        assert hal_json_harvesting["state"] == "completed"
         # there are 3 reference events
-        assert len(json_response["harvestings"][0]["reference_events"]) == 3
+        assert len(hal_json_harvesting["reference_events"]) == 3
         # all of type unchanged
         assert all(
             reference_event["type"] == "unchanged"
