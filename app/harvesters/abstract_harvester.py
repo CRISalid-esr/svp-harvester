@@ -225,6 +225,14 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
             logger.error(f"Unexpected exception during harvester run : {e}")
             await self.handle_error(e, with_stack=True)
 
+    async def skip(self):
+        """
+        Skip the harvester execution
+        :return: None
+        """
+        await self._update_harvesting_state(Harvesting.State.NOT_APPLICABLE)
+        await self._notify_harvesting_state()
+
     async def _handle_converted_result(
         self,
         new_ref: Reference,

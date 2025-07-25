@@ -1,6 +1,7 @@
 from unittest import mock
-from elasticsearch import AsyncElasticsearch
+
 import pytest
+from elasticsearch import AsyncElasticsearch
 from fastapi.testclient import TestClient
 
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
@@ -70,13 +71,17 @@ async def test_fetch_references_async_with_idref(
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["harvester"] == "scanr"
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert len(json_response["harvestings"][0]["reference_events"]) == 1
+        # filter harvestings by harvester 'scanr'
+        scanr_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "scanr"
+        ][0]
+        assert scanr_json_harvesting is not None
+        assert scanr_json_harvesting["state"] == "completed"
+        assert len(scanr_json_harvesting["reference_events"]) == 1
 
         assert all(
             reference_event["type"] == "created"
-            for reference_event in json_response["harvestings"][0]["reference_events"]
+            for reference_event in scanr_json_harvesting["reference_events"]
         )
 
 
@@ -116,11 +121,58 @@ async def test_fetch_references_async_with_orcid(
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        assert json_response["harvestings"][0]["harvester"] == "scanr"
-        assert json_response["harvestings"][0]["state"] == "completed"
-        assert len(json_response["harvestings"][0]["reference_events"]) == 1
+        # filter harvestings by harvester 'scanr'
+        scanr_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "scanr"
+        ][0]
+        assert scanr_json_harvesting is not None
+        assert scanr_json_harvesting["harvester"] == "scanr"
+        assert scanr_json_harvesting["state"] == "completed"
+        assert len(scanr_json_harvesting["reference_events"]) == 1
 
         assert all(
             reference_event["type"] == "created"
-            for reference_event in json_response["harvestings"][0]["reference_events"]
+            for reference_event in scanr_json_harvesting["reference_events"]
         )
+
+
+@pytest.mark.asyncio
+async def test_scanr_harvester_async_not_applicable_with_scopus_eid(
+    test_client: TestClient,
+    person_with_name_and_scopus_eid_json,
+    scanr_api_docs_from_publication,
+):
+    """
+    Test a that the harvester will not run and elasticseacrh will not be queried
+    if submitted with a person with a Scopus EID.
+    """
+
+    with mock.patch.object(
+        AsyncElasticsearch,
+        "search",
+        new=mock.AsyncMock(return_value=scanr_api_docs_from_publication),
+    ):
+        response = test_client.post(
+            REFERENCES_RETRIEVAL_API_PATH,
+            json={
+                "person": person_with_name_and_scopus_eid_json,
+                "events": ["created", "updated", "deleted", "unchanged"],
+                "harvesters": ["scanr"],
+            },
+        )
+
+        assert response.status_code == 200
+        json_response = response.json()
+        retrieval_url = json_response["retrieval_url"]
+        assert retrieval_url is not None
+
+        response = test_client.get(retrieval_url)
+        assert response.status_code == 200
+        json_response = response.json()
+        # filter harvestings by harvester 'scanr'
+        scanr_json_harvesting = [
+            h for h in json_response["harvestings"] if h["harvester"] == "scanr"
+        ][0]
+        assert scanr_json_harvesting is not None
+        assert scanr_json_harvesting["state"] == "not_applicable"
+        assert len(scanr_json_harvesting["reference_events"]) == 0
