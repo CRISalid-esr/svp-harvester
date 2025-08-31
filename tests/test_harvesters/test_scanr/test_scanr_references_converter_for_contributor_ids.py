@@ -46,7 +46,7 @@ async def test_convert_publication_with_contributor_ids(
             assert any(
                 [
                     identifier.type == "orcid"
-                    and identifier.value == "https://orcid.org/0000-0002-9981-9598"
+                    and identifier.value == "0000-0002-9981-9598"
                     for identifier in contributor.identifiers
                 ]
             )

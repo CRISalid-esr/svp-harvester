@@ -24,7 +24,7 @@ from app.harvesters.idref.sudoc_document_type_converter import (
     SudocDocumentTypeConverter,
 )
 from app.harvesters.idref.sudoc_roles_converter import SudocRolesConverter
-from app.harvesters.idref.utils import extract_idref_identifiers
+from app.harvesters.idref.utils import filter_idref_identifiers
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
@@ -244,7 +244,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
                     identifier=str(identifier),
                     name=str(name),
                     rank=None,
-                    ext_identifiers=extract_idref_identifiers(str(identifier)),
+                    ext_identifiers=filter_idref_identifiers(str(identifier)),
                 )
             )
 
