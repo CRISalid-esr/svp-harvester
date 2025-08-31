@@ -16,6 +16,7 @@ from app.harvesters.idref.idref_document_type_converter import (
 )
 from app.harvesters.idref.idref_roles_converter import IdrefRolesConverter
 from app.harvesters.idref.rdf_resolver import RdfResolver
+from app.harvesters.idref.utils import extract_idref_identifiers
 from app.harvesters.sparql_harvester_raw_result import (
     SparqlHarvesterRawResult as SparqlRawResult,
 )
@@ -184,6 +185,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
                     last_name=family_name,
                     first_name=given_name,
                     rank=None,
+                    ext_identifiers=extract_idref_identifiers(contributor_uri),
                 )
             )
         return contribution_informations

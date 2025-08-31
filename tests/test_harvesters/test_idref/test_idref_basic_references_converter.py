@@ -1,6 +1,8 @@
 import pytest
 from semver import VersionInfo
 
+from app.db.daos.contributor_dao import ContributorDAO
+from app.db.session import async_session
 from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
 )
@@ -90,3 +92,21 @@ async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     assert test_reference.identifiers[1].value in equivalent_identifiers
     assert test_reference.identifiers[2].value in equivalent_identifiers
     assert test_reference.identifiers[1].value != test_reference.identifiers[2].value
+    contribution = test_reference.contributions[0]
+    contributor_id = contribution.contributor.id
+    assert contributor_id is not None
+    assert isinstance(contributor_id, int)
+    async with async_session() as session:
+        async with session.begin_nested():
+            contributor = await ContributorDAO(session).get_by_id(contributor_id)
+            assert contributor is not None
+            assert contributor.name == "Jean-Louis Abatut"
+            assert contributor.first_name == "Jean-Louis"
+            assert contributor.last_name == "Abatut"
+            assert len(contributor.identifiers) == 1
+            assert any(
+                identifier.source == "idref"
+                and identifier.type == "idref"
+                and identifier.value == "026675846"
+                for identifier in contributor.identifiers
+            )
