@@ -3,6 +3,8 @@ import datetime
 import pytest
 from semver import VersionInfo
 
+from app.db.daos.contributor_dao import ContributorDAO
+from app.db.session import async_session
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
 )
@@ -37,7 +39,7 @@ async def test_convert_for_rdf_result(
     expected_created_date = datetime.date(2016, 6, 13)
     expected_raw_issued_date = "2016"
     expected_issued_date = datetime.date(2016, 1, 1)
-    expected_issue_source_identifier = 'http://www.sudoc.fr/013451154/id-sudoc'
+    expected_issue_source_identifier = "http://www.sudoc.fr/013451154/id-sudoc"
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc, harvester_version=VersionInfo.parse("0.0.0")
@@ -81,7 +83,39 @@ async def test_convert_for_rdf_result(
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
     assert test_reference.issue.source_identifier == expected_issue_source_identifier
-    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
+    assert (
+        test_reference.issue.journal.source_identifier
+        in test_reference.issue.source_identifier
+    )
+    assert len(test_reference.contributions) == 2
+    contributors = []
+    for contribution in test_reference.contributions:
+        async with async_session() as session:
+            async with session.begin_nested():
+                contributor = await ContributorDAO(session).get_by_id(
+                    contribution.contributor.id
+                )
+                contributors.append(contributor)
+    contributor_1 = [
+        contributor
+        for contributor in contributors
+        if contributor.name == "Faliès, Cécile (1982-....)"
+    ][0]
+    assert contributor_1.source == "sudoc"
+    assert contributor_1.source_identifier == "http://www.idref.fr/193726831/id"
+    assert contributor_1.identifiers[0].source == "sudoc"
+    assert contributor_1.identifiers[0].type == "idref"
+    assert contributor_1.identifiers[0].value == "193726831"
+    contributor_2 = [
+        contributor
+        for contributor in contributors
+        if contributor.name == "Mesclier, Évelyne (1964-....)"
+    ][0]
+    assert contributor_2.source == "sudoc"
+    assert contributor_2.source_identifier == "http://www.idref.fr/057549222/id"
+    assert contributor_2.identifiers[0].source == "sudoc"
+    assert contributor_2.identifiers[0].type == "idref"
+    assert contributor_2.identifiers[0].value == "057549222"
 
 
 @pytest.mark.asyncio

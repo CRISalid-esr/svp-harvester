@@ -53,7 +53,7 @@ class IdrefHarvester(AbstractHarvester):
 
     supported_identifier_types = ["idref", "orcid"]
 
-    VERSION: Version = VersionInfo.parse("1.7.3")
+    VERSION: Version = VersionInfo.parse("1.8.0")
 
     class Formatters(Enum):
         """
