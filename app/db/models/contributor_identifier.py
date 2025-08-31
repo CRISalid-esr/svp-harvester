@@ -44,7 +44,8 @@ class ContributorIdentifier(Base):
     _NORMALIZATION_REGEX = {
         IdentifierType.ORCID.value: re.compile(r"^https?://orcid.org/"),
         IdentifierType.OPEN_ALEX.value: re.compile(r"^https?://openalex.org/"),
-        IdentifierType.IDREF.value: re.compile(r"^https?://(?:www\.)?idref.fr/"),
+        # Match start of URL + strip domain, and also drop a trailing '/id' if present
+        IdentifierType.IDREF.value: re.compile(r"^https?://(?:www\.)?idref\.fr/|/id$"),
         IdentifierType.ISNI.value: re.compile(r"^https?://isni.org/isni/"),
         IdentifierType.VIAF.value: re.compile(r"^https?://viaf.org/viaf/"),
         IdentifierType.GOOGLE_SCHOLAR.value: re.compile(
