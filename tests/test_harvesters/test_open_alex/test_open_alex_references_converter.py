@@ -50,7 +50,9 @@ async def test_convert(open_alex_api_work: dict):
     expected_page = "785-789"
     expected_volume = "37"
     expected_issue_number = ["237"]
-    expected_issue_source_identifier = 'https://openalex.org/S4210190682-37-237-OpenAlex'
+    expected_issue_source_identifier = (
+        "https://openalex.org/S4210190682-37-237-OpenAlex"
+    )
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
     expected_raw_issued_date = "1988-01-15"
@@ -92,7 +94,10 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.issue.number == expected_issue_number
     assert test_reference.issue.journal.publisher == expected_publisher
     assert test_reference.issue.source_identifier == expected_issue_source_identifier
-    assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
+    assert (
+        test_reference.issue.journal.source_identifier
+        in test_reference.issue.source_identifier
+    )
     assert expected_issn in test_reference.issue.journal.issn
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
@@ -130,14 +135,13 @@ async def test_convert(open_alex_api_work: dict):
             assert any(
                 [
                     identifier.type == "orcid"
-                    and identifier.value == "https://orcid.org/0000-0001-5576-2828"
+                    and identifier.value == "0000-0001-5576-2828"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
-                    identifier.type == "open_alex"
-                    and identifier.value == "https://openalex.org/A5019365851"
+                    identifier.type == "open_alex" and identifier.value == "A5019365851"
                     for identifier in contributor.identifiers
                 ]
             )

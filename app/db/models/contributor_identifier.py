@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, validates, relationship
@@ -40,6 +41,19 @@ class ContributorIdentifier(Base):
         lazy="joined",
     )
 
+    _NORMALIZATION_REGEX = {
+        IdentifierType.ORCID.value: re.compile(r"^https?://orcid.org/"),
+        IdentifierType.OPEN_ALEX.value: re.compile(r"^https?://openalex.org/"),
+        # Match start of URL + strip domain, and also drop a trailing '/id' if present
+        IdentifierType.IDREF.value: re.compile(r"^https?://(?:www\.)?idref\.fr/|/id$"),
+        IdentifierType.ISNI.value: re.compile(r"^https?://isni.org/isni/"),
+        IdentifierType.VIAF.value: re.compile(r"^https?://viaf.org/viaf/"),
+        IdentifierType.GOOGLE_SCHOLAR.value: re.compile(
+            r"^https?://scholar.google.[^/]+/citations\?user="
+        ),
+        # IDHAL and SCOPUS usually already stored as bare identifiers
+    }
+
     @validates("type", include_removes=False, include_backrefs=True)
     def _valid_identifier_is_among_supported_types(self, _, new_type):
         """
@@ -50,12 +64,11 @@ class ContributorIdentifier(Base):
         return new_type
 
     @validates("value")
-    def _validate_orcid_value(self, _, new_value):
+    def _normalize_identifier_value(self, _, new_value: str):
         """
-        If type is ORCID, ensure value begins with https://orcid.org/
+        Normalize identifier value by removing URL prefixes depending on type.
         """
-        if self.type == self.IdentifierType.ORCID.value:
-            orcid_prefix = "https://orcid.org/"
-            if not new_value.startswith(orcid_prefix):
-                new_value = orcid_prefix + new_value
+        regex = self._NORMALIZATION_REGEX.get(self.type)
+        if regex:
+            new_value = regex.sub("", new_value)
         return new_value

@@ -44,22 +44,20 @@ async def test_convert(
             assert any(
                 [
                     identifier.type == "orcid"
-                    and identifier.value == "https://orcid.org/0000-0002-3053-9512"
+                    and identifier.value == "0000-0002-3053-9512"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
-                    identifier.type == "isni"
-                    and identifier.value == "http://isni.org/isni/0000000071437032"
+                    identifier.type == "isni" and identifier.value == "0000000071437032"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
                     identifier.type == "google_scholar"
-                    and identifier.value
-                    == "https://scholar.google.fr/citations?user=_88eIccAAAAJ"
+                    and identifier.value == "_88eIccAAAAJ"
                     for identifier in contributor.identifiers
                 ]
             )
@@ -71,15 +69,13 @@ async def test_convert(
             )
             assert any(
                 [
-                    identifier.type == "idref"
-                    and identifier.value == "https://www.idref.fr/121561712"
+                    identifier.type == "idref" and identifier.value == "121561712"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
-                    identifier.type == "viaf"
-                    and identifier.value == "https://viaf.org/viaf/56924466"
+                    identifier.type == "viaf" and identifier.value == "56924466"
                     for identifier in contributor.identifiers
                 ]
             )
