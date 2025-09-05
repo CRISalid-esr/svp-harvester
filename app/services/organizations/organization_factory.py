@@ -80,7 +80,7 @@ class OrganizationFactory:
             )
         if organization_source == "openalex":
             return OpenAlexOrganizationSolver(
-                timeout=settings.scopus_organizations_timeout
+                timeout=settings.openalex_organizations_timeout
             )
 
         raise ValueError(f"Unknown organization source: {organization_source}")

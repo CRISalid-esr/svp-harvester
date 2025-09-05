@@ -113,7 +113,7 @@ class AppSettings(BaseSettings):
     idref_organizations_timeout: int = 10
     ror_organizations_timeout: int = 7
     scopus_organizations_timeout: int = 5
-    openalex_organizations_timeout: int = 7
+    openalex_organizations_timeout: int = 10
 
     third_api_caching_enabled: bool = True
     third_api_default_caching_duration: int = 24 * 3600
