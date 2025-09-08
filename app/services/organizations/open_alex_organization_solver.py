@@ -53,7 +53,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                     f" {organization_information.identifier}"
                 )
             data = await response.json()
-            name = data.get("display_name", None)
+            name = data.get("display_name", 'No OpenAlex organization name')
             if not name:
                 raise DereferencingError(
                     f"OpenAlex organization {organization_information.identifier}"
@@ -73,8 +73,8 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             seen = ["openalex"]
             new_identifiers = []
             for key, source in self.IDENTITY_SAVE.items():
-                if (source not in seen) and (key in data.get("ids")):
-                    code = data.get("ids").get(key)
+                if (source not in seen) and (key in data.get("ids", {})):
+                    code = data.get("ids",{}).get(key, f"No {key} identifier in OpenAlex")
                     new_identifiers.append(
                         OrganizationIdentifier(type=source, value=code)
                     )
