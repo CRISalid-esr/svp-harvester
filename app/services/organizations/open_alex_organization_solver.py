@@ -30,7 +30,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         "ror" : "ror"
     }
 
-    @handle_organization_dereferencing_error("HAL")
+    @handle_organization_dereferencing_error("OpenAlex")
     async def solve(
         self, organization_information: OrganizationInformations
     ) -> Organization:
