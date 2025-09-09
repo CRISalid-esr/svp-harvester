@@ -6,6 +6,7 @@ from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.organizations.dummy_organization_sover import DummyOrganizationSolver
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
+from app.services.organizations.open_alex_organization_solver import OpenAlexOrganizationSolver
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
 )
@@ -36,6 +37,7 @@ class OrganizationFactory:
             organization_information.source
         )
         organization = await solver.solve(organization_information)
+
         return organization
 
     @staticmethod
@@ -77,4 +79,9 @@ class OrganizationFactory:
             return ScopusOrganizationSolver(
                 timeout=settings.scopus_organizations_timeout
             )
+        if organization_source == "openalex":
+            return OpenAlexOrganizationSolver(
+                timeout=settings.openalex_organizations_timeout
+            )
+
         raise ValueError(f"Unknown organization source: {organization_source}")

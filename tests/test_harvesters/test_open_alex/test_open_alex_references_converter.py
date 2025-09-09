@@ -11,6 +11,7 @@ from app.harvesters.open_alex.open_alex_references_converter import (
 )
 
 
+@pytest.mark.current
 @pytest.mark.asyncio
 async def test_convert(open_alex_api_work: dict):
     """Test that the converter will return normalised references"""
@@ -62,6 +63,7 @@ async def test_convert(open_alex_api_work: dict):
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
     )
+
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
     assert test_reference.source_identifier == expected_id
@@ -81,6 +83,9 @@ async def test_convert(open_alex_api_work: dict):
             contribution.rank
             == expected_contributors_name_rank[contribution.contributor.name]
         )
+    assert test_reference.contributions[0].affiliations[0].identifiers[1].type == 'ror'
+    assert (test_reference.contributions[0].affiliations[0].identifiers[1].value
+            == 'https://ror.org/0130frc33')
     assert all(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers

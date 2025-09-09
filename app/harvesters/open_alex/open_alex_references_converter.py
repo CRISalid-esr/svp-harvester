@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Set
 
 from loguru import logger
 from semver import Version
@@ -29,6 +29,7 @@ from app.services.identifiers.identifier_inference_service import (
 )
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.services.organizations.organization_informations import OrganizationInformations
 from app.utilities.date_utilities import check_valid_iso8601_date
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
@@ -89,6 +90,8 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             reference=new_ref,
             rules=[IdentifierInferenceService.Rule.HAL_ID_FROM_HAL_URL],
         )
+
+        await self._add_organization(json_payload, new_ref)
 
     def _add_issued_date(self, issue, json_payload, new_ref):
         new_ref.raw_issued = issue
@@ -250,6 +253,25 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             source="open_alex",
         ):
             new_ref.contributions.append(contribution)
+
+    def _organizations_from_contributor(
+        self, raw_data, id_contributor
+    ) -> Set[OrganizationInformations]:
+        # Get the organizations informations of the contributor
+        organizations = set()
+
+        for auth_org in raw_data.get("authorships", []):
+            auth_id = auth_org.get("author").get("id")
+            if auth_id != id_contributor:
+                continue
+
+            for org in auth_org.get("institutions", []):
+                org_id = org.get("id")
+                org_name = org.get("display_name")
+                organizations.add(
+                    OrganizationInformations(name=org_name, identifier=org_id, source="openalex")
+                )
+        return organizations
 
     async def _concepts(self, json_payload, language) -> AsyncGenerator[Concept, None]:
         concept_cache = {}

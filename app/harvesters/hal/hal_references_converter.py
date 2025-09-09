@@ -421,16 +421,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
         ):
             new_ref.contributions.append(contribution)
 
-    async def _add_organization(self, raw_data: dict, new_ref: Reference) -> None:
-        # For each contribution, get the organizations of the contributor
-        # and add them to the contribution
-        for contribution in new_ref.contributions:
-            organizations = self._organizations_from_contributor(
-                raw_data, contribution.contributor.source_identifier
-            )
-            async for org in self._organizations(organizations):
-                contribution.affiliations.append(org)
-
     def _organizations_from_contributor(
         self, raw_data, id_contributor
     ) -> Set[OrganizationInformations]:
