@@ -29,7 +29,7 @@ def fixture_mock_hal_organization_solver():
         mock_solve.side_effect = fake_hal_organization_solver
         yield mock_solve
 
-def fake_openalex_organization_solver() -> DbOrganization:
+def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     """
     Fake openalex organization solver
     :return: fake Organization
