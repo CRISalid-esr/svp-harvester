@@ -2,7 +2,7 @@ import asyncio
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import wraps
-from typing import List, AsyncGenerator
+from typing import List, AsyncGenerator, Set
 
 from loguru import logger
 from semver import Version
@@ -518,6 +518,22 @@ class AbstractReferencesConverter(ABC):
         db_contributor.first_name = first_name
         db_contributor.last_name = last_name
 
+    async def _add_organization(self, raw_data: dict, new_ref: Reference) -> None:
+        # For each contribution, get the organizations of the contributor
+        # and add them to the contribution
+        for contribution in new_ref.contributions:
+            organizations = self._organizations_from_contributor(
+                raw_data, contribution.contributor.source_identifier
+            )
+            async for org in self._organizations(organizations):
+                contribution.affiliations.append(org)
+
+    def _organizations_from_contributor(
+            self, raw_data, id_contributor
+    ) -> Set[OrganizationInformations]:
+        raise NotImplementedError("Subclass must implement this method")
+
+
     async def _organizations(
         self, organization_informations: List[OrganizationInformations]
     ) -> AsyncGenerator[Organization, None]:
@@ -534,6 +550,8 @@ class AbstractReferencesConverter(ABC):
                 organizations_identifiers_cache[identifier] = db_organization
 
             yield db_organization
+
+
 
     async def _get_or_create_organization_by_identifier(
         self,
