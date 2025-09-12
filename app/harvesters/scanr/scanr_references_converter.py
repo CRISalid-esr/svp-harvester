@@ -225,7 +225,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         # Get the organizations informations of the contributor
         organizations = set()
         raw_contributions = raw_data["_source"].get("authors")
-        for rank, contribution in enumerate(raw_contributions):
+        for _, contribution in enumerate(raw_contributions):
             auth_id = contribution.get("person","")
             if auth_id != id_contributor:
                 continue
@@ -234,8 +234,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 org_source= org.get("datasource","")
                 if org_source not in ["", "hal", "openalex"]:
                     org_name = org.get("name", "No ScanR organization name")
-                    org_id = org.get("idref", "No IdRef identifier from ScanR")
-                    if org_id != "No IdRef identifier from ScanR":
+                    org_idref = org.get("idref", "No IdRef identifier from ScanR")
+                    org_id = "scanr_idref_" + org_idref
+                    if org_id != "scanr_idref_No IdRef identifier from ScanR":
                         organizations.add(
                             OrganizationInformations(name=org_name,
                                                      identifier=org_id, source="scanr")

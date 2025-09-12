@@ -66,16 +66,30 @@ class IdrefOrganizationSolver(OrganizationSolver):
         """
 
         # Add the idref identifier
-        new_identifiers = [
-            OrganizationIdentifier(
-                type="idref", value=organization_information.identifier
+        if "scanr_idref_" in organization_information.identifier:
+            new_identifiers = [
+                OrganizationIdentifier(
+                    type="idref", value=organization_information.identifier.split('_')[-1]
+                )
+            ]
+            seen.append("idref")
+            # Search for more identifiers
+            idref_url, idref_uri = self._build_url_from_organization_id(
+                organization_information.identifier.split('_')[-1]
             )
-        ]
-        seen.append("idref")
-        # Search for more identifiers
-        idref_url, idref_uri = self._build_url_from_organization_id(
-            organization_information.identifier
-        )
+
+        else:
+            new_identifiers = [
+                OrganizationIdentifier(
+                    type="idref", value=organization_information.identifier
+                )
+            ]
+            seen.append("idref")
+            # Search for more identifiers
+            idref_url, idref_uri = self._build_url_from_organization_id(
+                organization_information.identifier
+            )
+
         session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(idref_url, timeout=request_timeout) as response:
