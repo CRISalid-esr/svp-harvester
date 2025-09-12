@@ -40,8 +40,8 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
         name='University of North Carolina at Chapel Hill',
         type='funder',
         identifiers=[OrganizationIdentifier(type='openalex',
-                                            value='https://openalex.org/I114027177'),
-                     OrganizationIdentifier(type='ror', value='https://ror.org/0130frc33')],
+                                            value='I114027177'),
+                     OrganizationIdentifier(type='ror', value='0130frc33')],
     )
 
 
