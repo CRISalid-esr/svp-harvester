@@ -71,7 +71,7 @@ class OrganizationFactory:
             return DummyOrganizationSolver()
         if organization_source == "hal":
             return HalOrganizationSolver(timeout=settings.hal_organizations_timeout)
-        if organization_source == "idref":
+        if organization_source in("idref", "scanr"):
             return IdrefOrganizationSolver(timeout=settings.idref_organizations_timeout)
         if organization_source == "ror":
             return RorOrganizationSolver(timeout=settings.ror_organizations_timeout)
@@ -83,7 +83,5 @@ class OrganizationFactory:
             return OpenAlexOrganizationSolver(
                 timeout=settings.openalex_organizations_timeout
             )
-        if organization_source == "scanr":
-            return IdrefOrganizationSolver(timeout=settings.idref_organizations_timeout)
 
         raise ValueError(f"Unknown organization source: {organization_source}")
