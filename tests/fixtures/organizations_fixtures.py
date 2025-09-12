@@ -3,6 +3,7 @@ import pytest
 from app.db.models.organization import Organization as DbOrganization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
+from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
 from app.services.organizations.open_alex_organization_solver import OpenAlexOrganizationSolver
 
 
@@ -52,4 +53,28 @@ def fixture_mock_openalex_organization_solver():
     """
     with mock.patch.object(OpenAlexOrganizationSolver, "solve") as mock_solve:
         mock_solve.side_effect = fake_openalex_organization_solver
+        yield mock_solve
+
+def fake_idref_organization_solver(organization_id: str) -> DbOrganization:
+    """
+    Fake openalex organization solver
+    :return: fake Organization
+    """
+    return DbOrganization(
+        source='scanr',
+        source_identifier='190915757',
+        name='Université de Lyon',
+        identifiers=[OrganizationIdentifier(type='idref',
+                                            value='190915757'),
+                     OrganizationIdentifier(type='ror', value='01rk35k63')],
+    )
+
+
+@pytest.fixture(name="mock_idref_organization_solver", autouse=True)
+def fixture_mock_openalex_organization_solver():
+    """
+    Mock the openalex organization solver with fake organization solver
+    """
+    with mock.patch.object(IdrefOrganizationSolver, "solve") as mock_solve:
+        mock_solve.side_effect = fake_idref_organization_solver
         yield mock_solve

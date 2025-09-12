@@ -83,5 +83,7 @@ class OrganizationFactory:
             return OpenAlexOrganizationSolver(
                 timeout=settings.openalex_organizations_timeout
             )
+        if organization_source == "scanr":
+            return IdrefOrganizationSolver(timeout=settings.idref_organizations_timeout)
 
         raise ValueError(f"Unknown organization source: {organization_source}")

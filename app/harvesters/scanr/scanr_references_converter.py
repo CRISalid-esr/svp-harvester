@@ -1,3 +1,4 @@
+from typing import Set
 from loguru import logger
 from semver import Version
 from similarity.jarowinkler import JaroWinkler
@@ -29,6 +30,7 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
+from app.services.organizations.organization_informations import OrganizationInformations
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
@@ -114,6 +116,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
+
+        await self._add_organization(json_payload, new_ref)
 
     def _add_issued_date(self, issue, json_payload, new_ref):
         new_ref.raw_issued = issue
@@ -214,6 +218,29 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
             contribution_informations=contribution_informations, source="scanr"
         ):
             new_ref.contributions.append(contribution)
+
+    def _organizations_from_contributor(
+        self, raw_data, id_contributor
+    ) -> Set[OrganizationInformations]:
+        # Get the organizations informations of the contributor
+        organizations = set()
+        raw_contributions = raw_data["_source"].get("authors")
+        for rank, contribution in enumerate(raw_contributions):
+            auth_id = contribution.get("person","")
+            if auth_id != id_contributor:
+                continue
+
+            for org in contribution.get("affiliations", []):
+                org_source= org.get("datasource","")
+                if org_source not in ["", "hal", "openalex"]:
+                    org_name = org.get("name", "No ScanR organization name")
+                    org_id = org.get("idref", "No IdRef identifier from ScanR")
+                    if org_id != "No IdRef identifier from ScanR":
+                        organizations.add(
+                            OrganizationInformations(name=org_name,
+                                                     identifier=org_id, source="scanr")
+                        )
+        return organizations
 
     def _convert_external_identifiers(
         self, raw_identifiers: dict

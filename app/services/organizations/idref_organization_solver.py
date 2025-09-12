@@ -32,6 +32,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = []
     IDENTITY_SAVE = ["hal", "isni", "viaf", "ror"]
 
+    @handle_organization_dereferencing_error("Idref")
     async def solve(
         self, organization_information: OrganizationInformations
     ) -> Organization:
@@ -40,7 +41,19 @@ class IdrefOrganizationSolver(OrganizationSolver):
         :param organization_id: id of the organization
         :return: organization
         """
-        raise NotImplementedError("IdrefOrganizationSolver.solve")
+
+        org = Organization(
+            source="scanr",
+            source_identifier=organization_information.identifier,
+            name=organization_information.name,
+        )
+        seen = []
+        new_identifiers, seen = await self.solve_identities(organization_information, seen)
+        org.identifiers.extend(new_identifiers)
+
+        return org
+
+
 
     @handle_organization_dereferencing_error("Idref")
     async def solve_identities(
