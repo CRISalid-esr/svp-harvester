@@ -105,6 +105,8 @@ class HalOrganizationSolver(OrganizationSolver):
             for key, source in self.IDENTITY_SAVE.items():
                 if (source not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
+                    if code.startswith("http://") or code.startswith("https://"):
+                        code = code.split('/')[-1]
                     new_identifiers.append(
                         OrganizationIdentifier(type=source, value=code)
                     )
