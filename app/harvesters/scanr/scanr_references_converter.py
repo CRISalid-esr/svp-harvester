@@ -234,9 +234,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 org_source= org.get("datasource","")
                 if org_source not in ["", "hal", "openalex"]:
                     org_name = org.get("name", "No ScanR organization name")
-                    org_idref = org.get("idref", "No IdRef identifier from ScanR")
-                    org_id = "scanr_idref_" + org_idref
-                    if org_id != "scanr_idref_No IdRef identifier from ScanR":
+                    org_idref = org.get("idref", None)
+                    if org_idref is not None:
+                        org_id = "scanr_idref_" + org_idref
                         organizations.add(
                             OrganizationInformations(name=org_name,
                                                      identifier=org_id, source="scanr")

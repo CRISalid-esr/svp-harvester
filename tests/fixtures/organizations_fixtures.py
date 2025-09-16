@@ -6,8 +6,7 @@ from app.services.organizations.hal_organization_solver import HalOrganizationSo
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
 from app.services.organizations.open_alex_organization_solver import OpenAlexOrganizationSolver
 
-
-def fake_hal_organization_solver(organization_id: str) -> DbOrganization:
+def fake_hal_organization_solver() -> DbOrganization:
     """
     Fake hal organization solver
     :return: fake Organization
@@ -30,7 +29,7 @@ def fixture_mock_hal_organization_solver():
         mock_solve.side_effect = fake_hal_organization_solver
         yield mock_solve
 
-def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
+def fake_openalex_organization_solver() -> DbOrganization:
     """
     Fake openalex organization solver
     :return: fake Organization
@@ -55,26 +54,44 @@ def fixture_mock_openalex_organization_solver():
         mock_solve.side_effect = fake_openalex_organization_solver
         yield mock_solve
 
-def fake_idref_organization_solver(organization_id: str) -> DbOrganization:
+def fake_idref_organization_with_name_solver() -> DbOrganization:
     """
-    Fake openalex organization solver
+    Fake idref organization solver
     :return: fake Organization
     """
     return DbOrganization(
         source='scanr',
-        source_identifier='190915757',
+        source_identifier='scanr_idref_190915757',
         name='Université de Lyon',
         identifiers=[OrganizationIdentifier(type='idref',
                                             value='190915757'),
                      OrganizationIdentifier(type='ror', value='01rk35k63')],
     )
 
+def fake_idref_organization_no_name_solver() -> DbOrganization:
+    """
+    Fake idref organization solver
+    :return: fake Organization
+    """
+    return DbOrganization(
+        source='scanr',
+        source_identifier='scanr_idref_190915757',
+        name='No ScanR organization name',
+        identifiers=[OrganizationIdentifier(type='idref',
+                                            value='190915757'),
+                     OrganizationIdentifier(type='ror', value='01rk35k63')],
+    )
 
 @pytest.fixture(name="mock_idref_organization_solver", autouse=True)
-def fixture_mock_openalex_organization_solver():
+def fixture_mock_idref_organization_solver():
     """
-    Mock the openalex organization solver with fake organization solver
+    Autouse fixture that mocks IdrefOrganizationSolver.solve
+    with behavior depending on the OrganizationInformations.identifier.
     """
-    with mock.patch.object(IdrefOrganizationSolver, "solve") as mock_solve:
-        mock_solve.side_effect = fake_idref_organization_solver
+    async def side_effect(organization_information):
+        if organization_information.identifier == "scanr_idref_190915757":
+            return fake_idref_organization_with_name_solver()
+        return fake_idref_organization_no_name_solver()
+
+    with mock.patch.object(IdrefOrganizationSolver, "solve", side_effect=side_effect) as mock_solve:
         yield mock_solve

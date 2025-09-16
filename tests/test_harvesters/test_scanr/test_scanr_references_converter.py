@@ -93,6 +93,8 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert test_reference.contributions[0].affiliations[0].identifiers[1].type == 'ror'
         assert (test_reference.contributions[0].affiliations[0].identifiers[1].value
                 == '01rk35k63')
+        assert (test_reference.contributions[0].affiliations[1].name ==
+                'No ScanR organization name')
 
 
 async def test_convert_with_default_dupe(
