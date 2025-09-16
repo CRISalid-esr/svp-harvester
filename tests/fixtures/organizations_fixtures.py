@@ -21,7 +21,7 @@ def fake_hal_organization_solver() -> DbOrganization:
 
 
 @pytest.fixture(name="mock_hal_organization_solver", autouse=True)
-def fixture_mock_hal_organization_solver():
+def fixture_mock_hal_organization_solver(organization_id: str):
     """
     Mock the hal organization solver with fake organization solver
     """
@@ -46,7 +46,7 @@ def fake_openalex_organization_solver() -> DbOrganization:
 
 
 @pytest.fixture(name="mock_openalex_organization_solver", autouse=True)
-def fixture_mock_openalex_organization_solver():
+def fixture_mock_openalex_organization_solver(organization_id: str):
     """
     Mock the openalex organization solver with fake organization solver
     """
