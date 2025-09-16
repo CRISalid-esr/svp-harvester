@@ -6,7 +6,7 @@ from app.services.organizations.hal_organization_solver import HalOrganizationSo
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
 from app.services.organizations.open_alex_organization_solver import OpenAlexOrganizationSolver
 
-def fake_hal_organization_solver() -> DbOrganization:
+def fake_hal_organization_solver(organization_id: str) -> DbOrganization:
     """
     Fake hal organization solver
     :return: fake Organization
@@ -21,7 +21,7 @@ def fake_hal_organization_solver() -> DbOrganization:
 
 
 @pytest.fixture(name="mock_hal_organization_solver", autouse=True)
-def fixture_mock_hal_organization_solver(organization_id: str):
+def fixture_mock_hal_organization_solver():
     """
     Mock the hal organization solver with fake organization solver
     """
@@ -29,7 +29,7 @@ def fixture_mock_hal_organization_solver(organization_id: str):
         mock_solve.side_effect = fake_hal_organization_solver
         yield mock_solve
 
-def fake_openalex_organization_solver() -> DbOrganization:
+def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     """
     Fake openalex organization solver
     :return: fake Organization
@@ -46,7 +46,7 @@ def fake_openalex_organization_solver() -> DbOrganization:
 
 
 @pytest.fixture(name="mock_openalex_organization_solver", autouse=True)
-def fixture_mock_openalex_organization_solver(organization_id: str):
+def fixture_mock_openalex_organization_solver():
     """
     Mock the openalex organization solver with fake organization solver
     """
