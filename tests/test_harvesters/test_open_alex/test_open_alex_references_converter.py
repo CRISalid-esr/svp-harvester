@@ -84,7 +84,7 @@ async def test_convert(open_alex_api_work: dict):
         )
     assert test_reference.contributions[0].affiliations[0].identifiers[1].type == 'ror'
     assert (test_reference.contributions[0].affiliations[0].identifiers[1].value
-            == 'https://ror.org/0130frc33')
+            == '0130frc33')
     assert all(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers
