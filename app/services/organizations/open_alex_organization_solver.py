@@ -26,7 +26,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = {}
 
     IDENTITY_SAVE = {
-        "open_alex" : "openalex",
+        "open_alex" : "open_alex",
         "ror" : "ror"
     }
 

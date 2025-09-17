@@ -39,7 +39,7 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
         source_identifier='https://openalex.org/I114027177',
         name='University of North Carolina at Chapel Hill',
         type='funder',
-        identifiers=[OrganizationIdentifier(type='openalex',
+        identifiers=[OrganizationIdentifier(type='open_alex',
                                             value='https://openalex.org/I114027177'),
                      OrganizationIdentifier(type='ror', value='https://ror.org/0130frc33')],
     )
