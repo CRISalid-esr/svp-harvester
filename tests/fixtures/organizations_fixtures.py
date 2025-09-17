@@ -45,7 +45,7 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     )
 
 
-@pytest.fixture(name="mock_openalex_organization_solver")
+@pytest.fixture(name="mock_openalex_organization_solver", autouse=True)
 def fixture_mock_openalex_organization_solver():
     """
     Mock the openalex organization solver with fake organization solver
