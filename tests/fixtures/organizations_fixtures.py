@@ -35,17 +35,17 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     :return: fake Organization
     """
     return DbOrganization(
-        source='openalex',
+        source='open_alex',
         source_identifier='https://openalex.org/I114027177',
         name='University of North Carolina at Chapel Hill',
         type='funder',
-        identifiers=[OrganizationIdentifier(type='openalex',
+        identifiers=[OrganizationIdentifier(type='open_alex',
                                             value='I114027177'),
                      OrganizationIdentifier(type='ror', value='0130frc33')],
     )
 
 
-@pytest.fixture(name="mock_openalex_organization_solver", autouse=True)
+@pytest.fixture(name="mock_openalex_organization_solver")
 def fixture_mock_openalex_organization_solver():
     """
     Mock the openalex organization solver with fake organization solver
