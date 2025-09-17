@@ -35,7 +35,7 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     :return: fake Organization
     """
     return DbOrganization(
-        source='openalex',
+        source='open_alex',
         source_identifier='https://openalex.org/I114027177',
         name='University of North Carolina at Chapel Hill',
         type='funder',

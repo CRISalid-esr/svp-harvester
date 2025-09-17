@@ -26,7 +26,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = {}
 
     IDENTITY_SAVE = {
-        "openalex" : "openalex",
+        "open_alex" : "openalex",
         "ror" : "ror"
     }
 
@@ -60,17 +60,17 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                     " has no name"
                 )
             org = Organization(
-                source="openalex",
+                source="open_alex",
                 source_identifier=organization_information.identifier,
                 name=name,
                 type=data.get("type"),
             )
             org.identifiers.append(
                 OrganizationIdentifier(
-                    type="openalex", value=organization_information.identifier
+                    type="open_alex", value=organization_information.identifier
                 )
             )
-            seen = ["openalex"]
+            seen = ["open_alex"]
             new_identifiers = []
             for key, source in self.IDENTITY_SAVE.items():
                 if (source not in seen) and (key in data.get("ids", {})):

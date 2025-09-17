@@ -79,7 +79,7 @@ class OrganizationFactory:
             return ScopusOrganizationSolver(
                 timeout=settings.scopus_organizations_timeout
             )
-        if organization_source == "openalex":
+        if organization_source == "open_alex":
             return OpenAlexOrganizationSolver(
                 timeout=settings.openalex_organizations_timeout
             )
