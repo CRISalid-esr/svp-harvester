@@ -75,9 +75,10 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             for key, source in self.IDENTITY_SAVE.items():
                 if (source not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids",{}).get(key, f"No {key} identifier in OpenAlex")
-                    new_identifiers.append(
-                        OrganizationIdentifier(type=source, value=code)
-                    )
+                    if "identifier" not in code:
+                        new_identifiers.append(
+                            OrganizationIdentifier(type=source, value=code)
+                        )
                     seen.append(source)
             org.identifiers.extend(new_identifiers)
             return org

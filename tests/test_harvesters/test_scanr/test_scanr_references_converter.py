@@ -28,7 +28,6 @@ def fixture_scanr_api_publication_with_author_dupe_cleaned_response(
     """Return the list of dictionaries references from scanr response"""
     return scanr_api_docs_from_publication_for_authors_dupe["hits"]["hits"]
 
-
 async def test_convert(scanr_api_publication_cleaned_response):
     """
     Test that the converter will return normalised references
@@ -90,6 +89,12 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert expected_journal_title in test_reference.issue.journal.titles
         assert expected_issn in test_reference.issue.journal.issn
         assert test_reference.issued == expected_publication_date
+
+        assert test_reference.contributions[0].affiliations[0].identifiers[1].type == 'ror'
+        assert (test_reference.contributions[0].affiliations[0].identifiers[1].value
+                == '01rk35k63')
+        assert (test_reference.contributions[0].affiliations[1].name ==
+                'No ScanR organization name')
 
 
 async def test_convert_with_default_dupe(

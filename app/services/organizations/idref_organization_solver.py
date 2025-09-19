@@ -32,6 +32,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = []
     IDENTITY_SAVE = ["hal", "isni", "viaf", "ror"]
 
+    @handle_organization_dereferencing_error("Idref")
     async def solve(
         self, organization_information: OrganizationInformations
     ) -> Organization:
@@ -40,7 +41,19 @@ class IdrefOrganizationSolver(OrganizationSolver):
         :param organization_id: id of the organization
         :return: organization
         """
-        raise NotImplementedError("IdrefOrganizationSolver.solve")
+
+        org = Organization(
+            source="scanr",
+            source_identifier=organization_information.identifier,
+            name=organization_information.name,
+        )
+        seen = []
+        new_identifiers, seen = await self.solve_identities(organization_information, seen)
+        org.identifiers.extend(new_identifiers)
+
+        return org
+
+
 
     @handle_organization_dereferencing_error("Idref")
     async def solve_identities(
@@ -53,16 +66,30 @@ class IdrefOrganizationSolver(OrganizationSolver):
         """
 
         # Add the idref identifier
-        new_identifiers = [
-            OrganizationIdentifier(
-                type="idref", value=organization_information.identifier
+        if "scanr_idref_" in organization_information.identifier:
+            new_identifiers = [
+                OrganizationIdentifier(
+                    type="idref", value=organization_information.identifier.split('_')[-1]
+                )
+            ]
+            seen.append("idref")
+            # Search for more identifiers
+            idref_url, idref_uri = self._build_url_from_organization_id(
+                organization_information.identifier.split('_')[-1]
             )
-        ]
-        seen.append("idref")
-        # Search for more identifiers
-        idref_url, idref_uri = self._build_url_from_organization_id(
-            organization_information.identifier
-        )
+
+        else:
+            new_identifiers = [
+                OrganizationIdentifier(
+                    type="idref", value=organization_information.identifier
+                )
+            ]
+            seen.append("idref")
+            # Search for more identifiers
+            idref_url, idref_uri = self._build_url_from_organization_id(
+                organization_information.identifier
+            )
+
         session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(idref_url, timeout=request_timeout) as response:
