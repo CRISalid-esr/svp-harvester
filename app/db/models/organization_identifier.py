@@ -1,5 +1,9 @@
+# pylint: disable=duplicate-code
+from enum import Enum
+import re
+
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, relationship, mapped_column, validates
 
 from app.db.session import Base
 
@@ -8,6 +12,20 @@ class OrganizationIdentifier(Base):
     """
     Model for persistence of organization identifiers
     """
+
+    class IdentifierType(Enum):
+        """Enum for identifier types"""
+
+        OPEN_ALEX = "open_alex"
+        HAL = "hal"
+        IDREF = "idref"
+        IDREF_S = "idref_s"
+        VIAF = "viaf"
+        ISNI = "isni"
+        ISNI_S = "isni_s"
+        ROR = 'ror'
+        ROR_S = 'ror_s'
+        SCOPUS = "scopus"
 
     __tablename__ = "organization_identifiers"
 
@@ -23,3 +41,34 @@ class OrganizationIdentifier(Base):
     organization_id: Mapped[int] = mapped_column(
         ForeignKey("organizations.id"), index=True
     )
+
+    _NORMALIZATION_REGEX = {
+        IdentifierType.OPEN_ALEX.value: re.compile(r"^https?://openalex.org/"),
+        # Match start of URL + strip domain, and also drop a trailing '/id' if present
+        IdentifierType.IDREF.value: re.compile(r"^https?://(?:www\.)?idref\.fr/|/id$"),
+        IdentifierType.IDREF_S.value: re.compile(r"^https?://(?:www\.)?idref\.fr/|/id$"),
+        IdentifierType.ISNI.value: re.compile(r"^https?://isni.org/isni/"),
+        IdentifierType.ISNI_S.value: re.compile(r"^https?://isni.org/isni/"),
+        IdentifierType.VIAF.value: re.compile(r"^https?://viaf.org/viaf/"),
+        IdentifierType.ROR.value: re.compile(r"^https?://ror.org/"),
+        IdentifierType.ROR_S.value: re.compile(r"^https?://ror.org/"),
+    }
+
+    @validates("type", include_removes=False, include_backrefs=True)
+    def _valid_identifier_is_among_supported_types(self, _, new_type):
+        """
+        Validate that the identifier is among the supported types
+        """
+        if new_type not in [identifier.value for identifier in self.IdentifierType]:
+            raise ValueError(f"Identifier type {new_type} is not supported")
+        return new_type
+
+    @validates("value")
+    def _normalize_identifier_value(self, _, new_value: str):
+        """
+        Normalize identifier value by removing URL prefixes depending on type.
+        """
+        regex = self._NORMALIZATION_REGEX.get(self.type)
+        if regex:
+            new_value = regex.sub("", new_value)
+        return new_value

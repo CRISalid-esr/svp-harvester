@@ -35,13 +35,13 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
     :return: fake Organization
     """
     return DbOrganization(
-        source='openalex',
+        source='open_alex',
         source_identifier='https://openalex.org/I114027177',
         name='University of North Carolina at Chapel Hill',
         type='funder',
-        identifiers=[OrganizationIdentifier(type='openalex',
-                                            value='https://openalex.org/I114027177'),
-                     OrganizationIdentifier(type='ror', value='https://ror.org/0130frc33')],
+        identifiers=[OrganizationIdentifier(type='open_alex',
+                                            value='I114027177'),
+                     OrganizationIdentifier(type='ror', value='0130frc33')],
     )
 
 

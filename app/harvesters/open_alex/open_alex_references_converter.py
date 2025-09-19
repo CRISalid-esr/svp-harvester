@@ -269,7 +269,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 org_id = org.get("id")
                 org_name = org.get("display_name")
                 organizations.add(
-                    OrganizationInformations(name=org_name, identifier=org_id, source="openalex")
+                    OrganizationInformations(name=org_name, identifier=org_id, source="open_alex")
                 )
         return organizations
 
