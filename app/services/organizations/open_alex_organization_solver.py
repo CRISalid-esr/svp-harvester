@@ -31,13 +31,13 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
     }
 
     TYPE_MAPPING = {
-        "education": "organization",
+        "education": "institution",
         "healthcare": "organization",
         "company": "organization",
         "archive": "organization",
         "nonprofit": "organization",
-        "government": "organization",
-        "facility": "organization",
+        "government": "institution",
+        "facility": "laboratory",
         "other": "organization",
         "funder": "organization"
     }
