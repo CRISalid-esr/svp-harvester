@@ -30,6 +30,18 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         "ror" : "ror"
     }
 
+    TYPE_MAPPING = {
+        "education": "organization",
+        "healthcare": "organization",
+        "company": "organization",
+        "archive": "organization",
+        "nonprofit": "organization",
+        "government": "organization",
+        "facility": "organization",
+        "other": "organization",
+        "funder": "organization"
+    }
+
     @handle_organization_dereferencing_error("OpenAlex")
     async def solve(
         self, organization_information: OrganizationInformations
@@ -63,7 +75,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                 source="open_alex",
                 source_identifier=organization_information.identifier,
                 name=name,
-                type=data.get("type"),
+                type=self.TYPE_MAPPING[data.get("type")],
             )
             org.identifiers.append(
                 OrganizationIdentifier(
