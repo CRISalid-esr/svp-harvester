@@ -232,15 +232,18 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
             for org in contribution.get("affiliations", []):
                 org_source= org.get("datasource","")
-                if org_source not in ["", "hal", "openalex"]:
-                    org_name = org.get("name", "No ScanR organization name")
-                    org_idref = org.get("idref", None)
-                    if org_idref is not None:
-                        org_id = "scanr_idref_" + org_idref
-                        organizations.add(
-                            OrganizationInformations(name=org_name,
-                                                     identifier=org_id, source="scanr")
-                        )
+                if org_source in [""]:
+                    continue
+                if org_source in ["hal", "openalex"]:
+                    continue
+                org_name = org.get("name", "No ScanR organization name")
+                org_idref = org.get("idref", None)
+                if org_idref is not None:
+                    org_id = "scanr_idref_" + org_idref
+                    organizations.add(
+                        OrganizationInformations(name=org_name,
+                                                 identifier=org_id, source="scanr")
+                    )
         return organizations
 
     def _convert_external_identifiers(
