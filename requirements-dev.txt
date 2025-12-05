@@ -108,7 +108,7 @@ tzdata==2024.1 ; python_version >= "3.10" and python_version < "4.0" and platfor
 tzlocal==5.2 ; python_version >= "3.10" and python_version < "4.0"
 ujson==5.8.0 ; python_version >= "3.10" and python_version < "4.0"
 uritools==4.0.2 ; python_version >= "3.10" and python_version < "4.0"
-urllib3==1.26.18 ; python_version >= "3.10" and python_version < "4"
+urllib3==2.6.0 ; python_version >= "3.10" and python_version < "4"
 uvicorn[standard]==0.23.2 ; python_version >= "3.10" and python_version < "4.0"
 uvloop==0.21.0 ; python_version >= "3.10" and python_version < "4.0"
 watchfiles==0.20.0 ; python_version >= "3.10" and python_version < "4.0"
