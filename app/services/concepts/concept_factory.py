@@ -89,9 +89,7 @@ class ConceptFactory:
         raise ValueError(f"Unknown concept source {concept_source}")
 
     @classmethod
-    def _infer_source(
-        cls, concept_informations: ConceptInformations
-    ) -> ConceptInformations.ConceptSources:
+    def _infer_source(cls, concept_informations: ConceptInformations) -> None:
         if concept_informations.uri is not None:
             if cls._idref_pattern().match(concept_informations.uri):
                 concept_informations.source = (
