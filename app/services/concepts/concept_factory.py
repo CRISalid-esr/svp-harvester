@@ -12,6 +12,7 @@ from app.services.concepts.sparql_idref_concept_solver import SparqlIdRefConcept
 from app.services.concepts.sparql_jel_concept_solver import SparqlJelConceptSolver
 from app.services.concepts.unknown_authority_exception import UnknownAuthorityException
 from app.services.concepts.wikidata_concept_solver import WikidataConceptSolver
+from app.services.errors.dereferencing_error import DereferencingError
 
 
 class ConceptFactory:
@@ -51,6 +52,10 @@ class ConceptFactory:
         )
         # solve the concept
         concept = await solver.solve(concept_informations)
+        if not concept.labels:
+            raise DereferencingError(
+                f"Dereferencing returned no labels for concept {concept_informations.uri}"
+            )
         concept.dereferenced = True
         concept.last_dereferencing_date_time = datetime.now()
         return concept
