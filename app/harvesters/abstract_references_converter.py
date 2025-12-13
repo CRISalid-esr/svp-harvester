@@ -365,17 +365,25 @@ class AbstractReferencesConverter(ABC):
             concept = await ConceptDAO(session).get_concept_by_uri(
                 concept_informations.uri
             )
-            if concept is not None:
+
+            # concept exists and is already dereferenced
+            if concept is not None and concept.dereferenced is True:
                 return concept
 
+            # try to dereference (concept is either missing or not dereferenced)
             try:
-                concept = await ConceptFactory.solve(concept_informations)
+                fresh_concept = await ConceptFactory.solve(concept_informations)
             except DereferencingError as error:
-                # If the dereferencing fails, create a concept with the uri and the label
                 logger.error(
                     "Dereferencing failure for concept "
                     f"{concept_informations.uri} with error: {error}"
                 )
+
+                # if it already exists, no fallback creation
+                if concept is not None:
+                    return concept
+
+                # create fallback with minimal information
                 concept = Concept(uri=concept_informations.uri)
                 if concept_informations.label is not None:
                     concept.labels.append(
@@ -385,20 +393,73 @@ class AbstractReferencesConverter(ABC):
                         )
                     )
 
-            try:
-                session.add(concept)
-                await session.commit()
-            except IntegrityError as error:
-                assert new_attempt is False, (
-                    f"Unique uri {concept_informations.uri} violation "
-                    f"cannot occur twice during concept creation: {error}"
-                )
-                await session.rollback()
-                return await self._get_or_create_concept_by_uri(
-                    concept_informations=concept_informations, new_attempt=True
+                return await self._save_concept_with_retry(
+                    session=session,
+                    concept=concept,
+                    concept_informations=concept_informations,
+                    new_attempt=new_attempt,
                 )
 
+            # dereferencing succeeded
+            if concept is None:
+                # persist fresh concept
+                return await self._save_concept_with_retry(
+                    session=session,
+                    concept=fresh_concept,
+                    concept_informations=concept_informations,
+                    new_attempt=new_attempt,
+                )
+
+            # exists but not dereferenced -> update existing and commit
+            await self._update_concept_with_fresh_information(concept, fresh_concept)
+            await session.commit()
+            await session.refresh(concept)
             return concept
+
+    async def _save_concept_with_retry(
+        self,
+        session,
+        concept: Concept,
+        concept_informations: ConceptInformations,
+        new_attempt: bool,
+    ) -> Concept:
+        """
+        Persist a Concept in the current session. If unique(uri) is hit because
+        another worker created it concurrently, retry once by reloading.
+        """
+        try:
+            session.add(concept)
+            await session.commit()
+            return concept
+        except IntegrityError as error:
+            assert new_attempt is False, (
+                f"Unique uri {concept_informations.uri} violation "
+                f"cannot occur twice during concept creation: {error}"
+            )
+            await session.rollback()
+            # someone else created it: reload and return (or let caller retry whole method)
+            existing = await ConceptDAO(session).get_concept_by_uri(
+                concept_informations.uri
+            )
+            if existing is not None:
+                return existing
+            # if still missing, retry whole method once
+            return await self._get_or_create_concept_by_uri(
+                concept_informations=concept_informations,
+                new_attempt=True,
+            )
+
+    async def _update_concept_with_fresh_information(self, concept, fresh_concept):
+        concept.dereferenced = True
+        concept.last_dereferencing_date_time = (
+            fresh_concept.last_dereferencing_date_time
+        )
+
+        existing_keys = {(l.value, l.language) for l in concept.labels}
+        for label in fresh_concept.labels:
+            key = (label.value, label.language)
+            if key not in existing_keys:
+                concept.labels.append(Label(value=label.value, language=label.language))
 
     async def _get_or_create_concepts_by_uri(
         self,
@@ -529,10 +590,9 @@ class AbstractReferencesConverter(ABC):
                 contribution.affiliations.append(org)
 
     def _organizations_from_contributor(
-            self, raw_data, id_contributor
+        self, raw_data, id_contributor
     ) -> Set[OrganizationInformations]:
         raise NotImplementedError("Subclass must implement this method")
-
 
     async def _organizations(
         self, organization_informations: List[OrganizationInformations]
@@ -550,8 +610,6 @@ class AbstractReferencesConverter(ABC):
                 organizations_identifiers_cache[identifier] = db_organization
 
             yield db_organization
-
-
 
     async def _get_or_create_organization_by_identifier(
         self,
