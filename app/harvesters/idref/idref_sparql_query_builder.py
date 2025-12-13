@@ -278,17 +278,19 @@ class IdrefSparqlQueryBuilder:
         )
 
     def _build_concept_query(self) -> str:
-        return (
-            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
-            "select distinct ?prefLabel ?altLabel "
-            "where { "
-            "?concept a skos:Concept. "
-            "OPTIONAL { ?concept skos:prefLabel ?prefLabel }. "
-            "OPTIONAL { ?concept skos:altLabel ?altLabel }. "
-            f"FILTER(?concept = <{self.subject_uri}>) "
-            "} "
-            "LIMIT 100"
-        )
+        # There is no filter on Concept class as
+        # idref concepts can have different rdf:types :
+        # skos:Concept, dbpedia-owl:Place, etc.
+        return f"""
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+    SELECT DISTINCT ?prefLabel ?altLabel
+    WHERE {{
+        OPTIONAL {{ <{self.subject_uri}> skos:prefLabel ?prefLabel }}
+        OPTIONAL {{ <{self.subject_uri}> skos:altLabel ?altLabel }}
+    }}
+    LIMIT 100
+    """.strip()
 
     def _person_sparql_filter(self):
         if self.subject_uri is not None:
