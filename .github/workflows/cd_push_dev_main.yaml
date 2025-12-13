@@ -81,7 +81,7 @@ jobs:
         with:
           push: true
           tags: |
-            crisalidesr/svp-harvester:v0.27-dev
+            crisalidesr/svp-harvester:v0.28-dev
             crisalidesr/svp-harvester:latest
           build-args: |
             GIT_COMMIT=${{ github.sha }}

@@ -127,6 +127,8 @@ class AppSettings(BaseSettings):
     idref_concepts_publications_caching_duration: int = 90 * 24 * 3600
     wikidata_concepts_publications_caching_duration: int = 90 * 24 * 3600
 
+    wikidata_user_agent: str = "CRISalid-Harvester/1.0 (dev instance)"
+
     enable_concept_dereferencing: bool = True
     enable_organizations_dereferencing: bool = True
 

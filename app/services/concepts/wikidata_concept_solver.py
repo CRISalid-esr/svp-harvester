@@ -31,9 +31,14 @@ class WikidataConceptSolver(ConceptSolver):
         """
         session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
+        # https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy
+        headers = {
+            "User-Agent": self.settings.wikidata_user_agent,
+            "Accept": "application/json",
+        }
 
         async with session.get(
-            concept_informations.url, timeout=request_timeout
+            concept_informations.url, timeout=request_timeout, headers=headers
         ) as response:
             if not 200 <= response.status < 300:
                 await response.release()
