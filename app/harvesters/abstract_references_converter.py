@@ -646,6 +646,7 @@ class AbstractReferencesConverter(ABC):
                             source_identifier=organization_informations.identifier,
                             name=organization_informations.name,
                         )
+                    organization.ensure_self_identifier()
                     session.add(organization)
                     try:
                         await session.commit()
