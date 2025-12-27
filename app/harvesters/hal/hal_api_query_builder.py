@@ -37,7 +37,7 @@ class HalApiQueryBuilder:
         "producedDate_tdate",
         "citationFull_s",
         "citationRef_s",
-        "authIdHasStructure_fs",
+        "authIdHasPrimaryStructure_fs",
         "labStructId_i",
         "jel_s",
         "*Id_s",
