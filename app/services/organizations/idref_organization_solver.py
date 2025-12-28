@@ -3,6 +3,7 @@ from typing import List
 from typing import Tuple
 
 from aiohttp import ClientTimeout
+from loguru import logger
 from rdflib import OWL, Graph, term
 
 from app.db.models.organization import Organization
@@ -28,9 +29,13 @@ class IdrefOrganizationSolver(OrganizationSolver):
     """
 
     URL = "www.idref.fr/"
-    # value could be 'ror'
     IDENTITY_DEEP_SEARCH = []
-    IDENTITY_SAVE = ["hal", "isni", "viaf", "ror"]
+    IDENTITY_SAVE = [
+        OrganizationIdentifier.IdentifierType.HAL.value,
+        OrganizationIdentifier.IdentifierType.ISNI.value,
+        OrganizationIdentifier.IdentifierType.VIAF.value,
+        OrganizationIdentifier.IdentifierType.ROR.value,
+    ]
 
     @handle_organization_dereferencing_error("Idref")
     async def solve(
@@ -48,12 +53,12 @@ class IdrefOrganizationSolver(OrganizationSolver):
             name=organization_information.name,
         )
         seen = []
-        new_identifiers, seen = await self.solve_identities(organization_information, seen)
+        new_identifiers, seen = await self.solve_identities(
+            organization_information, seen
+        )
         org.identifiers.extend(new_identifiers)
 
         return org
-
-
 
     @handle_organization_dereferencing_error("Idref")
     async def solve_identities(
@@ -65,34 +70,27 @@ class IdrefOrganizationSolver(OrganizationSolver):
         :return: OrganizationIdentifier, seen identifiers updated list
         """
 
-        # Add the idref identifier
+        # Normalize idref value
         if "scanr_idref_" in organization_information.identifier:
-            new_identifiers = [
-                OrganizationIdentifier(
-                    type="idref", value=organization_information.identifier.split('_')[-1]
-                )
-            ]
-            seen.append("idref")
-            # Search for more identifiers
-            idref_url, idref_uri = self._build_url_from_organization_id(
-                organization_information.identifier.split('_')[-1]
-            )
-
+            idref_value = organization_information.identifier.split("_")[-1]
         else:
-            new_identifiers = [
-                OrganizationIdentifier(
-                    type="idref", value=organization_information.identifier
-                )
-            ]
-            seen.append("idref")
-            # Search for more identifiers
-            idref_url, idref_uri = self._build_url_from_organization_id(
-                organization_information.identifier
-            )
+            idref_value = organization_information.identifier
 
+        # Add the idref identifier
+        new_identifiers = [
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.IDREF.value,
+                value=idref_value,
+            )
+        ]
+        seen.append("idref")
+
+        # Search for more identifiers
+        idref_url, idref_uri = self._build_url_from_organization_id(idref_value)
         session = await AioHttpClientManager.get_session()
-        request_timeout = ClientTimeout(total=float(self.timeout))
-        async with session.get(idref_url, timeout=request_timeout) as response:
+        async with session.get(
+            idref_url, timeout=(ClientTimeout(total=float(self.timeout)))
+        ) as response:
             if not 200 <= response.status < 300:
                 await response.release()
                 raise DereferencingError(
@@ -104,8 +102,8 @@ class IdrefOrganizationSolver(OrganizationSolver):
             # Search for sameAs identifiers
             for uri in concept_graph.objects(term.URIRef(idref_uri), OWL.sameAs):
                 source, identifier = self._infer_source_and_id_from_uri(uri)
-
-                if source in seen or (source is None and identifier is None):
+                # we may have several identifiers of the sam kind
+                if source is None or identifier is None:
                     continue
                 try:
                     if source in self.IDENTITY_DEEP_SEARCH:
@@ -138,7 +136,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
 
     def _infer_source_and_id_from_uri(self, uri) -> Tuple[str, str]:
         uri = re.sub(r"https?://", "", uri)
-        if "data.archives-ouvertes.fr" in uri:
+        if "data.archives-ouvertes.fr" in uri or "data.hal.science" in uri:
             return "hal", uri.split("/")[-1].replace("#foaf:Organization", "")
         if "ror.org" in uri:
             return "ror", uri.split("/")[-1].replace("#foaf:Organization", "")
@@ -146,4 +144,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
             return "isni", uri.split("/")[-1]
         if "viaf.org" in uri:
             return "viaf", uri.split("/")[-1]
+        logger.warning(
+            f"Unknown identifier source for uri {uri} in IdrefOrganizationSolver"
+        )
         return None, None

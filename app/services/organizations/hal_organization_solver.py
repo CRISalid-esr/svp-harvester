@@ -29,7 +29,7 @@ class HalOrganizationSolver(OrganizationSolver):
     IDENTITY_DEEP_SEARCH = {}
     IDENTITY_SAVE = {
         "isni_s": "isni",
-        "rnsr_s": "rnsr",
+        "rnsr_s": "nns",
         "idref_s": "idref",
         "ror_s": "ror",
     }

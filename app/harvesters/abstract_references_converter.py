@@ -35,7 +35,6 @@ from app.services.hash.hash_key import HashKey
 from app.services.hash.hash_service import HashService
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
-from app.services.organizations.merge_organization import merge_organization
 from app.services.organizations.organization_factory import OrganizationFactory
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
@@ -629,17 +628,6 @@ class AbstractReferencesConverter(ABC):
                         organization = await OrganizationFactory.solve(
                             organization_informations
                         )
-
-                        same_organization = await OrganizationDAO(
-                            session
-                        ).get_organization_by_identifiers(organization.identifiers)
-                        if same_organization is not None and len(
-                            same_organization.identifiers
-                        ) != len(organization.identifiers):
-                            organization = merge_organization(
-                                same_organization, organization
-                            )
-
                     except DereferencingError:
                         organization = Organization(
                             source=organization_informations.source,
