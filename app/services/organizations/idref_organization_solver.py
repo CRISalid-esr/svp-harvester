@@ -143,5 +143,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
             return "isni", uri.split("/")[-1]
         if "viaf.org" in uri:
             return "viaf", uri.split("/")[-1]
-        logger.warning(f"Unknown identifier source for uri {uri} in IdrefOrganizationSolver")
+        logger.warning(
+            f"Unknown identifier source for uri {uri} in IdrefOrganizationSolver"
+        )
         return None, None
