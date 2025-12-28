@@ -88,8 +88,9 @@ class IdrefOrganizationSolver(OrganizationSolver):
         # Search for more identifiers
         idref_url, idref_uri = self._build_url_from_organization_id(idref_value)
         session = await AioHttpClientManager.get_session()
-        request_timeout = ClientTimeout(total=float(self.timeout))
-        async with session.get(idref_url, timeout=request_timeout) as response:
+        async with session.get(
+            idref_url, timeout=(ClientTimeout(total=float(self.timeout)))
+        ) as response:
             if not 200 <= response.status < 300:
                 await response.release()
                 raise DereferencingError(
