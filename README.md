@@ -109,12 +109,9 @@ former).
 As postgres user :
 
 ```sql
-CREATE
-DATABASE your_db_name;
-CREATE
-USER your_user_name WITH PASSWORD 'your_secret';
-GRANT ALL PRIVILEGES ON DATABASE
-your_db_name to your_user_name;
+CREATE DATABASE your_db_name;
+CREATE USER your_user_name WITH PASSWORD 'your_secret';
+GRANT ALL PRIVILEGES ON DATABASE your_db_name to your_user_name;
 ```
 
 Repeat for test database.

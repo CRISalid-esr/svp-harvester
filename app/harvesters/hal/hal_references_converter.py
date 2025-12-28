@@ -35,6 +35,7 @@ from app.services.organizations.organization_informations import (
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.isbn_utilities import get_isbns
 
+
 class HalReferencesConverter(AbstractReferencesConverter):
     """
     Converts raw data from HAL to a normalised Reference object
@@ -427,7 +428,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         # Get the organizations informations of the contributor
         organizations = set()
 
-        for auth_org in raw_data.get("authIdHasStructure_fs", []):
+        for auth_org in raw_data.get("authIdHasPrimaryStructure_fs", []):
             auth, org = auth_org.split("_JoinSep_")
             ids, _ = auth.split("_FacetSep_")
             _, id_hal = ids.split("-")
@@ -456,7 +457,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             HashKey("authFullNameFormIDPersonIDIDHal_fs"),
             HashKey("authFirstName_s"),
             HashKey("authLastName_s"),
-            HashKey("authIdHasStructure_fs"),
+            HashKey("authIdHasPrimaryStructure_fs"),
             HashKey("labStructId_i"),
             HashKey("docType_s"),
             HashKey("publicationDate_tdate"),
