@@ -29,8 +29,8 @@ class IdrefOrganizationSolver(OrganizationSolver):
     """
 
     URL = "www.idref.fr/"
-    IDENTITY_DEEP_SEARCH = []
-    IDENTITY_SAVE = [
+    IDENTIFIERS_TO_BE_DEREFERENCED = ["ror"]
+    IDENTIFIERS_TO_BE_SAVED = [
         OrganizationIdentifier.IdentifierType.HAL.value,
         OrganizationIdentifier.IdentifierType.ISNI.value,
         OrganizationIdentifier.IdentifierType.VIAF.value,
@@ -53,7 +53,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
             name=organization_information.name,
         )
         seen = []
-        new_identifiers, seen = await self.solve_identities(
+        new_identifiers, seen = await self.solve_identifier(
             organization_information, seen
         )
         org.identifiers.extend(new_identifiers)
@@ -61,7 +61,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         return org
 
     @handle_organization_dereferencing_error("Idref")
-    async def solve_identities(
+    async def solve_identifier(
         self, organization_information: OrganizationInformations, seen: List[str]
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """
@@ -106,18 +106,18 @@ class IdrefOrganizationSolver(OrganizationSolver):
                 if source is None or identifier is None:
                     continue
                 try:
-                    if source in self.IDENTITY_DEEP_SEARCH:
+                    if source in self.IDENTIFIERS_TO_BE_DEREFERENCED:
                         (
                             identifiers,
                             seen,
-                        ) = await organization_factory.OrganizationFactory.solve_identities(
+                        ) = await organization_factory.OrganizationFactory.solve_identifier(
                             OrganizationInformations(
                                 identifier=identifier, source=source
                             ),
                             seen,
                         )
                         new_identifiers.extend(identifiers)
-                    elif source in self.IDENTITY_SAVE:
+                    elif source in self.IDENTIFIERS_TO_BE_SAVED:
                         new_identifiers.append(
                             OrganizationIdentifier(type=source, value=identifier)
                         )

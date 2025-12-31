@@ -27,7 +27,7 @@ class OrganizationSolver(ABC):
         """
 
     @abstractmethod
-    async def solve_identities(
+    async def solve_identifier(
         self,
         organization_information: OrganizationIdentifier,
         seen: List[str],

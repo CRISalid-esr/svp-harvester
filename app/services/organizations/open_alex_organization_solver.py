@@ -9,6 +9,9 @@ from app.services.errors.dereferencing_error import (
     DereferencingError,
     handle_organization_dereferencing_error,
 )
+from app.services.organizations import (  # pylint: disable=cyclic-import
+    organization_factory,
+)
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
 )
@@ -23,11 +26,14 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
 
     URL = "https://api.openalex.org/institutions/{}"
 
-    IDENTITY_DEEP_SEARCH = {}
+    # OpenAlex responses key -> OrganizationIdentifier.type
+    IDENTIFIERS_TO_BE_DEREFERENCED = {
+        "ror": OrganizationIdentifier.IdentifierType.ROR.value,
+    }
 
-    IDENTITY_SAVE = {
-        "open_alex" : "open_alex",
-        "ror" : "ror"
+    IDENTITIFIERS_TO_BE_SAVED = {
+        "open_alex": OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+        "ror": OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
     }
 
     TYPE_MAPPING = {
@@ -39,7 +45,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         "government": "institution",
         "facility": "laboratory",
         "other": "organization",
-        "funder": "organization"
+        "funder": "organization",
     }
 
     @handle_organization_dereferencing_error("OpenAlex")
@@ -54,7 +60,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         session = await AioHttpClientManager.get_session()
         request_timeout = ClientTimeout(total=float(self.timeout))
         async with session.get(
-            self.URL.format(organization_information.identifier.split('/')[-1]),
+            self.URL.format(organization_information.identifier.split("/")[-1]),
             timeout=request_timeout,
         ) as response:
             if not 200 <= response.status < 300:
@@ -65,7 +71,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                     f" {organization_information.identifier}"
                 )
             data = await response.json()
-            name = data.get("display_name", 'No OpenAlex organization name')
+            name = data.get("display_name", "No OpenAlex organization name")
             if not name:
                 raise DereferencingError(
                     f"OpenAlex organization {organization_information.identifier}"
@@ -84,18 +90,38 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             )
             seen = ["open_alex"]
             new_identifiers = []
-            for key, source in self.IDENTITY_SAVE.items():
+            for key, source in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
                 if (source not in seen) and (key in data.get("ids", {})):
-                    code = data.get("ids",{}).get(key, f"No {key} identifier in OpenAlex")
-                    if "identifier" not in code:
+                    code = data.get("ids", {}).get(key, None)
+                    if not code:
+                        continue
+                    try:
+                        (
+                            identifiers,
+                            seen,
+                        ) = await organization_factory.OrganizationFactory.solve_identifier(
+                            OrganizationInformations(identifier=code, source=source),
+                            seen,
+                        )
+                        new_identifiers.extend(identifiers)
+                    except (ValueError, DereferencingError):
                         new_identifiers.append(
                             OrganizationIdentifier(type=source, value=code)
                         )
+                        seen.append(source)
+            for key, source in self.IDENTITIFIERS_TO_BE_SAVED.items():
+                if (source not in seen) and (key in data.get("ids", {})):
+                    code = data.get("ids", {}).get(key, None)
+                    if not code:
+                        continue
+                    new_identifiers.append(
+                        OrganizationIdentifier(type=source, value=code)
+                    )
                     seen.append(source)
             org.identifiers.extend(new_identifiers)
             return org
 
-    async def solve_identities(
+    async def solve_identifier(
         self, organization_information: OrganizationInformations, seen
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """

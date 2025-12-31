@@ -1,8 +1,10 @@
 # pylint: disable=duplicate-code
 import re
 from enum import Enum
+from typing import Dict, Any
 
 from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship, mapped_column, validates
 
 from app.db.session import Base
@@ -24,6 +26,9 @@ class OrganizationIdentifier(Base):
         ROR = "ror"
         SCOPUS = "scopus"
         RNSR = "nns"
+        GRID = "grid"
+        WIKIDATA = "wikidata"
+        FUNDREF = "fundref"
 
     __tablename__ = "organization_identifiers"
 
@@ -38,6 +43,13 @@ class OrganizationIdentifier(Base):
     )
     organization_id: Mapped[int] = mapped_column(
         ForeignKey("organizations.id"), index=True
+    )
+
+    extra_information: Mapped[Dict[str, Any]] = mapped_column(
+        JSONB,
+        nullable=False,
+        default=dict,
+        server_default="{}",
     )
 
     _NORMALIZATION_REGEX = {

@@ -6,7 +6,9 @@ from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.organizations.dummy_organization_sover import DummyOrganizationSolver
 from app.services.organizations.hal_organization_solver import HalOrganizationSolver
 from app.services.organizations.idref_organization_solver import IdrefOrganizationSolver
-from app.services.organizations.open_alex_organization_solver import OpenAlexOrganizationSolver
+from app.services.organizations.open_alex_organization_solver import (
+    OpenAlexOrganizationSolver,
+)
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
 )
@@ -41,12 +43,12 @@ class OrganizationFactory:
         return organization
 
     @staticmethod
-    async def solve_identities(
+    async def solve_identifier(
         organization_information: OrganizationInformations,
         seen: List[str],
     ) -> tuple[OrganizationIdentifier, List[str]]:
         """
-        Solves the identities of an organization if not already seen
+         Solves an identifier of an organization (used for further dereferencing)
         :param organization_id: id of the organization
         :param organization_source: source of the organization
 
@@ -57,7 +59,7 @@ class OrganizationFactory:
         solver: OrganizationSolver = OrganizationFactory._create_solver(
             organization_information.source
         )
-        organization, seen = await solver.solve_identities(
+        organization, seen = await solver.solve_identifier(
             organization_information, seen
         )
         return organization, seen
@@ -71,7 +73,7 @@ class OrganizationFactory:
             return DummyOrganizationSolver()
         if organization_source == "hal":
             return HalOrganizationSolver(timeout=settings.hal_organizations_timeout)
-        if organization_source in("idref", "scanr"):
+        if organization_source in ("idref", "scanr"):
             return IdrefOrganizationSolver(timeout=settings.idref_organizations_timeout)
         if organization_source == "ror":
             return RorOrganizationSolver(timeout=settings.ror_organizations_timeout)
