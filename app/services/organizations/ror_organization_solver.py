@@ -1,13 +1,15 @@
-from socket import timeout
 from typing import List, Tuple, Dict, Any, Set
 
 from aiohttp import ClientTimeout
+from loguru import logger
 
+from app.config import get_app_settings
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.errors.dereferencing_error import (
     handle_organization_dereferencing_error,
+    DereferencingError,
 )
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
@@ -23,6 +25,8 @@ class RorOrganizationSolver(OrganizationSolver):
     URL = "https://api.ror.org/v2/organizations/{}"
 
     # ROR external_ids[].type -> OrganizationIdentifier.type
+    # 3 of them are commented out because they could return multiple values and
+    # complexify the handling of organization states in the knowledge graph.
     IDENTITIFIERS_TO_BE_SAVED = {
         # "isni": OrganizationIdentifier.IdentifierType.ISNI.value,
         # "grid": OrganizationIdentifier.IdentifierType.GRID.value,
@@ -78,15 +82,29 @@ class RorOrganizationSolver(OrganizationSolver):
         self, organization_information: OrganizationInformations, seen: List[str]
     ) -> Tuple[List[OrganizationIdentifier], List[str]]:
         session = await AioHttpClientManager.get_session()
-        request_timeout = ClientTimeout(total=float(self.timeout))
+
+        client_id = get_app_settings().ror_api_client_id
+        headers: Dict[str, str] = {}
+        if client_id:
+            headers["Client-Id"] = str(client_id)
+        else:
+            logger.warning(
+                "ROR client id is not configured (ROR_API_CLIENT_ID). "
+                "Requests may be rate-limited."
+            )
+
+        ror_id = (organization_information.identifier or "").split("/")[-1]
+        if not ror_id:
+            raise DereferencingError("ROR identifier is empty")
 
         async with session.get(
-            self.URL.format(organization_information.identifier),
-            timeout=request_timeout,
+            self.URL.format(ror_id),
+            timeout=(ClientTimeout(total=float(self.timeout))),
+            headers=headers or None,  # aiohttp accepts None
         ) as response:
             if not 200 <= response.status < 300:
                 await response.release()
-                raise timeout(
+                raise DereferencingError(
                     f"Endpoint returned status {response.status} while dereferencing "
                     f"ROR organization {organization_information.identifier}"
                 )

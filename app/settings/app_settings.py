@@ -129,6 +129,8 @@ class AppSettings(BaseSettings):
 
     wikidata_user_agent: str = "CRISalid-Harvester/1.0 (dev instance)"
 
+    ror_api_client_id: str | None = None
+
     enable_concept_dereferencing: bool = True
     enable_organizations_dereferencing: bool = True
 
