@@ -97,7 +97,6 @@ class RorOrganizationSolver(OrganizationSolver):
             value=organization_information.identifier,
             extra_information={
                 "geonames_locations": self._flatten_geonames_locations(data),
-                # optional: keep some lightweight republish-friendly metadata
                 "status": data.get("status"),
                 "types": data.get("types"),
                 "established": data.get("established"),

@@ -31,9 +31,9 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         "ror": OrganizationIdentifier.IdentifierType.ROR.value,
     }
 
-    IDENTITIFIERS_TO_BE_SAVED = {
-        "open_alex": OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
-        "ror": OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+    IDENTIFIERS_TO_BE_SAVED = {
+        "openalex": OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+        "ror": OrganizationIdentifier.IdentifierType.ROR.value,
     }
 
     TYPE_MAPPING = {
@@ -109,7 +109,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                             OrganizationIdentifier(type=source, value=code)
                         )
                         seen.append(source)
-            for key, source in self.IDENTITIFIERS_TO_BE_SAVED.items():
+            for key, source in self.IDENTIFIERS_TO_BE_SAVED.items():
                 if (source not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids", {}).get(key, None)
                     if not code:

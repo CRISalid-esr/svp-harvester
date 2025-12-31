@@ -29,7 +29,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
     """
 
     URL = "www.idref.fr/"
-    IDENTIFIERS_TO_BE_DEREFERENCED = ["ror"]
+    IDENTIFIERS_TO_BE_DEREFERENCED = [OrganizationIdentifier.IdentifierType.ROR.value]
     IDENTIFIERS_TO_BE_SAVED = [
         OrganizationIdentifier.IdentifierType.HAL.value,
         OrganizationIdentifier.IdentifierType.ISNI.value,
@@ -48,7 +48,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
         """
 
         org = Organization(
-            source="scanr",
+            source=organization_information.source,
             source_identifier=organization_information.identifier,
             name=organization_information.name,
         )
