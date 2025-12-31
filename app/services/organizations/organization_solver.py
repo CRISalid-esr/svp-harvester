@@ -3,6 +3,9 @@ from typing import List
 
 from app.db.models.organization import Organization
 from app.db.models.organization_identifier import OrganizationIdentifier
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 
 ORGANISATION_SOLVER_DEFAULT_TIMEOUT = 7
 
@@ -18,7 +21,7 @@ class OrganizationSolver(ABC):
     @abstractmethod
     async def solve(
         self,
-        organization_information: OrganizationIdentifier,
+        organization_information: OrganizationInformations,
     ) -> Organization:
         """
         Solves an organization from an organization id
@@ -27,9 +30,9 @@ class OrganizationSolver(ABC):
         """
 
     @abstractmethod
-    async def solve_identities(
+    async def solve_identifier(
         self,
-        organization_information: OrganizationIdentifier,
+        organization_information: OrganizationInformations,
         seen: List[str],
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """

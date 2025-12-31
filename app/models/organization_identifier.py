@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -10,3 +12,5 @@ class OrganizationIdentifier(BaseModel):
 
     type: str
     value: str
+
+    extra_information: dict[str, Any] | None = None

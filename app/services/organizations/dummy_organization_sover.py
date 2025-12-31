@@ -50,7 +50,7 @@ class DummyOrganizationSolver(OrganizationSolver):
             )
         return organization
 
-    async def solve_identities(
+    async def solve_identifier(
         self,
         organization_information: OrganizationInformations,
         seen: List[str],

@@ -32,14 +32,15 @@ class ScopusOrganizationSolver(OrganizationSolver):
         )
         organization.identifiers.append(
             OrganizationIdentifier(
-                type="scopus", value=organization_information.identifier
+                type=OrganizationIdentifier.IdentifierType.SCOPUS.value,
+                value=organization_information.identifier,
             )
         )
         return organization
 
-    async def solve_identities(
+    async def solve_identifier(
         self,
         organization_information: OrganizationIdentifier,
         seen: List[str],
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
-        raise NotImplementedError("ScopusOrganizationSolver.solve_identities")
+        raise NotImplementedError("ScopusOrganizationSolver.solve_identifier")

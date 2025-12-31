@@ -26,12 +26,15 @@ class HalOrganizationSolver(OrganizationSolver):
 
     URL = "https://api.archives-ouvertes.fr/ref/structure/?q=docid:{}&wt=json&fl=*"
 
-    IDENTITY_DEEP_SEARCH = {}
-    IDENTITY_SAVE = {
-        "isni_s": "isni",
-        "rnsr_s": "nns",
-        "idref_s": "idref",
-        "ror_s": "ror",
+    # HAL responses key -> OrganizationIdentifier.type
+    IDENTIFIERS_TO_BE_DEREFERENCED = {
+        "ror_s": OrganizationIdentifier.IdentifierType.ROR.value,
+    }
+    IDENTIFIERS_TO_BE_SAVED = {
+        "isni_s": OrganizationIdentifier.IdentifierType.ISNI.value,
+        "rnsr_s": OrganizationIdentifier.IdentifierType.RNSR.value,
+        "idref_s": OrganizationIdentifier.IdentifierType.IDREF.value,
+        "ror_s": OrganizationIdentifier.IdentifierType.ROR.value,
     }
 
     TYPE_MAPPING = {
@@ -85,14 +88,16 @@ class HalOrganizationSolver(OrganizationSolver):
             )
             seen = ["hal"]
             new_identifiers = []
-            for key, source in self.IDENTITY_DEEP_SEARCH.items():
+            for key, source in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
                 if (source not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
+                    if not code:
+                        continue
                     try:
                         (
                             identifiers,
                             seen,
-                        ) = await organization_factory.OrganizationFactory.solve_identities(
+                        ) = await organization_factory.OrganizationFactory.solve_identifier(
                             OrganizationInformations(identifier=code, source=source),
                             seen,
                         )
@@ -102,7 +107,7 @@ class HalOrganizationSolver(OrganizationSolver):
                             OrganizationIdentifier(type=source, value=code)
                         )
                         seen.append(source)
-            for key, source in self.IDENTITY_SAVE.items():
+            for key, source in self.IDENTIFIERS_TO_BE_SAVED.items():
                 if (source not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
                     new_identifiers.append(
@@ -112,7 +117,7 @@ class HalOrganizationSolver(OrganizationSolver):
             org.identifiers.extend(new_identifiers)
             return org
 
-    async def solve_identities(
+    async def solve_identifier(
         self, organization_information: OrganizationInformations, seen
     ) -> tuple[List[OrganizationIdentifier], List[str]]:
         """
