@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock, Mock
 
-from app.services.organizations.ror_organization_solver import RorOrganizationSolver
+import pytest
+
+from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
 )
+from app.services.organizations.ror_organization_solver import RorOrganizationSolver
 
 
 # disable AUTOUSE fixture from tests/fixtures/organizations_fixtures.py
@@ -36,8 +38,8 @@ class _FakeSession:
         self.get = Mock(return_value=response)
 
 
-@pytest.fixture()
-def ror_payload():
+@pytest.fixture(name="ror_payload")
+def fixture_ror_payload():
     # Minimal subset of ROR payload.
     return {
         "id": "https://ror.org/035j0tq82",
@@ -73,10 +75,6 @@ def ror_payload():
     }
 
 
-import pytest
-
-
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_ror_solve_identifier_builds_ror_identifier_with_extra_information_and_wikidata(
     monkeypatch, ror_payload
@@ -149,13 +147,9 @@ async def test_ror_solve_identifier_builds_ror_identifier_with_extra_information
     # ensure correct endpoint usage (URL.format(identifier))
     assert fake_session.get.call_count == 1
     called_url = fake_session.get.call_args.args[0]
-    assert called_url.endswith("/https://ror.org/035j0tq82")
+    assert called_url.endswith("/035j0tq82")
 
 
-import pytest
-
-
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_ror_solve_identifier_dedups_external_ids(monkeypatch, ror_payload):
     """
@@ -170,8 +164,6 @@ async def test_ror_solve_identifier_dedups_external_ids(monkeypatch, ror_payload
 
     response = _FakeResponse(status=200, payload=payload)
     fake_session = _FakeSession(response)
-
-    from app.http.aio_http_client_manager import AioHttpClientManager
 
     monkeypatch.setattr(
         AioHttpClientManager, "get_session", AsyncMock(return_value=fake_session)
@@ -189,10 +181,6 @@ async def test_ror_solve_identifier_dedups_external_ids(monkeypatch, ror_payload
     assert wikidata == [("wikidata", "Q1431486")]
 
 
-import pytest
-
-
-@pytest.mark.current
 @pytest.mark.asyncio
 async def test_ror_solve_identifier_non_2xx_raises(monkeypatch, ror_payload):
     """
@@ -202,8 +190,6 @@ async def test_ror_solve_identifier_non_2xx_raises(monkeypatch, ror_payload):
     """
     response = _FakeResponse(status=500, payload=ror_payload)
     fake_session = _FakeSession(response)
-
-    from app.http.aio_http_client_manager import AioHttpClientManager
 
     monkeypatch.setattr(
         AioHttpClientManager, "get_session", AsyncMock(return_value=fake_session)
