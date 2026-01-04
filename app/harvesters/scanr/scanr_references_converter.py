@@ -1,4 +1,7 @@
+import re
+import unicodedata
 from typing import Set
+
 from loguru import logger
 from semver import Version
 from similarity.jarowinkler import JaroWinkler
@@ -30,7 +33,9 @@ from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
-from app.services.organizations.organization_informations import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
@@ -145,9 +150,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         )
 
     async def _issue(self, journal: Journal) -> Issue:
-        source_identifier = (
-            journal.source_identifier + "-" + self._harvester()
-        )
+        source_identifier = journal.source_identifier + "-" + self._harvester()
         issue = await self._get_or_create_issue(
             IssueInformations(
                 source=self._harvester(),
@@ -194,22 +197,40 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     value=identifier["id"], type=identifier["type"]
                 )
 
+    @classmethod
+    def _slug_from_name(cls, s: str) -> str:
+        s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii")
+        s = s.lower().strip()
+        s = re.sub(r"[^a-z0-9]+", "-", s)
+        return s.strip("-") or "unknown"
+
     async def _add_contributions(self, json_payload: dict, new_ref: Reference) -> None:
         raw_contributions = json_payload["_source"].get("authors")
         contribution_informations = []
         for rank, contribution in enumerate(raw_contributions):
             raw_identifiers = contribution.get("denormalized", {})
+            source_identifier = contribution.get("person") or contribution.get(
+                "toIdentify"
+            )
+            full_name = (
+                contribution.get("fullName")
+                or f"{contribution.get('firstName', '')} {contribution.get('lastName', '')}".strip()
+            )
+
+            if not source_identifier:
+                source_identifier = (
+                    f"anon:{new_ref.source_identifier}"
+                    f":{self._slug_from_name(full_name)}"
+                )
             contribution_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
                     role=ScanrRolesConverter.convert(
                         role=contribution.get("role"),
                     ),
-                    name=contribution.get("fullName"),
+                    name=full_name,
                     first_name=contribution.get("firstName"),
                     last_name=contribution.get("lastName"),
-                    identifier=contribution.get(
-                        "person", contribution.get("toIdentify")
-                    ),
+                    identifier=source_identifier,
                     rank=rank,
                     ext_identifiers=self._convert_external_identifiers(raw_identifiers),
                 )
@@ -226,12 +247,12 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         organizations = set()
         raw_contributions = raw_data["_source"].get("authors")
         for _, contribution in enumerate(raw_contributions):
-            auth_id = contribution.get("person","")
+            auth_id = contribution.get("person", "")
             if auth_id != id_contributor:
                 continue
 
             for org in contribution.get("affiliations", []):
-                org_source= org.get("datasource","")
+                org_source = org.get("datasource", "")
                 if org_source in [""]:
                     continue
                 if org_source in ["hal", "openalex"]:
@@ -241,8 +262,9 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 if org_idref is not None:
                     org_id = "scanr_idref_" + org_idref
                     organizations.add(
-                        OrganizationInformations(name=org_name,
-                                                 identifier=org_id, source="scanr")
+                        OrganizationInformations(
+                            name=org_name, identifier=org_id, source="scanr"
+                        )
                     )
         return organizations
 
