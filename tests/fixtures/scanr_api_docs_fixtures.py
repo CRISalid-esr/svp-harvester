@@ -153,6 +153,17 @@ def fixture_scanr_publication_doc_with_journal_with_title(_base_path) -> dict:
     )
 
 
+@pytest.fixture(name="scanr_publication_doc_with_anon_author")
+def fixture_scanr_publication_doc_with_anon_author(_base_path) -> dict:
+    """
+    Generate a SCANR API response for a publication that contains
+    an author without person/toIdentify (=> anon:... slug fallback)
+    """
+    return _scanr_api_json_data_from_file(
+        _base_path, "scanr_publication_doc_with_anon_author"
+    )
+
+
 @pytest.fixture(name="scanr_publication_doc_with_wikidata_domains")
 def fixture_scanr_publication_doc_with_wikidata_domains(_base_path) -> dict:
     """
