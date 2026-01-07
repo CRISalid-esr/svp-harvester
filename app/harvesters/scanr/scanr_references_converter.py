@@ -31,6 +31,9 @@ from app.harvesters.scanr.scanr_roles_converter import ScanrRolesConverter
 from app.services.book.book_data_class import BookInformations
 from app.services.concepts.concept_informations import ConceptInformations
 from app.services.hash.hash_key import HashKey
+from app.services.identifiers.identifier_inference_service import (
+    IdentifierInferenceService,
+)
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
 from app.services.organizations.organization_informations import (
@@ -121,6 +124,11 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
         for identifier in self._add_identifiers(json_payload):
             new_ref.identifiers.append(identifier)
+
+        IdentifierInferenceService.infer_identifiers(
+            reference=new_ref,
+            rules=[IdentifierInferenceService.Rule.SUDOC_PPN_FROM_SCANR_ID],
+        )
 
         await self._add_organization(json_payload, new_ref)
 

@@ -3,6 +3,9 @@ from typing import List
 
 from app.models.references import Reference
 from app.services.identifiers.rules.hal_id_from_hal_url import HalIdFromHalUrlRule
+from app.services.identifiers.rules.sudoc_ppn_from_scanr_id import (
+    SudocPpnFromScanrIdRule,
+)
 
 
 class IdentifierInferenceService:
@@ -16,6 +19,7 @@ class IdentifierInferenceService:
         """
 
         HAL_ID_FROM_HAL_URL = HalIdFromHalUrlRule
+        SUDOC_PPN_FROM_SCANR_ID = SudocPpnFromScanrIdRule
 
     @classmethod
     def infer_identifiers(cls, reference: Reference, rules: List[Rule]) -> None:
