@@ -17,11 +17,11 @@ class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
         if any(i.type == "sudoc-ppn" for i in reference.identifiers):
             return
 
-        sid = getattr(reference, "source_identifier", None)
-        if not isinstance(sid, str) or not sid:
+        source_identifier = reference.source_identifier
+        if not isinstance(source_identifier, str) or not source_identifier:
             return
 
-        match = self._pattern.match(sid.strip())
+        match = self._pattern.match(source_identifier.strip())
         if not match:
             return
 
@@ -31,4 +31,4 @@ class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
 
         reference.identifiers.append(ReferenceIdentifier(type="sudoc-ppn", value=ppn))
 
-        logger.debug(f"Inferred sudoc-ppn={ppn} from ScanR id={sid}")
+        logger.debug(f"Inferred sudoc-ppn={ppn} from ScanR id={source_identifier}")
