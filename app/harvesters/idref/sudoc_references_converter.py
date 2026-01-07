@@ -90,6 +90,31 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     def _harvester(self) -> str:
         return "Idref"
 
+    def _add_reference_identifiers(self, pub_graph, uri):
+        """
+        Add reference identifiers.
+        - URI identifier
+        - SUDOC PPN from dcterms:identifier (e.g. "193726130")
+        """
+        # base "uri" identifier
+        yield ReferenceIdentifier(value=uri, type="uri")
+
+        # Protect against both /id and non-/id URIs
+        candidate_uris = [uri]
+        if isinstance(uri, str) and uri.endswith("/id"):
+            candidate_uris.append(uri[:-3])
+
+        # extract first dcterms:identifier as sudoc PPN
+        for u in candidate_uris:
+            for ppn in pub_graph.objects(URIRef(u), DCTERMS.identifier):
+                value = getattr(ppn, "value", None) or str(ppn)
+                value = str(value).strip()
+
+                # ABES PPN is usually digits
+                if value and value.isdigit():
+                    yield ReferenceIdentifier(value=value, type="sudoc-ppn")
+                    return
+
     async def _get_book(self, pub_graph, uri) -> Book | None:
         isbn10 = None
         isbn13_from_isbn10 = None

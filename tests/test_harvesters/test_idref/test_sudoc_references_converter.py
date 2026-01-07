@@ -71,9 +71,15 @@ async def test_convert_for_rdf_result(
         for abstract in test_reference.abstracts
     )
 
-    assert (
-        test_reference.identifiers[0].value
-        == sudoc_rdf_result_for_doc.source_identifier
+    assert any(
+        identifier.type == "uri"
+        and str(identifier.value) == str(sudoc_rdf_result_for_doc.source_identifier)
+        for identifier in test_reference.identifiers
+    )
+
+    assert any(
+        identifier.type == "sudoc-ppn" and identifier.value == "193726130"
+        for identifier in test_reference.identifiers
     )
     assert expected_document_type in [test_reference.document_type[0].label]
     assert expected_journal_title in test_reference.issue.journal.titles
