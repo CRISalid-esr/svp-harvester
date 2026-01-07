@@ -112,7 +112,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
                 # ABES PPN is usually digits
                 if value and value.isdigit():
-                    yield ReferenceIdentifier(value=value, type="sudoc-ppn")
+                    yield ReferenceIdentifier(value=value, type="sudoc_ppn")
                     return
 
     async def _get_book(self, pub_graph, uri) -> Book | None:
