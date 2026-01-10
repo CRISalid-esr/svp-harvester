@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from app.db.session import Base
 
 
@@ -12,16 +12,12 @@ class ReferenceIdentifier(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)
-    value: Mapped[str] = mapped_column("value", nullable=False, index=True)
+    value: Mapped[str] = mapped_column(nullable=False, index=True)
 
     reference: Mapped["app.db.models.reference.Reference"] = relationship(
         "app.db.models.reference.Reference", back_populates="identifiers", lazy="raise"
     )
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"), index=True)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._normalize()
 
     @staticmethod
     def _normalize_value(id_type: str | None, raw_value: str | None) -> str | None:
@@ -46,42 +42,14 @@ class ReferenceIdentifier(Base):
 
         return v
 
-    def _normalize(self) -> None:
-        """
-        Normalize current stored value if we have at least a value
-        """
-        current_type = self.__dict__.get("type")
-        current_value = self.__dict__.get("value")
-        normalized = self._normalize_value(current_type, current_value)
-        if normalized is not None and normalized != current_value:
-            self.__dict__["value"] = normalized
+    @validates("value")
+    def _validate_value(self, key, raw_value):
+        return self._normalize_value(getattr(self, "type", None), raw_value)
 
-    @property
-    def value(self) -> str:
-        """
-        Get the value of the identifier.
-        """
-        return self.__dict__.get("value")
-
-    @value.setter
-    def value(self, raw_value: str) -> None:
-        """
-        Set the value (may run before type is set).
-        We normalize with whatever type we currently have (possibly None),
-        and we will normalize again when type is later assigned.
-        """
-        current_type = self.__dict__.get("type")
-        self.__dict__["value"] = self._normalize_value(current_type, raw_value)
-
-    @property
-    def type(self) -> str:
-        return self.__dict__.get("type")
-
-    @type.setter
-    def type(self, raw_type: str) -> None:
-        """
-        Set the type, then normalize the already-stored value accordingly.
-        This handles the case where value was set before type.
-        """
-        self.__dict__["type"] = raw_type
-        self._normalize()
+    @validates("type")
+    def _validate_type(self, key, raw_type):
+        # When type changes, re-normalize the value
+        current_value = getattr(self, "value", None)
+        if current_value is not None:
+            self.value = self._normalize_value(raw_type, current_value)
+        return raw_type
