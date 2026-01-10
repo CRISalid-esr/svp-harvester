@@ -43,11 +43,11 @@ class ReferenceIdentifier(Base):
         return v
 
     @validates("value")
-    def _validate_value(self, key, raw_value):
+    def _validate_value(self, _, raw_value):
         return self._normalize_value(getattr(self, "type", None), raw_value)
 
     @validates("type")
-    def _validate_type(self, key, raw_type):
+    def _validate_type(self, _, raw_type):
         # When type changes, re-normalize the value
         current_value = getattr(self, "value", None)
         if current_value is not None:
