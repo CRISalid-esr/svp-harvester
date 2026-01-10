@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from app.db.session import Base
 
 
@@ -12,31 +12,44 @@ class ReferenceIdentifier(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(nullable=False, index=True)
-    _value: Mapped[str] = mapped_column("value", nullable=False, index=True)
+    value: Mapped[str] = mapped_column(nullable=False, index=True)
 
     reference: Mapped["app.db.models.reference.Reference"] = relationship(
         "app.db.models.reference.Reference", back_populates="identifiers", lazy="raise"
     )
     reference_id: Mapped[int] = mapped_column(ForeignKey("references.id"), index=True)
 
-    @property
-    def value(self) -> str:
-        """
-        Get the value of the identifier.
-        :return: The value of the identifier.
-        """
-        return self._value
+    @staticmethod
+    def _normalize_value(id_type: str | None, raw_value: str | None) -> str | None:
+        if raw_value is None:
+            return None
 
-    @value.setter
-    def value(self, raw_value: str) -> None:
-        """
-        Set the value of the identifier.
-        :param raw_value: The raw value to set.
-        :return: None
-        """
-        if self.type == "doi":
+        # universal normalization
+        v = raw_value.strip()
+
+        if not id_type:
+            return v
+
+        if id_type == "doi":
+            low = v.lower()
             for prefix in ("urn:doi:", "https://doi.org/"):
-                if raw_value.startswith(prefix):
-                    raw_value = raw_value[len(prefix) :]
+                if low.startswith(prefix):
+                    v = v[len(prefix) :]
                     break
-        self._value = raw_value
+
+        if id_type == "nnt":
+            v = v.upper()
+
+        return v
+
+    @validates("value")
+    def _validate_value(self, _, raw_value):
+        return self._normalize_value(getattr(self, "type", None), raw_value)
+
+    @validates("type")
+    def _validate_type(self, _, raw_type):
+        # When type changes, re-normalize the value
+        current_value = getattr(self, "value", None)
+        if current_value is not None:
+            self.value = self._normalize_value(raw_type, current_value)
+        return raw_type

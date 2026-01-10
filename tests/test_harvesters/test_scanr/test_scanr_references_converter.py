@@ -51,7 +51,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
         "uri": "http://purl.org/ontology/bibo/Thesis",
         "label": "Thesis",
     }
-    expected_reference_identifiers = ["2019lysem032", "tel-02966640"]
+    expected_reference_identifiers = ["2019LYSEM032", "tel-02966640"]
 
     expected_publisher = "De Gruyter"
     expected_journal_title = "Central European Journal of Public Policy"
@@ -90,11 +90,23 @@ async def test_convert(scanr_api_publication_cleaned_response):
         assert expected_issn in test_reference.issue.journal.issn
         assert test_reference.issued == expected_publication_date
 
-        assert test_reference.contributions[0].affiliations[0].identifiers[1].type == 'ror'
-        assert (test_reference.contributions[0].affiliations[0].identifiers[1].value
-                == '01rk35k63')
-        assert (test_reference.contributions[0].affiliations[1].name ==
-                'No ScanR organization name')
+        assert (
+            test_reference.contributions[0].affiliations[0].identifiers[1].type == "ror"
+        )
+        assert (
+            test_reference.contributions[0].affiliations[0].identifiers[1].value
+            == "01rk35k63"
+        )
+        assert (
+            test_reference.contributions[0].affiliations[1].name
+            == "No ScanR organization name"
+        )
+
+        # NNT identifier must be present and uppercased
+        assert any(
+            identifier.type == "nnt" and identifier.value == "2019LYSEM032"
+            for identifier in test_reference.identifiers
+        )
 
 
 async def test_convert_with_default_dupe(

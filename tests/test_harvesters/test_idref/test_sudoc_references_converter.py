@@ -289,3 +289,43 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
         identifier.type == "nnt" and identifier.value == "2020UPAST005"
         for identifier in test_reference.identifiers
     )
+
+
+@pytest.mark.asyncio
+async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_thesesfr(
+    sudoc_rdf_result_for_thesis_without_bibo_uri_thesesfr,
+):
+    """
+    GIVEN a thesis RDF where theses.fr URLs are not present in bibo:uri
+          but are present via rdam:P30135
+    WHEN convert is called
+    THEN it should still add the theses.fr manifestation and extract NNT
+    """
+    converter_under_tests = SudocReferencesConverter()
+    test_reference = converter_under_tests.build(
+        raw_data=sudoc_rdf_result_for_thesis_without_bibo_uri_thesesfr,
+        harvester_version=VersionInfo.parse("0.0.0"),
+    )
+
+    await converter_under_tests.convert(
+        raw_data=sudoc_rdf_result_for_thesis_without_bibo_uri_thesesfr,
+        new_ref=test_reference,
+    )
+
+    # manifestation should have been added from rdam:P30135 ("/id" form)
+    assert any(
+        m.page == "http://www.theses.fr/2020UPAST005/id"
+        for m in test_reference.manifestations
+    )
+
+    # NNT must be extracted even without theses.fr in bibo:uri
+    assert any(
+        i.type == "nnt" and i.value == "2020UPAST005"
+        for i in test_reference.identifiers
+    )
+
+    # and also ensure the theses.fr /abes is NOT present (proves we're not relying on bibo:uri)
+    assert not any(
+        m.page == "http://www.theses.fr/2020UPAST005/abes"
+        for m in test_reference.manifestations
+    )
