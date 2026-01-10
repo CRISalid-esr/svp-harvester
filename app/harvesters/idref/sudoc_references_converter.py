@@ -48,6 +48,8 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
     RDAM = Namespace("http://rdaregistry.info/Elements/m/")
     RDAC = Namespace("http://rdaregistry.info/Elements/c/")
 
+    _THESES_NNT_RE = re.compile(r"^https?://www\.theses\.fr/([^/]+)(?:/.*)?$")
+
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
@@ -279,42 +281,57 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         ):
             yield contribution
 
+    def _extract_nnt_from_url(self, url: str, new_ref) -> bool:
+        """
+        Try to extract NNT from a theses.fr URL.
+        Returns True if added (or already present), else False.
+        """
+        if any(i.type == "nnt" for i in new_ref.identifiers):
+            return True
+
+        m = self._THESES_NNT_RE.search(url)
+        if not m:
+            return False
+
+        nnt = m.group(1)
+        if nnt:
+            new_ref.identifiers.append(ReferenceIdentifier(value=nnt, type="nnt"))
+            return True
+        return False
+
     def _add_manifestations(self, pub_graph, uri, new_ref):
         for raw_uri in pub_graph.subjects(predicate=None, object=URIRef(uri)):
             new_ref.manifestations.append(ReferenceManifestation(page=str(raw_uri)))
-        nnt_found = False
+
+        # bibo:uri
         for theses_fr_uri in pub_graph.objects(
             rdflib.term.URIRef(uri), self.RDF_BIBO.uri
         ):
+            url = theses_fr_uri.value
+
             # the uri finishing by /document redirects to hal.science
-            if not theses_fr_uri.value.endswith("/document"):
+            if not url.endswith("/document"):
                 try:
-                    new_ref.manifestations.append(
-                        ReferenceManifestation(page=theses_fr_uri.value)
-                    )
+                    new_ref.manifestations.append(ReferenceManifestation(page=url))
                 except ValueError as e:
                     logger.error(
-                        "Unable to register theses.fr URI  for SUDOC "
-                        f"URI {uri} : {theses_fr_uri.value} {e}"
+                        "Unable to register theses.fr URI for SUDOC "
+                        f"URI {uri} : {url} {e}"
                     )
-            if not nnt_found:
-                nnt = re.search(
-                    r"^https?://www.theses.fr/([^/]+)/.+", theses_fr_uri.value
-                )
-                if nnt:
-                    new_ref.identifiers.append(
-                        ReferenceIdentifier(value=nnt.groups()[0], type="nnt")
-                    )
-                    nnt_found = True
 
-        # take rdam:P30135 as another manifestation
+            self._extract_nnt_from_url(url, new_ref)
+
+        # rdam:P30135
         for uri1 in pub_graph.objects(rdflib.term.URIRef(uri), self.RDAM.P30135):
+            url = str(uri1)
             try:
-                new_ref.manifestations.append(ReferenceManifestation(page=str(uri1)))
+                new_ref.manifestations.append(ReferenceManifestation(page=url))
             except ValueError as e:
                 logger.error(
-                    f"Unable to register alternative URI: {uri1} for SUDOC URI {uri} : {e}"
+                    f"Unable to register alternative URI: {url} for SUDOC URI {uri} : {e}"
                 )
+
+            self._extract_nnt_from_url(url, new_ref)
 
     def _get_source(self):
         return "sudoc"
