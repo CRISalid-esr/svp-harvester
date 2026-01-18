@@ -1,4 +1,5 @@
 import re
+
 from loguru import logger
 
 from app.db.models.reference import Reference
@@ -8,10 +9,12 @@ from app.services.identifiers.identifier_inference_rule import IdentifierInferen
 
 class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
     """
-    Infer sudoc_ppn from ScanR source_identifier like: "sudoc258403519"
+    Infer sudoc_ppn from ScanR source_identifier like:
+    - sudoc258403519
+    - sudoc12345678X
     """
 
-    _pattern = re.compile(r"^sudoc(\d+)$", re.IGNORECASE)
+    _pattern = re.compile(r"^sudoc(\d+[xX]?)$", re.IGNORECASE)
 
     def infer(self, reference: Reference) -> None:
         if any(i.type == "sudoc_ppn" for i in reference.identifiers):
@@ -25,7 +28,7 @@ class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
         if not match:
             return
 
-        ppn = match.group(1)
+        ppn = match.group(1).upper()
         if not ppn:
             return
 
