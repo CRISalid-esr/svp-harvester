@@ -27,7 +27,7 @@ class ScanrHarvester(AbstractHarvester):
 
     supported_identifier_types = ["idref", "orcid", "id_hal_s"]
 
-    VERSION: Version = VersionInfo.parse("2.0.4")
+    VERSION: Version = VersionInfo.parse("2.0.5")
 
     async def _get_scanr_query_parameters(self, entity_class: str):
         """

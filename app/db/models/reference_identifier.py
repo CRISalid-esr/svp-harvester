@@ -1,5 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+
 from app.db.session import Base
 
 
@@ -38,6 +39,10 @@ class ReferenceIdentifier(Base):
                     break
 
         if id_type == "nnt":
+            v = v.upper()
+
+        # sudoc ppn may contain a trailing 'X' which case can vary among sources
+        if id_type == "sudoc_ppn":
             v = v.upper()
 
         return v
