@@ -84,6 +84,7 @@ class AioHttpClientManager:
         cls._session = aiohttp.ClientSession(
             connector=cls._connector,
             timeout=aiohttp.ClientTimeout(total=settings.http_client_timeout_total),
+            trust_env=True,
         )
 
     @classmethod
