@@ -178,7 +178,7 @@ frozenlist = ">=1.1.0"
 [[package]]
 name = "aiosparql"
 version = "0.12.0"
-description = "An asynchronous SPARQL library using aiohttp"
+description = ""
 optional = false
 python-versions = ">=3.6.0"
 files = []
@@ -190,7 +190,7 @@ aiohttp = ">=3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/CRISalid-esr/aiosparql.git"
-reference = "master"
+reference = "48829527026fda605c4416ea08773af44202aa9f"
 resolved_reference = "48829527026fda605c4416ea08773af44202aa9f"
 
 [[package]]
@@ -3026,4 +3026,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f75effa4c3e187c4931235193c78193f1ca772699a85ee4c54875b7f75d2303f"
+content-hash = "285d31ec690fe2899ac5a090b83e4b6ad2921063b87b2c8742a203346c209017"
