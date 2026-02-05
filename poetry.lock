@@ -190,8 +190,8 @@ aiohttp = ">=3.5.0"
 [package.source]
 type = "git"
 url = "https://github.com/CRISalid-esr/aiosparql.git"
-reference = "master"
-resolved_reference = "48829527026fda605c4416ea08773af44202aa9f"
+reference = "f90ed49df5c7ca624fcb420292ab4e5ffc860227"
+resolved_reference = "f90ed49df5c7ca624fcb420292ab4e5ffc860227"
 
 [[package]]
 name = "alabaster"
@@ -3026,4 +3026,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f75effa4c3e187c4931235193c78193f1ca772699a85ee4c54875b7f75d2303f"
+content-hash = "3c83bebeb614c36f457d813d4d710f1324951b5cd4e12362ef64162ca34a5bee"
