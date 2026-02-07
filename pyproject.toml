@@ -22,7 +22,7 @@ loguru = "^0.7.2"
 aio-pika = "9.5.5"
 rdflib = "^7.0.0"
 uritools = "^4.0.2"
-elasticsearch = {version = "7.12.1", extras = ["async"]}
+elasticsearch = {version = "7.17.13", extras = ["async"]}
 strsim = "^0.0.3"
 isbnlib = "^3.10.14"
 semver = "^3.0.2"
@@ -45,9 +45,9 @@ uvicorn = { extras = ["standard"], version = "^0.23.1" }
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 jinja2 = {extras = ["i18n"], version = "^3.1.2"}
-sphinx = "^7.2.6"
-sphinxcontrib-confluencebuilder = "^2.3.0"
-sphinx-rtd-theme = "^1.3.0"
+sphinx = ">=8,<9"
+sphinxcontrib-confluencebuilder = "^2.8.0"
+sphinx-rtd-theme = "^3.0.0"
 pytest-cov = "^4.1.0"
 sqlalchemy-schemadisplay = "^2.0"
 pydot = "^2.0.0"
