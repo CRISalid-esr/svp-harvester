@@ -1,4 +1,5 @@
 import datetime
+
 import isodate
 
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -27,23 +28,25 @@ def check_valid_iso8601_date(
             "Date should be a string, datetime.date or datetime.datetime object"
         )
 
+    error_message = ""
+
     # 1) Strict ISO-8601 datetime
     try:
         dt = isodate.parse_datetime(date).replace(tzinfo=None)
         return dt.date()
-    except Exception:
-        pass
+    except ValueError as error:
+        error_message += f"Not a valid ISO-8601 datetime: {error}. "
 
     # 2) Strict ISO-8601 date
     try:
         return isodate.parse_date(date)
-    except Exception:
-        pass
+    except ValueError as error:
+        error_message += f"Not a valid ISO-8601 date: {error}. "
 
     # 3) Legacy / SQL-like datetime
     try:
         return datetime.datetime.fromisoformat(date).date()
-    except ValueError:
-        pass
+    except ValueError as error:
+        error_message += f"Not a valid legacy datetime: {error}."
 
-    raise UnexpectedFormatException(f"Unsupported date format: {date}")
+    raise UnexpectedFormatException(f"Unsupported date format: {date}. {error_message}")
