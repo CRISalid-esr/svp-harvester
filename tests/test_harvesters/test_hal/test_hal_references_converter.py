@@ -66,8 +66,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_references_identifier_types = ["hal", "doi"]
     expected_references_identifier_values = ["halshs-01387023", "doi/1234"]
     expected_raw_issued_date = "2016"
-    expected_issued_date = datetime.datetime(2016, 1, 1)
-    expected_created_date = datetime.datetime(2016, 1, 1)
+    expected_issued_date = datetime.date(2016, 1, 1)
+    expected_created_date = datetime.date(2016, 1, 1)
     expected_hal_submit_type = HalCustomMetadataSchema.HalSubmitType.NOTICE
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
