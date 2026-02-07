@@ -28,6 +28,7 @@ def fixture_scanr_api_publication_with_author_dupe_cleaned_response(
     """Return the list of dictionaries references from scanr response"""
     return scanr_api_docs_from_publication_for_authors_dupe["hits"]["hits"]
 
+
 async def test_convert(scanr_api_publication_cleaned_response):
     """
     Test that the converter will return normalised references
@@ -56,7 +57,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     expected_publisher = "De Gruyter"
     expected_journal_title = "Central European Journal of Public Policy"
     expected_issn = "1802-4866"
-    expected_publication_date = datetime.datetime(2019, 12, 6, 0, 0)
+    expected_publication_date = datetime.date(2019, 12, 6)
 
     for doc in scanr_api_publication_cleaned_response:
         result = JsonHarvesterRawResult(

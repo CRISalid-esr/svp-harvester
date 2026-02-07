@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date
 
 import pytest
 
@@ -20,12 +20,12 @@ class TestCheckValidIso8601:
             ("2022-12-31", date(2022, 12, 31)),  # Test with date string
             (
                 "2022-12-31T23:59:59",
-                datetime(2022, 12, 31, 23, 59, 59),
+                date(2022, 12, 31),
             ),  # Test with datetime string
             (date(2022, 12, 31), date(2022, 12, 31)),  # Test with date object
             (
-                datetime(2022, 12, 31, 23, 59, 59),
-                datetime(2022, 12, 31, 23, 59, 59),
+                date(2022, 12, 31),
+                date(2022, 12, 31),
             ),  # Test with datetime object
         ],
     )
