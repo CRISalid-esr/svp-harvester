@@ -37,13 +37,13 @@ httpx = "^0.28.1"
 pydantic-settings = "^2.12.0"
 bcrypt = "<4.1"
 passlib = "^1.7.4"
+uvicorn = { extras = ["standard"], version = ">=0.23,<0.41" }
 
 [tool.poetry.group.development]
 optional = true
 
 [tool.poetry.group.development.dependencies]
 black = "^23.7.0"
-uvicorn = { extras = ["standard"], version = "^0.23.1" }
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 jinja2 = {extras = ["i18n"], version = "^3.1.2"}
