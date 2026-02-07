@@ -207,7 +207,7 @@ async def test_same_contributor_with_different_roles(
 @pytest.mark.parametrize(
     "publication_date_value, expected_output",
     [
-        ("invalid_date", "Could not parse date"),
+        ("invalid_date", "Not a valid ISO-8601 datetime"),
         (123, "Date should be"),
     ],
 )

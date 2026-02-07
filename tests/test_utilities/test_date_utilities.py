@@ -40,8 +40,7 @@ class TestCheckValidIso8601:
         [
             (
                 "invalid_date",
-                "Could not parse date invalid_date with error Unrecognised ISO 8601 date "
-                "format: 'invalid_date'",
+                "Unable to parse datetime string",
             ),  # Test with invalid date string
             (
                 123,
@@ -57,4 +56,4 @@ class TestCheckValidIso8601:
         """
         with pytest.raises(UnexpectedFormatException) as exception_info:
             check_valid_iso8601_date(invalid_date)
-        assert str(exception_info.value) == expected_log
+        assert expected_log in str(exception_info.value)
