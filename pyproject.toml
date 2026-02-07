@@ -32,7 +32,7 @@ aiohttp = "^3.12.13"
 aiosparql = {git = "https://github.com/CRISalid-esr/aiosparql.git", rev = "48829527026fda605c4416ea08773af44202aa9f"}
 uvloop = "^0.21.0"
 redis = "^6.2.0"
-orjson = "^3.10.18"
+orjson = "^3.11.5"
 httpx = "^0.28.1"
 pydantic-settings = "^2.12.0"
 bcrypt = "<4.1"
