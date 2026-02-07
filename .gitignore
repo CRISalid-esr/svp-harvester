@@ -175,3 +175,5 @@ postgres-data
 
 docker-compose.yml
 *.csv
+
+users.json

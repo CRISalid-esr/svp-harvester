@@ -1,7 +1,7 @@
 import asyncio
 
 from aiormq import AMQPConnectionError
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from loguru import logger
 from pydantic import ValidationError
 from sqlalchemy import text
@@ -11,6 +11,7 @@ from app.amqp.amqp_interface import AMQPInterface
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
 from app.api.routes.healthness import router as healthness_router
+from app.auth.basic import require_basic_user
 from app.config import get_app_settings
 from app.configure_logger import configure_logger
 from app.db.session import async_session
@@ -40,8 +41,14 @@ class SvpHarvester(FastAPI):
 
         register_custom_metadata_schemas()
 
+        dependencies = []
+        if settings.enable_basic_auth:
+            dependencies.append(Depends(require_basic_user))
+
         self.include_router(
-            api_router, prefix=f"{settings.api_prefix}/{settings.api_version}"
+            api_router,
+            prefix=f"{settings.api_prefix}/{settings.api_version}",
+            dependencies=dependencies,
         )
 
         self.include_router(healthness_router, prefix="/health")
@@ -50,7 +57,7 @@ class SvpHarvester(FastAPI):
             "/static", StaticFiles(directory="./app/static", html=True), name="static"
         )
 
-        self.include_router(gui_router)
+        self.include_router(gui_router, dependencies=dependencies)
 
         if settings.svp_jel_proxy_url is not None:
             logger.info(
