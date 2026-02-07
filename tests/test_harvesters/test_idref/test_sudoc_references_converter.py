@@ -205,7 +205,7 @@ async def test_convert_with_invalid_date_format(
 
     assert test_reference.created is None
     assert "Sudoc reference converter cannot create" in caplog.text
-    assert "Could not parse date" in caplog.text
+    assert "Not a valid ISO-8601 datetime" in caplog.text
 
 
 async def test_convert_with_empty_issued_date(
