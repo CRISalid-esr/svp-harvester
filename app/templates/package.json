@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.15",
-    "copy-webpack-plugin": "^12.0.2",
+    "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^6.8.1",
     "file-loader": "^6.2.0",
     "postcss-loader": "^7.3.3",
@@ -33,7 +33,7 @@
     "chart.js": "^4.4.2",
     "chartjs-plugin-datalabels": "^2.2.0",
     "datatables.net-dt": "^1.13.6",
-    "ejs": "^3.1.9",
+    "ejs": "^3.1.10",
     "feather-icons": "^4.28.0",
     "jsondiffpatch": "^0.6.0",
     "pretty-print-json": "^2.0.3",
