@@ -27,7 +27,7 @@ from app.services.entities.entity_resolution_service import EntityResolutionServ
 class RetrievalService:
     """Main harvesters orchestration service"""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
     def __init__(
         self,
         background_tasks: BackgroundTasks = None,
