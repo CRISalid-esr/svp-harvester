@@ -139,3 +139,5 @@ class AppSettings(BaseSettings):
     git_commit: str = "-"
     git_branch: str = "-"
     docker_digest: str = "-"
+
+    enable_basic_auth: bool = True

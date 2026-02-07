@@ -208,6 +208,134 @@ or
 APP_ENV=DEV python3 app/main.py 
 ```
 
+---
+
+## Authentication (Basic HTTP Auth)
+
+The SoVisu+ Harvester can optionally protect both the **admin web interface** and the **REST API** 
+using **HTTP Basic authentication**.
+
+### Enabling / disabling authentication
+
+Authentication is controlled by the following environment variable:
+
+```env
+ENABLE_BASIC_AUTH=true
+```
+
+When enabled:
+
+* all `/admin/*` routes (web interface) are protected
+* all REST API routes under `/api/...` are protected
+* `/health` endpoints remain public
+
+> ⚠️ **Important**: HTTP Basic authentication MUST be used behind HTTPS in production environments,
+> as credentials are sent with each request.
+
+---
+
+### Users file 
+
+Users are defined locally in a JSON file:
+
+```
+app/auth/users.json
+```
+
+Example:
+
+```json
+{
+  "admin": "$2b$12$K9s9n...bcrypt_hash...",
+  "alice": "$2b$12$YxQ3p...bcrypt_hash..."
+}
+```
+
+The file is read at runtime, so changes take effect immediately without restarting the application.
+
+---
+
+### Managing users
+
+Helper scripts are provided to manage Basic Auth users.
+
+#### Add or update a user
+
+```bash
+python scripts/add_basic_user.py <username>
+```
+
+You will be prompted to enter and confirm a password.
+
+Notes:
+
+* bcrypt passwords are limited to **72 bytes (UTF-8)**
+
+Example:
+
+```bash
+python scripts/add_basic_user.py admin
+```
+
+---
+
+#### Remove a user
+
+```bash
+python scripts/remove_basic_user.py <username>
+```
+
+Example:
+
+```bash
+python scripts/remove_basic_user.py alice
+```
+
+If the last user is removed, the `users.json` file is deleted automatically.
+
+---
+
+### Browser behavior
+
+When authentication is enabled:
+
+* Browsers will automatically display a **login prompt**
+* Credentials are cached by the browser for the session
+* The same credentials are reused for API calls made from the admin interface (same origin)
+
+---
+
+### API access with authentication
+
+When `ENABLE_BASIC_AUTH=true`, API calls must include Basic Auth credentials.
+
+Example using `curl`:
+
+```bash
+curl -u admin:password http://localhost:8000/api/v1/references
+```
+
+Without credentials, the API returns:
+
+```http
+401 Unauthorized
+WWW-Authenticate: Basic
+```
+
+---
+
+### Security considerations
+
+* This authentication mechanism is **not intended to replace a full IAM solution**
+* It is suitable for:
+
+  * internal tools
+  * development environments
+  * restricted institutional deployments
+* For multi-user, federated, or production-grade authentication, an external identity provider should be used
+
+---
+
 # I18N Templates
 
 To update the translation files, run the following command from the project root :
