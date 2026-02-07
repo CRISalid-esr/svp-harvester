@@ -83,9 +83,8 @@ async def test_convert(open_alex_api_work: dict):
             == expected_contributors_name_rank[contribution.contributor.name]
         )
     affiliations = test_reference.contributions[0].affiliations
-    assert affiliations[0].identifiers[1].type == 'ror'
-    assert (affiliations[0].identifiers[1].value
-            == '0130frc33')
+    assert affiliations[0].identifiers[1].type == "ror"
+    assert affiliations[0].identifiers[1].value == "0130frc33"
     assert all(
         identifier.value in expected_reference_identifier
         for identifier in test_reference.identifiers
@@ -223,9 +222,9 @@ async def test_convert_work_with_various_locations(
 @pytest.mark.parametrize(
     "field_tested, reference_field, tested_value, expected_log",
     [
-        ("publication_date", "issued", "invalid_date", "Could not parse date"),
+        ("publication_date", "issued", "invalid_date", "Not a valid ISO-8601 datetime"),
         ("publication_date", "issued", 123, "Date should be"),
-        ("created_date", "created", "invalid_date", "Could not parse date"),
+        ("created_date", "created", "invalid_date", "Not a valid ISO-8601 datetime"),
         ("created_date", "created", 123, "Date should be"),
     ],
 )

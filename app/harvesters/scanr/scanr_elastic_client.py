@@ -78,9 +78,9 @@ class ScanRElasticClient:
 
             cleaned_results = self._clean_results(resp)  # clean the results
 
-            total = resp.get("hits", {}).get("total", {}).get("value", 0)
-            if total > total_search_hits:
-                total_search_hits = total
+            total_search_hits = max(
+                total_search_hits, resp.get("hits", {}).get("total", {}).get("value", 0)
+            )
 
             for result in cleaned_results:
                 yield result

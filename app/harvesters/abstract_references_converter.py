@@ -269,7 +269,7 @@ class AbstractReferencesConverter(ABC):
                         )
         return contributor
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
     async def _get_or_create_contributor_by_identifier(
         self,
         source: str,

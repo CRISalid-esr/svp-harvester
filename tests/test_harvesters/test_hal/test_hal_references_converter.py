@@ -66,8 +66,8 @@ async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-lo
     expected_references_identifier_types = ["hal", "doi"]
     expected_references_identifier_values = ["halshs-01387023", "doi/1234"]
     expected_raw_issued_date = "2016"
-    expected_issued_date = datetime.datetime(2016, 1, 1, 0, 0)
-    expected_created_date = datetime.datetime(2016, 1, 1, 0, 0)
+    expected_issued_date = datetime.date(2016, 1, 1)
+    expected_created_date = datetime.date(2016, 1, 1)
     expected_hal_submit_type = HalCustomMetadataSchema.HalSubmitType.NOTICE
     for doc in hal_api_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -162,7 +162,10 @@ async def test_convert_response_with_inconsistent_structured_names(
     "fixture, expected_output",
     [
         ("hal_api_docs_with_date_invalid_format", "Date should be"),
-        ("hal_api_docs_with_date_inconsistency", "Could not parse date"),
+        (
+            "hal_api_docs_with_date_inconsistency",
+            "Not a valid ISO-8601 datetime: ISO 8601 time designator 'T' missing.",
+        ),
     ],
 )
 async def test_convert_with_date_exception(fixture, expected_output, caplog, request):
@@ -292,6 +295,7 @@ async def test_publication_with_collection_codes(
         "CURAPP-ESS",
     ]
 
+
 async def test_issue_source_identifier(hal_api_docs_for_researcher_with_uris: dict):
     """
     Ensure that the issue source identifier is based on the journal source identifier
@@ -308,5 +312,7 @@ async def test_issue_source_identifier(hal_api_docs_for_researcher_with_uris: di
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
     )
     await converter_under_tests.convert(raw_data=result, new_ref=reference)
-    assert reference.issue.source_identifier == '21487-67--HAL'
-    assert reference.issue.journal.source_identifier in reference.issue.source_identifier
+    assert reference.issue.source_identifier == "21487-67--HAL"
+    assert (
+        reference.issue.journal.source_identifier in reference.issue.source_identifier
+    )

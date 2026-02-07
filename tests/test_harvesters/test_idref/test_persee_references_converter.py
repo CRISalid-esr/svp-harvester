@@ -34,8 +34,9 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     expected_auth_name = "Christian Hottin"
     expected_page = "103-113"
     expected_issue = "1"
-    expected_issue_source_identifier = \
-        'http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print'
+    expected_issue_source_identifier = (
+        "http://data.persee.fr/issue/hista_0992-2059_1998_num_42_1#Print"
+    )
     expected_volume = "18"
     expected_journal_title = "Cahiers du Centre Gustave Glotz, 18, 2007."
     expected_publisher = "Paris : Centre Gustave Glotz"
@@ -97,12 +98,12 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
         (
             "persee_rdf_result_for_doc_with_invalid_dateofpublication",
             "created",
-            "Could not parse date",
+            "Not a valid ISO-8601 datetime",
         ),
         (
             "persee_rdf_result_for_doc_with_invalid_dateofprintpublication",
             "issued",
-            "Could not parse date",
+            "Not a valid ISO-8601 datetime",
         ),
     ],
 )
