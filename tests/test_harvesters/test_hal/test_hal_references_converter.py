@@ -162,7 +162,10 @@ async def test_convert_response_with_inconsistent_structured_names(
     "fixture, expected_output",
     [
         ("hal_api_docs_with_date_invalid_format", "Date should be"),
-        ("hal_api_docs_with_date_inconsistency", "Could not parse date"),
+        (
+            "hal_api_docs_with_date_inconsistency",
+            "Not a valid ISO-8601 datetime: ISO 8601 time designator 'T' missing.",
+        ),
     ],
 )
 async def test_convert_with_date_exception(fixture, expected_output, caplog, request):

@@ -40,7 +40,7 @@ async def test_open_edition_convert_for_rfd_result(
     expected_journal_title = "Cultures & conflits"
     expected_issue_rights = "https://creativecommons.org/licenses/by-nc-nd/4.0/"
     expected_raw_issued_date = "2003-01-02T00:00:00Z"
-    expected_issued_date = datetime.datetime(2003, 1, 2)
+    expected_issued_date = datetime.date(2003, 1, 2)
     expected_created_date = datetime.date(1992, 1, 1)
     expected_issue_source_identifier = (
         "cultures_&_conflits-cecls_-_centre_d'etudes_sur_les_conflits_-_liberte_et_securite-"
@@ -76,8 +76,16 @@ async def test_open_edition_convert_for_rfd_result(
 @pytest.mark.parametrize(
     "fixture, reference_field, expected_output",
     [
-        ("open_edition_xml_invalid_created_format", "created", "Could not parse date"),
-        ("open_edition_xml_invalid_issued_format", "issued", "Could not parse date"),
+        (
+            "open_edition_xml_invalid_created_format",
+            "created",
+            "Not a valid ISO-8601 datetime",
+        ),
+        (
+            "open_edition_xml_invalid_issued_format",
+            "issued",
+            "Not a valid ISO-8601 datetime",
+        ),
     ],
 )
 async def test_convert_with_invalid_date_format(
