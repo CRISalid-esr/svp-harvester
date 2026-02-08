@@ -33,13 +33,13 @@ async def test_xml_open_edition_hash(
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=OpenEditionReferencesConverter(name="idref")).hash_keys(
+        hash_dict=OpenEditionReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=OpenEditionReferencesConverter(name="idref")).hash_keys(
+        hash_dict=OpenEditionReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -65,13 +65,13 @@ async def test_xml_hash(open_edition_xml_for_hash_1):
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data,
-        hash_dict=OpenEditionReferencesConverter(name="idref")).hash_keys(
+        hash_dict=OpenEditionReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data,
-        hash_dict=OpenEditionReferencesConverter(name="idref")).hash_keys(
+        hash_dict=OpenEditionReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )

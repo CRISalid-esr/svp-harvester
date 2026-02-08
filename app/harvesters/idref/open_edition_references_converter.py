@@ -31,7 +31,7 @@ from app.utilities.date_utilities import check_valid_iso8601_date
 from app.utilities.string_utilities import normalize_string
 
 
-class OpenEditionReferencesConverter(name="idref")AbstractReferencesConverter):
+class OpenEditionReferencesConverter(AbstractReferencesConverter):
     """
     Convert the publication from the OpenEdition to a normalised Reference object
     """
