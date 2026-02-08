@@ -51,7 +51,7 @@ def fixture_scanr_publication_doc_with_wikidata_domains(
 async def test_convert_publication_with_keywords(
     scanr_publication_doc_with_keywords_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [(None, "Efficacité énergétique")]
 
@@ -86,7 +86,7 @@ async def test_convert_publication_with_identical_keywords(
     :param scanr_publication_doc_with_identical_keywords_domains:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [
         ("en", "Test concept"),
@@ -118,7 +118,7 @@ async def test_convert_publication_with_identical_keywords(
 async def test_convert_publication_with_sudoc(
     scanr_publication_doc_with_sudoc_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [(None, "Internet des objets")]
 
@@ -145,7 +145,7 @@ async def test_convert_publication_with_sudoc(
 async def test_convert_publication_with_identical_sudoc_andkeywords(
     scanr_publication_doc_with_identical_sudoc_and_keywords_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [("fr", "Efficacité énergétique")]
 
@@ -172,7 +172,7 @@ async def test_convert_publication_with_identical_sudoc_andkeywords(
 async def test_convert_publication_with_wikidata(
     scanr_publication_doc_with_wikidata_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [
         ("en", "Test concept"),

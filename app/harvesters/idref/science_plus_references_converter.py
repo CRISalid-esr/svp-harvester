@@ -37,8 +37,8 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     BIBO_NAMESPACE = Namespace("http://purl.org/ontology/bibo/")
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, name: str):
+        super().__init__(name)
         self.pub_graph = None
         self.uri = None
 

@@ -32,7 +32,7 @@ async def test_convert_publication_with_contributor_ids(
     :param scanr_publication_doc_with_journal_with_title:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     doc = scanr_publication_doc_with_journal_with_title[0]
     result = JsonHarvesterRawResult(
@@ -81,7 +81,7 @@ async def test_convert_publication_with_anon_contributor_id(
     :param scanr_publication_doc_with_anon_author:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     doc = scanr_publication_doc_with_anon_author[0]
     result = JsonHarvesterRawResult(

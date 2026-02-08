@@ -57,7 +57,7 @@ def fixture_reference_recorder_register_mock():
 @pytest.fixture(name="hal_harvester")
 def fixture_hal_harvester() -> HalHarvester:
     """Fixture for a HalHarvester instance."""
-    converter = HalReferencesConverter()
+    converter = HalReferencesConverter(name="hal")
     return HalHarvester(converter=converter)
 
 

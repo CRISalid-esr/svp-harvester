@@ -15,7 +15,7 @@ from app.harvesters.open_alex.open_alex_references_converter import (
 @pytest.mark.asyncio
 async def test_convert(open_alex_api_work: dict):
     """Test that the converter will return normalised references"""
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     expected_title = (
         "Development of the Colle-Salvetti "
@@ -164,7 +164,7 @@ async def test_convert_work_with_various_locations(
     :param open_alex_work_with_various_locations:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_various_locations["id"],
         payload=open_alex_work_with_various_locations,
@@ -238,7 +238,7 @@ async def test_convert_with_date_exception(
     caplog,
 ):
     """test that converter will raise an error when date is in invalid format"""
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     open_alex_api_work[field_tested] = tested_value
 
@@ -271,7 +271,7 @@ async def test_convert_without_issue_number(open_alex_api_work: dict):
     :param open_alex_api_work:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     # set None as biblio.issue value
     open_alex_api_work["biblio"]["issue"] = None
@@ -300,7 +300,7 @@ async def test_convert_work_with_hal_locations(
     :param open_alex_work_with_hal_locations:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_hal_locations["id"],
         payload=open_alex_work_with_hal_locations,

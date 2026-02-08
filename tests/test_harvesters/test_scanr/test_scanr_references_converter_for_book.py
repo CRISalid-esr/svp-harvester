@@ -16,7 +16,7 @@ async def test_convert_publication_with_book(scanr_publication_doc_book):
     """
     Test that the converter will return normalised references with book information
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_title = "Bulletin de la Société préhistorique française"
     expected_publisher = "Société préhistorique française"

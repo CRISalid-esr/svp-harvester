@@ -20,7 +20,7 @@ async def test_convert(
     hal_api_docs_with_contributor_identifiers_content,
 ):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
 
     doc_0 = hal_api_docs_with_contributor_identifiers_content[0]
     result = JsonHarvesterRawResult(

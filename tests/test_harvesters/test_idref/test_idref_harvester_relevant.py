@@ -8,7 +8,7 @@ def test_idref_harvester_relevant_with_idref(
     person_with_name_and_idref_db_model: DbPerson,
 ):
     """Test that the harvester will run if submitted with an IDREF."""
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     assert harvester.is_relevant(person_with_name_and_idref_db_model) is True
 
 
@@ -16,5 +16,5 @@ def test_idref_harvester_relevant_with_orcid(
     person_with_name_and_orcid_db_model: DbPerson,
 ):
     """Test that the harvester will run if submitted with an ORCID."""
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     assert harvester.is_relevant(person_with_name_and_orcid_db_model) is True

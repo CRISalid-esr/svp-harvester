@@ -47,7 +47,7 @@ async def test_idref_harvester_finds_doc(
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)
@@ -92,7 +92,7 @@ async def test_idref_harvester_finds_sudoc_doc(
     async_session: AsyncSession,
 ):
     """Test that the harvester will find documents."""
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)

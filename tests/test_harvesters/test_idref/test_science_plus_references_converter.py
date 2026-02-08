@@ -9,6 +9,7 @@ from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
 )
 
+
 async def test_science_plus_convert_for_rdf_result(
     science_plus_rdf_result_for_doc,
 ):
@@ -20,7 +21,7 @@ async def test_science_plus_convert_for_rdf_result(
     :param science_plus_rdf_result_for_doc: a science plus RDF result for a document
     :return: None
     """
-    converter_under_tests = SciencePlusReferencesConverter()
+    converter_under_tests = SciencePlusReferencesConverter(name="scienceplus")
     expected_french_title = (
         "Marges urbaines, marges rurales entre Santiago du Chili et Valparaíso"
     )
@@ -30,8 +31,9 @@ async def test_science_plus_convert_for_rdf_result(
     )
     expected_volume = "12"
     expected_issue = "1"
-    expected_issue_source_identifier = (
-        rdflib.term.URIRef('http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/w'))
+    expected_issue_source_identifier = rdflib.term.URIRef(
+        "http://hub.abes.fr/springer/periodical/10571/1992/volume_12/issue_1/w"
+    )
     expected_journal_title = "Cellular and Molecular Neurobiology"
 
     expected_subjects = [
@@ -83,7 +85,7 @@ async def test_science_plus_convert_for_rdf_without_title(
     :param science_plus_rdf_result_for_doc: a science plus RDF result for a document
     :return: None
     """
-    converter_under_tests = SciencePlusReferencesConverter()
+    converter_under_tests = SciencePlusReferencesConverter(name="scienceplus")
 
     test_reference = converter_under_tests.build(
         raw_data=science_plus_rdf_result_without_title,

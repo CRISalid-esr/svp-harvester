@@ -18,7 +18,7 @@ async def test_idref_convert_for_sparql_result(idref_sparql_result_for_doc):
     :param: a Idref Sparql result for a document
     :return: None
     """
-    converter_under_tests = IdrefBasicReferencesConverter()
+    converter_under_tests = IdrefBasicReferencesConverter(name="idref")
 
     basic_idref_source_identifier = "http://www.idref.fr/215634608/id"
     equivalent_identifiers = [

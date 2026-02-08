@@ -21,7 +21,7 @@ def fixture_open_alex_client_mock():
 @pytest.fixture(name="open_alex_harvester")
 def fixture_open_alex_harvester() -> OpenAlexHarvester:
     """Fixture for a OpenAlexHarvester isntance"""
-    converter = OpenAlexReferencesConverter()
+    converter = OpenAlexReferencesConverter(name="openalex")
     return OpenAlexHarvester(converter)
 
 

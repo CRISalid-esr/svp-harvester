@@ -23,7 +23,7 @@ async def test_convert_for_rdf_result(
     :param sudoc_rdf_result_for_doc: sudoc RDF result for a document
     :return: None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     expected_french_title = (
         "Agriculture des métropoles  : voie d'avenir ou cache-misère ?"
     )
@@ -136,7 +136,7 @@ async def test_convert_for_rdf_result_without_title(
     :param sudoc_rdf_result_for_doc: sudoc RDF result for a document
     :return: None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_without_title,
@@ -161,7 +161,7 @@ async def test_convert_for_rdf_result_for_book(sudoc_rdf_result_for_book):
     WHEN the convert method is called
     THEN it should return a Reference instance with the expected Book values
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_book, harvester_version=VersionInfo.parse("0.0.0")
@@ -192,7 +192,7 @@ async def test_convert_with_invalid_date_format(
     WHEN the convert method is called
     THEN it should raise a log error and the created date should be None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_invalid_created,
@@ -216,7 +216,7 @@ async def test_convert_with_empty_issued_date(
     WHEN the convert method is called
     THEN it should return a Reference instance with the expected values
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_empty_issued,
@@ -238,7 +238,7 @@ async def test_convert_with_multiple_issued_date(
     WHEN the convert method is called
     THEN it should return a Reference instance with the last issued date
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_multiple_issued,
@@ -261,7 +261,7 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     :param sudoc_rdf_result_for_thesis:
     :return:
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_thesis,
         harvester_version=VersionInfo.parse("0.0.0"),
@@ -301,7 +301,7 @@ async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_the
     WHEN convert is called
     THEN it should still add the theses.fr manifestation and extract NNT
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_thesis_without_bibo_uri_thesesfr,
         harvester_version=VersionInfo.parse("0.0.0"),

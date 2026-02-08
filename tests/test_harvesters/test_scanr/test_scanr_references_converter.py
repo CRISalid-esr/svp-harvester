@@ -35,7 +35,7 @@ async def test_convert(scanr_api_publication_cleaned_response):
     Test that the converter will return normalised references
     including None languages if the value is not identical to other elements with set language
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_identifier = "nnt2019lysem032"
     expected_titles = {
@@ -118,7 +118,7 @@ async def test_convert_with_default_dupe(
     Test that the converter will return normalised references without default language
     if it's value is the same as an existing element with a set language
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_identifier = "nnt2019lysem032"
     expected_titles = {
@@ -160,7 +160,7 @@ async def test_same_contributor_with_different_roles(
     Test that the converter will return contributors with multiple roles
     """
 
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     for doc in scanr_api_publication_for_author_dupe_cleaned_response:
         result = JsonHarvesterRawResult(
@@ -219,7 +219,7 @@ async def test_convert_with_date_exception(
     Test that the converter will raise an exception when the date have an unexpected format
     """
 
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     for doc in scanr_api_docs_from_publication["hits"]["hits"]:
         doc["_source"]["publicationDate"] = publication_date_value

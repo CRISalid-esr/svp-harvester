@@ -32,13 +32,13 @@ async def test_rdf_sudoc_hash(sudoc_rdf_graph_for_hash_1, sudoc_rdf_graph_for_ha
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=SudocReferencesConverter().hash_keys(
+        hash_dict=SudocReferencesConverter(name="sudoc").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=SudocReferencesConverter().hash_keys(
+        hash_dict=SudocReferencesConverter(name="sudoc").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -69,13 +69,13 @@ async def test_rdf_science_plus_hash(
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=SciencePlusReferencesConverter().hash_keys(
+        hash_dict=SciencePlusReferencesConverter(name="scienceplus").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=SciencePlusReferencesConverter().hash_keys(
+        hash_dict=SciencePlusReferencesConverter(name="scienceplus").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -104,13 +104,13 @@ async def test_rdf_persee_hash(persee_rdf_xml_for_hash_1, persee_rdf_xml_for_has
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=PerseeReferencesConverter().hash_keys(
+        hash_dict=PerseeReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=PerseeReferencesConverter().hash_keys(
+        hash_dict=PerseeReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )

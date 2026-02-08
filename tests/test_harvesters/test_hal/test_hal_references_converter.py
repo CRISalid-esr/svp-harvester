@@ -41,7 +41,7 @@ def fixture_hal_api_response_with_inconsistent_structured_names(
 
 async def test_convert(hal_api_cleaned_response):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
 
     expected_titles = [
         "Where does « Axial breakthrough » take place? "
@@ -140,7 +140,7 @@ async def test_convert_response_with_inconsistent_structured_names(
     Test that the converter will raise an exception when the number of names in structuredNames
      does not match the number of contributors
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     for doc in hal_api_docs_with_inconsistent_structured_names:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"],
@@ -178,7 +178,7 @@ async def test_convert_with_date_exception(fixture, expected_output, caplog, req
     Test that the converter will raise an exception when the date have an unexpected format
     """
     fixture = request.getfixturevalue(fixture)
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     for doc in fixture["response"]["docs"]:
         result = JsonHarvesterRawResult(
             source_identifier=doc["docid"],
@@ -205,7 +205,7 @@ async def test_publication_without_files(hal_api_docs_for_researcher_with_uris: 
     :param hal_api_docs_for_researcher_with_uris:
     :return:
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][0]
     result = JsonHarvesterRawResult(
         source_identifier=doc["docid"],
@@ -230,7 +230,7 @@ async def test_publication_with_file(hal_api_docs_for_researcher_with_uris: dict
     :param hal_api_docs_for_researcher_with_uris:
     :return:
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][1]
     result = JsonHarvesterRawResult(
         source_identifier=doc["docid"],
@@ -257,7 +257,7 @@ async def test_publication_with_files(hal_api_docs_for_researcher_with_uris: dic
     :param hal_api_docs_for_researcher_with_uris:
     :return:
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][2]
     result = JsonHarvesterRawResult(
         source_identifier=doc["docid"],
@@ -287,7 +287,7 @@ async def test_publication_with_collection_codes(
     :param hal_api_docs_for_researcher_with_uris:
     :return:
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     doc = hal_api_response_with_collection_codes[0]
     result = JsonHarvesterRawResult(
         source_identifier=doc["docid"],
@@ -318,7 +318,7 @@ async def test_issue_source_identifier(hal_api_docs_for_researcher_with_uris: di
     :param hal_api_docs_for_researcher_with_uris:
     :return:
     """
-    converter_under_tests = HalReferencesConverter()
+    converter_under_tests = HalReferencesConverter(name="hal")
     doc = hal_api_docs_for_researcher_with_uris["response"]["docs"][0]
     result = JsonHarvesterRawResult(
         source_identifier=doc["docid"],

@@ -16,7 +16,7 @@ async def test_convert(
     scopus_xml_raw_result_for_doc: XMLHarvesterRawResult,
 ):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
-    converter_under_test = ScopusReferencesConverter()
+    converter_under_test = ScopusReferencesConverter(name="scopus")
 
     test_reference = converter_under_test.build(
         raw_data=scopus_xml_raw_result_for_doc,
@@ -120,7 +120,7 @@ async def test_convert(
 async def test_convert_book(scopus_xml_raw_result_for_doc_book):
     """Test that the converter will return normalised references with book info"""
 
-    converter_under_test = ScopusReferencesConverter()
+    converter_under_test = ScopusReferencesConverter(name="scopus")
 
     test_reference = converter_under_test.build(
         raw_data=scopus_xml_raw_result_for_doc_book,
@@ -145,7 +145,7 @@ async def test_convert_with_invalid_date_format(scopus_xml_raw_result_for_doc, c
     """
     Test that the ScopusReferencesConverter will handle an invalid date format gracefully
     """
-    converter_under_tests = ScopusReferencesConverter()
+    converter_under_tests = ScopusReferencesConverter(name="scopus")
 
     # Simulate invalid date format
     existing_cover_date = scopus_xml_raw_result_for_doc.payload.find(

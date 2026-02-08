@@ -32,13 +32,13 @@ async def test_sparql_idref_hash(idref_pub_converted_1, idref_pub_converted_2):
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=IdrefBasicReferencesConverter().hash_keys(
+        hash_dict=IdrefBasicReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=IdrefBasicReferencesConverter().hash_keys(
+        hash_dict=IdrefBasicReferencesConverter(name="idref").hash_keys(
             harvester_version=harvester_version
         ),
     )

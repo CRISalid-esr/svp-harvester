@@ -36,13 +36,13 @@ async def test_json_open_alex_hash(
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=OpenAlexReferencesConverter().hash_keys(
+        hash_dict=OpenAlexReferencesConverter(name="openalex").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=OpenAlexReferencesConverter().hash_keys(
+        hash_dict=OpenAlexReferencesConverter(name="openalex").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -73,13 +73,13 @@ async def test_json_hal_hash(
 
     hash_1 = hash_service.hash(
         raw_data_1,
-        hash_dict=HalReferencesConverter().hash_keys(
+        hash_dict=HalReferencesConverter(name="hal").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data_2,
-        hash_dict=HalReferencesConverter().hash_keys(
+        hash_dict=HalReferencesConverter(name="hal").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -107,13 +107,13 @@ async def test_json_scanr_hash(scanr_api_doc_hash_1: dict, scanr_api_doc_hash_2:
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data_1,
-        hash_dict=ScanrReferencesConverter().hash_keys(
+        hash_dict=ScanrReferencesConverter(name="scanr").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data_2,
-        hash_dict=ScanrReferencesConverter().hash_keys(
+        hash_dict=ScanrReferencesConverter(name="scanr").hash_keys(
             harvester_version=harvester_version
         ),
     )
@@ -136,13 +136,13 @@ async def test_json_same_document(open_alex_api_work: dict):
     hash_service = HashService()
     hash_1 = hash_service.hash(
         raw_data=raw_data,
-        hash_dict=OpenAlexReferencesConverter().hash_keys(
+        hash_dict=OpenAlexReferencesConverter(name="openalex").hash_keys(
             harvester_version=harvester_version
         ),
     )
     hash_2 = hash_service.hash(
         raw_data=raw_data,
-        hash_dict=OpenAlexReferencesConverter().hash_keys(
+        hash_dict=OpenAlexReferencesConverter(name="openalex").hash_keys(
             harvester_version=harvester_version
         ),
     )

@@ -44,7 +44,7 @@ async def test_idref_harvester_gets_concept_resolved(
     with mock.patch.object(
         ReferencesRecorder, "register_creation"
     ) as reference_recorder_register_mock:
-        harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+        harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
         async_session.add(harvesting_db_model_for_person_with_idref)
         await async_session.commit()
         harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)

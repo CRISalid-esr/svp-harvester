@@ -62,7 +62,7 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
                 self._harvester_name()
             )
         if raw_data.formatter_name == IdrefHarvester.Formatters.OPEN_EDITION.value:
-            self.secondary_converter = OpenEditionReferencesConverter(
+            self.secondary_converter = OpenEditionReferencesConverter(name="idref")
                 self._harvester_name()
             )
         if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
