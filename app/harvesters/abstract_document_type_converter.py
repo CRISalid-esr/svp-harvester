@@ -33,7 +33,7 @@ class AbstractDocumentTypeConverter(ABC):
         """
         if document_type not in self.types_mapping:
             logger.warning(
-                f"Unknown document type: {document_type} in concrete "
+                f"Unknown document type: {document_type} in "
                 f"class {self.__class__.__name__}"
             )
             return self.UNKNOWN_CODE

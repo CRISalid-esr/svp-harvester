@@ -329,7 +329,7 @@ async def test_issue_source_identifier(hal_api_docs_for_researcher_with_uris: di
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
     )
     await converter_under_tests.convert(raw_data=result, new_ref=reference)
-    assert reference.issue.source_identifier == "21487-67--HAL"
+    assert reference.issue.source_identifier == "21487-67--hal"
     assert (
         reference.issue.journal.source_identifier in reference.issue.source_identifier
     )

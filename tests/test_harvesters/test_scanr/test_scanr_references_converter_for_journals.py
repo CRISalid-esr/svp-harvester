@@ -48,7 +48,7 @@ async def test_convert_publication_with_journal_with_title(
     converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_title = "Bulletin de la Société préhistorique française"
-    expected_issue_source_identifier = "0249-7638-1760-7361-bulletin_de_la_societe_prehistorique_francaise-societe_prehistorique_francaise-ScanR-ScanR"
+    expected_issue_source_identifier = "0249-7638-1760-7361-bulletin_de_la_societe_prehistorique_francaise-societe_prehistorique_francaise-scanr-scanr"
     for doc in scanr_publication_doc_with_journal_with_title:
         result = JsonHarvesterRawResult(
             source_identifier=doc.get("_id"),

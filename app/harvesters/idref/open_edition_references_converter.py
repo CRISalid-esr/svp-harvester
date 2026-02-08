@@ -43,7 +43,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         "qdc": "http://www.bl.uk/namespaces/oai_dcq/",
     }
 
-    def __init__(self):
+    def __init__(self, name: str):
+        super().__init__(name)
         self.tree_root: ElementTree = None
 
     # Overriden from AbstractReferencesConverter

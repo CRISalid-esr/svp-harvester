@@ -67,7 +67,7 @@ async def test_convert(open_alex_api_work: dict):
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
     assert test_reference.source_identifier == expected_id
-    assert test_reference.harvester == "OpenAlex"
+    assert test_reference.harvester == "openalex"
     assert test_reference.titles[0].value == expected_title
     assert expected_abstract in test_reference.abstracts[0].value
     assert test_reference.document_type[0].label == expected_document_type

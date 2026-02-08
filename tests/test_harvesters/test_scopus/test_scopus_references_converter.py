@@ -61,7 +61,7 @@ async def test_convert(
     expected_journal_title = "Clinical Physiology and Functional Imaging"
     expected_volume_issue = "12"
     expected_number_issue = "1"
-    expected_issue_source_identifier = "29702-12-1-Scopus"
+    expected_issue_source_identifier = "29702-12-1-scopus"
     expected_role = Contribution.get_url("AUT")
     expected_issued = datetime.date(2024, 1, 1)
 
