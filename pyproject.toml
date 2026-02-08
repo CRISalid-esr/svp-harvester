@@ -45,7 +45,7 @@ isodate = "^0.7.2"
 optional = true
 
 [tool.poetry.group.development.dependencies]
-black = "^23.7.0"
+black = "^26.1.0"
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 sphinx = ">=8,<9"
@@ -57,6 +57,7 @@ pydot = "^2.0.0"
 graphviz = "^0.20.1"
 pydot-ng = "^2.0.0"
 pylint = "^3.0.3"
+jinja2 = "^3.1.6"
 
 
 [build-system]
