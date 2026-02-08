@@ -220,7 +220,6 @@ class AbstractReferencesConverter(ABC):
     def _harvester_name(self) -> str:
         return self.name
 
-    @abstractmethod
     def _get_source(self) -> str:
         # source same if by default the same as harvester name, but can be overridden if needed
         return self._harvester_name()

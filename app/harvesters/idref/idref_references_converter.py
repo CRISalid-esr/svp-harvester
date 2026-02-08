@@ -29,7 +29,8 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
     Converts raw data from IdRef to a normalised Reference object
     """
 
-    def __init__(self):
+    def __init__(self, name: str):
+        super().__init__(name)
         self.secondary_converter: AbstractReferencesConverter | None = None
 
     def build(
