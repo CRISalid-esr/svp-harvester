@@ -27,7 +27,7 @@ async def test_convert(open_alex_api_work: dict):
     expected_document_type = "Article"
     expected_subjects = ["Test concept", "Concept de test", "Concepto de test"]
     expected_id = "https://openalex.org/W2023271753"
-    expected_source_contributor = "open_alex"
+    expected_source_contributor = "openalex"
     expected_contributors_name_rank = {
         "Chengteh Lee": 1,
         "Weitao Yang": 2,
