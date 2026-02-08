@@ -52,7 +52,7 @@ async def test_convert(open_alex_api_work: dict):
     expected_volume = "37"
     expected_issue_number = ["237"]
     expected_issue_source_identifier = (
-        "https://openalex.org/S4210190682-37-237-OpenAlex"
+        "https://openalex.org/S4210190682-37-237-openalex"
     )
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
