@@ -19,7 +19,7 @@ async def fixture_reference_db_model() -> DbReference:
     """
     reference = DbReference(
         source_identifier="123456789",
-        harvester="HAL",
+        harvester="hal",
         hash="hash1",
         version=0,
         titles=[Title(value="title", language="fr")],

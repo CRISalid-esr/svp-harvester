@@ -32,9 +32,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
 
     RDF_BIBO = "http://purl.org/ontology/bibo/"
 
-    def _harvester(self) -> str:
-        return "Idref"
-
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
@@ -135,7 +132,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             break
         return await self._get_or_create_issue(
             IssueInformations(
-                source="persee",
+                source=self._get_source(),
                 source_identifier=source_identifier,
                 journal=journal,
                 number=number,
@@ -166,6 +163,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     def _convert_role(self, role):
         return PerseeRolesConverter.convert(role)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
         return "persee"
 

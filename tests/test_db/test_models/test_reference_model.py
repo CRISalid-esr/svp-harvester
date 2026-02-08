@@ -269,7 +269,7 @@ async def test_reference_with_collection_codes(async_session: AsyncSession):
     """
     reference = Reference(
         source_identifier="source_identifier_1234",
-        harvester="HAL",
+        harvester="hal",
         hash="hash",
         version=0,
         titles=[Title(value="Fake scientific article", language="en")],
@@ -318,7 +318,7 @@ async def test_reference_with_valid_hal_submit_type(async_session):
     """
     reference = Reference(
         source_identifier="source_identifier_valid_type",
-        harvester="HAL",
+        harvester="hal",
         hash="abc123",
         version=1,
         titles=[Title(value="With HAL submit type", language="en")],
@@ -346,7 +346,7 @@ async def test_reference_with_invalid_hal_submit_type_raises():
     with pytest.raises(ValueError, match="Input should be 'notice', 'file' or 'annex'"):
         Reference(
             source_identifier="source_identifier_invalid_type",
-            harvester="HAL",
+            harvester="hal",
             hash="xyz456",
             version=1,
             titles=[Title(value="Invalid HAL submit type", language="en")],

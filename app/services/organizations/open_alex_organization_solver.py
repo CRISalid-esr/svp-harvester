@@ -48,7 +48,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
         "funder": "organization",
     }
 
-    @handle_organization_dereferencing_error("OpenAlex")
+    @handle_organization_dereferencing_error("openalex")
     async def solve(
         self, organization_information: OrganizationInformations
     ) -> Organization:
@@ -78,7 +78,7 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                     " has no name"
                 )
             org = Organization(
-                source="open_alex",
+                source=organization_information.source,
                 source_identifier=organization_information.identifier,
                 name=name,
                 type=self.TYPE_MAPPING[data.get("type")],
@@ -90,8 +90,8 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             )
             seen = ["open_alex"]
             new_identifiers = []
-            for key, source in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
-                if (source not in seen) and (key in data.get("ids", {})):
+            for key, type in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
+                if (type not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids", {}).get(key, None)
                     if not code:
                         continue
@@ -100,24 +100,24 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                             identifiers,
                             seen,
                         ) = await organization_factory.OrganizationFactory.solve_identifier(
-                            OrganizationInformations(identifier=code, source=source),
+                            OrganizationInformations(identifier=code, source=type),
                             seen,
                         )
                         new_identifiers.extend(identifiers)
                     except (ValueError, DereferencingError):
                         new_identifiers.append(
-                            OrganizationIdentifier(type=source, value=code)
+                            OrganizationIdentifier(type=type, value=code)
                         )
-                        seen.append(source)
-            for key, source in self.IDENTIFIERS_TO_BE_SAVED.items():
-                if (source not in seen) and (key in data.get("ids", {})):
+                        seen.append(type)
+            for key, type in self.IDENTIFIERS_TO_BE_SAVED.items():
+                if (type not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids", {}).get(key, None)
                     if not code:
                         continue
                     new_identifiers.append(
-                        OrganizationIdentifier(type=source, value=code)
+                        OrganizationIdentifier(type=type, value=code)
                     )
-                    seen.append(source)
+                    seen.append(type)
             org.identifiers.extend(new_identifiers)
             return org
 

@@ -15,7 +15,7 @@ class ScanrHarvester(AbstractHarvester):
     Harvester for Scanr API
     """
 
-    FORMATTER_NAME = "SCANR"
+    FORMATTER_NAME = "scanr"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [

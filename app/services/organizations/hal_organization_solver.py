@@ -46,7 +46,7 @@ class HalOrganizationSolver(OrganizationSolver):
         "department": "research_team_group",
     }
 
-    @handle_organization_dereferencing_error("HAL")
+    @handle_organization_dereferencing_error("fal")
     async def solve(
         self, organization_information: OrganizationInformations
     ) -> Organization:
@@ -72,7 +72,7 @@ class HalOrganizationSolver(OrganizationSolver):
             name = data["response"]["docs"][0].get("name_s", None)
             if not name:
                 raise DereferencingError(
-                    f"HAL organization {organization_information.identifier}"
+                    f"hal organization {organization_information.identifier}"
                     " has no name"
                 )
             org = Organization(

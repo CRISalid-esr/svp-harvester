@@ -4,6 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -63,14 +64,14 @@ async def test_convert(scanr_api_publication_cleaned_response):
         result = JsonHarvesterRawResult(
             source_identifier=doc["_source"].get("id"),
             payload=doc,
-            formatter_name="SCANR",
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
             raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
         )
         assert test_reference.source_identifier == expected_identifier
-        assert test_reference.harvester == "ScanR"
+        assert test_reference.harvester == "scanr"
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         test_titles = {title.language: title.value for title in test_reference.titles}
@@ -134,7 +135,7 @@ async def test_convert_with_default_dupe(
         result = JsonHarvesterRawResult(
             source_identifier=doc["_source"].get("id"),
             payload=doc,
-            formatter_name="SCANR",
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -165,7 +166,7 @@ async def test_same_contributor_with_different_roles(
         result = JsonHarvesterRawResult(
             source_identifier=doc["_source"].get("id"),
             payload=doc,
-            formatter_name="SCANR",
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -227,7 +228,7 @@ async def test_convert_with_date_exception(
         result = JsonHarvesterRawResult(
             source_identifier=doc["_source"].get("id"),
             payload=doc,
-            formatter_name="SCANR",
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -236,7 +237,7 @@ async def test_convert_with_date_exception(
         await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
         assert test_reference.source_identifier == "nnt2019lysem032"
-        assert test_reference.harvester == "ScanR"
+        assert test_reference.harvester == "scanr"
 
         assert test_reference.issued is None
         assert "ScanR reference converter cannot create" in caplog.text

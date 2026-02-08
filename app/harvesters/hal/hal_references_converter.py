@@ -230,9 +230,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 e.json(),
             )
 
-    def _harvester(self) -> str:
-        return "HAL"
-
     async def _book(self, raw_data) -> Book | None:
         title = raw_data.get("bookTitle_s", None)
         publisher = raw_data.get("publisher_s", None)
@@ -245,7 +242,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title,
-                source="hal",
+                source=self._get_source(),
                 publisher=publisher,
                 isbn10=isbn10,
                 isbn13=isbn13,
@@ -262,7 +259,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
             return None
         journal = await self._get_or_create_journal(
             JournalInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 source_identifier=str(source_identifier),
                 eissn=[eissn] if eissn is not None else [],
                 issn=[issn] if issn is not None else [],
@@ -282,11 +279,11 @@ class HalReferencesConverter(AbstractReferencesConverter):
         source_identifier = (
             journal.source_identifier
             + f"-{volume}-{'-'.join(numbers)}"
-            + f"-{self._harvester()}"
+            + f"-{self._get_source()}"
         )
         issue = await self._get_or_create_issue(
             IssueInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 source_identifier=source_identifier,
                 journal=journal,
                 volume=volume,
@@ -418,7 +415,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
                 )
             )
         async for contribution in self._contributions(
-            contribution_informations=contribution_informations, source="hal"
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 
@@ -437,7 +435,9 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
             org_id, org_name = org.split("_FacetSep_")
             organizations.add(
-                OrganizationInformations(name=org_name, identifier=org_id, source="hal")
+                OrganizationInformations(
+                    name=org_name, identifier=org_id, source=self._get_source()
+                )
             )
         return organizations
 

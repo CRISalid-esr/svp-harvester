@@ -14,7 +14,7 @@ def fixture_persee_rdf_result_for_doc(
     return RdfHarvesterRawResult(
         payload=persee_rdf_graph_for_doc,
         source_identifier="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web",
-        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF.value,
+        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF,
     )
 
 
@@ -32,7 +32,7 @@ def fixture_persee_rdf_result_for_doc_with_invalid_dateofpublication(
     return RdfHarvesterRawResult(
         payload=persee_rdf_graph_for_doc_with_invalid_dateofpublication,
         source_identifier="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web",
-        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF.value,
+        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF,
     )
 
 

@@ -13,7 +13,7 @@ class OpenAlexHarvester(AbstractHarvester):
     Harvester for api.openalex.org
     """
 
-    FORMATTER_NAME = "OPEN_ALEX"
+    FORMATTER_NAME = "openalex"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [(OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID, "orcid")]

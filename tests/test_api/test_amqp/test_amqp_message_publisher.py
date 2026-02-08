@@ -72,7 +72,7 @@ async def test_publish_created_reference(
             "type": "created",
             "reference": {
                 "source_identifier": "123456789",
-                "harvester": "HAL",
+                "harvester": "hal",
                 "harvester_version": "0.0.0",
                 "identifiers": [],
                 "manifestations": [],

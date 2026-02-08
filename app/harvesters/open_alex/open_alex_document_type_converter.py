@@ -8,8 +8,6 @@ class OpenAlexDocumentTypeConverter(AbstractDocumentTypeConverter):
     Use mapping table ton convert hal document type values to loc document type values
     """
 
-    HARVESTER = "OPENALEX"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

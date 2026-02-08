@@ -8,7 +8,6 @@ class IdrefDocumentTypeConverter(AbstractDocumentTypeConverter):
     Document type converter for IdRef Sparql harvester
     """
 
-    HARVESTER = "IDREF"
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

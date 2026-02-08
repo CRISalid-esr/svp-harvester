@@ -60,12 +60,11 @@ class IdrefHarvester(AbstractHarvester):
         Source identifiers for idref, including secondary sources
         """
 
-        SUDOC_RDF = "SUDOC_RDF"
-        SCIENCE_PLUS_RDF = "SCIENCE_PLUS_RDF"
-        HAL_JSON = "HAL_JSON"
-        IDREF_SPARQL = "IDREF_SPARQL"
-        OPEN_EDITION = "OPEN_EDITION"
-        PERSEE_RDF = "PERSEE_RDF"
+        SUDOC_RDF = "sudoc"
+        SCIENCE_PLUS_RDF = "scienceplus"
+        IDREF_SPARQL = "idref"
+        OPEN_EDITION = "openedition"
+        PERSEE_RDF = "persee"
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         # pylint: disable=too-many-branches, too-many-statements
@@ -104,7 +103,7 @@ class IdrefHarvester(AbstractHarvester):
                 # Sudoc server does not support parallel querying beyond 5 parallel requests
                 # See issue #251
                 pending_queries.add(asyncio.create_task(coro))
-                if doc["secondary_source"] == "SUDOC":
+                if doc["secondary_source"] == IdrefSparqlClient.DataSources.SUDOC.value:
                     num_sudoc_waiting_queries += 1
                 if num_sudoc_waiting_queries >= self.MAX_SUDOC_PARALLELISM:
                     num_sudoc_waiting_queries = 0
@@ -145,7 +144,7 @@ class IdrefHarvester(AbstractHarvester):
             async for doc in IdrefSparqlClient(
                 timeout=settings.idref_sparql_timeout
             ).fetch_publications(builder.build()):
-                if doc["secondary_source"] == "SUDOC":
+                if doc["secondary_source"] == IdrefSparqlClient.DataSources.SUDOC.value:
                     continue
                 coro = self._secondary_query_process(doc)
                 if coro is None:
@@ -173,17 +172,17 @@ class IdrefHarvester(AbstractHarvester):
 
     def _secondary_query_process(self, doc: dict):
         coro = None
-        if doc["secondary_source"] == "IDREF":
+        if doc["secondary_source"] == IdrefSparqlClient.DataSources.IDREF.value:
             coro = self._convert_publication_from_idref_endpoint(doc)
-        elif doc["secondary_source"] == "SUDOC":
+        elif doc["secondary_source"] == IdrefSparqlClient.DataSources.SUDOC.value:
             coro = self._query_publication_from_sudoc_endpoint(doc)
-        elif doc["secondary_source"] == "HAL":
+        elif doc["secondary_source"] == IdrefSparqlClient.DataSources.HAL.value:
             coro = self._query_publication_from_hal_endpoint(doc)
-        elif doc["secondary_source"] == "SCIENCE_PLUS":
+        elif doc["secondary_source"] == IdrefSparqlClient.DataSources.SCIENCEPLUS.value:
             coro = self._query_publication_from_science_plus_endpoint(doc)
-        elif doc["secondary_source"] == "OPEN_EDITION":
+        elif doc["secondary_source"] == IdrefSparqlClient.DataSources.OPENEDITION.value:
             coro = self._query_publication_from_openedition_endpoint(doc)
-        elif doc["secondary_source"] == "PERSEE":
+        elif doc["secondary_source"] == IdrefSparqlClient.DataSources.PERSEE.value:
             coro = self._query_publication_from_persee_endpoint(doc)
         else:
             logger.error(f"Unknown source {doc['secondary_source']}")
@@ -318,11 +317,11 @@ class IdrefHarvester(AbstractHarvester):
         pub = None
         settings = get_app_settings()
         if settings.third_api_caching_enabled:
-            pub = await ThirdApiCache.get("science_plus_publications", query_uri)
+            pub = await ThirdApiCache.get("scienceplus_publications", query_uri)
         if pub is None:
             client = RdfResolver(timeout=settings.idref_science_plus_timeout)
             pub = await client.fetch(query_uri, output_format="xml")
-            await ThirdApiCache.set("science_plus_publications", query_uri, pub)
+            await ThirdApiCache.set("scienceplus_publications", query_uri, pub)
 
         doi = doc.get("doi", None)
         return RdfResult(

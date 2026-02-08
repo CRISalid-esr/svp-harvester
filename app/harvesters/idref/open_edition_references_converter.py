@@ -46,8 +46,9 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
     def __init__(self):
         self.tree_root: ElementTree = None
 
-    def _harvester(self) -> str:
-        return "Idref"
+    # Overriden from AbstractReferencesConverter
+    def _get_source(self):
+        return "openedition"
 
     @AbstractReferencesConverter.validate_reference
     async def convert(
@@ -87,8 +88,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             return None
         return await self._get_or_create_journal(
             journal_informations=JournalInformations(
-                source="openedition",
-                source_identifier=f"{normalize_string('-'.join(publishers))}-openedition",
+                source=self._get_source(),
+                source_identifier=f"{normalize_string('-'.join(publishers))}-{self._get_source()}",
                 titles=publishers[:-1],
                 publisher=publishers[-1],
             )
@@ -98,10 +99,10 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
         rights = self._get_term(root, "rights")
         return await self._get_or_create_issue(
             issue_informations=IssueInformations(
-                source="openedition",
+                source=self._get_source(),
                 source_identifier=(
                     f"{journal.source_identifier}"
-                    f"-{normalize_string(rights)}-openedition"
+                    f"-{normalize_string(rights)}-{self._get_source()}"
                 ),
                 rights=rights,
                 journal=journal,
@@ -141,7 +142,8 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
                     )
                 )
         async for contribution in self._contributions(
-            contribution_informations=contribution_informations, source="openedition"
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 

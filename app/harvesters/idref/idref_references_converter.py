@@ -51,19 +51,22 @@ class IdrefReferencesConverter(AbstractReferencesConverter):
 
     def _build_secondary_converter(self, raw_data):
         if raw_data.formatter_name == IdrefHarvester.Formatters.SUDOC_RDF.value:
-            self.secondary_converter = SudocReferencesConverter()
+            self.secondary_converter = SudocReferencesConverter(self._harvester_name())
         if raw_data.formatter_name == IdrefHarvester.Formatters.SCIENCE_PLUS_RDF.value:
-            self.secondary_converter = SciencePlusReferencesConverter()
+            self.secondary_converter = SciencePlusReferencesConverter(
+                self._harvester_name()
+            )
         if raw_data.formatter_name == IdrefHarvester.Formatters.IDREF_SPARQL.value:
-            self.secondary_converter = IdrefBasicReferencesConverter()
+            self.secondary_converter = IdrefBasicReferencesConverter(
+                self._harvester_name()
+            )
         if raw_data.formatter_name == IdrefHarvester.Formatters.OPEN_EDITION.value:
-            self.secondary_converter = OpenEditionReferencesConverter()
+            self.secondary_converter = OpenEditionReferencesConverter(
+                self._harvester_name()
+            )
         if raw_data.formatter_name == IdrefHarvester.Formatters.PERSEE_RDF.value:
-            self.secondary_converter = PerseeReferencesConverter()
+            self.secondary_converter = PerseeReferencesConverter(self._harvester_name())
         assert self.secondary_converter, f"Unknown formatter {raw_data.formatter_name}"
-
-    def _harvester(self) -> str:
-        return "Idref"
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return self.secondary_converter.hash_keys(harvester_version=harvester_version)

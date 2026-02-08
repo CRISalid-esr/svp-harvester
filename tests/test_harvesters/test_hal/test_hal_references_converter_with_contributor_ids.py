@@ -3,6 +3,7 @@ from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.session import async_session
+from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 
@@ -23,7 +24,9 @@ async def test_convert(
 
     doc_0 = hal_api_docs_with_contributor_identifiers_content[0]
     result = JsonHarvesterRawResult(
-        source_identifier=doc_0["docid"], payload=doc_0, formatter_name="HAL"
+        source_identifier=doc_0["docid"],
+        payload=doc_0,
+        formatter_name=HalHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")

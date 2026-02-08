@@ -7,11 +7,11 @@ class ScanrHarvesterFactory(AbstractHarvesterFactory):
     """Scanr harvester factory"""
 
     @classmethod
-    def harvester(cls) -> ScanrHarvester:
+    def harvester(cls, name: str) -> ScanrHarvester:
         """Return ScanrHarvester instance"""
-        return ScanrHarvester(converter=cls.converter())
+        return ScanrHarvester(converter=cls.converter(name))
 
     @classmethod
-    def converter(cls) -> ScanrReferencesConverter:
+    def converter(cls, name: str) -> ScanrReferencesConverter:
         """Return ScanrReferencesConverter instance"""
-        return ScanrReferencesConverter()
+        return ScanrReferencesConverter(name)

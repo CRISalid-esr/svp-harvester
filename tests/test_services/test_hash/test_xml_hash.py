@@ -2,6 +2,7 @@ import pytest
 from loguru import logger
 from semver import VersionInfo
 
+from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.open_edition_references_converter import (
     OpenEditionReferencesConverter,
 )
@@ -21,12 +22,12 @@ async def test_xml_open_edition_hash(
     raw_data_1 = XMLHarvesterRawResult(
         source_identifier="https://journals.openedition.org/conflits/basictei/756",
         payload=open_edition_xml_for_hash_1,
-        formatter_name="OPEN_EDITION",
+        formatter_name=IdrefHarvester.Formatters.OPEN_EDITION,
     )
     raw_data_2 = XMLHarvesterRawResult(
         source_identifier="https://journals.openedition.org/conflits/basictei/756",
         payload=open_edition_xml_for_hash_2,
-        formatter_name="OPEN_EDITION",
+        formatter_name=IdrefHarvester.Formatters.OPEN_EDITION,
     )
 
     hash_service = HashService()
@@ -58,7 +59,7 @@ async def test_xml_hash(open_edition_xml_for_hash_1):
     raw_data = XMLHarvesterRawResult(
         source_identifier="https://journals.openedition.org/conflits/basictei/756",
         payload=open_edition_xml_for_hash_1,
-        formatter_name="OPEN_EDITION",
+        formatter_name=IdrefHarvester.Formatters.OPEN_EDITION,
     )
 
     hash_service = HashService()

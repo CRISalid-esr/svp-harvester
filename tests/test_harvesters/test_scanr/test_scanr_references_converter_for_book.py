@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -22,7 +23,9 @@ async def test_convert_publication_with_book(scanr_publication_doc_book):
 
     for doc in scanr_publication_doc_book:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(

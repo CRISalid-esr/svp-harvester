@@ -13,7 +13,7 @@ class ScopusHarvester(AbstractHarvester):
     Harvester for Scopus
     """
 
-    FORMATTER_NAME = "SCOPUS"
+    FORMATTER_NAME = "scopus"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [(ScopusQueryBuilder.QueryParameters.SCOPUS_EID, "scopus_eid")]

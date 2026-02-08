@@ -142,9 +142,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 f" ScanR reference {json_payload['_id']}: {error}"
             )
 
-    def _harvester(self) -> str:
-        return "ScanR"
-
     async def _book(self, json_payload: dict) -> Journal | None:
         source = json_payload["_source"].get("source", {})
         if not source:
@@ -154,14 +151,16 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         if not title:
             return None
         return await self._get_or_create_book(
-            BookInformations(title=title, publisher=publisher, source="scanr")
+            BookInformations(
+                title=title, publisher=publisher, source=self._get_source()
+            )
         )
 
     async def _issue(self, journal: Journal) -> Issue:
-        source_identifier = journal.source_identifier + "-" + self._harvester()
+        source_identifier = journal.source_identifier + "-" + self._get_source()
         issue = await self._get_or_create_issue(
             IssueInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 journal=journal,
                 source_identifier=source_identifier,
             )
@@ -182,14 +181,14 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         publisher = json_payload["_source"].get("source").get("publisher")
         journal = await self._get_or_create_journal(
             JournalInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 source_identifier="-".join(issn)
                 + "-"
                 + str(normalize_string(title))
                 + "-"
                 + str(normalize_string(publisher))
                 + "-"
-                + self._harvester(),
+                + self._get_source(),
                 issn=issn,
                 publisher=publisher,
                 titles=[title],
@@ -244,7 +243,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 )
             )
         async for contribution in self._contributions(
-            contribution_informations=contribution_informations, source="scanr"
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 
@@ -271,7 +271,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     org_id = "scanr_idref_" + org_idref
                     organizations.add(
                         OrganizationInformations(
-                            name=org_name, identifier=org_id, source="scanr"
+                            name=org_name, identifier=org_id, source=self._get_source()
                         )
                     )
         return organizations

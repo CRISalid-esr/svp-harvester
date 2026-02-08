@@ -11,10 +11,14 @@ class AbstractHarvesterFactory(ABC):
 
     @classmethod
     @abstractmethod
-    def harvester(cls) -> AbstractHarvester:  # pragma: no cover
-        """Abstract factory main method ro return a concrete harvester instance"""
+    def harvester(cls, name: str) -> AbstractHarvester:  # pragma: no cover
+        """
+        Abstract factory main method ro return a concrete harvester instance
+        :param name: the name of the harvester to return (normalized configuration name)
+        :return: a concrete harvester instance
+        """
 
     @classmethod
     @abstractmethod
-    def converter(cls) -> AbstractReferencesConverter:  # pragma: no cover
+    def converter(cls, name: str) -> AbstractReferencesConverter:  # pragma: no cover
         """Abstract factory main method to return a concrete converter instance"""

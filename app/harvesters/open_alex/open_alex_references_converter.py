@@ -29,8 +29,11 @@ from app.services.identifiers.identifier_inference_service import (
 )
 from app.services.issue.issue_data_class import IssueInformations
 from app.services.journal.journal_data_class import JournalInformations
-from app.services.organizations.organization_informations import OrganizationInformations
+from app.services.organizations.organization_informations import (
+    OrganizationInformations,
+)
 from app.utilities.date_utilities import check_valid_iso8601_date
+
 
 class OpenAlexReferencesConverter(AbstractReferencesConverter):
     """
@@ -112,9 +115,6 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 f" {json_payload['id']}: {error}"
             )
 
-    def _harvester(self) -> str:
-        return "OpenAlex"
-
     async def _journal(self, json_payload) -> Journal | None:
         if json_payload.get("primary_location", {}) is None:
             return None
@@ -152,7 +152,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
 
         journal = await self._get_or_create_journal(
             JournalInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 issn=issn,
                 issn_l=issn_l,
                 source_identifier=source_identifier,
@@ -167,13 +167,11 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
         volume = json_payload.get("biblio", {}).get("volume", "")
         number = json_payload.get("biblio", {}).get("issue", "")
         source_identifier = (
-            journal.source_identifier
-            + f"-{volume}-{number}"
-            + f"-{self._harvester()}"
+            journal.source_identifier + f"-{volume}-{number}" + f"-{self._get_source()}"
         )
         issue = await self._get_or_create_issue(
             IssueInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 journal=journal,
                 volume=volume,
                 number=[] if number is None else [number],
@@ -250,7 +248,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             rank_count += 1
         async for contribution in self._contributions(
             contribution_informations=contribution_informations,
-            source="open_alex",
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 
@@ -269,7 +267,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 org_id = org.get("id")
                 org_name = org.get("display_name")
                 organizations.add(
-                    OrganizationInformations(name=org_name, identifier=org_id, source="open_alex")
+                    OrganizationInformations(
+                        name=org_name, identifier=org_id, source=self._get_source()
+                    )
                 )
         return organizations
 

@@ -89,9 +89,6 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             )
             new_ref.subjects.append(db_concept)
 
-    def _harvester(self) -> str:
-        return "Idref"
-
     def _add_reference_identifiers(self, pub_graph, uri):
         """
         Add reference identifiers.
@@ -141,7 +138,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title,
-                source="sudoc",
+                source=self._get_source(),
                 isbn10=isbn10,
                 isbn13=isbn13,
                 publisher=publisher,
@@ -163,7 +160,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         source_identifier = journal.source_identifier + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(
-                source="sudoc", source_identifier=source_identifier, journal=journal
+                source=self._get_source(),
+                source_identifier=source_identifier,
+                journal=journal,
             )
         )
 
@@ -196,7 +195,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             break
         return await self._get_or_create_journal(
             JournalInformations(
-                source="sudoc",
+                source=self._get_source(),
                 source_identifier=uri,
                 issn=issn_value,
                 issn_l=issn_l_value,
@@ -333,6 +332,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
             self._extract_nnt_from_url(url, new_ref)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
         return "sudoc"
 

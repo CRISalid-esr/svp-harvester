@@ -32,9 +32,6 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
     a complete Reference object without the help of a secondary converter
     """
 
-    def _harvester(self) -> str:
-        return "Idref"
-
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: SparqlRawResult, new_ref: Reference) -> None:
         # pylint: disable=too-many-locals
@@ -70,7 +67,7 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
 
         async for contribution in self._contributions(
             contribution_informations=await self.get_contributors(dict_payload),
-            source="idref",
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 

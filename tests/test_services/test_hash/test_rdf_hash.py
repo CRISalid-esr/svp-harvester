@@ -1,6 +1,7 @@
 import pytest
 from semver import VersionInfo
 
+from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.idref.persee_references_converter import PerseeReferencesConverter
 from app.harvesters.idref.science_plus_references_converter import (
     SciencePlusReferencesConverter,
@@ -20,12 +21,12 @@ async def test_rdf_sudoc_hash(sudoc_rdf_graph_for_hash_1, sudoc_rdf_graph_for_ha
     raw_data_1 = RdfHarvesterRawResult(
         source_identifier="http://www.sudoc.fr/193726130/id",
         payload=sudoc_rdf_graph_for_hash_1,
-        formatter_name="Sudoc",
+        formatter_name=IdrefHarvester.Formatters.SUDOC_RDF,
     )
     raw_data_2 = RdfHarvesterRawResult(
         source_identifier="http://www.sudoc.fr/193726130/id",
         payload=sudoc_rdf_graph_for_hash_2,
-        formatter_name="Sudoc",
+        formatter_name=IdrefHarvester.Formatters.SUDOC_RDF,
     )
 
     hash_service = HashService()
@@ -57,12 +58,12 @@ async def test_rdf_science_plus_hash(
     raw_data_1 = RdfHarvesterRawResult(
         source_identifier="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/w",
         payload=science_plus_rdf_graph_for_hash_1,
-        formatter_name="Science Plus",
+        formatter_name=IdrefHarvester.Formatters.SCIENCE_PLUS_RDF,
     )
     raw_data_2 = RdfHarvesterRawResult(
         source_identifier="http://hub.abes.fr/cairn/periodical/autr/2008/issue_autr045/D33AF39D3B7834E0E053120B220A2036/w",
         payload=science_plus_rdf_graph_for_hash_2,
-        formatter_name="Science Plus",
+        formatter_name=IdrefHarvester.Formatters.SCIENCE_PLUS_RDF,
     )
 
     hash_service = HashService()
@@ -92,12 +93,12 @@ async def test_rdf_persee_hash(persee_rdf_xml_for_hash_1, persee_rdf_xml_for_has
     raw_data_1 = RdfHarvesterRawResult(
         source_identifier="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web",
         payload=persee_rdf_xml_for_hash_1,
-        formatter_name="Persee",
+        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF,
     )
     raw_data_2 = RdfHarvesterRawResult(
         source_identifier="http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web",
         payload=persee_rdf_xml_for_hash_2,
-        formatter_name="Persee",
+        formatter_name=IdrefHarvester.Formatters.PERSEE_RDF,
     )
 
     hash_service = HashService()

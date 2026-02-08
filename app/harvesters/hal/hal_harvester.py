@@ -15,7 +15,7 @@ class HalHarvester(AbstractHarvester):
     Harvester for data.idref.fl
     """
 
-    FORMATTER_NAME = "HAL"
+    FORMATTER_NAME = "hal"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [

@@ -8,8 +8,6 @@ class AbstractDocumentTypeConverter(ABC):
     Abstract mother class for all document type converters.
     """
 
-    HARVESTER: str
-
     RDF = {
         "BIBO": "http://purl.org/ontology/bibo/",
         "CERIF": "http://purl.org/cerif/frapo/",
@@ -24,7 +22,6 @@ class AbstractDocumentTypeConverter(ABC):
     TYPES_MAPPING: dict[str, tuple[str, str]]
 
     def __init__(self) -> None:
-        self.harvester = self.HARVESTER
         self.types_mapping = self.TYPES_MAPPING
 
     def convert(self, document_type: str) -> tuple[str, str]:
@@ -35,6 +32,9 @@ class AbstractDocumentTypeConverter(ABC):
         :return: Uri and label of the document type
         """
         if document_type not in self.types_mapping:
-            logger.warning(f"Unknown {self.harvester} document type: {document_type}")
+            logger.warning(
+                f"Unknown document type: {document_type} in concrete "
+                f"class {self.__class__.__name__}"
+            )
             return self.UNKNOWN_CODE
         return self.TYPES_MAPPING[document_type]

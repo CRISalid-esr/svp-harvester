@@ -101,7 +101,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     def _resolve_contributor(self, identifier):
         raise NotImplementedError()
 
-    @abstractmethod
+    # overriden from AbstractReferencesConverter : force child class to implement source
     def _get_source(self):
         raise NotImplementedError()
 

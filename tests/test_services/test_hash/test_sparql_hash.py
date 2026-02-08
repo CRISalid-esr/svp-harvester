@@ -4,6 +4,7 @@ from semver import VersionInfo
 from app.harvesters.idref.idref_basic_references_converter import (
     IdrefBasicReferencesConverter,
 )
+from app.harvesters.idref.idref_harvester import IdrefHarvester
 
 from app.harvesters.sparql_harvester_raw_result import SparqlHarvesterRawResult
 from app.services.hash.hash_service import HashService
@@ -19,13 +20,13 @@ async def test_sparql_idref_hash(idref_pub_converted_1, idref_pub_converted_2):
     raw_data_1 = SparqlHarvesterRawResult(
         source_identifier=idref_pub_converted_1["uri"],
         payload=idref_pub_converted_1,
-        formatter_name="Idref",
+        formatter_name=IdrefHarvester.Formatters.IDREF_SPARQL,
     )
 
     raw_data_2 = SparqlHarvesterRawResult(
         source_identifier=idref_pub_converted_2["uri"],
         payload=idref_pub_converted_2,
-        formatter_name="Idref",
+        formatter_name=IdrefHarvester.Formatters.IDREF_SPARQL,
     )
 
     hash_service = HashService()

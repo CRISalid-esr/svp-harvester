@@ -23,18 +23,18 @@ class IdrefSparqlClient:
     class DataSources(Enum):
         """Typology of data sources for which data.idref.fr gathers data"""
 
-        ERUDIT = "ERUDIT"
-        HAL = "HAL"
-        IDREF = "IDREF"
-        OPEN_EDITION = "OPEN_EDITION"
-        ORBI = "ORBI"
-        PERSEE = "PERSEE"
-        SCIENCE_PLUS = "SCIENCE_PLUS"
-        SERVAL = "SERVAL"
-        SUDOC = "SUDOC"
-        UNIGE = "UNIGE"
-        ZBMATH = "ZBMATH"
-        SONAR = "SONAR"
+        ERUDIT = "erudit"
+        HAL = "hal"
+        IDREF = "idref"
+        OPENEDITION = "openedition"
+        ORBI = "orbi"
+        PERSEE = "persee"
+        SCIENCEPLUS = "scienceplus"
+        SERVAL = "serval"
+        SUDOC = "sudoc"
+        UNIGE = "unige"
+        ZBMATH = "zbmath"
+        SONAR = "sonar"
 
     AUTHORS_PREFIXES = [
         "http://id.loc.gov/vocabulary/relators/",
@@ -51,7 +51,7 @@ class IdrefSparqlClient:
         DataSources.IDREF: [
             "http://www.idref.fr/",
         ],
-        DataSources.OPEN_EDITION: [
+        DataSources.OPENEDITION: [
             "http://journals.openedition.org/",
             "https://journals.openedition.org/",
             "http://books.openedition.org/",
@@ -63,7 +63,7 @@ class IdrefSparqlClient:
         DataSources.PERSEE: [
             "http://data.persee.fr/",
         ],
-        DataSources.SCIENCE_PLUS: [
+        DataSources.SCIENCEPLUS: [
             "http://hub.abes.fr/",
         ],
         DataSources.SERVAL: [

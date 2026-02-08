@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -56,7 +57,9 @@ async def test_convert_publication_with_keywords(
 
     for doc in scanr_publication_doc_with_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -94,7 +97,9 @@ async def test_convert_publication_with_identical_keywords(
 
     for doc in scanr_publication_doc_with_identical_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -119,7 +124,9 @@ async def test_convert_publication_with_sudoc(
 
     for doc in scanr_publication_doc_with_sudoc_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -144,7 +151,9 @@ async def test_convert_publication_with_identical_sudoc_andkeywords(
 
     for doc in scanr_publication_doc_with_identical_sudoc_and_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -173,7 +182,9 @@ async def test_convert_publication_with_wikidata(
 
     for doc in scanr_publication_doc_with_wikidata_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(

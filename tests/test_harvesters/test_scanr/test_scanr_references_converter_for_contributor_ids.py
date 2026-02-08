@@ -4,6 +4,7 @@ from semver import VersionInfo
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -35,7 +36,9 @@ async def test_convert_publication_with_contributor_ids(
 
     doc = scanr_publication_doc_with_journal_with_title[0]
     result = JsonHarvesterRawResult(
-        source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+        source_identifier=doc.get("_id"),
+        payload=doc,
+        formatter_name=ScanrHarvester.FORMATTER_NAME,
     )
 
     test_reference = converter_under_tests.build(
@@ -84,7 +87,7 @@ async def test_convert_publication_with_anon_contributor_id(
     result = JsonHarvesterRawResult(
         source_identifier=doc.get("_id"),
         payload=doc,
-        formatter_name="SCANR",
+        formatter_name=ScanrHarvester.FORMATTER_NAME,
     )
 
     test_reference = converter_under_tests.build(

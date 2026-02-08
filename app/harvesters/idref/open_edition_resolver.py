@@ -52,7 +52,7 @@ class OpenEditionResolver:
             f"Unknown type reference: {type_reference} for {records} {identifier}"
         )
 
-    @handle_external_endpoint_failure("OpenEdition")
+    @handle_external_endpoint_failure("openedition")
     async def fetch(self, url: str) -> ET.Element:
         """
         Get the record XML from OAI Open Edition

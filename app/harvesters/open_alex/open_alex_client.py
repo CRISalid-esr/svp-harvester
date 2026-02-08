@@ -17,7 +17,7 @@ class OpenAlexClient:
 
     PER_PAGE = 25
 
-    @handle_external_endpoint_failure("OpenAlex")
+    @handle_external_endpoint_failure("openalex")
     async def fetch(self, url: str) -> Generator[dict, None, None]:
         """
         Fetch the results from the OpenAlex API

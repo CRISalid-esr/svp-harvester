@@ -6,6 +6,7 @@ from semver import VersionInfo
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.open_alex.open_alex_harvester import OpenAlexHarvester
 from app.harvesters.open_alex.open_alex_references_converter import (
     OpenAlexReferencesConverter,
 )
@@ -36,7 +37,7 @@ async def test_convert(open_alex_api_work: dict):
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
 
     expected_reference_identifier = [
@@ -167,7 +168,7 @@ async def test_convert_work_with_various_locations(
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_various_locations["id"],
         payload=open_alex_work_with_various_locations,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -244,7 +245,7 @@ async def test_convert_with_date_exception(
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
 
     expected_id = "https://openalex.org/W2023271753"
@@ -278,7 +279,7 @@ async def test_convert_without_issue_number(open_alex_api_work: dict):
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -303,7 +304,7 @@ async def test_convert_work_with_hal_locations(
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_hal_locations["id"],
         payload=open_alex_work_with_hal_locations,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")

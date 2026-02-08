@@ -103,11 +103,11 @@ async def test_openalex_solver_happy_path_deref_ror(monkeypatch, openalex_payloa
         OrganizationInformations(
             name="Sociétés, Acteurs, Gouvernement en Europe",
             identifier="https://openalex.org/I4210091016",
-            source="open_alex",
+            source="openalex",
         )
     )
 
-    assert org.source == "open_alex"
+    assert org.source == "openalex"
     assert org.source_identifier == "https://openalex.org/I4210091016"
     assert org.name == "Sociétés, Acteurs, Gouvernement en Europe"
     assert org.type == "laboratory"  # facility -> laboratory mapping in TYPE_MAPPING
@@ -159,7 +159,7 @@ async def test_openalex_solver_deref_failure_falls_back_to_raw_ror(
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
 
@@ -188,7 +188,7 @@ async def test_openalex_solver_non_2xx_raises(monkeypatch, openalex_payload):
     with pytest.raises(DereferencingError):
         await solver.solve(
             OrganizationInformations(
-                identifier="https://openalex.org/I4210091016", source="open_alex"
+                identifier="https://openalex.org/I4210091016", source="openalex"
             )
         )
 
@@ -217,7 +217,7 @@ async def test_openalex_solver_missing_display_name_uses_default(
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
     assert org.name == "No OpenAlex organization name"
@@ -259,7 +259,7 @@ async def test_openalex_solver_should_save_ids_openalex_and_ror(
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
 

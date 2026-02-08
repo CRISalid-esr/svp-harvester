@@ -1,8 +1,8 @@
 import pytest
 from semver import VersionInfo
 
-
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -29,7 +29,9 @@ async def test_convert_publication_with_journal_without_title(
 
     for doc in scanr_publication_doc_with_journal_without_title:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -46,11 +48,12 @@ async def test_convert_publication_with_journal_with_title(
     converter_under_tests = ScanrReferencesConverter()
 
     expected_title = "Bulletin de la Société préhistorique française"
-    expected_issue_source_identifier = \
-        '0249-7638-1760-7361-bulletin_de_la_societe_prehistorique_francaise-societe_prehistorique_francaise-ScanR-ScanR'
+    expected_issue_source_identifier = "0249-7638-1760-7361-bulletin_de_la_societe_prehistorique_francaise-societe_prehistorique_francaise-ScanR-ScanR"
     for doc in scanr_publication_doc_with_journal_with_title:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -60,5 +63,10 @@ async def test_convert_publication_with_journal_with_title(
 
         journal = test_reference.issue.journal
         assert expected_title in journal.titles
-        assert test_reference.issue.source_identifier == expected_issue_source_identifier
-        assert test_reference.issue.journal.source_identifier in test_reference.issue.source_identifier
+        assert (
+            test_reference.issue.source_identifier == expected_issue_source_identifier
+        )
+        assert (
+            test_reference.issue.journal.source_identifier
+            in test_reference.issue.source_identifier
+        )

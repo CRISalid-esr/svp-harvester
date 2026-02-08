@@ -39,12 +39,8 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
 
     def __init__(self):
         super().__init__()
-        self._source = "science_plus"
         self.pub_graph = None
         self.uri = None
-
-    def _harvester(self) -> str:
-        return "Idref"
 
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
@@ -90,7 +86,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             publisher_name = publisher.value
         return await self._get_or_create_journal(
             JournalInformations(
-                source="science_plus",
+                source=self._get_source(),
                 source_identifier=uri,
                 titles=titles,
                 publisher=publisher_name,
@@ -126,7 +122,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
 
         return await self._get_or_create_issue(
             IssueInformations(
-                source="science_plus",
+                source=self._get_source(),
                 source_identifier=issue_uri,
                 journal=journal,
                 number=number_value,
@@ -185,8 +181,9 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     def _convert_role(self, role):
         return SciencePlusRolesConverter.convert(role)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
-        return "science_plus"
+        return "scienceplus"
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [
