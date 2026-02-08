@@ -246,6 +246,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 )
             )
             rank_count += 1
+        # pylint: disable=duplicate-code
         async for contribution in self._contributions(
             contribution_informations=contribution_informations,
             source=self._get_source(),

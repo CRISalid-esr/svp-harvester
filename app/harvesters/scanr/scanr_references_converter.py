@@ -242,6 +242,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     ext_identifiers=self._convert_external_identifiers(raw_identifiers),
                 )
             )
+        # pylint: disable=duplicate-code
         async for contribution in self._contributions(
             contribution_informations=contribution_informations,
             source=self._get_source(),

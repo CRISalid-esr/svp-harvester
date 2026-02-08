@@ -119,7 +119,6 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
         titles = []
         for title in issue.objects(rdflib.term.URIRef(issue_uri), DCTERMS.title):
             titles.append(title.value)
-
         return await self._get_or_create_issue(
             IssueInformations(
                 source=self._get_source(),

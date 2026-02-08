@@ -117,7 +117,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         )
 
     async def _get_issue(self, biblio_graph, uri, journal):
-        source_identifier = uri
         number = None
         for number in biblio_graph.objects(
             rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).issue
@@ -133,7 +132,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         return await self._get_or_create_issue(
             IssueInformations(
                 source=self._get_source(),
-                source_identifier=source_identifier,
+                source_identifier=uri,
                 journal=journal,
                 number=number,
                 volume=volume,
