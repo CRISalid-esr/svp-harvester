@@ -1,8 +1,9 @@
 from enum import Enum
 
-from app.db.session import Base
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+
+from app.db.session import Base
 
 
 class ReferenceIdentifier(Base):
@@ -13,32 +14,33 @@ class ReferenceIdentifier(Base):
     class IdentifierType(Enum):
         """Enum for reference identifier types (application-level validation only)."""
 
-        DOI = "doi"
-        HAL = "hal"
-        PMID = "pmid"
-        OPENALEX = "openalex"
-        NNT = "nnt"
-        PPN = "ppn"
-        URI = "uri"
+        # --PUBLICATION IDENTIFIERS--
         ARXIV = "arxiv"
         BIBCODE = "bibcode"
         BIORXIV = "biorxiv"
         CERN = "cern"
         CHEMRXIV = "chemrxiv"
+        DOI = "doi"
         ENSAM = "ensam"
+        HAL = "hal"
         INERIS = "ineris"
         INSPIRE = "inspire"
         IRD = "ird"
         IRSTEA = "irstea"
         IRTHESAURUS = "irthesaurus"
         MEDITAGRI = "meditagri"
+        NNT = "nnt"
         OKINA = "okina"
         OATAO = "oatao"
+        OPENALEX = "openalex"
         PII = "pii"
+        PMID = "pmid"
+        PPN = "ppn"
         PRODINRA = "prodinra"
         PUBMEDCENTRAL = "pubmedcentral"
         SCIENCESPO = "sciencespo"
         SWHID = "swhid"
+        URI = "uri"
         WOS = "wos"
 
     __tablename__ = "reference_identifiers"
