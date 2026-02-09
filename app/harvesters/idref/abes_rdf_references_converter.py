@@ -82,7 +82,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
 
     # pylint: disable=unused-argument
     def _add_reference_identifiers(self, pub_graph, uri):
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
 
     def _abstracts(self, pub_graph, uri):
         abstract: Literal

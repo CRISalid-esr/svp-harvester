@@ -11,10 +11,10 @@ def test_reference_identifier_nnt_is_uppercased_even_if_type_set_after_value():
 def test_reference_identifier_sudoc_ppn_trailing_x_is_uppercased():
     rid1 = ReferenceIdentifier()
     rid1.value = "258403519x"
-    rid1.type = "sudoc_ppn"
+    rid1.type = "ppn"
     assert rid1.value == "258403519X"
 
     rid2 = ReferenceIdentifier()
     rid2.value = "258403519X"
-    rid2.type = "sudoc_ppn"
+    rid2.type = "ppn"
     assert rid2.value == rid1.value

@@ -78,7 +78,7 @@ async def test_convert_for_rdf_result(
     )
 
     assert any(
-        identifier.type == "sudoc_ppn" and identifier.value == "193726130"
+        identifier.type == "ppn" and identifier.value == "193726130"
         for identifier in test_reference.identifiers
     )
     assert expected_document_type in [test_reference.document_type[0].label]

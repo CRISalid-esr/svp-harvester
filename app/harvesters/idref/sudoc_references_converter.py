@@ -96,7 +96,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         - SUDOC PPN from dcterms:identifier (e.g. "193726130")
         """
         # base "uri" identifier
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
 
         # Protect against both /id and non-/id URIs
         candidate_uris = [uri]
@@ -111,7 +113,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
                 # ABES PPN is usually digits
                 if value and value.isdigit():
-                    yield ReferenceIdentifier(value=value, type="sudoc_ppn")
+                    yield ReferenceIdentifier(
+                        value=value, type=ReferenceIdentifier.IdentifierType.PPN.value
+                    )
                     return
 
     async def _get_book(self, pub_graph, uri) -> Book | None:
@@ -293,7 +297,11 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
         nnt = m.group(1)
         if nnt:
-            new_ref.identifiers.append(ReferenceIdentifier(value=nnt, type="nnt"))
+            new_ref.identifiers.append(
+                ReferenceIdentifier(
+                    value=nnt, type=ReferenceIdentifier.IdentifierType.NNT.value
+                )
+            )
             return True
         return False
 

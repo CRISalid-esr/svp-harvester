@@ -53,7 +53,17 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     PREFERRED_LANGUAGE = "fr"
 
-    IDENTIFIERS_TO_IGNORE = ["scanr"]
+    IDENTIFIERS_TO_IGNORE = {"scanr"}
+
+    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "doi": ReferenceIdentifier.IdentifierType.DOI.value,
+        "hal": ReferenceIdentifier.IdentifierType.HAL.value,
+        "nnt": ReferenceIdentifier.IdentifierType.NNT.value,
+        "pmid": ReferenceIdentifier.IdentifierType.PMID.value,
+        # sudoc_ppn / sudoc-ppn → sudocppn after normalization
+        "sudocppn": ReferenceIdentifier.IdentifierType.PPN.value,
+        "ppn": ReferenceIdentifier.IdentifierType.PPN.value,
+    }
 
     CONTRIBUTORS_IDENTIFIERS_TYPE_MAPPING = {
         "idref": ContributorIdentifier.IdentifierType.IDREF.value,
@@ -196,13 +206,31 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         )
         return journal
 
-    def _add_identifiers(self, json_payload: dict) -> ReferenceIdentifier:
+    def _add_identifiers(self, json_payload: dict):
         external_ids = json_payload["_source"].get("externalIds", [])
         for identifier in external_ids:
-            if identifier["type"] not in self.IDENTIFIERS_TO_IGNORE:
-                yield ReferenceIdentifier(
-                    value=identifier["id"], type=identifier["type"]
+            raw_type = identifier.get("type")
+            raw_value = identifier.get("id")
+
+            if raw_type is None or raw_value in (None, ""):
+                continue
+
+            key = str(raw_type).strip().lower().replace("_", "").replace("-", "")
+            if key in self.IDENTIFIERS_TO_IGNORE:
+                continue
+
+            identifier_type = self.FIElD_NAME_TO_IDENTIFIER_TYPE.get(key)
+            if identifier_type is None:
+                logger.warning(
+                    "ScanR: unknown externalIds type '%s' in ScanR reference %s",
+                    raw_type,
+                    json_payload.get("_id"),
                 )
+                continue
+
+            yield ReferenceIdentifier(
+                value=str(raw_value).strip(), type=identifier_type
+            )
 
     @classmethod
     def _slug_from_name(cls, s: str) -> str:

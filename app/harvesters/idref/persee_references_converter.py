@@ -150,11 +150,15 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             break
 
     def _add_reference_identifiers(self, pub_graph, uri):
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
         for identifier in pub_graph.objects(
-            rdflib.term.URIRef(uri), URIRef(self.RDF_BIBO + "doi")
+            rdflib.term.URIRef(uri), URIRef(f"{self.RDF_BIBO}doi")
         ):
-            yield ReferenceIdentifier(value=identifier, type="doi")
+            yield ReferenceIdentifier(
+                value=identifier, type=ReferenceIdentifier.IdentifierType.DOI.value
+            )
 
     def _resolve_contributor(self, identifier):
         return identifier

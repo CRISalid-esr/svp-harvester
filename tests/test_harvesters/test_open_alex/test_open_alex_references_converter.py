@@ -319,3 +319,43 @@ async def test_convert_work_with_hal_locations(
         identifier.value == "hal-01655811" and identifier.type == "hal"
         for identifier in test_reference.identifiers
     )
+
+
+@pytest.mark.asyncio
+async def test_add_reference_identifiers_normalizes_openalex_key(
+    open_alex_api_work: dict,
+):
+    converter = OpenAlexReferencesConverter(name="openalex")
+
+    open_alex_api_work["ids"] = {
+        "open_alex": "https://openalex.org/W2023271753",  # underscore variant
+        "doi": "10.1103/physrevb.37.785",
+        "pmid": "https://pubmed.ncbi.nlm.nih.gov/9944570",
+        "mag": "12345",  # ignored
+        "weird_id": "zzz",  # unknown -> ignored
+    }
+
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_api_work["id"],
+        payload=open_alex_api_work,
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
+    )
+
+    ref = converter.build(raw_data=result, harvester_version=VersionInfo.parse("0.0.0"))
+    await converter.convert(raw_data=result, new_ref=ref)
+
+    assert any(
+        i.type == "openalex" and i.value == "https://openalex.org/W2023271753"
+        for i in ref.identifiers
+    )
+    assert any(
+        i.type == "doi" and i.value == "10.1103/physrevb.37.785"
+        for i in ref.identifiers
+    )
+    assert any(
+        i.type == "pmid" and i.value == "https://pubmed.ncbi.nlm.nih.gov/9944570"
+        for i in ref.identifiers
+    )
+
+    assert all(i.type != "mag" for i in ref.identifiers)
+    assert all(i.type != "weird_id" for i in ref.identifiers)
