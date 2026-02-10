@@ -61,17 +61,17 @@ async def test_convert_publication_with_contributor_ids(
             assert contributor.last_name == "Roux"
             assert len(contributor.identifiers) == 3
             assert any(
-                identifier.type == ContributorIdentifier.IdentifierType.ORCID
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
                 and identifier.value == "0000-0002-9981-9598"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == ContributorIdentifier.IdentifierType.IDREF
+                identifier.type == ContributorIdentifier.IdentifierType.IDREF.value
                 and identifier.value == "028738497"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == ContributorIdentifier.IdentifierType.IDHAL_S
+                identifier.type == ContributorIdentifier.IdentifierType.IDHAL_S.value
                 and identifier.value == "valentine-roux"
                 for identifier in contributor.identifiers
             )

@@ -380,7 +380,9 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity3 = Person(
         name="Johnny Doe",
         identifiers=[
-            Identifier(type=ContributorIdentifier.IdentifierType.IDHAL_I, value="3"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value, value="3"
+            ),
             Identifier(
                 type=ContributorIdentifier.IdentifierType.ORCID.value, value="3"
             ),

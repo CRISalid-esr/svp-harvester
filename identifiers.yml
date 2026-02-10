@@ -5,10 +5,10 @@
 - key: orcid
   label: ORCID
   priority: 1
-- key: id_hal_i
+- key: idhali
   label: "idHal-i"
   priority: 2
-- key: id_hal_s
+- key: idhals
   label: "idHal-s"
   priority: 3
 - key: researcherid
