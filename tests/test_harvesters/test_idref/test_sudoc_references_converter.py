@@ -4,6 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.session import async_session
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
