@@ -1,6 +1,8 @@
 import re
 from typing import List, Dict
 
+from app.db.models.contributor_identifier import ContributorIdentifier
+
 
 def filter_idref_identifiers(identifier: str) -> List[Dict[str, str]]:
     """
@@ -25,6 +27,11 @@ def filter_idref_identifiers(identifier: str) -> List[Dict[str, str]]:
 
     # Regex accepts trailing /id as optional
     if re.match(r"^https?://www\.idref\.fr/[^/]+(/id)?$", str(identifier)):
-        ext_identifiers.append({"type": "idref", "value": identifier})
+        ext_identifiers.append(
+            {
+                "type": ContributorIdentifier.IdentifierType.IDREF.value,
+                "value": identifier,
+            }
+        )
 
     return ext_identifiers

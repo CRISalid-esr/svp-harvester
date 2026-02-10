@@ -286,7 +286,8 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     )
     # there should be an identifier of type nnt with value 2020UPAST005
     assert any(
-        identifier.type == "nnt" and identifier.value == "2020UPAST005"
+        identifier.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and identifier.value == "2020UPAST005"
         for identifier in test_reference.identifiers
     )
 
@@ -320,7 +321,8 @@ async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_the
 
     # NNT must be extracted even without theses.fr in bibo:uri
     assert any(
-        i.type == "nnt" and i.value == "2020UPAST005"
+        i.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and i.value == "2020UPAST005"
         for i in test_reference.identifiers
     )
 

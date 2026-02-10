@@ -1,3 +1,4 @@
+# --PERSON IDENTIFIERS--
 - key: idref
   label: IdRef
   priority: 0
@@ -10,7 +11,7 @@
 - key: id_hal_s
   label: "idHal-s"
   priority: 3
-- key: researcher_id
+- key: researcherid
   label: ResearcherID
   priority: 4
 - key: arxiv
@@ -19,7 +20,7 @@
 - key: pubmed
   label: PubMed
   priority: 6
-- key: scopus_eid
+- key: scopus
   label: ScopusEID
   priority: 7
 - key: eppn

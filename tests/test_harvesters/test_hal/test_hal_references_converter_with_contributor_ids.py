@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
@@ -46,7 +47,7 @@ async def test_convert(
             assert len(contributor.identifiers) == 6
             assert any(
                 [
-                    identifier.type == "orcid"
+                    identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
                     and identifier.value == "0000-0002-3053-9512"
                     for identifier in contributor.identifiers
                 ]
@@ -59,7 +60,7 @@ async def test_convert(
             )
             assert any(
                 [
-                    identifier.type == "google_scholar"
+                    identifier.type == "googlescholar"
                     and identifier.value == "_88eIccAAAAJ"
                     for identifier in contributor.identifiers
                 ]

@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 from semver import VersionInfo, Version
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.scopus.scopus_api_query_builder import ScopusQueryBuilder
 from app.harvesters.scopus.scopus_client import ScopusClient
@@ -16,12 +17,17 @@ class ScopusHarvester(AbstractHarvester):
     FORMATTER_NAME = "scopus"
 
     IDENTIFIERS_BY_ENTITIES = {
-        "Person": [(ScopusQueryBuilder.QueryParameters.SCOPUS_EID, "scopus_eid")]
+        "Person": [
+            (
+                ScopusQueryBuilder.QueryParameters.SCOPUS_EID,
+                ContributorIdentifier.IdentifierType.SCOPUS.value,
+            )
+        ]
     }
 
     SUBJECT_BY_ENTITIES = {"Person": ScopusQueryBuilder.SubjectType.PERSON}
 
-    supported_identifier_types = ["scopus_eid"]
+    supported_identifier_types = [ContributorIdentifier.IdentifierType.SCOPUS.value]
 
     VERSION: Version = VersionInfo.parse("2.1.0")
 

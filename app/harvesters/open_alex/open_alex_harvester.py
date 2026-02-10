@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 from semver import VersionInfo, Version
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.open_alex.open_alex_api_query_builder import OpenAlexQueryBuilder
@@ -21,7 +22,7 @@ class OpenAlexHarvester(AbstractHarvester):
 
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}
 
-    supported_identifier_types = ["orcid"]
+    supported_identifier_types = [ContributorIdentifier.IdentifierType.ORCID.value]
     VERSION: Version = VersionInfo.parse("2.1.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):

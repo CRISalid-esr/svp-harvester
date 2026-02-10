@@ -6,6 +6,7 @@ from semver import Version
 from app.db.models.abstract import Abstract
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -246,14 +247,14 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             orcid = author.get("orcid")
             ext_identifiers = [
                 {
-                    "type": "open_alex",
+                    "type": ContributorIdentifier.IdentifierType.OPEN_ALEX.value,
                     "value": id_open_alex,
                 }
             ]
             if orcid:
                 ext_identifiers.append(
                     {
-                        "type": "orcid",
+                        "type": ContributorIdentifier.IdentifierType.ORCID.value,
                         "value": orcid,
                     }
                 )

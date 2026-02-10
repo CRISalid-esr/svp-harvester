@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
+from app.db.models.organization_identifier import OrganizationIdentifier
 from app.http.aio_http_client_manager import AioHttpClientManager
 from app.services.organizations.organization_informations import (
     OrganizationInformations,
@@ -105,7 +106,11 @@ async def test_ror_solve_identifier_builds_ror_identifier_with_extra_information
     )
 
     # must include ror
-    ror_idents = [i for i in identifiers if i.type == "ror"]
+    ror_idents = [
+        i
+        for i in identifiers
+        if i.type == OrganizationIdentifier.IdentifierType.ROR.value
+    ]
     assert len(ror_idents) == 1
     ror_ident = ror_idents[0]
 
@@ -137,12 +142,18 @@ async def test_ror_solve_identifier_builds_ror_identifier_with_extra_information
     ]
 
     # external_ids mapping: only wikidata is enabled in your solver mapping
-    wikidata = [(i.type, i.value) for i in identifiers if i.type == "wikidata"]
-    assert wikidata == [("wikidata", "Q1431486")]
+    wikidata = [
+        (i.type, i.value)
+        for i in identifiers
+        if i.type == OrganizationIdentifier.IdentifierType.WIKIDATA.value
+    ]
+    assert wikidata == [
+        (OrganizationIdentifier.IdentifierType.WIKIDATA.value, "Q1431486")
+    ]
 
     # seen must include 'ror' and 'wikidata'
-    assert "ror" in seen
-    assert "wikidata" in seen
+    assert OrganizationIdentifier.IdentifierType.ROR.value in seen
+    assert OrganizationIdentifier.IdentifierType.WIKIDATA.value in seen
 
     # ensure correct endpoint usage (URL.format(identifier))
     assert fake_session.get.call_count == 1
@@ -177,8 +188,14 @@ async def test_ror_solve_identifier_dedups_external_ids(monkeypatch, ror_payload
         seen=[],
     )
 
-    wikidata = [(i.type, i.value) for i in identifiers if i.type == "wikidata"]
-    assert wikidata == [("wikidata", "Q1431486")]
+    wikidata = [
+        (i.type, i.value)
+        for i in identifiers
+        if i.type == OrganizationIdentifier.IdentifierType.WIKIDATA.value
+    ]
+    assert wikidata == [
+        (OrganizationIdentifier.IdentifierType.WIKIDATA.value, "Q1431486")
+    ]
 
 
 @pytest.mark.asyncio

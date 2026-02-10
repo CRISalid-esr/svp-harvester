@@ -288,7 +288,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         Try to extract NNT from a theses.fr URL.
         Returns True if added (or already present), else False.
         """
-        if any(i.type == "nnt" for i in new_ref.identifiers):
+        if any(
+            i.type == ReferenceIdentifier.IdentifierType.NNT.value
+            for i in new_ref.identifiers
+        ):
             return True
 
         m = self._THESES_NNT_RE.search(url)

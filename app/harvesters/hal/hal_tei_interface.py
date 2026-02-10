@@ -3,6 +3,8 @@ from typing import List, Dict
 from loguru import logger
 from lxml import etree
 
+from app.db.models.contributor_identifier import ContributorIdentifier
+
 
 class HalTEIDecoder:
     """
@@ -60,9 +62,9 @@ class HalTEIDecoder:
         identifier = {"type": self._normalize(id_type), "value": id_value}
         if id_type == "idhal":
             if id_value.isnumeric():
-                identifier["type"] = "idhal_i"
+                identifier["type"] = ContributorIdentifier.IdentifierType.IDHAL_I.value
             else:
-                identifier["type"] = "idhal_s"
+                identifier["type"] = ContributorIdentifier.IdentifierType.IDHAL_S.value
         return identifier
 
     @staticmethod

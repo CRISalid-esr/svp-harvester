@@ -122,10 +122,12 @@ class RorOrganizationSolver(OrganizationSolver):
         )
 
         new_identifiers: List[OrganizationIdentifier] = [ror_identifier]
-        seen.append("ror")
+        seen.append(OrganizationIdentifier.IdentifierType.ROR.value)
 
         # Dedup by (type, value)
-        dedup: Set[Tuple[str, str]] = {("ror", ror_identifier.value)}
+        dedup: Set[Tuple[str, str]] = {
+            (OrganizationIdentifier.IdentifierType.ROR, ror_identifier.value)
+        }
 
         for id_type, id_value in self._extract_external_identifiers(data):
             key = (id_type, id_value)

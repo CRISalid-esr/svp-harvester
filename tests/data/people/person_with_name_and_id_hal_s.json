@@ -2,7 +2,7 @@
   "name": "John Doe",
   "identifiers": [
     {
-      "type": "id_hal_s",
+      "type": "idhals",
       "value": "john-doe"
     }
   ]

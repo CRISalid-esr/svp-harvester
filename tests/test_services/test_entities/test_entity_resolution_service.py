@@ -3,8 +3,9 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_app_settings
-from app.db.models.person import Person
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.identifier import Identifier
+from app.db.models.person import Person
 from app.services.entities.entity_resolution_service import EntityResolutionService
 
 
@@ -14,19 +15,30 @@ async def test_resolution_service_finds_previous_entity(async_session: AsyncSess
     we get back the existing entity."""
     entity1 = Person(
         name="John Doe",
-        identifiers=[Identifier(type="idref", value="123456789")],
+        identifiers=[
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            )
+        ],
     )
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
         name="Johnny DoeVariant",
-        identifiers=[Identifier(type="idref", value="123456789")],
+        identifiers=[
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            )
+        ],
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
     assert existing_entity.name == "Johnny DoeVariant"
     assert len(existing_entity.identifiers) == 1
-    assert existing_entity.identifiers[0].type == "idref"
+    assert (
+        existing_entity.identifiers[0].type
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
 
 
 @pytest.mark.asyncio
@@ -41,23 +53,38 @@ async def test_resolution_service_updates_previous_entity(async_session: AsyncSe
     """
     entity1 = Person(
         name="John Doe",
-        identifiers=[Identifier(type="idref", value="123456789")],
+        identifiers=[
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            )
+        ],
     )
     async_session.add(entity1)
     service = EntityResolutionService(async_session)
     entity2 = Person(
         name="Johnny DoeVariant",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="id_hal_i", value="987654321"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                value="987654321",
+            ),
         ],
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
     assert existing_entity.name == "Johnny DoeVariant"
     assert len(existing_entity.identifiers) == 2
-    assert existing_entity.identifiers[0].type == "idref"
-    assert existing_entity.identifiers[1].type == "id_hal_i"
+    assert (
+        existing_entity.identifiers[0].type
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        existing_entity.identifiers[1].type
+        == ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
     assert existing_entity.identifiers[1].value == "987654321"
 
 
@@ -75,16 +102,27 @@ async def test_resolution_service_respects_identifier_hierarchy(
     :return: None
     """
     settings = get_app_settings()
-    assert settings.identifiers[0].get("key") == "idref"
-    assert settings.identifiers[2].get("key") == "id_hal_i"
+    assert (
+        settings.identifiers[0].get("key")
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        settings.identifiers[2].get("key")
+        == ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
     assert settings.identifiers[0].get("priority") < settings.identifiers[2].get(
         "priority"
     )
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="id_hal_i", value="987654321"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                value="987654321",
+            ),
         ],
     )
     async_session.add(entity1)
@@ -92,15 +130,26 @@ async def test_resolution_service_respects_identifier_hierarchy(
     entity2 = Person(
         name="Johnny DoeVariant",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="id_hal_i", value="999999999"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                value="999999999",
+            ),
         ],
     )
     existing_entity = await service.resolve(entity2)
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 2
-    assert existing_entity.identifiers[0].type == "idref"
-    assert existing_entity.identifiers[1].type == "id_hal_i"
+    assert (
+        existing_entity.identifiers[0].type
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        existing_entity.identifiers[1].type
+        == ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
     assert existing_entity.identifiers[1].value == "999999999"
 
 
@@ -121,24 +170,38 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
     :return: None
     """
     settings = get_app_settings()
-    assert settings.identifiers[0].get("key") == "idref"
-    assert settings.identifiers[1].get("key") == "orcid"
+    assert (
+        settings.identifiers[0].get("key")
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        settings.identifiers[1].get("key")
+        == ContributorIdentifier.IdentifierType.ORCID.value
+    )
     assert settings.identifiers[0].get("priority") < settings.identifiers[1].get(
         "priority"
     )
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="orcid", value="000000000"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="000000000"
+            ),
         ],
     )
     async_session.add(entity1)
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
-            Identifier(type="idref", value="987654321"),
-            Identifier(type="orcid", value="111111111"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="987654321"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="111111111"
+            ),
         ],
     )
     async_session.add(entity2)
@@ -146,17 +209,27 @@ async def test_resolution_service_reassigns_identifier_to_another_entity(
     entity3 = Person(
         name="Johnny DoeVariant",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="orcid", value="111111111"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="111111111"
+            ),
         ],
     )
     existing_entity = await service.resolve(entity3)
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 2
-    assert existing_entity.has_identifier_of_type("idref")
-    assert existing_entity.has_identifier_of_type_and_value("orcid", "111111111")
+    assert existing_entity.has_identifier_of_type(
+        ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.ORCID.value, "111111111"
+    )
     assert len(entity2.identifiers) == 1
-    assert entity2.has_identifier_of_type_and_value("idref", "987654321")
+    assert entity2.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDREF.value, "987654321"
+    )
 
 
 @pytest.mark.asyncio
@@ -172,22 +245,32 @@ async def test_resolution_service_deletes_entity_if_its_loses_is_only_identifier
     and the existing entity with orcid 1 is deleted
     """
     settings = get_app_settings()
-    assert settings.identifiers[0].get("key") == "idref"
-    assert settings.identifiers[1].get("key") == "orcid"
+    assert (
+        settings.identifiers[0].get("key")
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        settings.identifiers[1].get("key")
+        == ContributorIdentifier.IdentifierType.ORCID.value
+    )
     assert settings.identifiers[0].get("priority") < settings.identifiers[1].get(
         "priority"
     )
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
         ],
     )
     async_session.add(entity1)
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
-            Identifier(type="orcid", value="111111111"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="111111111"
+            ),
         ],
     )
     async_session.add(entity2)
@@ -196,15 +279,23 @@ async def test_resolution_service_deletes_entity_if_its_loses_is_only_identifier
     entity3 = Person(
         name="Johnny DoeVariant",
         identifiers=[
-            Identifier(type="idref", value="123456789"),
-            Identifier(type="orcid", value="111111111"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="123456789"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="111111111"
+            ),
         ],
     )
     existing_entity = await service.resolve(entity3)
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 2
-    assert existing_entity.has_identifier_of_type("idref")
-    assert existing_entity.has_identifier_of_type_and_value("orcid", "111111111")
+    assert existing_entity.has_identifier_of_type(
+        ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.ORCID.value, "111111111"
+    )
     assert len(entity2.identifiers) == 0
     assert await async_session.get(Person, entity2_id) is None
 
@@ -216,7 +307,7 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     """
     GIVEN an identifiers configuration file where idref has a lower priority than orcid
     and orcid has a lower priority than id_hal_i
-    and id_hal_i has a lower priority than researcher_id
+    and id_hal_i has a lower priority than researcherid
     and an entity that exists in database with idref 1 and id_hal_i 1
     and another entity that exists in database with idref 2 and orcid 2 and id_hal_i 2
     and another entity that exists in database with orcid 3 and id_hal_i 3
@@ -232,10 +323,22 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     :return: None
     """
     settings = get_app_settings()
-    assert settings.identifiers[0].get("key") == "idref"
-    assert settings.identifiers[1].get("key") == "orcid"
-    assert settings.identifiers[2].get("key") == "id_hal_i"
-    assert settings.identifiers[4].get("key") == "researcher_id"
+    assert (
+        settings.identifiers[0].get("key")
+        == ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        settings.identifiers[1].get("key")
+        == ContributorIdentifier.IdentifierType.ORCID.value
+    )
+    assert (
+        settings.identifiers[2].get("key")
+        == ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
+    assert (
+        settings.identifiers[4].get("key")
+        == ContributorIdentifier.IdentifierType.RESEARCHER_ID.value
+    )
     assert settings.identifiers[0].get("priority") < settings.identifiers[1].get(
         "priority"
     )
@@ -248,8 +351,12 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="id_hal_i", value="1"),
-            Identifier(type="idref", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value, value="1"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
         ],
     )
     async_session.add(entity1)
@@ -257,9 +364,15 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
-            Identifier(type="id_hal_i", value="2"),
-            Identifier(type="idref", value="2"),
-            Identifier(type="orcid", value="2"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value, value="2"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="2"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="2"
+            ),
         ],
     )
     async_session.add(entity2)
@@ -267,8 +380,10 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity3 = Person(
         name="Johnny Doe",
         identifiers=[
-            Identifier(type="id_hal_i", value="3"),
-            Identifier(type="orcid", value="3"),
+            Identifier(type=ContributorIdentifier.IdentifierType.IDHAL_I, value="3"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="3"
+            ),
         ],
     )
     async_session.add(entity3)
@@ -276,7 +391,9 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity4 = Person(
         name="Jenny Doe",
         identifiers=[
-            Identifier(type="researcher_id", value="4"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.RESEARCHER_ID.value, value="4"
+            ),
         ],
     )
     async_session.add(entity4)
@@ -286,24 +403,46 @@ async def test_complex_situation_with_existing_ids_and_conflicts(
     entity5 = Person(
         name="Johnny DoeVariant",
         identifiers=[
-            Identifier(type="id_hal_i", value="3"),
-            Identifier(type="idref", value="1"),
-            Identifier(type="researcher_id", value="4"),
-            Identifier(type="orcid", value="2"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value, value="3"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.RESEARCHER_ID.value, value="4"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="2"
+            ),
         ],
     )
     existing_entity = await service.resolve(entity5)
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 4
-    assert existing_entity.has_identifier_of_type_and_value("idref", "1")
-    assert existing_entity.has_identifier_of_type_and_value("orcid", "2")
-    assert existing_entity.has_identifier_of_type_and_value("id_hal_i", "3")
-    assert existing_entity.has_identifier_of_type_and_value("researcher_id", "4")
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDREF.value, "1"
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.ORCID.value, "2"
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDHAL_I.value, "3"
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.RESEARCHER_ID.value, "4"
+    )
     assert len(entity2.identifiers) == 2
-    assert entity2.has_identifier_of_type_and_value("idref", "2")
-    assert entity2.has_identifier_of_type_and_value("id_hal_i", "2")
+    assert entity2.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDREF.value, "2"
+    )
+    assert entity2.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDHAL_I.value, "2"
+    )
     assert len(entity3.identifiers) == 1
-    assert entity3.has_identifier_of_type_and_value("orcid", "3")
+    assert entity3.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.ORCID.value, "3"
+    )
     assert await async_session.get(Person, entity4_id) is None
 
 
@@ -322,8 +461,12 @@ async def test_resolution_service_removes_nullified_identifiers(
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="id_hal_i", value="1"),
-            Identifier(type="idref", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value, value="1"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
         ],
     )
     async_session.add(entity1)
@@ -331,13 +474,19 @@ async def test_resolution_service_removes_nullified_identifiers(
     entity2 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
         ],
     )
-    existing_entity = await service.resolve(entity2, nullify=["id_hal_i"])
+    existing_entity = await service.resolve(
+        entity2, nullify=[ContributorIdentifier.IdentifierType.IDHAL_I.value]
+    )
     assert existing_entity is not None
     assert len(existing_entity.identifiers) == 1
-    assert existing_entity.has_identifier_of_type_and_value("idref", "1")
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDREF.value, "1"
+    )
 
 
 @pytest.mark.asyncio
@@ -355,7 +504,9 @@ async def test_resolution_updates_person_name(
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
         ],
     )
     async_session.add(entity1)
@@ -363,7 +514,9 @@ async def test_resolution_updates_person_name(
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
-            Identifier(type="idref", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
         ],
     )
     existing_entity = await service.resolve(entity2)
@@ -383,8 +536,12 @@ async def test_resolution_service_does_not_update_identifiers_in_safe_mode(
     entity1 = Person(
         name="John Doe",
         identifiers=[
-            Identifier(type="idref", value="1"),
-            Identifier(type="orcid", value="1"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="1"
+            ),
         ],
     )
     async_session.add(entity1)
@@ -392,11 +549,19 @@ async def test_resolution_service_does_not_update_identifiers_in_safe_mode(
     entity2 = Person(
         name="Jane Doe",
         identifiers=[
-            Identifier(type="idref", value="1"),
-            Identifier(type="orcid", value="2"),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.IDREF.value, value="1"
+            ),
+            Identifier(
+                type=ContributorIdentifier.IdentifierType.ORCID.value, value="2"
+            ),
         ],
     )
     existing_entity = await service.resolve(entity2, identifiers_safe_mode=True)
     assert existing_entity is not None
-    assert existing_entity.has_identifier_of_type_and_value("idref", "1")
-    assert existing_entity.has_identifier_of_type_and_value("orcid", "1")
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.IDREF.value, "1"
+    )
+    assert existing_entity.has_identifier_of_type_and_value(
+        ContributorIdentifier.IdentifierType.ORCID.value, "1"
+    )

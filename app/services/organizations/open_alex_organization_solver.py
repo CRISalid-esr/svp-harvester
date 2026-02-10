@@ -85,10 +85,11 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             )
             org.identifiers.append(
                 OrganizationIdentifier(
-                    type="open_alex", value=organization_information.identifier
+                    type=OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+                    value=organization_information.identifier,
                 )
             )
-            seen = ["open_alex"]
+            seen = [OrganizationIdentifier.IdentifierType.OPEN_ALEX.value]
             new_identifiers = []
             for key, type_ in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
                 if (type_ not in seen) and (key in data.get("ids", {})):

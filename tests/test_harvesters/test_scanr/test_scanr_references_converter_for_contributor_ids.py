@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
@@ -60,15 +61,18 @@ async def test_convert_publication_with_contributor_ids(
             assert contributor.last_name == "Roux"
             assert len(contributor.identifiers) == 3
             assert any(
-                identifier.type == "orcid" and identifier.value == "0000-0002-9981-9598"
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID
+                and identifier.value == "0000-0002-9981-9598"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "idref" and identifier.value == "028738497"
+                identifier.type == ContributorIdentifier.IdentifierType.IDREF
+                and identifier.value == "028738497"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "idhal_s" and identifier.value == "valentine-roux"
+                identifier.type == ContributorIdentifier.IdentifierType.IDHAL_S
+                and identifier.value == "valentine-roux"
                 for identifier in contributor.identifiers
             )
 

@@ -83,7 +83,7 @@ class IdrefOrganizationSolver(OrganizationSolver):
                 value=idref_value,
             )
         ]
-        seen.append("idref")
+        seen.append(OrganizationIdentifier.IdentifierType.IDREF.value)
 
         # Search for more identifiers
         idref_url, idref_uri = self._build_url_from_organization_id(idref_value)

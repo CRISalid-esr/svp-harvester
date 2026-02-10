@@ -5,6 +5,7 @@ from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -217,14 +218,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             last_name = self._get_element(author, "default:surname").text
             ext_identifiers = [
                 {
-                    "type": "scopus",
+                    "type": ContributorIdentifier.IdentifierType.SCOPUS.value,
                     "value": identifier,
                 }
             ]
             if (orcid := self._get_element(author, "default:orcid")) is not None:
                 ext_identifiers.append(
                     {
-                        "type": "orcid",
+                        "type": ContributorIdentifier.IdentifierType.ORCID.value,
                         "value": orcid.text,
                     }
                 )
