@@ -111,7 +111,7 @@ class RorOrganizationSolver(OrganizationSolver):
             data = await response.json()
 
         ror_identifier = OrganizationIdentifier(
-            type="ror",
+            type=OrganizationIdentifier.IdentifierType.ROR.value,
             value=organization_information.identifier,
             extra_information={
                 "geonames_locations": self._flatten_geonames_locations(data),

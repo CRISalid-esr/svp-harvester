@@ -91,8 +91,8 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
             )
             seen = [OrganizationIdentifier.IdentifierType.OPEN_ALEX.value]
             new_identifiers = []
-            for key, type_ in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
-                if (type_ not in seen) and (key in data.get("ids", {})):
+            for key, org_type in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
+                if (org_type not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids", {}).get(key, None)
                     if not code:
                         continue
@@ -101,24 +101,26 @@ class OpenAlexOrganizationSolver(OrganizationSolver):
                             identifiers,
                             seen,
                         ) = await organization_factory.OrganizationFactory.solve_identifier(
-                            OrganizationInformations(identifier=code, source=type_),
+                            OrganizationInformations(
+                                identifier=code, source="openalex"
+                            ),
                             seen,
                         )
                         new_identifiers.extend(identifiers)
                     except (ValueError, DereferencingError):
                         new_identifiers.append(
-                            OrganizationIdentifier(type=type_, value=code)
+                            OrganizationIdentifier(type=org_type, value=code)
                         )
-                        seen.append(type_)
-            for key, type_ in self.IDENTIFIERS_TO_BE_SAVED.items():
-                if (type_ not in seen) and (key in data.get("ids", {})):
+                        seen.append(org_type)
+            for key, org_type in self.IDENTIFIERS_TO_BE_SAVED.items():
+                if (org_type not in seen) and (key in data.get("ids", {})):
                     code = data.get("ids", {}).get(key, None)
                     if not code:
                         continue
                     new_identifiers.append(
-                        OrganizationIdentifier(type=type_, value=code)
+                        OrganizationIdentifier(type=org_type, value=code)
                     )
-                    seen.append(type_)
+                    seen.append(org_type)
             org.identifiers.extend(new_identifiers)
             return org
 

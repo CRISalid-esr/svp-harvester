@@ -83,13 +83,14 @@ class HalOrganizationSolver(OrganizationSolver):
             )
             org.identifiers.append(
                 OrganizationIdentifier(
-                    type="hal", value=organization_information.identifier
+                    type=OrganizationIdentifier.IdentifierType.HAL.value,
+                    value=organization_information.identifier,
                 )
             )
             seen = ["hal"]
             new_identifiers = []
-            for key, source in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
-                if (source not in seen) and (key in data["response"]["docs"][0]):
+            for key, org_type in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
+                if (org_type not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
                     if not code:
                         continue
@@ -98,22 +99,22 @@ class HalOrganizationSolver(OrganizationSolver):
                             identifiers,
                             seen,
                         ) = await organization_factory.OrganizationFactory.solve_identifier(
-                            OrganizationInformations(identifier=code, source=source),
+                            OrganizationInformations(identifier=code, source="hal"),
                             seen,
                         )
                         new_identifiers.extend(identifiers)
                     except (ValueError, DereferencingError):
                         new_identifiers.append(
-                            OrganizationIdentifier(type=source, value=code)
+                            OrganizationIdentifier(type=org_type, value=code)
                         )
-                        seen.append(source)
-            for key, source in self.IDENTIFIERS_TO_BE_SAVED.items():
-                if (source not in seen) and (key in data["response"]["docs"][0]):
+                        seen.append(org_type)
+            for key, org_type in self.IDENTIFIERS_TO_BE_SAVED.items():
+                if (org_type not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
                     new_identifiers.append(
-                        OrganizationIdentifier(type=source, value=code)
+                        OrganizationIdentifier(type=org_type, value=code)
                     )
-                    seen.append(source)
+                    seen.append(org_type)
             org.identifiers.extend(new_identifiers)
             return org
 

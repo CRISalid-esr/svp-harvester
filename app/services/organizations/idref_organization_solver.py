@@ -101,32 +101,32 @@ class IdrefOrganizationSolver(OrganizationSolver):
             concept_graph = Graph().parse(data=xml, format="xml")
             # Search for sameAs identifiers
             for uri in concept_graph.objects(term.URIRef(idref_uri), OWL.sameAs):
-                source, identifier = self._infer_source_and_id_from_uri(uri)
+                org_type, identifier = self._infer_org_type_and_id_from_uri(uri)
                 # we may have several identifiers of the sam kind
-                if source is None or identifier is None:
+                if org_type is None or identifier is None:
                     continue
                 try:
-                    if source in self.IDENTIFIERS_TO_BE_DEREFERENCED:
+                    if org_type in self.IDENTIFIERS_TO_BE_DEREFERENCED:
                         (
                             identifiers,
                             seen,
                         ) = await organization_factory.OrganizationFactory.solve_identifier(
                             OrganizationInformations(
-                                identifier=identifier, source=source
+                                identifier=identifier, source="idref"
                             ),
                             seen,
                         )
                         new_identifiers.extend(identifiers)
-                    elif source in self.IDENTIFIERS_TO_BE_SAVED:
+                    elif org_type in self.IDENTIFIERS_TO_BE_SAVED:
                         new_identifiers.append(
-                            OrganizationIdentifier(type=source, value=identifier)
+                            OrganizationIdentifier(type=org_type, value=identifier)
                         )
-                        seen.append(source)
+                        seen.append(org_type)
                 except (ValueError, DereferencingError):
                     new_identifiers.append(
-                        OrganizationIdentifier(type=source, value=identifier)
+                        OrganizationIdentifier(type=org_type, value=identifier)
                     )
-                    seen.append(source)
+                    seen.append(org_type)
             return new_identifiers, seen
 
     def _build_url_from_organization_id(self, organization_id):
@@ -134,16 +134,20 @@ class IdrefOrganizationSolver(OrganizationSolver):
         url = f"https://{self.URL}{organization_id}.rdf"
         return url, uri
 
-    def _infer_source_and_id_from_uri(self, uri) -> Tuple[str, str]:
+    def _infer_org_type_and_id_from_uri(self, uri) -> Tuple[str, str]:
         uri = re.sub(r"https?://", "", uri)
         if "data.archives-ouvertes.fr" in uri or "data.hal.science" in uri:
-            return "hal", uri.split("/")[-1].replace("#foaf:Organization", "")
+            return OrganizationIdentifier.IdentifierType.IDREF.value, uri.split("/")[
+                -1
+            ].replace("#foaf:Organization", "")
         if "ror.org" in uri:
-            return "ror", uri.split("/")[-1].replace("#foaf:Organization", "")
+            return OrganizationIdentifier.IdentifierType.ROR.value, uri.split("/")[
+                -1
+            ].replace("#foaf:Organization", "")
         if "isni.org" in uri:
-            return "isni", uri.split("/")[-1]
+            return OrganizationIdentifier.IdentifierType.ISNI.value, uri.split("/")[-1]
         if "viaf.org" in uri:
-            return "viaf", uri.split("/")[-1]
+            return OrganizationIdentifier.IdentifierType.VIAF.value, uri.split("/")[-1]
         logger.warning(
             f"Unknown identifier source for uri {uri} in IdrefOrganizationSolver"
         )
