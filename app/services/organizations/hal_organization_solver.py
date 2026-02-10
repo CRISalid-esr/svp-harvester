@@ -89,8 +89,8 @@ class HalOrganizationSolver(OrganizationSolver):
             )
             seen = ["hal"]
             new_identifiers = []
-            for key, org_type in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
-                if (org_type not in seen) and (key in data["response"]["docs"][0]):
+            for key, org_id_type in self.IDENTIFIERS_TO_BE_DEREFERENCED.items():
+                if (org_id_type not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
                     if not code:
                         continue
@@ -105,16 +105,16 @@ class HalOrganizationSolver(OrganizationSolver):
                         new_identifiers.extend(identifiers)
                     except (ValueError, DereferencingError):
                         new_identifiers.append(
-                            OrganizationIdentifier(type=org_type, value=code)
+                            OrganizationIdentifier(type=org_id_type, value=code)
                         )
-                        seen.append(org_type)
-            for key, org_type in self.IDENTIFIERS_TO_BE_SAVED.items():
-                if (org_type not in seen) and (key in data["response"]["docs"][0]):
+                        seen.append(org_id_type)
+            for key, org_id_type in self.IDENTIFIERS_TO_BE_SAVED.items():
+                if (org_id_type not in seen) and (key in data["response"]["docs"][0]):
                     code = data["response"]["docs"][0][key][0]
                     new_identifiers.append(
-                        OrganizationIdentifier(type=org_type, value=code)
+                        OrganizationIdentifier(type=org_id_type, value=code)
                     )
-                    seen.append(org_type)
+                    seen.append(org_id_type)
             org.identifiers.extend(new_identifiers)
             return org
 
