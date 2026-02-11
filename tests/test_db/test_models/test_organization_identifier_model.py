@@ -35,7 +35,10 @@ async def test_organization_identifier_normalizes_ror_url(async_session: AsyncSe
     org = Organization(
         source="scanr", source_identifier="x", name="Test org", type=None
     )
-    ident = OrganizationIdentifier(type="ror", value="https://ror.org/00aycez97")
+    ident = OrganizationIdentifier(
+        type=OrganizationIdentifier.IdentifierType.ROR.value,
+        value="https://ror.org/00aycez97",
+    )
     org.identifiers.append(ident)
 
     async_session.add(org)
@@ -122,7 +125,7 @@ async def test_organization_identifier_persists_extra_information_jsonb(
         source="scanr", source_identifier="x", name="Test org", type=None
     )
     ident = OrganizationIdentifier(
-        type="ror",
+        type=OrganizationIdentifier.IdentifierType.ROR.value,
         value="00aycez97",
         extra_information=payload,
     )

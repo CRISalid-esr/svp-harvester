@@ -3,6 +3,7 @@ from unittest import mock
 from fastapi import HTTPException
 import pytest
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.retrieval import Retrieval
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.idref.idref_harvester import IdrefHarvester
@@ -90,8 +91,15 @@ async def test_retrieval_service_registers_identifiers_matches(
     assert retrieval.entity.name == person_with_name_and_id_hal_s.name
     assert retrieval.entity.get_identifier(
         "idref"
-    ) == person_with_name_and_id_hal_s.get_identifier("idref")
-    assert retrieval.entity.get_identifier("orcid") == orcid_identifier.value
+    ) == person_with_name_and_id_hal_s.get_identifier(
+        ContributorIdentifier.IdentifierType.IDREF.value
+    )
+    assert (
+        retrieval.entity.get_identifier(
+            ContributorIdentifier.IdentifierType.ORCID.value
+        )
+        == orcid_identifier.value
+    )
     assert len(retrieval.entity.identifiers) == 2
     await service.run()
     mock_hal_harvester_is_relevant.assert_called_once()
@@ -115,7 +123,9 @@ async def test_retrieval_service_registers_identifiers_matches_nullify(
     :param person_with_name_and_id_hal_s:
     :return:
     """
-    service = RetrievalService(nullify=["id_hal_s"])
+    service = RetrievalService(
+        nullify=[ContributorIdentifier.IdentifierType.IDHAL_S.value]
+    )
 
     with pytest.raises(HTTPException) as exc_info:
         await service.register(person_with_name_and_id_hal_s)
@@ -123,5 +133,5 @@ async def test_retrieval_service_registers_identifiers_matches_nullify(
     assert exc_info.value.status_code == 422
     assert (
         exc_info.value.detail
-        == "Unprocessable Entity: id_hal_s cannot be declared and nullified at same time"
+        == "Unprocessable Entity: idhals cannot be declared and nullified at same time"
     )

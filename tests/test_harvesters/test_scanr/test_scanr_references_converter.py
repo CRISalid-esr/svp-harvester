@@ -3,6 +3,7 @@ import datetime
 import pytest
 from semver import VersionInfo
 
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
@@ -106,7 +107,8 @@ async def test_convert(scanr_api_publication_cleaned_response):
 
         # NNT identifier must be present and uppercased
         assert any(
-            identifier.type == "nnt" and identifier.value == "2019LYSEM032"
+            identifier.type == ReferenceIdentifier.IdentifierType.NNT.value
+            and identifier.value == "2019LYSEM032"
             for identifier in test_reference.identifiers
         )
 

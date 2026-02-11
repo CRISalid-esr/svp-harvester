@@ -111,7 +111,7 @@ class RorOrganizationSolver(OrganizationSolver):
             data = await response.json()
 
         ror_identifier = OrganizationIdentifier(
-            type="ror",
+            type=OrganizationIdentifier.IdentifierType.ROR.value,
             value=organization_information.identifier,
             extra_information={
                 "geonames_locations": self._flatten_geonames_locations(data),
@@ -122,10 +122,12 @@ class RorOrganizationSolver(OrganizationSolver):
         )
 
         new_identifiers: List[OrganizationIdentifier] = [ror_identifier]
-        seen.append("ror")
+        seen.append(OrganizationIdentifier.IdentifierType.ROR.value)
 
         # Dedup by (type, value)
-        dedup: Set[Tuple[str, str]] = {("ror", ror_identifier.value)}
+        dedup: Set[Tuple[str, str]] = {
+            (OrganizationIdentifier.IdentifierType.ROR, ror_identifier.value)
+        }
 
         for id_type, id_value in self._extract_external_identifiers(data):
             key = (id_type, id_value)

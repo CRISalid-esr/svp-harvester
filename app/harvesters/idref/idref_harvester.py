@@ -10,6 +10,7 @@ from rdflib import URIRef
 from semver import VersionInfo, Version
 
 from app.config import get_app_settings
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.harvesters.exceptions.unexpected_format_exception import (
@@ -51,7 +52,10 @@ class IdrefHarvester(AbstractHarvester):
     MAX_SUDOC_PARALLELISM = 3
     SUDOC_ENABLED = True
 
-    supported_identifier_types = ["idref", "orcid"]
+    supported_identifier_types = [
+        ContributorIdentifier.IdentifierType.IDREF.value,
+        ContributorIdentifier.IdentifierType.ORCID.value,
+    ]
 
     VERSION: Version = VersionInfo.parse("2.0.5")
 

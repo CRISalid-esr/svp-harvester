@@ -31,5 +31,5 @@ class Identifier(Base):
         if new_type not in [
             identifier.get("key") for identifier in settings.identifiers
         ]:
-            raise ValueError("Identifier type is not referenced by settings")
+            raise ValueError(f"Identifier type {new_type} is not supported")
         return new_type

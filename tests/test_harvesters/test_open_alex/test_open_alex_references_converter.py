@@ -4,6 +4,9 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
+from app.db.models.organization_identifier import OrganizationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.open_alex.open_alex_harvester import OpenAlexHarvester
@@ -84,7 +87,10 @@ async def test_convert(open_alex_api_work: dict):
             == expected_contributors_name_rank[contribution.contributor.name]
         )
     affiliations = test_reference.contributions[0].affiliations
-    assert affiliations[0].identifiers[1].type == "ror"
+    assert (
+        affiliations[0].identifiers[1].type
+        == OrganizationIdentifier.IdentifierType.ROR.value
+    )
     assert affiliations[0].identifiers[1].value == "0130frc33"
     assert all(
         identifier.value in expected_reference_identifier
@@ -139,14 +145,16 @@ async def test_convert(open_alex_api_work: dict):
             assert len(contributor.identifiers) == 2
             assert any(
                 [
-                    identifier.type == "orcid"
+                    identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
                     and identifier.value == "0000-0001-5576-2828"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
-                    identifier.type == "open_alex" and identifier.value == "A5019365851"
+                    identifier.type
+                    == ContributorIdentifier.IdentifierType.OPEN_ALEX.value
+                    and identifier.value == "A5019365851"
                     for identifier in contributor.identifiers
                 ]
             )
@@ -316,7 +324,8 @@ async def test_convert_work_with_hal_locations(
         for manifestation in test_reference.manifestations
     )
     assert any(
-        identifier.value == "hal-01655811" and identifier.type == "hal"
+        identifier.value == "hal-01655811"
+        and identifier.type == ReferenceIdentifier.IdentifierType.HAL.value
         for identifier in test_reference.identifiers
     )
 
@@ -345,15 +354,18 @@ async def test_add_reference_identifiers_normalizes_openalex_key(
     await converter.convert(raw_data=result, new_ref=ref)
 
     assert any(
-        i.type == "openalex" and i.value == "https://openalex.org/W2023271753"
+        i.type == ReferenceIdentifier.IdentifierType.OPENALEX.value
+        and i.value == "https://openalex.org/W2023271753"
         for i in ref.identifiers
     )
     assert any(
-        i.type == "doi" and i.value == "10.1103/physrevb.37.785"
+        i.type == ReferenceIdentifier.IdentifierType.DOI.value
+        and i.value == "10.1103/physrevb.37.785"
         for i in ref.identifiers
     )
     assert any(
-        i.type == "pmid" and i.value == "https://pubmed.ncbi.nlm.nih.gov/9944570"
+        i.type == ReferenceIdentifier.IdentifierType.PMID.value
+        and i.value == "https://pubmed.ncbi.nlm.nih.gov/9944570"
         for i in ref.identifiers
     )
 

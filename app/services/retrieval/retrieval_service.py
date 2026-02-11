@@ -37,7 +37,8 @@ class RetrievalService:
             List[str],
             Body(examples=[["hal", "idref", "scanr", "openalex"]]),
         ] = None,
-        nullify: Annotated[List[str], Body(examples=[["id_hal_s"]])] = None,
+        # --PERSON IDENTIFIERS--
+        nullify: Annotated[List[str], Body(examples=[["idhals"]])] = None,
         events: Annotated[
             List[ReferenceEvent.Type], Depends(event_types_or_default)
         ] = None,

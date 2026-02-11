@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.hal.hal_harvester import HalHarvester
 from app.harvesters.hal.hal_references_converter import HalReferencesConverter
@@ -45,40 +46,33 @@ async def test_convert(
             assert contributor.last_name == "Bichet"
             assert len(contributor.identifiers) == 6
             assert any(
-                [
-                    identifier.type == "orcid"
-                    and identifier.value == "0000-0002-3053-9512"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
+                and identifier.value == "0000-0002-3053-9512"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "isni" and identifier.value == "0000000071437032"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == ContributorIdentifier.IdentifierType.ISNI.value
+                and identifier.value == "0000000071437032"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "google_scholar"
-                    and identifier.value == "_88eIccAAAAJ"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type
+                == ContributorIdentifier.IdentifierType.GOOGLE_SCHOLAR.value
+                and identifier.value == "_88eIccAAAAJ"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "idhal_i" and identifier.value == "1288873"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == ContributorIdentifier.IdentifierType.IDHAL_I.value
+                and identifier.value == "1288873"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "idref" and identifier.value == "121561712"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == ContributorIdentifier.IdentifierType.IDREF.value
+                and identifier.value == "121561712"
+                for identifier in contributor.identifiers
             )
             assert any(
-                [
-                    identifier.type == "viaf" and identifier.value == "56924466"
-                    for identifier in contributor.identifiers
-                ]
+                identifier.type == ContributorIdentifier.IdentifierType.VIAF.value
+                and identifier.value == "56924466"
+                for identifier in contributor.identifiers
             )

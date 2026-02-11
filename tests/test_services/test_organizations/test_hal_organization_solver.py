@@ -76,13 +76,26 @@ async def test_hal_solver_happy_path_deref_ror_and_save_ids(monkeypatch):
     from app.services.organizations import organization_factory
 
     deref_identifiers = [
-        OrganizationIdentifier(type="ror", value="00bhwwh42"),
-        OrganizationIdentifier(type="wikidata", value="Q123"),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.ROR.value, value="00bhwwh42"
+        ),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.WIKIDATA.value, value="Q123"
+        ),
     ]
     monkeypatch.setattr(
         organization_factory.OrganizationFactory,
         "solve_identifier",
-        AsyncMock(return_value=(deref_identifiers, ["hal", "ror", "wikidata"])),
+        AsyncMock(
+            return_value=(
+                deref_identifiers,
+                [
+                    OrganizationIdentifier.IdentifierType.HAL.value,
+                    OrganizationIdentifier.IdentifierType.ROR.value,
+                    OrganizationIdentifier.IdentifierType.WIKIDATA.value,
+                ],
+            )
+        ),
     )
 
     solver = HalOrganizationSolver(timeout=1)
@@ -99,19 +112,34 @@ async def test_hal_solver_happy_path_deref_ror_and_save_ids(monkeypatch):
     received_identifiers = {(i.type, i.value) for i in org.identifiers}
 
     # Always has HAL self-id
-    assert ("hal", "217511") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.HAL.value,
+        "217511",
+    ) in received_identifiers
 
     # Saved identifiers
-    assert ("idref", "176967214") in received_identifiers
-    assert ("isni", "0000000122597504") in received_identifiers
     assert (
-        "nns",
+        OrganizationIdentifier.IdentifierType.IDREF.value,
+        "176967214",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.ISNI.value,
+        "0000000122597504",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.RNSR.value,
         "201320506M",
     ) in received_identifiers  # RNSR is mapped to IdentifierType.RNSR.value == "nns"
 
     # Dereferenced identifiers merged
-    assert ("ror", "00bhwwh42") in received_identifiers
-    assert ("wikidata", "Q123") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.ROR.value,
+        "00bhwwh42",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.WIKIDATA.value,
+        "Q123",
+    ) in received_identifiers
 
     # Make sure HAL endpoint called with expected URL
     assert fake_session.get.call_count == 1
@@ -157,7 +185,7 @@ async def test_hal_solver_deref_failure_falls_back_to_raw_identifier(monkeypatch
 
     # fallback keeps the code it extracted (first element)
     # note: OrganizationIdentifier normalizes ror URLs, so this ends up as "00bhwwh42"
-    assert ("ror", "00bhwwh42") in received
+    assert (OrganizationIdentifier.IdentifierType.ROR.value, "00bhwwh42") in received
 
 
 async def test_hal_solver_non_2xx_raises(monkeypatch):
