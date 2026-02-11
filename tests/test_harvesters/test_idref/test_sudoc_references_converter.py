@@ -4,6 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.session import async_session
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -78,7 +79,7 @@ async def test_convert_for_rdf_result(
     )
 
     assert any(
-        identifier.type == "sudoc_ppn" and identifier.value == "193726130"
+        identifier.type == "ppn" and identifier.value == "193726130"
         for identifier in test_reference.identifiers
     )
     assert expected_document_type in [test_reference.document_type[0].label]
@@ -286,7 +287,8 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     )
     # there should be an identifier of type nnt with value 2020UPAST005
     assert any(
-        identifier.type == "nnt" and identifier.value == "2020UPAST005"
+        identifier.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and identifier.value == "2020UPAST005"
         for identifier in test_reference.identifiers
     )
 
@@ -320,7 +322,8 @@ async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_the
 
     # NNT must be extracted even without theses.fr in bibo:uri
     assert any(
-        i.type == "nnt" and i.value == "2020UPAST005"
+        i.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and i.value == "2020UPAST005"
         for i in test_reference.identifiers
     )
 

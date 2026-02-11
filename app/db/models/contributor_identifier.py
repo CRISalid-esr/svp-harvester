@@ -1,5 +1,5 @@
-from enum import Enum
 import re
+from enum import Enum
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, validates, relationship
@@ -15,15 +15,17 @@ class ContributorIdentifier(Base):
     class IdentifierType(Enum):
         """Enum for identifier types"""
 
+        # --PERSON IDENTIFIERS--
         ORCID = "orcid"
-        OPEN_ALEX = "open_alex"
-        IDHAL_I = "idhal_i"
-        IDHAL_S = "idhal_s"
+        OPEN_ALEX = "openalex"
+        IDHAL_I = "idhali"
+        IDHAL_S = "idhals"
         IDREF = "idref"
         SCOPUS = "scopus"
-        GOOGLE_SCHOLAR = "google_scholar"
+        GOOGLE_SCHOLAR = "googlescholar"
         VIAF = "viaf"
         ISNI = "isni"
+        RESEARCHER_ID = "researcherid"
 
     __tablename__ = "contributor_identifier"
 

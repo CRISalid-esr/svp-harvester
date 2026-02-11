@@ -2,7 +2,7 @@
   "name": "John Doe",
   "identifiers": [
     {
-      "type": "scopus_eid",
+      "type": "scopus",
       "value": "123456789"
     }
   ]

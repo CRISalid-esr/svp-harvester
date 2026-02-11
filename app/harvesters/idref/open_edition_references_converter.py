@@ -117,12 +117,12 @@ class OpenEditionReferencesConverter(AbstractReferencesConverter):
             if identifier[1]["scheme"] == "URI":
                 yield ReferenceIdentifier(
                     value=identifier[0],
-                    type="uri",
+                    type=ReferenceIdentifier.IdentifierType.URI.value,
                 )
             elif identifier[1]["scheme"] == "URN" and "urn:doi:" in identifier[0]:
                 yield ReferenceIdentifier(
                     value=identifier[0].replace("urn:doi:", ""),
-                    type="doi",
+                    type=ReferenceIdentifier.IdentifierType.DOI.value,
                 )
 
     async def _add_contributions(self, new_ref: Reference, root: ElementTree) -> None:

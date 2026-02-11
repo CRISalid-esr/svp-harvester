@@ -41,32 +41,32 @@ class HalReferencesConverter(AbstractReferencesConverter):
     Converts raw data from HAL to a normalised Reference object
     """
 
-    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
-        "arxivId_s": "arxiv",
-        "bibcodeId_s": "bibcode",
-        "biorxivId_s": "biorxiv",
-        "cernId_s": "cern",
-        "chemrxivId_s": "chemrxiv",
-        "doiId_s": "doi",
-        "ensamId_s": "ensam",
-        "halId_s": "hal",
-        "inerisId_s": "ineris",
-        "inspireId_s": "inspire",
-        "irdId_s": "ird",
-        "irsteaId_s": "irstea",
-        "irThesaurusId_s": "ir_thesaurus",
-        "meditagriId_s": "meditagri",
-        "nntId_s": "nnt",
-        "okinaId_s": "okina",
-        "oataoId_s": "oatao",
-        "piiId_s": "pii",
-        "ppnId_s": "ppn",
-        "prodinraId_s": "prodinra",
-        "pubmedId_s": "pubmed",
-        "pubmedcentralId_s": "pubmedcentral",
-        "sciencespoId_s": "sciencespo",
-        "swhidId_s": "swhid",
-        "wosId_s": "wos",
+    FIELD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "arxivId_s": ReferenceIdentifier.IdentifierType.ARXIV.value,
+        "bibcodeId_s": ReferenceIdentifier.IdentifierType.BIBCODE.value,
+        "biorxivId_s": ReferenceIdentifier.IdentifierType.BIORXIV.value,
+        "cernId_s": ReferenceIdentifier.IdentifierType.CERN.value,
+        "chemrxivId_s": ReferenceIdentifier.IdentifierType.CHEMRXIV.value,
+        "doiId_s": ReferenceIdentifier.IdentifierType.DOI.value,
+        "ensamId_s": ReferenceIdentifier.IdentifierType.ENSAM.value,
+        "halId_s": ReferenceIdentifier.IdentifierType.HAL.value,
+        "inerisId_s": ReferenceIdentifier.IdentifierType.INERIS.value,
+        "inspireId_s": ReferenceIdentifier.IdentifierType.INSPIRE.value,
+        "irdId_s": ReferenceIdentifier.IdentifierType.IRD.value,
+        "irsteaId_s": ReferenceIdentifier.IdentifierType.IRSTEA.value,
+        "irThesaurusId_s": ReferenceIdentifier.IdentifierType.IRTHESAURUS.value,
+        "meditagriId_s": ReferenceIdentifier.IdentifierType.MEDITAGRI.value,
+        "nntId_s": ReferenceIdentifier.IdentifierType.NNT.value,
+        "okinaId_s": ReferenceIdentifier.IdentifierType.OKINA.value,
+        "oataoId_s": ReferenceIdentifier.IdentifierType.OATAO.value,
+        "piiId_s": ReferenceIdentifier.IdentifierType.PII.value,
+        "ppnId_s": ReferenceIdentifier.IdentifierType.PPN.value,
+        "prodinraId_s": ReferenceIdentifier.IdentifierType.PRODINRA.value,
+        "pubmedId_s": ReferenceIdentifier.IdentifierType.PMID.value,
+        "pubmedcentralId_s": ReferenceIdentifier.IdentifierType.PUBMEDCENTRAL.value,
+        "sciencespoId_s": ReferenceIdentifier.IdentifierType.SCIENCESPO.value,
+        "swhidId_s": ReferenceIdentifier.IdentifierType.SWHID.value,
+        "wosId_s": ReferenceIdentifier.IdentifierType.WOS.value,
     }
 
     @AbstractReferencesConverter.validate_reference
@@ -301,19 +301,25 @@ class HalReferencesConverter(AbstractReferencesConverter):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
             if field in ("linkExtId_s", "europeanProjectCallId_s"):
                 continue
+
             field_data = raw_data[field]
             if not isinstance(field_data, list):
                 field_data = [field_data]
-            for value in field_data:
-                identifier_type = self._identifier_type(field)
-                if identifier_type is not None:
-                    yield ReferenceIdentifier(type=identifier_type, value=value)
 
-    def _identifier_type(self, field):
-        for pattern, identifier_type in self.FIElD_NAME_TO_IDENTIFIER_TYPE.items():
+            identifier_type = self._identifier_type(field)
+            if identifier_type is None:
+                continue
+
+            for value in field_data:
+                if value in (None, ""):
+                    continue
+                yield ReferenceIdentifier(type=identifier_type, value=value)
+
+    def _identifier_type(self, field: str) -> str | None:
+        for pattern, identifier_type in self.FIELD_NAME_TO_IDENTIFIER_TYPE.items():
             if pattern in field:
                 return identifier_type
-        logger.error(f"Unknown identifier type from Hal for field {field}")
+        logger.error("Unknown identifier type from HAL for field %s", field)
         return None
 
     def _titles(self, raw_data):

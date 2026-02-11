@@ -6,6 +6,7 @@ from semver import Version
 from app.db.models.abstract import Abstract
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -40,7 +41,15 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
     Converts raw data from OpenAlex to a normalised Reference object
     """
 
-    REFERENCE_IDENTIFIERS_IGNORE = ["mag"]
+    REFERENCE_IDENTIFIERS_IGNORE = {"mag"}
+
+    # OpenAlex "ids" keys -> DB identifier type strings
+    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "doi": ReferenceIdentifier.IdentifierType.DOI.value,
+        "pmid": ReferenceIdentifier.IdentifierType.PMID.value,
+        "hal": ReferenceIdentifier.IdentifierType.HAL.value,
+        "openalex": ReferenceIdentifier.IdentifierType.OPENALEX.value,
+    }
 
     @AbstractReferencesConverter.validate_reference
     async def convert(self, raw_data: JsonRawResult, new_ref: Reference) -> None:
@@ -183,15 +192,28 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
     async def _add_reference_identifiers(
         self, json_payload: dict
     ) -> AsyncGenerator[ReferenceIdentifier, None]:
-        try:
-            for id_key in json_payload["ids"]:
-                key = "open_alex" if id_key == "openalex" else id_key
-                if id_key not in self.REFERENCE_IDENTIFIERS_IGNORE:
-                    yield ReferenceIdentifier(
-                        type=key, value=json_payload["ids"][id_key]
-                    )
-        except KeyError:
-            yield
+        ids = json_payload.get("ids")
+        if not isinstance(ids, dict):
+            return
+
+        for raw_key, raw_value in ids.items():
+            if raw_key in self.REFERENCE_IDENTIFIERS_IGNORE:
+                continue
+            if raw_value in (None, ""):
+                continue
+
+            key = str(raw_key).strip().lower().replace("_", "")
+            db_type = self.FIElD_NAME_TO_IDENTIFIER_TYPE.get(key)
+
+            if db_type is None:
+                logger.warning(
+                    "OpenAlex: unknown ids key '%s' in payload %s",
+                    raw_key,
+                    json_payload.get("id"),
+                )
+                continue
+
+            yield ReferenceIdentifier(type=db_type, value=str(raw_value).strip())
 
     async def _add_reference_manifestations(
         self, json_payload: dict
@@ -225,14 +247,14 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             orcid = author.get("orcid")
             ext_identifiers = [
                 {
-                    "type": "open_alex",
+                    "type": ContributorIdentifier.IdentifierType.OPEN_ALEX.value,
                     "value": id_open_alex,
                 }
             ]
             if orcid:
                 ext_identifiers.append(
                     {
-                        "type": "orcid",
+                        "type": ContributorIdentifier.IdentifierType.ORCID.value,
                         "value": orcid,
                     }
                 )

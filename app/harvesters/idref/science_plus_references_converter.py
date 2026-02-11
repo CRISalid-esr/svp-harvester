@@ -145,7 +145,9 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             yield Title(value=title.value, language=title.language)
 
     def _add_doi_identifier(self, doi: str):
-        return ReferenceIdentifier(value=doi, type="doi")
+        return ReferenceIdentifier(
+            value=doi, type=ReferenceIdentifier.IdentifierType.DOI.value
+        )
 
     async def _document_type(self, pub_graph, uri):
         cache = {}

@@ -3,6 +3,7 @@ import datetime
 import pytest
 from semver import VersionInfo
 
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
@@ -106,7 +107,8 @@ async def test_convert(scanr_api_publication_cleaned_response):
 
         # NNT identifier must be present and uppercased
         assert any(
-            identifier.type == "nnt" and identifier.value == "2019LYSEM032"
+            identifier.type == ReferenceIdentifier.IdentifierType.NNT.value
+            and identifier.value == "2019LYSEM032"
             for identifier in test_reference.identifiers
         )
 
@@ -243,3 +245,42 @@ async def test_convert_with_date_exception(
         assert "ScanR reference converter cannot create" in caplog.text
 
         assert expected_output in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_convert_normalizes_sudoc_ppn_identifier_type(
+    scanr_api_publication_cleaned_response,
+):
+    """
+    Given ScanR externalIds containing sudoc_ppn and/or sudoc-ppn,
+    Then the converter must persist them as type 'ppn'.
+    """
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
+
+    # Take one doc and force the externalIds to contain both variants
+    doc = scanr_api_publication_cleaned_response[0]
+    doc["_source"]["externalIds"] = [
+        {"type": "sudoc_ppn", "id": "123456789"},
+        {"type": "sudoc-ppn", "id": "987654321"},
+    ]
+
+    result = JsonHarvesterRawResult(
+        source_identifier=doc["_source"].get("id"),
+        payload=doc,
+        formatter_name=ScanrHarvester.FORMATTER_NAME,
+    )
+
+    test_reference = converter_under_tests.build(
+        raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
+    )
+    await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
+
+    assert any(
+        i.type == "ppn" and i.value == "123456789" for i in test_reference.identifiers
+    )
+    assert any(
+        i.type == "ppn" and i.value == "987654321" for i in test_reference.identifiers
+    )
+    assert all(
+        i.type not in ("sudoc_ppn", "sudoc-ppn") for i in test_reference.identifiers
+    )

@@ -8,6 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.title import Title
 from app.harvesters.hal.hal_custom_metadata_schema import HalCustomMetadataSchema
 
@@ -354,4 +355,29 @@ async def test_reference_with_invalid_hal_submit_type_raises():
                 hal_collection_codes=[],
                 hal_submit_type="invalid_type",
             ).model_dump(),
+        )
+
+
+@pytest.mark.asyncio
+async def test_reference_identifier_type_validation(async_session: AsyncSession):
+    """
+    GIVEN a ReferenceIdentifier with an unsupported type
+    WHEN it is added to the session
+    THEN a ValueError is raised
+    """
+    reference = Reference(
+        source_identifier="source_identifier_with_identifiers",
+        harvester="scanr",
+        hash="hash",
+        version=0,
+        titles=[Title(value="Fake scientific article", language="en")],
+    )
+    async_session.add(reference)
+    await async_session.commit()
+
+    with pytest.raises(ValueError, match="Identifier type sudoc_ppn is not supported"):
+        ReferenceIdentifier(
+            reference_id=reference.id,
+            type="sudoc_ppn",
+            value="123456789X",
         )

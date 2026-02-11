@@ -18,7 +18,7 @@ class OrganizationIdentifier(Base):
     class IdentifierType(Enum):
         """Enum for identifier types"""
 
-        OPEN_ALEX = "open_alex"
+        OPEN_ALEX = "openalex"
         HAL = "hal"
         IDREF = "idref"
         VIAF = "viaf"

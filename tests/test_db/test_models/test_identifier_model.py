@@ -35,9 +35,7 @@ async def test_person_cannot_be_given_identifier_of_unknown_type(
     WHEN another identifier with an unknown type is added
     THEN check a validation error is raised
     """
-    with pytest.raises(
-        ValueError, match="Identifier type is not referenced by settings"
-    ):
+    with pytest.raises(ValueError, match="Identifier type unknown is not supported"):
         person_with_name_and_idref_db_model.identifiers.append(
             DbIdentifier(type="unknown", value="123456789")
         )

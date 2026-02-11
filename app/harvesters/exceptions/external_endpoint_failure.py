@@ -2,7 +2,8 @@ import inspect
 import traceback
 from functools import wraps
 from typing import Callable
-from venv import logger
+
+from loguru import logger
 
 
 class ExternalEndpointFailure(Exception):

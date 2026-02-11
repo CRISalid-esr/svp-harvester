@@ -1,9 +1,9 @@
 from enum import Enum
 from typing import AsyncGenerator
-from venv import logger
 
 import aiohttp
 from aiosparql.client import SPARQLClient
+from loguru import logger
 
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
 from app.http.aio_http_client_manager import AioHttpClientManager

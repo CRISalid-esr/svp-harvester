@@ -5,6 +5,7 @@ from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.scopus.scopus_client import ScopusClient
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
@@ -107,11 +108,13 @@ async def test_convert(
             assert contributor is not None
             assert len(contributor.identifiers) == 2
             assert any(
-                identifier.type == "orcid" and identifier.value == "0000-0002-5201-3968"
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
+                and identifier.value == "0000-0002-5201-3968"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "scopus" and identifier.value == "57539748900"
+                identifier.type == ContributorIdentifier.IdentifierType.SCOPUS.value
+                and identifier.value == "57539748900"
                 for identifier in contributor.identifiers
             )
 

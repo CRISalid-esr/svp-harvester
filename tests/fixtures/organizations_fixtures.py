@@ -19,7 +19,11 @@ def fake_hal_organization_solver(organization_id: str) -> DbOrganization:
         source_identifier="000000",
         name="Organization Test",
         type="laboratory",
-        identifiers=[OrganizationIdentifier(type="idref", value="00000000")],
+        identifiers=[
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.IDREF.value, value="00000000"
+            )
+        ],
     )
 
 
@@ -44,8 +48,13 @@ def fake_openalex_organization_solver(organization_id: str) -> DbOrganization:
         name="University of North Carolina at Chapel Hill",
         type="organization",
         identifiers=[
-            OrganizationIdentifier(type="open_alex", value="I114027177"),
-            OrganizationIdentifier(type="ror", value="0130frc33"),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+                value="I114027177",
+            ),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.ROR.value, value="0130frc33"
+            ),
         ],
     )
 
@@ -70,8 +79,13 @@ def fake_idref_organization_with_name_solver() -> DbOrganization:
         source_identifier="scanr_idref_190915757",
         name="Université de Lyon",
         identifiers=[
-            OrganizationIdentifier(type="idref", value="190915757"),
-            OrganizationIdentifier(type="ror", value="01rk35k63"),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.IDREF.value,
+                value="190915757",
+            ),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.ROR.value, value="01rk35k63"
+            ),
         ],
     )
 
@@ -86,8 +100,13 @@ def fake_idref_organization_no_name_solver() -> DbOrganization:
         source_identifier="scanr_idref_190915757",
         name="No ScanR organization name",
         identifiers=[
-            OrganizationIdentifier(type="idref", value="190915757"),
-            OrganizationIdentifier(type="ror", value="01rk35k63"),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.IDREF.value,
+                value="190915757",
+            ),
+            OrganizationIdentifier(
+                type=OrganizationIdentifier.IdentifierType.ROR.value, value="01rk35k63"
+            ),
         ],
     )
 

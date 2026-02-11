@@ -71,10 +71,16 @@ class IdrefBasicReferencesConverter(AbstractReferencesConverter):
         ):
             new_ref.contributions.append(contribution)
 
-        new_ref.identifiers.append(ReferenceIdentifier(value=uri, type="uri"))
+        new_ref.identifiers.append(
+            ReferenceIdentifier(
+                value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+            )
+        )
         for equivalent in dict_payload.get("equivalent", []):
             new_ref.identifiers.append(
-                ReferenceIdentifier(value=equivalent, type="uri")
+                ReferenceIdentifier(
+                    value=equivalent, type=ReferenceIdentifier.IdentifierType.URI.value
+                )
             )
 
     def _fetch_issued_date(self, new_ref, dict_payload, uri):

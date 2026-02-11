@@ -47,8 +47,8 @@ async def main() -> None:
                     "fields": {
                         "name": line[0],
                         "identifiers": [
-                            {"type": "id_hal_s", "value": line[1]},
-                            {"type": "id_hal_i", "value": line[2]},
+                            {"type": "idhals", "value": line[1]},
+                            {"type": "idhali", "value": line[2]},
                             {"type": "idref", "value": idref},
                         ],
                     },

@@ -1,5 +1,6 @@
 from typing import List
 
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -66,6 +67,17 @@ class ContributorDAO(AbstractDAO):
         """
         valid_types = self._get_valid_external_identifier_types()
         contributor = await self.get_by_id(contributor_id)
+
+        invalid_identifiers = [
+            identifier
+            for identifier in (ext_identifiers or [])
+            if identifier["type"] not in valid_types
+        ]
+        for identifier in invalid_identifiers:
+            logger.warning(
+                f"Invalid identifier type '{identifier['type']}' for contributor {contributor_id}. "
+                f"Valid types are: {valid_types}. This identifier will be ignored."
+            )
 
         ext_identifiers = [
             identifier

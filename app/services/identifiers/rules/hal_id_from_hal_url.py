@@ -47,7 +47,9 @@ class HalIdFromHalUrlRule(IdentifierInferenceRule):
         for manifestation in reference.manifestations:
             if hal_id := self.extract_hal_id(manifestation.page):
                 reference.identifiers.append(
-                    ReferenceIdentifier(type="hal", value=hal_id)
+                    ReferenceIdentifier(
+                        type=ReferenceIdentifier.IdentifierType.HAL.value, value=hal_id
+                    )
                 )
                 return
 

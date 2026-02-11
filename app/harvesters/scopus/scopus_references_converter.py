@@ -5,6 +5,7 @@ from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -37,9 +38,9 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
     Converts raw data from Scopus API to a normalised Reference Object
     """
 
-    FIELD_NAME_IDENTIFIER = {
-        "prism:doi": "doi",
-        "default:pubmed-id": "pubmed",
+    FIELD_NAME_TO_IDENTIFIER_TYPE = {
+        "prism:doi": ReferenceIdentifier.IdentifierType.DOI.value,
+        "default:pubmed-id": ReferenceIdentifier.IdentifierType.PUBMEDCENTRAL.value,
     }
 
     @AbstractReferencesConverter.validate_reference
@@ -217,14 +218,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             last_name = self._get_element(author, "default:surname").text
             ext_identifiers = [
                 {
-                    "type": "scopus",
+                    "type": ContributorIdentifier.IdentifierType.SCOPUS.value,
                     "value": identifier,
                 }
             ]
             if (orcid := self._get_element(author, "default:orcid")) is not None:
                 ext_identifiers.append(
                     {
-                        "type": "orcid",
+                        "type": ContributorIdentifier.IdentifierType.ORCID.value,
                         "value": orcid.text,
                     }
                 )
@@ -254,11 +255,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             yield await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
     async def _identifiers(self, entry: Element):
-        for key_identifier, type_identifier in self.FIELD_NAME_IDENTIFIER.items():
-            identifier = self._get_element(entry, key_identifier)
+        for (
+            identifier_key,
+            identifier_type,
+        ) in self.FIELD_NAME_TO_IDENTIFIER_TYPE.items():
+            identifier = self._get_element(entry, identifier_key)
             if identifier is not None:
                 yield ReferenceIdentifier(
-                    type=type_identifier,
+                    type=identifier_type,
                     value=identifier.text,
                 )
 
