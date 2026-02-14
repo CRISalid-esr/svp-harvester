@@ -10,7 +10,7 @@ class SessionStorage {
     "idref",
     "orcid",
     "researcherid",
-    "scopuseid",
+    "scopus",
     "arxiv",
     "pubmed",
   ];
