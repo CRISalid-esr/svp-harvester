@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -15,14 +16,16 @@ async def test_convert_publication_with_book(scanr_publication_doc_book):
     """
     Test that the converter will return normalised references with book information
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_title = "Bulletin de la Société préhistorique française"
     expected_publisher = "Société préhistorique française"
 
     for doc in scanr_publication_doc_book:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(

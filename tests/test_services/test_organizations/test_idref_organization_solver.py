@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.errors.dereferencing_error import DereferencingError
@@ -85,7 +86,9 @@ async def test_idref_solver_identifier_normalizes_scanr_prefix(
     monkeypatch.setattr(
         organization_factory.OrganizationFactory,
         "solve_identifier",
-        AsyncMock(return_value=([], ["idref"])),
+        AsyncMock(
+            return_value=([], [OrganizationIdentifier.IdentifierType.IDREF.value])
+        ),
     )
 
     solver = IdrefOrganizationSolver(timeout=1)
@@ -99,8 +102,11 @@ async def test_idref_solver_identifier_normalizes_scanr_prefix(
     )
 
     received_identifiers = {(i.type, i.value) for i in identifiers}
-    assert ("idref", "027361802") in received_identifiers
-    assert "idref" in seen
+    assert (
+        OrganizationIdentifier.IdentifierType.IDREF.value,
+        "027361802",
+    ) in received_identifiers
+    assert OrganizationIdentifier.IdentifierType.IDREF.value in seen
 
     # ensure request URL uses .rdf
     assert fake_session.get.call_count == 1
@@ -129,8 +135,12 @@ async def test_idref_solver_saves_hal_isni_viaf_and_derefs_ror(
     from app.services.organizations import organization_factory
 
     deref_identifiers = [
-        OrganizationIdentifier(type="ror", value="002t25c44"),
-        OrganizationIdentifier(type="wikidata", value="Q12345"),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.ROR.value, value="002t25c44"
+        ),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.WIKIDATA.value, value="Q12345"
+        ),
     ]
     monkeypatch.setattr(
         organization_factory.OrganizationFactory,
@@ -140,10 +150,10 @@ async def test_idref_solver_saves_hal_isni_viaf_and_derefs_ror(
             return_value=(
                 deref_identifiers,
                 [
-                    "idref",
-                    "hal",
-                    "ror",
-                    "wikidata",
+                    OrganizationIdentifier.IdentifierType.IDREF.value,
+                    OrganizationIdentifier.IdentifierType.HAL.value,
+                    OrganizationIdentifier.IdentifierType.ROR.value,
+                    OrganizationIdentifier.IdentifierType.WIKIDATA.value,
                 ],
             )
         ),
@@ -162,23 +172,41 @@ async def test_idref_solver_saves_hal_isni_viaf_and_derefs_ror(
     received_identifiers = {(i.type, i.value) for i in identifiers}
 
     # base
-    assert ("idref", "027361802") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.IDREF.value,
+        "027361802",
+    ) in received_identifiers
 
     # saved identifiers (from sameAs)
-    assert ("hal", "7550") in received_identifiers
-    assert ("isni", "000000012173743X") in received_identifiers
-    assert ("viaf", "143080305") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.HAL.value,
+        "7550",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.ISNI.value,
+        "000000012173743X",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.VIAF.value,
+        "143080305",
+    ) in received_identifiers
 
     # deref merged
-    assert ("ror", "002t25c44") in received_identifiers
-    assert ("wikidata", "Q12345") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.ROR.value,
+        "002t25c44",
+    ) in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.WIKIDATA.value,
+        "Q12345",
+    ) in received_identifiers
 
     # sanity on seen
-    assert "idref" in seen
-    assert "ror" in seen  # after deref
-    assert "hal" in seen
-    assert "isni" in seen
-    assert "viaf" in seen
+    assert OrganizationIdentifier.IdentifierType.IDREF.value in seen
+    assert OrganizationIdentifier.IdentifierType.ROR.value in seen  # after deref
+    assert OrganizationIdentifier.IdentifierType.HAL.value in seen
+    assert OrganizationIdentifier.IdentifierType.ISNI.value in seen
+    assert OrganizationIdentifier.IdentifierType.VIAF.value in seen
 
 
 @pytest.mark.asyncio
@@ -218,7 +246,10 @@ async def test_idref_solver_ror_deref_failure_falls_back_to_raw_ror(
     )
 
     received_identifiers = {(i.type, i.value) for i in identifiers}
-    assert ("ror", "002t25c44") in received_identifiers
+    assert (
+        OrganizationIdentifier.IdentifierType.ROR.value,
+        "002t25c44",
+    ) in received_identifiers
 
 
 @pytest.mark.asyncio

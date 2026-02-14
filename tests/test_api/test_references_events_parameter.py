@@ -75,7 +75,7 @@ async def test_fetch_references_async_with_all_event_types(  # pylint: disable=t
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        # filter harvestings by harvester 'hal'
+        # filter harvestings by harvester "hal"
         hal_json_harvesting = [
             h for h in json_response["harvestings"] if h["harvester"] == "hal"
         ][0]
@@ -115,7 +115,7 @@ async def test_fetch_references_async_with_all_event_types(  # pylint: disable=t
         response = test_client.get(retrieval_url)
         assert response.status_code == 200
         json_response = response.json()
-        # filter harvestings by harvester 'hal'
+        # filter harvestings by harvester "hal"
         hal_json_harvesting = [
             h for h in json_response["harvestings"] if h["harvester"] == "hal"
         ][0]

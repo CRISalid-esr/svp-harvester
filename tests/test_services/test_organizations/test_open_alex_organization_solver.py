@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import pytest
 from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from app.db.models.organization_identifier import OrganizationIdentifier
 from app.services.errors.dereferencing_error import DereferencingError
@@ -89,13 +90,27 @@ async def test_openalex_solver_happy_path_deref_ror(monkeypatch, openalex_payloa
     from app.services.organizations import organization_factory
 
     deref_identifiers = [
-        OrganizationIdentifier(type="ror", value="00bhwwh42"),
-        OrganizationIdentifier(type="wikidata", value="Q999"),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.ROR.value,
+            value="00bhwwh42",
+        ),
+        OrganizationIdentifier(
+            type=OrganizationIdentifier.IdentifierType.WIKIDATA.value, value="Q999"
+        ),
     ]
     monkeypatch.setattr(
         organization_factory.OrganizationFactory,
         "solve_identifier",
-        AsyncMock(return_value=(deref_identifiers, ["open_alex", "ror", "wikidata"])),
+        AsyncMock(
+            return_value=(
+                deref_identifiers,
+                [
+                    OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
+                    OrganizationIdentifier.IdentifierType.ROR.value,
+                    OrganizationIdentifier.IdentifierType.WIKIDATA.value,
+                ],
+            )
+        ),
     )
 
     solver = OpenAlexOrganizationSolver(timeout=1)
@@ -103,11 +118,11 @@ async def test_openalex_solver_happy_path_deref_ror(monkeypatch, openalex_payloa
         OrganizationInformations(
             name="Sociétés, Acteurs, Gouvernement en Europe",
             identifier="https://openalex.org/I4210091016",
-            source="open_alex",
+            source="openalex",
         )
     )
 
-    assert org.source == "open_alex"
+    assert org.source == "openalex"
     assert org.source_identifier == "https://openalex.org/I4210091016"
     assert org.name == "Sociétés, Acteurs, Gouvernement en Europe"
     assert org.type == "laboratory"  # facility -> laboratory mapping in TYPE_MAPPING
@@ -116,13 +131,13 @@ async def test_openalex_solver_happy_path_deref_ror(monkeypatch, openalex_payloa
 
     # Always has OpenAlex self-id added explicitly
     assert (
-        "open_alex",
+        OrganizationIdentifier.IdentifierType.OPEN_ALEX.value,
         "I4210091016",
     ) in received  # normalized by OrganizationIdentifier regex
 
     # Deep deref merged
-    assert ("ror", "00bhwwh42") in received
-    assert ("wikidata", "Q999") in received
+    assert (OrganizationIdentifier.IdentifierType.ROR.value, "00bhwwh42") in received
+    assert (OrganizationIdentifier.IdentifierType.WIKIDATA.value, "Q999") in received
 
     # Ensure OpenAlex endpoint called with the ID part only
     assert fake_session.get.call_count == 1
@@ -159,13 +174,13 @@ async def test_openalex_solver_deref_failure_falls_back_to_raw_ror(
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
 
     got = {(i.type, i.value) for i in org.identifiers}
     # normalized by regex
-    assert ("ror", "00bhwwh42") in got
+    assert (OrganizationIdentifier.IdentifierType.ROR.value, "00bhwwh42") in got
 
 
 @pytest.mark.asyncio
@@ -188,7 +203,7 @@ async def test_openalex_solver_non_2xx_raises(monkeypatch, openalex_payload):
     with pytest.raises(DereferencingError):
         await solver.solve(
             OrganizationInformations(
-                identifier="https://openalex.org/I4210091016", source="open_alex"
+                identifier="https://openalex.org/I4210091016", source="openalex"
             )
         )
 
@@ -217,7 +232,7 @@ async def test_openalex_solver_missing_display_name_uses_default(
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
     assert org.name == "No OpenAlex organization name"
@@ -253,20 +268,22 @@ async def test_openalex_solver_should_save_ids_openalex_and_ror(
     monkeypatch.setattr(
         organization_factory.OrganizationFactory,
         "solve_identifier",
-        AsyncMock(return_value=([], ["open_alex"])),
+        AsyncMock(
+            return_value=([], [OrganizationIdentifier.IdentifierType.OPEN_ALEX.value])
+        ),
     )
 
     solver = OpenAlexOrganizationSolver(timeout=1)
     org = await solver.solve(
         OrganizationInformations(
-            identifier="https://openalex.org/I4210091016", source="open_alex"
+            identifier="https://openalex.org/I4210091016", source="openalex"
         )
     )
 
     got = {(i.type, i.value) for i in org.identifiers}
 
     # self identifier is added regardless
-    assert ("open_alex", "I4210091016") in got
+    assert (OrganizationIdentifier.IdentifierType.OPEN_ALEX.value, "I4210091016") in got
 
     # the "save ids" loop SHOULD add ror too (after fixing mapping)
-    assert ("ror", "00bhwwh42") in got
+    assert (OrganizationIdentifier.IdentifierType.ROR.value, "00bhwwh42") in got

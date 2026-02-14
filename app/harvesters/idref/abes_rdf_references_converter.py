@@ -82,7 +82,9 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
 
     # pylint: disable=unused-argument
     def _add_reference_identifiers(self, pub_graph, uri):
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
 
     def _abstracts(self, pub_graph, uri):
         abstract: Literal
@@ -101,7 +103,7 @@ class AbesRDFReferencesConverter(AbstractReferencesConverter):
     def _resolve_contributor(self, identifier):
         raise NotImplementedError()
 
-    @abstractmethod
+    # overriden from AbstractReferencesConverter : force child class to implement source
     def _get_source(self):
         raise NotImplementedError()
 

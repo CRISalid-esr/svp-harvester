@@ -8,8 +8,6 @@ class SciencePlusDocumentTypeConverter(AbstractDocumentTypeConverter):
     Converts raw data from SciencePlus to a normalised DocumentType object
     """
 
-    HARVESTER = "SciencePlus"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

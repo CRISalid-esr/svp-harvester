@@ -1,3 +1,4 @@
+# --HARVESTER PLATFORM IDENTIFIERS--
 - name: idref
   module: app.harvesters.idref.idref_harvester_factory
   class: IdrefHarvesterFactory

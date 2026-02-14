@@ -2,8 +2,10 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -31,11 +33,13 @@ async def test_convert_publication_with_contributor_ids(
     :param scanr_publication_doc_with_journal_with_title:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     doc = scanr_publication_doc_with_journal_with_title[0]
     result = JsonHarvesterRawResult(
-        source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+        source_identifier=doc.get("_id"),
+        payload=doc,
+        formatter_name=ScanrHarvester.FORMATTER_NAME,
     )
 
     test_reference = converter_under_tests.build(
@@ -57,15 +61,18 @@ async def test_convert_publication_with_contributor_ids(
             assert contributor.last_name == "Roux"
             assert len(contributor.identifiers) == 3
             assert any(
-                identifier.type == "orcid" and identifier.value == "0000-0002-9981-9598"
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
+                and identifier.value == "0000-0002-9981-9598"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "idref" and identifier.value == "028738497"
+                identifier.type == ContributorIdentifier.IdentifierType.IDREF.value
+                and identifier.value == "028738497"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "idhal_s" and identifier.value == "valentine-roux"
+                identifier.type == ContributorIdentifier.IdentifierType.IDHAL_S.value
+                and identifier.value == "valentine-roux"
                 for identifier in contributor.identifiers
             )
 
@@ -78,13 +85,13 @@ async def test_convert_publication_with_anon_contributor_id(
     :param scanr_publication_doc_with_anon_author:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     doc = scanr_publication_doc_with_anon_author[0]
     result = JsonHarvesterRawResult(
         source_identifier=doc.get("_id"),
         payload=doc,
-        formatter_name="SCANR",
+        formatter_name=ScanrHarvester.FORMATTER_NAME,
     )
 
     test_reference = converter_under_tests.build(

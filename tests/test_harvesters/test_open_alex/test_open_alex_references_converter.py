@@ -4,8 +4,12 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.contributor_identifier import ContributorIdentifier
+from app.db.models.organization_identifier import OrganizationIdentifier
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.session import async_session
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.open_alex.open_alex_harvester import OpenAlexHarvester
 from app.harvesters.open_alex.open_alex_references_converter import (
     OpenAlexReferencesConverter,
 )
@@ -14,7 +18,7 @@ from app.harvesters.open_alex.open_alex_references_converter import (
 @pytest.mark.asyncio
 async def test_convert(open_alex_api_work: dict):
     """Test that the converter will return normalised references"""
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     expected_title = (
         "Development of the Colle-Salvetti "
@@ -26,7 +30,7 @@ async def test_convert(open_alex_api_work: dict):
     expected_document_type = "Article"
     expected_subjects = ["Test concept", "Concept de test", "Concepto de test"]
     expected_id = "https://openalex.org/W2023271753"
-    expected_source_contributor = "open_alex"
+    expected_source_contributor = "openalex"
     expected_contributors_name_rank = {
         "Chengteh Lee": 1,
         "Weitao Yang": 2,
@@ -36,7 +40,7 @@ async def test_convert(open_alex_api_work: dict):
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
 
     expected_reference_identifier = [
@@ -51,7 +55,7 @@ async def test_convert(open_alex_api_work: dict):
     expected_volume = "37"
     expected_issue_number = ["237"]
     expected_issue_source_identifier = (
-        "https://openalex.org/S4210190682-37-237-OpenAlex"
+        "https://openalex.org/S4210190682-37-237-openalex"
     )
     expected_publisher = "American Physical Society"
     expected_issn = "2469-9896"
@@ -66,7 +70,7 @@ async def test_convert(open_alex_api_work: dict):
     await converter_under_tests.convert(raw_data=result, new_ref=test_reference)
 
     assert test_reference.source_identifier == expected_id
-    assert test_reference.harvester == "OpenAlex"
+    assert test_reference.harvester == "openalex"
     assert test_reference.titles[0].value == expected_title
     assert expected_abstract in test_reference.abstracts[0].value
     assert test_reference.document_type[0].label == expected_document_type
@@ -83,7 +87,10 @@ async def test_convert(open_alex_api_work: dict):
             == expected_contributors_name_rank[contribution.contributor.name]
         )
     affiliations = test_reference.contributions[0].affiliations
-    assert affiliations[0].identifiers[1].type == "ror"
+    assert (
+        affiliations[0].identifiers[1].type
+        == OrganizationIdentifier.IdentifierType.ROR.value
+    )
     assert affiliations[0].identifiers[1].value == "0130frc33"
     assert all(
         identifier.value in expected_reference_identifier
@@ -138,14 +145,16 @@ async def test_convert(open_alex_api_work: dict):
             assert len(contributor.identifiers) == 2
             assert any(
                 [
-                    identifier.type == "orcid"
+                    identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
                     and identifier.value == "0000-0001-5576-2828"
                     for identifier in contributor.identifiers
                 ]
             )
             assert any(
                 [
-                    identifier.type == "open_alex" and identifier.value == "A5019365851"
+                    identifier.type
+                    == ContributorIdentifier.IdentifierType.OPEN_ALEX.value
+                    and identifier.value == "A5019365851"
                     for identifier in contributor.identifiers
                 ]
             )
@@ -163,11 +172,11 @@ async def test_convert_work_with_various_locations(
     :param open_alex_work_with_various_locations:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_various_locations["id"],
         payload=open_alex_work_with_various_locations,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -237,14 +246,14 @@ async def test_convert_with_date_exception(
     caplog,
 ):
     """test that converter will raise an error when date is in invalid format"""
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     open_alex_api_work[field_tested] = tested_value
 
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
 
     expected_id = "https://openalex.org/W2023271753"
@@ -270,7 +279,7 @@ async def test_convert_without_issue_number(open_alex_api_work: dict):
     :param open_alex_api_work:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
 
     # set None as biblio.issue value
     open_alex_api_work["biblio"]["issue"] = None
@@ -278,7 +287,7 @@ async def test_convert_without_issue_number(open_alex_api_work: dict):
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_api_work["id"],
         payload=open_alex_api_work,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -299,11 +308,11 @@ async def test_convert_work_with_hal_locations(
     :param open_alex_work_with_hal_locations:
     :return:
     """
-    converter_under_tests = OpenAlexReferencesConverter()
+    converter_under_tests = OpenAlexReferencesConverter(name="openalex")
     result = JsonHarvesterRawResult(
         source_identifier=open_alex_work_with_hal_locations["id"],
         payload=open_alex_work_with_hal_locations,
-        formatter_name="OPEN_ALEX",
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
     )
     test_reference = converter_under_tests.build(
         raw_data=result, harvester_version=VersionInfo.parse("0.0.0")
@@ -315,6 +324,50 @@ async def test_convert_work_with_hal_locations(
         for manifestation in test_reference.manifestations
     )
     assert any(
-        identifier.value == "hal-01655811" and identifier.type == "hal"
+        identifier.value == "hal-01655811"
+        and identifier.type == ReferenceIdentifier.IdentifierType.HAL.value
         for identifier in test_reference.identifiers
     )
+
+
+@pytest.mark.asyncio
+async def test_add_reference_identifiers_normalizes_openalex_key(
+    open_alex_api_work: dict,
+):
+    converter = OpenAlexReferencesConverter(name="openalex")
+
+    open_alex_api_work["ids"] = {
+        "open_alex": "https://openalex.org/W2023271753",  # underscore variant
+        "doi": "10.1103/physrevb.37.785",
+        "pmid": "https://pubmed.ncbi.nlm.nih.gov/9944570",
+        "mag": "12345",  # ignored
+        "weird_id": "zzz",  # unknown -> ignored
+    }
+
+    result = JsonHarvesterRawResult(
+        source_identifier=open_alex_api_work["id"],
+        payload=open_alex_api_work,
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
+    )
+
+    ref = converter.build(raw_data=result, harvester_version=VersionInfo.parse("0.0.0"))
+    await converter.convert(raw_data=result, new_ref=ref)
+
+    assert any(
+        i.type == ReferenceIdentifier.IdentifierType.OPENALEX.value
+        and i.value == "https://openalex.org/W2023271753"
+        for i in ref.identifiers
+    )
+    assert any(
+        i.type == ReferenceIdentifier.IdentifierType.DOI.value
+        and i.value == "10.1103/physrevb.37.785"
+        for i in ref.identifiers
+    )
+    assert any(
+        i.type == ReferenceIdentifier.IdentifierType.PUBMED.value
+        and i.value == "https://pubmed.ncbi.nlm.nih.gov/9944570"
+        for i in ref.identifiers
+    )
+
+    assert all(i.type != "mag" for i in ref.identifiers)
+    assert all(i.type != "weird_id" for i in ref.identifiers)

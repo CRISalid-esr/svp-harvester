@@ -71,6 +71,9 @@ class AbstractReferencesConverter(ABC):
         identifier: str | None = None
         ext_identifiers: List[dict[str, str]] | None = None
 
+    def __init__(self, name: str):
+        self.name = name
+
     async def _contributions(
         self,
         contribution_informations: List[ContributionInformations],
@@ -193,7 +196,7 @@ class AbstractReferencesConverter(ABC):
         :return: Normalised Reference object with basic information
         """
         new_ref = Reference()
-        new_ref.harvester = self._harvester()
+        new_ref.harvester = self._harvester_name()
         new_ref.source_identifier = str(raw_data.source_identifier)
         new_ref.harvester_version = str(harvester_version)
         new_ref.hash = self.compute_hash(
@@ -214,9 +217,12 @@ class AbstractReferencesConverter(ABC):
             raw_data=raw_data, hash_dict=self.hash_keys(harvester_version)
         )
 
-    @abstractmethod
-    def _harvester(self) -> str:
-        raise NotImplementedError
+    def _harvester_name(self) -> str:
+        return self.name
+
+    def _get_source(self) -> str:
+        # source same if by default the same as harvester name, but can be overridden if needed
+        return self._harvester_name()
 
     @validate_reference
     @abstractmethod

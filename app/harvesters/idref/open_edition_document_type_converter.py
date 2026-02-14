@@ -8,8 +8,6 @@ class OpenEditionDocumentTypeConverter(AbstractDocumentTypeConverter):
     Use mapping table to convert Open Edition document type to loc document type values
     """
 
-    HARVESTER = "Open_Edition"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

@@ -72,8 +72,7 @@ def _publish_requests(args):
                     "identifiers": [
                         {"type": key, "value": row[key]}
                         for key in row
-                        if key
-                        in ["idref", "id_hal_i", "id_hal_s", "orcid", "scopus_eid"]
+                        if key in ["idref", "idhali", "idhals", "orcid", "scopus"]
                         and row[key]
                     ],
                 },

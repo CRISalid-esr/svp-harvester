@@ -8,11 +8,11 @@ class HalHarvesterFactory(AbstractHarvesterFactory):
     """Idref harvester factory"""
 
     @classmethod
-    def harvester(cls) -> HalHarvester:
-        """Return IdrefHarvester instance"""
-        return HalHarvester(converter=cls.converter())
+    def harvester(cls, name: str) -> HalHarvester:
+        """Return HalHarvester instance"""
+        return HalHarvester(converter=cls.converter(name))
 
     @classmethod
-    def converter(cls) -> AbstractReferencesConverter:
+    def converter(cls, name: str) -> AbstractReferencesConverter:
         """Return HalReferencesConverter instance"""
-        return HalReferencesConverter()
+        return HalReferencesConverter(name)

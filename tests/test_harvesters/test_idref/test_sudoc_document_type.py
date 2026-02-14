@@ -23,4 +23,4 @@ def test_unknown_sudoc_document_type(caplog):
     document_type = "UNKNOWN"
     convert = SudocDocumentTypeConverter().convert(document_type)
     assert convert == ("http://data.crisalid.org/ref/document_types/unknown", "Unknown")
-    assert f"Unknown Sudoc document type: {document_type}" in caplog.text
+    assert f"Unknown document type: {document_type}" in caplog.text

@@ -8,8 +8,6 @@ class ScopusDocumentTypeConverter(AbstractDocumentTypeConverter):
     Document type converter for Scopus
     """
 
-    HARVESTER = "Scopus"
-
     BIBO_NAMESPACE = "http://purl.org/ontology/bibo/"
     FABIO_NAMESPACE = "http://purl.org/spar/fabio/"
     COAR_NAMESPACE = "http://purl.org/coar/resource_type/"

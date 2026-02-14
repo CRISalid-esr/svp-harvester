@@ -88,7 +88,7 @@ async def test_idref_harvester_takes_sudoc_doc_from_cache(
     settings = get_app_settings()
     settings.third_api_caching_enabled = True
 
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)
@@ -136,7 +136,7 @@ async def test_idref_harvester_puts_sudoc_reponse_in_cache(
     settings = get_app_settings()
     settings.third_api_caching_enabled = True
 
-    harvester = IdrefHarvester(converter=IdrefReferencesConverter())
+    harvester = IdrefHarvester(converter=IdrefReferencesConverter(name="idref"))
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)

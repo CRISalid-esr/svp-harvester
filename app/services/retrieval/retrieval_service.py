@@ -33,9 +33,12 @@ class RetrievalService:
         background_tasks: BackgroundTasks = None,
         identifiers_safe_mode: Annotated[bool, Body()] = False,
         harvesters: Annotated[
-            List[str], Body(examples=[["hal", "idref", "scanr", "openalex"]])
+            # --HARVESTER PLATFORM IDENTIFIERS--
+            List[str],
+            Body(examples=[["hal", "idref", "scanr", "openalex"]]),
         ] = None,
-        nullify: Annotated[List[str], Body(examples=[["id_hal_s"]])] = None,
+        # --PERSON IDENTIFIERS--
+        nullify: Annotated[List[str], Body(examples=[["idhals"]])] = None,
         events: Annotated[
             List[ReferenceEvent.Type], Depends(event_types_or_default)
         ] = None,
@@ -108,7 +111,9 @@ class RetrievalService:
                 harvester_config["module"], harvester_config["class"]
             )
             self.harvesters |= {
-                f"{harvester_config['name']}": factory_class.harvester()
+                f"{harvester_config['name']}": factory_class.harvester(
+                    harvester_config["name"]
+                )
             }
 
     @staticmethod

@@ -8,8 +8,6 @@ class ScanrDocumentTypeConverter(AbstractDocumentTypeConverter):
     Use mapping table ton convert scanr document type values to loc document type values
     """
 
-    HARVESTER = "SCANR"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

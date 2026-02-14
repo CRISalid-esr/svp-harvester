@@ -2,6 +2,7 @@ import pytest
 from semver import VersionInfo
 
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult
+from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 
 
@@ -50,13 +51,15 @@ def fixture_scanr_publication_doc_with_wikidata_domains(
 async def test_convert_publication_with_keywords(
     scanr_publication_doc_with_keywords_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [(None, "Efficacité énergétique")]
 
     for doc in scanr_publication_doc_with_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -83,7 +86,7 @@ async def test_convert_publication_with_identical_keywords(
     :param scanr_publication_doc_with_identical_keywords_domains:
     :return:
     """
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [
         ("en", "Test concept"),
@@ -94,7 +97,9 @@ async def test_convert_publication_with_identical_keywords(
 
     for doc in scanr_publication_doc_with_identical_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -113,13 +118,15 @@ async def test_convert_publication_with_identical_keywords(
 async def test_convert_publication_with_sudoc(
     scanr_publication_doc_with_sudoc_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [(None, "Internet des objets")]
 
     for doc in scanr_publication_doc_with_sudoc_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -138,13 +145,15 @@ async def test_convert_publication_with_sudoc(
 async def test_convert_publication_with_identical_sudoc_andkeywords(
     scanr_publication_doc_with_identical_sudoc_and_keywords_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [("fr", "Efficacité énergétique")]
 
     for doc in scanr_publication_doc_with_identical_sudoc_and_keywords_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(
@@ -163,7 +172,7 @@ async def test_convert_publication_with_identical_sudoc_andkeywords(
 async def test_convert_publication_with_wikidata(
     scanr_publication_doc_with_wikidata_domains,
 ):
-    converter_under_tests = ScanrReferencesConverter()
+    converter_under_tests = ScanrReferencesConverter(name="scanr")
 
     expected_subjects = [
         ("en", "Test concept"),
@@ -173,7 +182,9 @@ async def test_convert_publication_with_wikidata(
 
     for doc in scanr_publication_doc_with_wikidata_domains:
         result = JsonHarvesterRawResult(
-            source_identifier=doc.get("_id"), payload=doc, formatter_name="SCANR"
+            source_identifier=doc.get("_id"),
+            payload=doc,
+            formatter_name=ScanrHarvester.FORMATTER_NAME,
         )
 
         test_reference = converter_under_tests.build(

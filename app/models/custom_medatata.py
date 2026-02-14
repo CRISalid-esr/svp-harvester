@@ -7,4 +7,4 @@ def register_custom_metadata_schemas():
     Register custom metadata schemas for HAL.
     :return: None
     """
-    Reference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
+    Reference.register_custom_metadata_schema("hal", HalCustomMetadataSchema)

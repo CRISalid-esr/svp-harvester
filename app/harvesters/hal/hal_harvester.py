@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 from semver import VersionInfo, Version
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.hal.hal_api_client import HalApiClient
 from app.harvesters.hal.hal_api_query_builder import HalApiQueryBuilder
@@ -15,17 +16,21 @@ class HalHarvester(AbstractHarvester):
     Harvester for data.idref.fl
     """
 
-    FORMATTER_NAME = "HAL"
+    FORMATTER_NAME = "hal"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "id_hal_i"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s"),
+            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "idhali"),
+            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "idhals"),
             (HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID, "orcid"),
         ]
     }
 
-    supported_identifier_types = ["id_hal_i", "id_hal_s", "orcid"]
+    supported_identifier_types = [
+        ContributorIdentifier.IdentifierType.IDHAL_I.value,
+        ContributorIdentifier.IdentifierType.IDHAL_S.value,
+        ContributorIdentifier.IdentifierType.ORCID.value,
+    ]
 
     VERSION: Version = VersionInfo.parse("2.1.1")
 
@@ -46,7 +51,7 @@ class HalHarvester(AbstractHarvester):
 
         assert (
             False
-        ), "Unable to run hal harvester for a person without id_hal_i, id_hal_s or ORCID"
+        ), "Unable to run hal harvester for a person without idhali, idhals or orcid"
 
     async def fetch_results(self) -> AsyncGenerator[JsonRawResult, None]:
         """

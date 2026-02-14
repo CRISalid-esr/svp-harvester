@@ -8,8 +8,6 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
     Use mapping table ton convert hal document type values to loc document type values
     """
 
-    HARVESTER = "HAL"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {
@@ -85,7 +83,6 @@ class HalDocumentTypeConverter(AbstractDocumentTypeConverter):
             "Report",
         ),
         "SON": (f"{RDF['SPAR']}AudioDocument", "AudioDocument"),
-
         # HAL docSubType_s
         "PHOTOGRAPHY": (
             f"{RDF['SPAR']}StillImage",

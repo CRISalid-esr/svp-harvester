@@ -12,9 +12,9 @@ from app.db.models.organization_identifier import OrganizationIdentifier
 @pytest.mark.asyncio
 async def test_ensure_self_identifier_adds_hal_identifier(async_session: AsyncSession):
     """
-    GIVEN an Organization with source='hal'
+    GIVEN an Organization with source="hal"
     WHEN ensure_self_identifier() is called and the org is persisted
-    THEN the org has at least one identifier (type='hal', value=source_identifier)
+    THEN the org has at least one identifier (type="hal", value=source_identifier)
     """
     org = Organization(
         source="hal",
@@ -132,7 +132,7 @@ async def test_ensure_self_identifier_adds_openalex_identifier(
 @pytest.mark.asyncio
 async def test_ensure_self_identifier_is_idempotent(async_session: AsyncSession):
     """
-    GIVEN an Organization with source='hal'
+    GIVEN an Organization with source="hal"
     WHEN ensure_self_identifier() is called multiple times
     THEN it does not create duplicate self-identifiers.
     """
@@ -178,7 +178,7 @@ async def test_ensure_self_identifier_does_nothing_for_other_sources(
     """
     org = Organization(
         source="scanr",
-        source_identifier="SCANR:1",
+        source_identifier="scanr:1",
         name="SCANR Org",
         type="institution",
     )
@@ -193,10 +193,10 @@ async def test_ensure_self_identifier_does_nothing_for_other_sources(
         select(Organization)
         .options(joinedload(Organization.identifiers))
         .where(Organization.source == "scanr")
-        .where(Organization.source_identifier == "SCANR:1")
+        .where(Organization.source_identifier == "scanr:1")
     )
     org_from_db = (await async_session.execute(stmt)).unique().scalars().one()
 
     assert not any(
-        ident.value == "SCANR:1" for ident in (org_from_db.identifiers or [])
+        ident.value == "scanr:1" for ident in (org_from_db.identifiers or [])
     )

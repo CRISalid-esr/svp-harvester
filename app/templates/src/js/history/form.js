@@ -84,6 +84,7 @@ class HistoryForm {
       "unchanged",
     ]);
     this.harvestersSelect.setValues([
+        // --HARVESTER PLATFORM IDENTIFIERS--
       "scanr",
       "hal",
       "idref",

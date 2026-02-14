@@ -4,6 +4,7 @@ import pytest
 from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
+from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.session import async_session
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -23,7 +24,7 @@ async def test_convert_for_rdf_result(
     :param sudoc_rdf_result_for_doc: sudoc RDF result for a document
     :return: None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     expected_french_title = (
         "Agriculture des métropoles  : voie d'avenir ou cache-misère ?"
     )
@@ -78,7 +79,7 @@ async def test_convert_for_rdf_result(
     )
 
     assert any(
-        identifier.type == "sudoc_ppn" and identifier.value == "193726130"
+        identifier.type == "ppn" and identifier.value == "193726130"
         for identifier in test_reference.identifiers
     )
     assert expected_document_type in [test_reference.document_type[0].label]
@@ -136,7 +137,7 @@ async def test_convert_for_rdf_result_without_title(
     :param sudoc_rdf_result_for_doc: sudoc RDF result for a document
     :return: None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_without_title,
@@ -161,7 +162,7 @@ async def test_convert_for_rdf_result_for_book(sudoc_rdf_result_for_book):
     WHEN the convert method is called
     THEN it should return a Reference instance with the expected Book values
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_book, harvester_version=VersionInfo.parse("0.0.0")
@@ -192,7 +193,7 @@ async def test_convert_with_invalid_date_format(
     WHEN the convert method is called
     THEN it should raise a log error and the created date should be None
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_invalid_created,
@@ -216,7 +217,7 @@ async def test_convert_with_empty_issued_date(
     WHEN the convert method is called
     THEN it should return a Reference instance with the expected values
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_empty_issued,
@@ -238,7 +239,7 @@ async def test_convert_with_multiple_issued_date(
     WHEN the convert method is called
     THEN it should return a Reference instance with the last issued date
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
 
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_doc_with_multiple_issued,
@@ -261,7 +262,7 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     :param sudoc_rdf_result_for_thesis:
     :return:
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_thesis,
         harvester_version=VersionInfo.parse("0.0.0"),
@@ -286,7 +287,8 @@ async def test_convert_thesis_with(sudoc_rdf_result_for_thesis):
     )
     # there should be an identifier of type nnt with value 2020UPAST005
     assert any(
-        identifier.type == "nnt" and identifier.value == "2020UPAST005"
+        identifier.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and identifier.value == "2020UPAST005"
         for identifier in test_reference.identifiers
     )
 
@@ -301,7 +303,7 @@ async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_the
     WHEN convert is called
     THEN it should still add the theses.fr manifestation and extract NNT
     """
-    converter_under_tests = SudocReferencesConverter()
+    converter_under_tests = SudocReferencesConverter(name="sudoc")
     test_reference = converter_under_tests.build(
         raw_data=sudoc_rdf_result_for_thesis_without_bibo_uri_thesesfr,
         harvester_version=VersionInfo.parse("0.0.0"),
@@ -320,7 +322,8 @@ async def test_convert_thesis_extracts_nnt_from_rdam_p30135_when_no_bibo_uri_the
 
     # NNT must be extracted even without theses.fr in bibo:uri
     assert any(
-        i.type == "nnt" and i.value == "2020UPAST005"
+        i.type == ReferenceIdentifier.IdentifierType.NNT.value
+        and i.value == "2020UPAST005"
         for i in test_reference.identifiers
     )
 

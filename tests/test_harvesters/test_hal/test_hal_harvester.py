@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.db.models.concept import Concept
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.document_type import DocumentType
 from app.db.models.harvesting import Harvesting
 from app.db.models.label import Label
@@ -57,7 +58,7 @@ def fixture_reference_recorder_register_mock():
 @pytest.fixture(name="hal_harvester")
 def fixture_hal_harvester() -> HalHarvester:
     """Fixture for a HalHarvester instance."""
-    converter = HalReferencesConverter()
+    converter = HalReferencesConverter(name="hal")
     return HalHarvester(converter=converter)
 
 
@@ -143,7 +144,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_s(
     query_dict = dict(urllib.parse.parse_qsl(query))
     # Check that the query contains the id_hal_s as 'q' parameter
     id_hal_s = hal_harvesting_db_model_id_hal_s.retrieval.entity.get_identifier(
-        "id_hal_s"
+        ContributorIdentifier.IdentifierType.IDHAL_S.value
     )
     assert query_dict["q"] == f"authIdHal_s:{id_hal_s}"
 
@@ -179,7 +180,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
     query_dict = dict(urllib.parse.parse_qsl(query))
     # Check that the query contains the id_hal_i as 'q' parameter
     id_hal_i = hal_harvesting_db_model_id_hal_i_s.retrieval.entity.get_identifier(
-        "id_hal_i"
+        ContributorIdentifier.IdentifierType.IDHAL_I.value
     )
     assert query_dict["q"] == f"authIdHal_i:{id_hal_i}"
 

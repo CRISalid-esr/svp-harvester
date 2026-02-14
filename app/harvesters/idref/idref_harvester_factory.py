@@ -7,11 +7,11 @@ class IdrefHarvesterFactory(AbstractHarvesterFactory):
     """Idref harvester factory"""
 
     @classmethod
-    def harvester(cls) -> IdrefHarvester:
+    def harvester(cls, name: str) -> IdrefHarvester:
         """Return IdrefHarvester instance"""
-        return IdrefHarvester(converter=cls.converter())
+        return IdrefHarvester(converter=cls.converter(name))
 
     @classmethod
-    def converter(cls) -> IdrefReferencesConverter:
+    def converter(cls, name: str) -> IdrefReferencesConverter:
         """Return IdrefReferencesConverter instance"""
-        return IdrefReferencesConverter()
+        return IdrefReferencesConverter(name)

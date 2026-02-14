@@ -149,7 +149,7 @@ class Reference(Base, VersionedRecord):
     def register_custom_metadata_schema(cls, harvester: str, schema: type[BaseModel]):
         """
         Register a custom metadata schema for a specific harvester.
-        :param harvester: code of the harvester e.g. 'HAL'
+        :param harvester: code of the harvester e.g. "hal"
         :param schema: schema class to validate the custom metadata
         :return:
         """

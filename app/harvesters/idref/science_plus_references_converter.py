@@ -37,14 +37,10 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     BIBO_NAMESPACE = Namespace("http://purl.org/ontology/bibo/")
     SCIENCE_PLUS_QUERY_SUFFIX = "https://scienceplus.abes.fr/sparql"
 
-    def __init__(self):
-        super().__init__()
-        self._source = "science_plus"
+    def __init__(self, name: str):
+        super().__init__(name)
         self.pub_graph = None
         self.uri = None
-
-    def _harvester(self) -> str:
-        return "Idref"
 
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
@@ -90,7 +86,7 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             publisher_name = publisher.value
         return await self._get_or_create_journal(
             JournalInformations(
-                source="science_plus",
+                source=self._get_source(),
                 source_identifier=uri,
                 titles=titles,
                 publisher=publisher_name,
@@ -123,10 +119,9 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
         titles = []
         for title in issue.objects(rdflib.term.URIRef(issue_uri), DCTERMS.title):
             titles.append(title.value)
-
         return await self._get_or_create_issue(
             IssueInformations(
-                source="science_plus",
+                source=self._get_source(),
                 source_identifier=issue_uri,
                 journal=journal,
                 number=number_value,
@@ -150,7 +145,9 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
             yield Title(value=title.value, language=title.language)
 
     def _add_doi_identifier(self, doi: str):
-        return ReferenceIdentifier(value=doi, type="doi")
+        return ReferenceIdentifier(
+            value=doi, type=ReferenceIdentifier.IdentifierType.DOI.value
+        )
 
     async def _document_type(self, pub_graph, uri):
         cache = {}
@@ -185,8 +182,9 @@ class SciencePlusReferencesConverter(AbesRDFReferencesConverter):
     def _convert_role(self, role):
         return SciencePlusRolesConverter.convert(role)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
-        return "science_plus"
+        return "scienceplus"
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [

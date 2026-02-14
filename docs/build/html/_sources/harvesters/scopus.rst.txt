@@ -18,7 +18,7 @@ Supported identifiers
 
 The following identifiers are handled by the harvester:
 
-- scopus_eid
+- scopus
 
 Data conversion
 ---------------

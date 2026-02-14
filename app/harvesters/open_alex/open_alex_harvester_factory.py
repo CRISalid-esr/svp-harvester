@@ -9,15 +9,15 @@ class OpenAlexHarvesterFactory(AbstractHarvesterFactory):
     """OpenAlex harvester factory"""
 
     @classmethod
-    def harvester(cls) -> OpenAlexHarvester:
+    def harvester(cls, name: str) -> OpenAlexHarvester:
         """
         Return OpenAlexHarvester instance
         """
-        return OpenAlexHarvester(converter=cls.converter())
+        return OpenAlexHarvester(converter=cls.converter(name))
 
     @classmethod
-    def converter(cls) -> OpenAlexReferencesConverter:
+    def converter(cls, name: str) -> OpenAlexReferencesConverter:
         """
         Return OpenAlexReferencesConverter instance
         """
-        return OpenAlexReferencesConverter()
+        return OpenAlexReferencesConverter(name)

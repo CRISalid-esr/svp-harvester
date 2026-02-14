@@ -20,7 +20,7 @@ async def test_open_edition_convert_for_rfd_result(
     :param: open_edition_xml_result_for_doc: a Open Edition RDF result for a document
     :return: None
     """
-    converter_under_tests = OpenEditionReferencesConverter()
+    converter_under_tests = OpenEditionReferencesConverter(name="idref")
     test_reference = converter_under_tests.build(
         raw_data=open_edition_xml_result_for_doc,
         harvester_version=VersionInfo.parse("0.0.0"),
@@ -94,7 +94,7 @@ async def test_convert_with_invalid_date_format(
     """
     Test that the ScopusReferencesConverter will handle an invalid date format gracefully
     """
-    converter_under_tests = OpenEditionReferencesConverter()
+    converter_under_tests = OpenEditionReferencesConverter(name="idref")
 
     fixture = request.getfixturevalue(fixture)
 

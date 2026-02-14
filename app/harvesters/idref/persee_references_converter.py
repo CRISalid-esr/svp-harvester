@@ -32,9 +32,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
 
     RDF_BIBO = "http://purl.org/ontology/bibo/"
 
-    def _harvester(self) -> str:
-        return "Idref"
-
     @AbesRDFReferencesConverter.validate_reference
     async def convert(
         self, raw_data: RdfHarvesterRawResult, new_ref: Reference
@@ -120,7 +117,6 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
         )
 
     async def _get_issue(self, biblio_graph, uri, journal):
-        source_identifier = uri
         number = None
         for number in biblio_graph.objects(
             rdflib.term.URIRef(uri), Namespace(self.RDF_BIBO).issue
@@ -135,8 +131,8 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             break
         return await self._get_or_create_issue(
             IssueInformations(
-                source="persee",
-                source_identifier=source_identifier,
+                source=self._get_source(),
+                source_identifier=uri,
                 journal=journal,
                 number=number,
                 volume=volume,
@@ -154,11 +150,15 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
             break
 
     def _add_reference_identifiers(self, pub_graph, uri):
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
         for identifier in pub_graph.objects(
-            rdflib.term.URIRef(uri), URIRef(self.RDF_BIBO + "doi")
+            rdflib.term.URIRef(uri), URIRef(f"{self.RDF_BIBO}doi")
         ):
-            yield ReferenceIdentifier(value=identifier, type="doi")
+            yield ReferenceIdentifier(
+                value=identifier, type=ReferenceIdentifier.IdentifierType.DOI.value
+            )
 
     def _resolve_contributor(self, identifier):
         return identifier
@@ -166,6 +166,7 @@ class PerseeReferencesConverter(AbesRDFReferencesConverter):
     def _convert_role(self, role):
         return PerseeRolesConverter.convert(role)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
         return "persee"
 

@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 from semver import VersionInfo, Version
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.json_harvester_raw_result import JsonHarvesterRawResult as RawResult
 from app.harvesters.scanr.scanr_api_query_builder import (
@@ -15,17 +16,30 @@ class ScanrHarvester(AbstractHarvester):
     Harvester for Scanr API
     """
 
-    FORMATTER_NAME = "SCANR"
+    FORMATTER_NAME = "scanr"
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
-            (QueryBuilder.QueryParameters.AUTH_IDREF, "idref"),
-            (QueryBuilder.QueryParameters.AUTH_ORCID, "orcid"),
-            (QueryBuilder.QueryParameters.AUTH_ID_HAL_S, "id_hal_s"),
+            (
+                QueryBuilder.QueryParameters.AUTH_IDREF,
+                ContributorIdentifier.IdentifierType.IDREF.value,
+            ),
+            (
+                QueryBuilder.QueryParameters.AUTH_ORCID,
+                ContributorIdentifier.IdentifierType.ORCID.value,
+            ),
+            (
+                QueryBuilder.QueryParameters.AUTH_ID_HAL_S,
+                ContributorIdentifier.IdentifierType.IDHAL_S.value,
+            ),
         ]
     }
 
-    supported_identifier_types = ["idref", "orcid", "id_hal_s"]
+    supported_identifier_types = [
+        ContributorIdentifier.IdentifierType.IDREF.value,
+        ContributorIdentifier.IdentifierType.ORCID.value,
+        ContributorIdentifier.IdentifierType.IDHAL_S.value,
+    ]
 
     VERSION: Version = VersionInfo.parse("2.0.6")
 
@@ -42,7 +56,7 @@ class ScanrHarvester(AbstractHarvester):
         for scanr_query_parameter, identifier_key in query_parameters:
             assert (
                 identifier_key in self.supported_identifier_types
-            ), "Unable to run Scanr harvester for a person without idref, orcid or id_hal_s"
+            ), "Unable to run Scanr harvester for a person without idref, orcid or idhals"
 
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_key == "idref" and identifier_value is not None:

@@ -13,13 +13,13 @@ REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 def test_scanr_harvester_relevant_with_idref(person_with_name_and_idref: Person):
     """Test that the harvester will run if submitted with an IDREF."""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
     assert harvester.is_relevant(person_with_name_and_idref) is True
 
 
 def test_scanr_harvester_relevant_with_orcid(person_with_name_and_orcid: Person):
     """Test that the harvester will not run if not submitted with an IDREF"""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
     assert harvester.is_relevant(person_with_name_and_orcid) is True
 
 
@@ -27,7 +27,7 @@ def test_scanr_harvester_not_relevant_with_halid_s(
     person_with_name_and_id_hal_s: Person,
 ):
     """Test that the harvester will not run if not submitted with an IDREF"""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
     assert harvester.is_relevant(person_with_name_and_id_hal_s) is True
 
 
@@ -35,7 +35,7 @@ def test_scanr_harvester_not_relevant_with_person_without_identifiers(
     person_without_identifiers: Person,
 ):
     """Test that the harvester will not run if not submitted with an IDREF"""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter())
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
     assert harvester.is_relevant(person_without_identifiers) is False
 
 

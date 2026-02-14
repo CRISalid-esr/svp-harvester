@@ -89,9 +89,6 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             )
             new_ref.subjects.append(db_concept)
 
-    def _harvester(self) -> str:
-        return "Idref"
-
     def _add_reference_identifiers(self, pub_graph, uri):
         """
         Add reference identifiers.
@@ -99,7 +96,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         - SUDOC PPN from dcterms:identifier (e.g. "193726130")
         """
         # base "uri" identifier
-        yield ReferenceIdentifier(value=uri, type="uri")
+        yield ReferenceIdentifier(
+            value=uri, type=ReferenceIdentifier.IdentifierType.URI.value
+        )
 
         # Protect against both /id and non-/id URIs
         candidate_uris = [uri]
@@ -114,7 +113,9 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
                 # ABES PPN is usually digits
                 if value and value.isdigit():
-                    yield ReferenceIdentifier(value=value, type="sudoc_ppn")
+                    yield ReferenceIdentifier(
+                        value=value, type=ReferenceIdentifier.IdentifierType.PPN.value
+                    )
                     return
 
     async def _get_book(self, pub_graph, uri) -> Book | None:
@@ -141,7 +142,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title,
-                source="sudoc",
+                source=self._get_source(),
                 isbn10=isbn10,
                 isbn13=isbn13,
                 publisher=publisher,
@@ -160,10 +161,11 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             break
 
     async def _get_issue(self, biblio_graph, uri, journal) -> Issue:
-        source_identifier = journal.source_identifier + "-sudoc"
         return await self._get_or_create_issue(
             IssueInformations(
-                source="sudoc", source_identifier=source_identifier, journal=journal
+                source=self._get_source(),
+                source_identifier=f"{journal.source_identifier}-{self._get_source()}",
+                journal=journal,
             )
         )
 
@@ -196,7 +198,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
             break
         return await self._get_or_create_journal(
             JournalInformations(
-                source="sudoc",
+                source=self._get_source(),
                 source_identifier=uri,
                 issn=issn_value,
                 issn_l=issn_l_value,
@@ -286,7 +288,10 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
         Try to extract NNT from a theses.fr URL.
         Returns True if added (or already present), else False.
         """
-        if any(i.type == "nnt" for i in new_ref.identifiers):
+        if any(
+            i.type == ReferenceIdentifier.IdentifierType.NNT.value
+            for i in new_ref.identifiers
+        ):
             return True
 
         m = self._THESES_NNT_RE.search(url)
@@ -295,7 +300,11 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
         nnt = m.group(1)
         if nnt:
-            new_ref.identifiers.append(ReferenceIdentifier(value=nnt, type="nnt"))
+            new_ref.identifiers.append(
+                ReferenceIdentifier(
+                    value=nnt, type=ReferenceIdentifier.IdentifierType.NNT.value
+                )
+            )
             return True
         return False
 
@@ -333,6 +342,7 @@ class SudocReferencesConverter(AbesRDFReferencesConverter):
 
             self._extract_nnt_from_url(url, new_ref)
 
+    # overriden from AbstractReferencesConverter
     def _get_source(self):
         return "sudoc"
 

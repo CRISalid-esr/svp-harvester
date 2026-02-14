@@ -1,5 +1,6 @@
 import pytest
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.identifier import Identifier as DbIdentifier
 from app.db.models.person import Person as DbPerson
 
@@ -36,7 +37,7 @@ def fixture_person_with_name_and_id_hal_i_db_model() -> DbPerson:
     """
     return DbPerson(
         name="John Doe",
-        identifiers=[DbIdentifier(type="id_hal_i", value="123456789")],
+        identifiers=[DbIdentifier(type="idhali", value="123456789")],
     )
 
 
@@ -48,7 +49,12 @@ def fixture_person_with_name_and_id_hal_s_db_model() -> DbPerson:
     """
     return DbPerson(
         name="John Doe",
-        identifiers=[DbIdentifier(type="id_hal_s", value="john-doe")],
+        identifiers=[
+            DbIdentifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_S.value,
+                value="john-doe",
+            )
+        ],
     )
 
 
@@ -61,8 +67,14 @@ def fixture_person_with_name_and_id_hal_i_s_db_model() -> DbPerson:
     return DbPerson(
         name="John Doe",
         identifiers=[
-            DbIdentifier(type="id_hal_i", value="123456789"),
-            DbIdentifier(type="id_hal_s", value="john-doe"),
+            DbIdentifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                value="123456789",
+            ),
+            DbIdentifier(
+                type=ContributorIdentifier.IdentifierType.IDHAL_S.value,
+                value="john-doe",
+            ),
         ],
     )
 
@@ -70,10 +82,15 @@ def fixture_person_with_name_and_id_hal_i_s_db_model() -> DbPerson:
 @pytest.fixture(name="person_with_name_and_scopus_eid_db_model")
 def fixture_person_with_name_and_scopus_eid() -> DbPerson:
     """
-    Generate a person with first name, last name and scopus_eid in DB model format
-    :return: person with first name, last name and scopus_eid  in DB model format
+    Generate a person with first name, last name and scopus id in DB model format
+    :return: person with first name, last name and scopus id  in DB model format
     """
     return DbPerson(
         name="John Doe",
-        identifiers=[DbIdentifier(type="scopus_eid", value="123456789")],
+        identifiers=[
+            DbIdentifier(
+                type=ContributorIdentifier.IdentifierType.SCOPUS.value,
+                value="123456789",
+            )
+        ],
     )

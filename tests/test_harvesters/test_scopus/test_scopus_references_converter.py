@@ -5,6 +5,7 @@ from semver import VersionInfo
 
 from app.db.daos.contributor_dao import ContributorDAO
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.session import async_session
 from app.harvesters.scopus.scopus_client import ScopusClient
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
@@ -16,7 +17,7 @@ async def test_convert(
     scopus_xml_raw_result_for_doc: XMLHarvesterRawResult,
 ):  # pylint: disable=too-many-locals
     """Test that the converter will return normalised references"""
-    converter_under_test = ScopusReferencesConverter()
+    converter_under_test = ScopusReferencesConverter(name="scopus")
 
     test_reference = converter_under_test.build(
         raw_data=scopus_xml_raw_result_for_doc,
@@ -61,7 +62,7 @@ async def test_convert(
     expected_journal_title = "Clinical Physiology and Functional Imaging"
     expected_volume_issue = "12"
     expected_number_issue = "1"
-    expected_issue_source_identifier = "29702-12-1-Scopus"
+    expected_issue_source_identifier = "29702-12-1-scopus"
     expected_role = Contribution.get_url("AUT")
     expected_issued = datetime.date(2024, 1, 1)
 
@@ -107,11 +108,13 @@ async def test_convert(
             assert contributor is not None
             assert len(contributor.identifiers) == 2
             assert any(
-                identifier.type == "orcid" and identifier.value == "0000-0002-5201-3968"
+                identifier.type == ContributorIdentifier.IdentifierType.ORCID.value
+                and identifier.value == "0000-0002-5201-3968"
                 for identifier in contributor.identifiers
             )
             assert any(
-                identifier.type == "scopus" and identifier.value == "57539748900"
+                identifier.type == ContributorIdentifier.IdentifierType.SCOPUS.value
+                and identifier.value == "57539748900"
                 for identifier in contributor.identifiers
             )
 
@@ -120,7 +123,7 @@ async def test_convert(
 async def test_convert_book(scopus_xml_raw_result_for_doc_book):
     """Test that the converter will return normalised references with book info"""
 
-    converter_under_test = ScopusReferencesConverter()
+    converter_under_test = ScopusReferencesConverter(name="scopus")
 
     test_reference = converter_under_test.build(
         raw_data=scopus_xml_raw_result_for_doc_book,
@@ -145,7 +148,7 @@ async def test_convert_with_invalid_date_format(scopus_xml_raw_result_for_doc, c
     """
     Test that the ScopusReferencesConverter will handle an invalid date format gracefully
     """
-    converter_under_tests = ScopusReferencesConverter()
+    converter_under_tests = ScopusReferencesConverter(name="scopus")
 
     # Simulate invalid date format
     existing_cover_date = scopus_xml_raw_result_for_doc.payload.find(

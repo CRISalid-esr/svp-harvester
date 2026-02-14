@@ -7,15 +7,15 @@ class ScopusHarvesterFactory(AbstractHarvesterFactory):
     """Scopus harvester factory"""
 
     @classmethod
-    def harvester(cls) -> ScopusHarvester:
+    def harvester(cls, name: str) -> ScopusHarvester:
         """
         Return ScopusHarvester instance
         """
-        return ScopusHarvester(converter=cls.converter())
+        return ScopusHarvester(converter=cls.converter(name))
 
     @classmethod
-    def converter(cls) -> ScopusReferencesConverter:
+    def converter(cls, name: str) -> ScopusReferencesConverter:
         """
         Return ScopusReferencesConverter instance
         """
-        return ScopusReferencesConverter()
+        return ScopusReferencesConverter(name)

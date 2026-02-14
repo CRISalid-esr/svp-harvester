@@ -16,7 +16,7 @@ async def test_persee_convert_for_rdf_result(persee_rdf_result_for_doc):
     :param: a Persee RDF result for a document
     :return: None
     """
-    converter_under_tests = PerseeReferencesConverter()
+    converter_under_tests = PerseeReferencesConverter(name="idref")
 
     expected_source_identifier = (
         "http://data.persee.fr/doc/hista_0992-2059_1998_num_42_1_2826#Web"
@@ -117,7 +117,7 @@ async def test_convert_with_invalid_date_format(
     THEN it should raise a log error and date should be None
     """
 
-    converter_under_tests = PerseeReferencesConverter()
+    converter_under_tests = PerseeReferencesConverter(name="idref")
 
     fixture = request.getfixturevalue(fixture)
 

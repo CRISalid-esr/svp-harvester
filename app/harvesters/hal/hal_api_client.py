@@ -26,7 +26,7 @@ class HalApiClient:
         """
         self.timeout = timeout
 
-    @handle_external_endpoint_failure("HAL")
+    @handle_external_endpoint_failure("hal")
     async def fetch(self, url: str) -> AsyncGenerator[dict, None]:
         """
         Fetch the results from the HAL API

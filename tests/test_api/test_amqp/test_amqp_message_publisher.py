@@ -72,7 +72,7 @@ async def test_publish_created_reference(
             "type": "created",
             "reference": {
                 "source_identifier": "123456789",
-                "harvester": "HAL",
+                "harvester": "hal",
                 "harvester_version": "0.0.0",
                 "identifiers": [],
                 "manifestations": [],
@@ -143,8 +143,8 @@ async def test_publish_retrieval_error(
             "fields": {
                 "name": "C. Despas",
                 "identifiers": [
-                    {"type": "id_hal_s", "value": "christelle-despas"},
-                    {"type": "id_hal_i", "value": "19550"},
+                    {"type": "idhals", "value": "christelle-despas"},
+                    {"type": "idhali", "value": "19550"},
                     {"type": "idref", "value": "158013263"},
                     {"type": "foo", "value": "bar"},
                 ],

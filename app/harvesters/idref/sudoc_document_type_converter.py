@@ -8,8 +8,6 @@ class SudocDocumentTypeConverter(AbstractDocumentTypeConverter):
     Converts raw data from Sudoc to a normalised DocumentType object
     """
 
-    HARVESTER = "Sudoc"
-
     RDF = AbstractDocumentTypeConverter.RDF
 
     TYPES_MAPPING = {

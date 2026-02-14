@@ -111,6 +111,7 @@ class Form {
             "unchanged",
         ]);
         this.harvestersSelect.setValues([
+            // --HARVESTER PLATFORM IDENTIFIERS--
             "scanr",
             "hal",
             "idref",

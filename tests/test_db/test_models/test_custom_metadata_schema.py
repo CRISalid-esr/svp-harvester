@@ -16,11 +16,11 @@ def clear_registry():
 
 
 def test_custom_metadata_validation_passes_when_schema_registered():
-    DbReference.register_custom_metadata_schema("HAL", HalCustomMetadataSchema)
+    DbReference.register_custom_metadata_schema("hal", HalCustomMetadataSchema)
 
     ref = DbReference(
         source_identifier="123",
-        harvester="HAL",
+        harvester="hal",
         version=0,
         hash="abc",
         harvester_version="1.0.0",

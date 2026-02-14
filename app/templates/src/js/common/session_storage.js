@@ -5,12 +5,12 @@ class SessionStorage {
   KEY_EVENT_TYPE = "#event-type-select";
   KEY_HARVESTER = "#harvesters-select";
   KEYS_IDENTIFIER = [
-    "id_hal_i",
-    "id_hal_s",
+    "idhali",
+    "idhals",
     "idref",
     "orcid",
     "researcherid",
-    "scopus_eid",
+    "scopus",
     "arxiv",
     "pubmed",
   ];

@@ -5,6 +5,7 @@ from semver import Version
 
 from app.db.models.abstract import Abstract
 from app.db.models.contribution import Contribution
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.issue import Issue
 from app.db.models.journal import Journal
 from app.db.models.reference import Reference
@@ -37,9 +38,9 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
     Converts raw data from Scopus API to a normalised Reference Object
     """
 
-    FIELD_NAME_IDENTIFIER = {
-        "prism:doi": "doi",
-        "default:pubmed-id": "pubmed",
+    FIELD_NAME_TO_IDENTIFIER_TYPE = {
+        "prism:doi": ReferenceIdentifier.IdentifierType.DOI.value,
+        "default:pubmed-id": ReferenceIdentifier.IdentifierType.PUBMEDCENTRAL.value,
     }
 
     @AbstractReferencesConverter.validate_reference
@@ -104,7 +105,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         return await self._get_or_create_book(
             BookInformations(
                 title=title.text if title is not None else None,
-                source="scopus",
+                source=self._get_source(),
                 isbn10=isbn10,
                 isbn13=isbn13,
             )
@@ -127,7 +128,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
                     else None
                 ),
                 titles=[title.text] if title is not None else [],
-                source=self._harvester(),
+                source=self._get_source(),
                 source_identifier=source_identifier.text,
             )
         )
@@ -140,11 +141,11 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             journal.source_identifier
             + f"-{volume.text if volume is not None else ''}-"
             + f"{number.text if number is not None else ''}-"
-            + f"{self._harvester()}"
+            + f"{self._get_source()}"
         )
         issue = await self._get_or_create_issue(
             IssueInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 journal=journal,
                 volume=volume.text if volume is not None else None,
                 number=[number.text] if number is not None else [],
@@ -172,7 +173,9 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             afid = self._get_element(affiliation, "default:afid").text
             name = self._get_element(affiliation, "default:affilname").text
             afiliation_information = OrganizationInformations(
-                name=name, identifier=afid, source="scopus"
+                name=name,
+                identifier=afid,
+                source=self._get_source(),
             )
             dict_affiliations[afid] = afiliation_information
         return dict_affiliations
@@ -186,7 +189,7 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
         affiliations = self._get_affiliation(entry)
 
         async for contribution in self._contributions(
-            contribution_informations=contributions, source="scopus"
+            contribution_informations=contributions, source=self._get_source()
         ):
             list_affiliations = []
             for id_affiliation in contributor_affiliation[
@@ -215,14 +218,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             last_name = self._get_element(author, "default:surname").text
             ext_identifiers = [
                 {
-                    "type": "scopus",
+                    "type": ContributorIdentifier.IdentifierType.SCOPUS.value,
                     "value": identifier,
                 }
             ]
             if (orcid := self._get_element(author, "default:orcid")) is not None:
                 ext_identifiers.append(
                     {
-                        "type": "orcid",
+                        "type": ContributorIdentifier.IdentifierType.ORCID.value,
                         "value": orcid.text,
                     }
                 )
@@ -252,11 +255,14 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
             yield await self._get_or_create_document_type_by_uri(uri=uri, label=label)
 
     async def _identifiers(self, entry: Element):
-        for key_identifier, type_identifier in self.FIELD_NAME_IDENTIFIER.items():
-            identifier = self._get_element(entry, key_identifier)
+        for (
+            identifier_key,
+            identifier_type,
+        ) in self.FIELD_NAME_TO_IDENTIFIER_TYPE.items():
+            identifier = self._get_element(entry, identifier_key)
             if identifier is not None:
                 yield ReferenceIdentifier(
-                    type=type_identifier,
+                    type=identifier_type,
                     value=identifier.text,
                 )
 
@@ -280,9 +286,6 @@ class ScopusReferencesConverter(AbstractReferencesConverter):
 
     def _get_elements(self, entry: Element, tag: str) -> list[Element]:
         return entry.findall(tag, ScopusClient.NAMESPACE)
-
-    def _harvester(self) -> str:
-        return "Scopus"
 
     def hash_keys(self, harvester_version: Version) -> list[HashKey]:
         return [

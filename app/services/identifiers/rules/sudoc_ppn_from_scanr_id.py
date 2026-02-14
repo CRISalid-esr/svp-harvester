@@ -9,7 +9,7 @@ from app.services.identifiers.identifier_inference_rule import IdentifierInferen
 
 class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
     """
-    Infer sudoc_ppn from ScanR source_identifier like:
+    Infer ppn from ScanR source_identifier like:
     - sudoc258403519
     - sudoc12345678X
     """
@@ -17,7 +17,10 @@ class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
     _pattern = re.compile(r"^sudoc(\d+[xX]?)$", re.IGNORECASE)
 
     def infer(self, reference: Reference) -> None:
-        if any(i.type == "sudoc_ppn" for i in reference.identifiers):
+        if any(
+            i.type == ReferenceIdentifier.IdentifierType.PPN.value
+            for i in reference.identifiers
+        ):
             return
 
         source_identifier = reference.source_identifier
@@ -32,6 +35,10 @@ class SudocPpnFromScanrIdRule(IdentifierInferenceRule):
         if not ppn:
             return
 
-        reference.identifiers.append(ReferenceIdentifier(type="sudoc_ppn", value=ppn))
+        reference.identifiers.append(
+            ReferenceIdentifier(
+                type=ReferenceIdentifier.IdentifierType.PPN.value, value=ppn
+            )
+        )
 
-        logger.debug(f"Inferred sudoc_ppn={ppn} from ScanR id={source_identifier}")
+        logger.debug(f"Inferred ppn={ppn} from ScanR id={source_identifier}")

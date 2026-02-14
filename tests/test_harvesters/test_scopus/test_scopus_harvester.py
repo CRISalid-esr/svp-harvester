@@ -24,7 +24,7 @@ def fixture_scopus_client_mock(scopus_xml_doc):
 @pytest.fixture(name="scopus_harvester")
 def fixture_scopus_harvester() -> ScopusHarvester:
     """Fixture for a ScopusHarvester instance"""
-    converter = ScopusReferencesConverter()
+    converter = ScopusReferencesConverter(name="scopus")
     return ScopusHarvester(converter=converter)
 
 

@@ -1,5 +1,6 @@
 import pytest
 
+from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.sparql_harvester_raw_result import SparqlHarvesterRawResult
 from tests.fixtures.common import _json_data_from_file
 
@@ -12,7 +13,7 @@ def fixture_idref_sparql_result_for_doc(
     return SparqlHarvesterRawResult(
         source_identifier=idref_pub_converted_1["uri"],
         payload=idref_pub_converted_1,
-        formatter_name="Idref",
+        formatter_name=IdrefHarvester.Formatters.IDREF_SPARQL,
     )
 
 
@@ -121,9 +122,11 @@ def fixture_idref_sparql_endpoint_response_for_concept_multilang(_base_path) -> 
     )
 
 
-@pytest.fixture(name="idref_sparql_endpoint_response_for_concept_non_preferred_languages")
+@pytest.fixture(
+    name="idref_sparql_endpoint_response_for_concept_non_preferred_languages"
+)
 def fixture_idref_sparql_endpoint_response_for_concept_concept_non_preferred_languages(
-        _base_path
+    _base_path,
 ) -> dict:
     """
     Generate an Idref Sparql endpoint concept response

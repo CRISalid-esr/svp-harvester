@@ -16,16 +16,14 @@ def _infer(ref: Reference) -> None:
 
 def test_infer_sudoc_ppn_from_scanr_id_adds_identifier():
     """
-    Test that the sudoc_ppn identifier is correctly inferred from the ScanR source_identifier
+    Test that the ppn identifier is correctly inferred from the ScanR source_identifier
     """
     ref = Reference(source_identifier="sudoc258403519")
     ref.identifiers = []
 
     _infer(ref)
 
-    assert any(
-        i.type == "sudoc_ppn" and i.value == "258403519" for i in ref.identifiers
-    )
+    assert any(i.type == "ppn" and i.value == "258403519" for i in ref.identifiers)
 
 
 def test_infer_sudoc_ppn_from_scanr_id_adds_identifier_with_trailing_X():
@@ -37,9 +35,7 @@ def test_infer_sudoc_ppn_from_scanr_id_adds_identifier_with_trailing_X():
 
     _infer(ref)
 
-    assert any(
-        i.type == "sudoc_ppn" and i.value == "12345678X" for i in ref.identifiers
-    )
+    assert any(i.type == "ppn" and i.value == "12345678X" for i in ref.identifiers)
 
 
 def test_infer_sudoc_ppn_from_scanr_id_normalizes_trailing_x_to_uppercase():
@@ -51,9 +47,7 @@ def test_infer_sudoc_ppn_from_scanr_id_normalizes_trailing_x_to_uppercase():
 
     _infer(ref)
 
-    assert any(
-        i.type == "sudoc_ppn" and i.value == "12345678X" for i in ref.identifiers
-    )
+    assert any(i.type == "ppn" and i.value == "12345678X" for i in ref.identifiers)
 
 
 def test_infer_sudoc_ppn_from_scanr_id_strips_whitespace():
@@ -65,9 +59,7 @@ def test_infer_sudoc_ppn_from_scanr_id_strips_whitespace():
 
     _infer(ref)
 
-    assert any(
-        i.type == "sudoc_ppn" and i.value == "258403519" for i in ref.identifiers
-    )
+    assert any(i.type == "ppn" and i.value == "258403519" for i in ref.identifiers)
 
 
 def test_infer_sudoc_ppn_from_scanr_id_is_case_insensitive_for_prefix():
@@ -79,21 +71,19 @@ def test_infer_sudoc_ppn_from_scanr_id_is_case_insensitive_for_prefix():
 
     _infer(ref)
 
-    assert any(
-        i.type == "sudoc_ppn" and i.value == "258403519" for i in ref.identifiers
-    )
+    assert any(i.type == "ppn" and i.value == "258403519" for i in ref.identifiers)
 
 
 def test_infer_sudoc_ppn_from_scanr_id_does_nothing_if_already_present():
     """
-    Test that no duplicate sudoc_ppn identifier is added if one is already present
+    Test that no duplicate ppn identifier is added if one is already present
     """
     ref = Reference(source_identifier="sudoc258403519")
-    ref.identifiers = [ReferenceIdentifier(type="sudoc_ppn", value="258403519")]
+    ref.identifiers = [ReferenceIdentifier(type="ppn", value="258403519")]
 
     _infer(ref)
 
-    assert len([i for i in ref.identifiers if i.type == "sudoc_ppn"]) == 1
+    assert len([i for i in ref.identifiers if i.type == "ppn"]) == 1
 
 
 @pytest.mark.parametrize(
@@ -111,11 +101,11 @@ def test_infer_sudoc_ppn_from_scanr_id_does_nothing_if_already_present():
 )
 def test_infer_sudoc_ppn_from_scanr_id_ignores_non_matching_source_identifier(sid):
     """
-    Test that no sudoc_ppn identifier is added for non-matching ScanR source_identifiers
+    Test that no ppn identifier is added for non-matching ScanR source_identifiers
     """
     ref = Reference(source_identifier=sid)
     ref.identifiers = []
 
     _infer(ref)
 
-    assert not any(i.type == "sudoc_ppn" for i in ref.identifiers)
+    assert not any(i.type == "ppn" for i in ref.identifiers)

@@ -53,7 +53,17 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
 
     PREFERRED_LANGUAGE = "fr"
 
-    IDENTIFIERS_TO_IGNORE = ["scanr"]
+    IDENTIFIERS_TO_IGNORE = {"scanr"}
+
+    FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
+        "doi": ReferenceIdentifier.IdentifierType.DOI.value,
+        "hal": ReferenceIdentifier.IdentifierType.HAL.value,
+        "nnt": ReferenceIdentifier.IdentifierType.NNT.value,
+        "pmid": ReferenceIdentifier.IdentifierType.PUBMED.value,
+        # sudoc_ppn / sudoc-ppn → sudocppn after normalization
+        "sudocppn": ReferenceIdentifier.IdentifierType.PPN.value,
+        "ppn": ReferenceIdentifier.IdentifierType.PPN.value,
+    }
 
     CONTRIBUTORS_IDENTIFIERS_TYPE_MAPPING = {
         "idref": ContributorIdentifier.IdentifierType.IDREF.value,
@@ -67,8 +77,8 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         "keyword": None,
     }
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, name: str):
+        super().__init__(name)
         self.normalized_levenstein = NormalizedLevenshtein()
         self.jaro_winkler = JaroWinkler()
 
@@ -142,9 +152,6 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                 f" ScanR reference {json_payload['_id']}: {error}"
             )
 
-    def _harvester(self) -> str:
-        return "ScanR"
-
     async def _book(self, json_payload: dict) -> Journal | None:
         source = json_payload["_source"].get("source", {})
         if not source:
@@ -154,14 +161,16 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         if not title:
             return None
         return await self._get_or_create_book(
-            BookInformations(title=title, publisher=publisher, source="scanr")
+            BookInformations(
+                title=title, publisher=publisher, source=self._get_source()
+            )
         )
 
     async def _issue(self, journal: Journal) -> Issue:
-        source_identifier = journal.source_identifier + "-" + self._harvester()
+        source_identifier = journal.source_identifier + "-" + self._get_source()
         issue = await self._get_or_create_issue(
             IssueInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 journal=journal,
                 source_identifier=source_identifier,
             )
@@ -182,14 +191,14 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         publisher = json_payload["_source"].get("source").get("publisher")
         journal = await self._get_or_create_journal(
             JournalInformations(
-                source=self._harvester(),
+                source=self._get_source(),
                 source_identifier="-".join(issn)
                 + "-"
                 + str(normalize_string(title))
                 + "-"
                 + str(normalize_string(publisher))
                 + "-"
-                + self._harvester(),
+                + self._get_source(),
                 issn=issn,
                 publisher=publisher,
                 titles=[title],
@@ -197,13 +206,31 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         )
         return journal
 
-    def _add_identifiers(self, json_payload: dict) -> ReferenceIdentifier:
+    def _add_identifiers(self, json_payload: dict):
         external_ids = json_payload["_source"].get("externalIds", [])
         for identifier in external_ids:
-            if identifier["type"] not in self.IDENTIFIERS_TO_IGNORE:
-                yield ReferenceIdentifier(
-                    value=identifier["id"], type=identifier["type"]
+            raw_type = identifier.get("type")
+            raw_value = identifier.get("id")
+
+            if raw_type is None or raw_value in (None, ""):
+                continue
+
+            key = str(raw_type).strip().lower().replace("_", "").replace("-", "")
+            if key in self.IDENTIFIERS_TO_IGNORE:
+                continue
+
+            identifier_type = self.FIElD_NAME_TO_IDENTIFIER_TYPE.get(key)
+            if identifier_type is None:
+                logger.warning(
+                    "ScanR: unknown externalIds type '%s' in ScanR reference %s",
+                    raw_type,
+                    json_payload.get("_id"),
                 )
+                continue
+
+            yield ReferenceIdentifier(
+                value=str(raw_value).strip(), type=identifier_type
+            )
 
     @classmethod
     def _slug_from_name(cls, s: str) -> str:
@@ -243,8 +270,10 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     ext_identifiers=self._convert_external_identifiers(raw_identifiers),
                 )
             )
+        # pylint: disable=duplicate-code
         async for contribution in self._contributions(
-            contribution_informations=contribution_informations, source="scanr"
+            contribution_informations=contribution_informations,
+            source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
 
@@ -271,7 +300,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
                     org_id = "scanr_idref_" + org_idref
                     organizations.add(
                         OrganizationInformations(
-                            name=org_name, identifier=org_id, source="scanr"
+                            name=org_name, identifier=org_id, source=self._get_source()
                         )
                     )
         return organizations

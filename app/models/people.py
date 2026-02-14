@@ -8,8 +8,6 @@ from pydantic_core.core_schema import ValidationInfo
 from app.config import get_app_settings
 from app.models.entities import Entity
 
-BIBLIOGRAPHIC_IDENTIFIERS = ["idref", "id_hal_i", "id_hal_s", "orcid", "scopus_eid"]
-
 
 class Person(Entity):
     """
@@ -21,7 +19,6 @@ class Person(Entity):
     @model_validator(mode="before")
     @classmethod
     def _check_minimal_information(cls, data: dict, _: ValidationInfo) -> dict:
-        settings = get_app_settings()
         if identifier := data.get("identifiers"):
             # check that each identifier is a hash with type and value
             assert all(
@@ -30,15 +27,10 @@ class Person(Entity):
             ), "Each identifier must be a hash with type and value"
 
         # check that there is at least one identifier
+        valid_identifier_types = cls._valid_identifier_types()
         has_valid_identifier = any(
-            # pylint: disable=cell-var-from-loop
-            list(
-                filter(
-                    lambda h: h.get("type", None) == t.get("key"),
-                    data.get("identifiers", []) or [],
-                )
-            )
-            for t in settings.identifiers
+            identifier.get("type") in valid_identifier_types
+            for identifier in data.get("identifiers", [])
         )
 
         # check if full_name is provided
@@ -56,21 +48,18 @@ class Person(Entity):
     def _check_identifiers_referenced_in_settings(
         cls, data: dict, _: ValidationInfo
     ) -> dict:
-        settings = get_app_settings()
         # check that all provider identifiers are referenced in settings
         # and list the invalid identifiers in assertion error message
+        valid_identifier_types = cls._valid_identifier_types()
         invalid_identifiers = [
             identifier.get("type")
             for identifier in data.get("identifiers", [])
-            if identifier.get("type")
-            not in [
-                identifier_type.get("key") for identifier_type in settings.identifiers
-            ]
+            if identifier.get("type") not in valid_identifier_types
         ]
         assert not invalid_identifiers, (
             f"Invalid identifiers: {', '.join(invalid_identifiers)}. "
             "Valid identifiers are:"
-            f"{', '.join([identifier_type.get('key') for identifier_type in settings.identifiers])}"
+            f"{', '.join(valid_identifier_types)}"
         )
         return data
 
@@ -78,7 +67,15 @@ class Person(Entity):
         """
         Check if the person has no bibliographic identifiers
         """
+        valid_identifier_types = self._valid_identifier_types()
         return not any(
-            identifier.type in BIBLIOGRAPHIC_IDENTIFIERS
-            for identifier in self.identifiers
+            identifier.type in valid_identifier_types for identifier in self.identifiers
         )
+
+    @staticmethod
+    def _valid_identifier_types() -> list[str]:
+        valid_identifier_types = [
+            identifier_type.get("key")
+            for identifier_type in get_app_settings().identifiers
+        ]
+        return valid_identifier_types

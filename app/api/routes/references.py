@@ -64,8 +64,8 @@ async def create_retrieval_sync(
     - **name**: name of the entity to fetch references for (optional, for lisibility only)
     - **idref**: idref of the entity
     - **orcid**: orcid of the entity
-    - **id_hal_i**: id_hal_i of the entity
-    - **id_hal_s**: id_hal_s of the entity
+    - **idhali**: idhali of the entity
+    - **idhals**: idhals of the entity
 
     \f
     :param retrieval_service: retrieval service
