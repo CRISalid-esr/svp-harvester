@@ -46,7 +46,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
     # OpenAlex "ids" keys -> DB identifier type strings
     FIElD_NAME_TO_IDENTIFIER_TYPE: dict[str, str] = {
         "doi": ReferenceIdentifier.IdentifierType.DOI.value,
-        "pmid": ReferenceIdentifier.IdentifierType.PMID.value,
+        "pmid": ReferenceIdentifier.IdentifierType.PUBMED.value,
         "hal": ReferenceIdentifier.IdentifierType.HAL.value,
         "openalex": ReferenceIdentifier.IdentifierType.OPENALEX.value,
     }

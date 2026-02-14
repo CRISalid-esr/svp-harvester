@@ -59,7 +59,7 @@ class ScanrReferencesConverter(AbstractReferencesConverter):
         "doi": ReferenceIdentifier.IdentifierType.DOI.value,
         "hal": ReferenceIdentifier.IdentifierType.HAL.value,
         "nnt": ReferenceIdentifier.IdentifierType.NNT.value,
-        "pmid": ReferenceIdentifier.IdentifierType.PMID.value,
+        "pmid": ReferenceIdentifier.IdentifierType.PUBMED.value,
         # sudoc_ppn / sudoc-ppn → sudocppn after normalization
         "sudocppn": ReferenceIdentifier.IdentifierType.PPN.value,
         "ppn": ReferenceIdentifier.IdentifierType.PPN.value,

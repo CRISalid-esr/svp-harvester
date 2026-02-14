@@ -364,7 +364,7 @@ async def test_add_reference_identifiers_normalizes_openalex_key(
         for i in ref.identifiers
     )
     assert any(
-        i.type == ReferenceIdentifier.IdentifierType.PMID.value
+        i.type == ReferenceIdentifier.IdentifierType.PUBMED.value
         and i.value == "https://pubmed.ncbi.nlm.nih.gov/9944570"
         for i in ref.identifiers
     )

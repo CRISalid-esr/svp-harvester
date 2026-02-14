@@ -62,7 +62,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "piiId_s": ReferenceIdentifier.IdentifierType.PII.value,
         "ppnId_s": ReferenceIdentifier.IdentifierType.PPN.value,
         "prodinraId_s": ReferenceIdentifier.IdentifierType.PRODINRA.value,
-        "pubmedId_s": ReferenceIdentifier.IdentifierType.PMID.value,
+        "pubmedId_s": ReferenceIdentifier.IdentifierType.PUBMED.value,
         "pubmedcentralId_s": ReferenceIdentifier.IdentifierType.PUBMEDCENTRAL.value,
         "sciencespoId_s": ReferenceIdentifier.IdentifierType.SCIENCESPO.value,
         "swhidId_s": ReferenceIdentifier.IdentifierType.SWHID.value,
