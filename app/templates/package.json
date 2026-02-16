@@ -35,7 +35,7 @@
     "datatables.net-dt": "^1.13.6",
     "ejs": "^3.1.10",
     "feather-icons": "^4.28.0",
-    "jsondiffpatch": "^0.6.0",
+    "jsondiffpatch": "^0.6.2",
     "pretty-print-json": "^2.0.3",
     "qs": "^6.14.1",
     "tom-select": "^2.2.2",
