@@ -5,20 +5,22 @@ COPY app/templates .
 
 RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 
-FROM python:3.11
+FROM python:3.11-slim
 
-RUN apt update && apt install netcat-traditional -y
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git netcat-traditional \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
 
 ARG GIT_COMMIT
 ARG GIT_BRANCH
 
-ENV GIT_COMMIT=${GIT_COMMIT}
-ENV GIT_BRANCH=${GIT_BRANCH}
+ENV GIT_COMMIT=${GIT_COMMIT} \
+    GIT_BRANCH=${GIT_BRANCH}
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 COPY ./requirements.txt /code/requirements.txt
 
