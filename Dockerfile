@@ -8,8 +8,9 @@ RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 FROM python:3.11-slim
 
 #Git is required to get aiosparql from github
+# procps is required for pgrep (health check)
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git netcat-traditional \
+ && apt-get install -y --no-install-recommends git netcat-traditional procps \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
