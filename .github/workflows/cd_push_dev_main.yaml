@@ -82,7 +82,7 @@ jobs:
           push: true
           tags: |
             crisalidesr/svp-harvester:0.29-dev
-            crisalidesr/svp-harvester:latest
+            crisalidesr/svp-harvester:dev
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.ref.name=${{ github.ref_name }}
