@@ -7,8 +7,9 @@ RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 
 FROM python:3.11-slim
 
+#Git is required to get aiosparql from github
 RUN apt-get update \
- && apt-get install -y --no-install-recommends netcat-traditional \
+ && apt-get install -y --no-install-recommends git netcat-traditional \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
@@ -19,6 +20,9 @@ ENV PYTHONUNBUFFERED=1
 COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+#Uninstall git after installing aiosparql
+RUN apt-get purge -y --auto-remove git
 
 COPY . .
 COPY --from=0 /static app/static
