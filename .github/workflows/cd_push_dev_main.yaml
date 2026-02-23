@@ -65,7 +65,7 @@ jobs:
     needs: poeditor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -81,8 +81,11 @@ jobs:
         with:
           push: true
           tags: |
-            crisalidesr/svp-harvester:v0.29-dev
+            crisalidesr/svp-harvester:0.29-dev
             crisalidesr/svp-harvester:latest
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.ref.name=${{ github.ref_name }}
           build-args: |
             GIT_COMMIT=${{ github.sha }}
             GIT_BRANCH=${{ github.ref_name }}

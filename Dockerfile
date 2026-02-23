@@ -8,16 +8,10 @@ RUN cp src/js/env.js.example src/js/env.js && npm install && npm run build
 FROM python:3.11-slim
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git netcat-traditional \
+ && apt-get install -y --no-install-recommends netcat-traditional \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
-
-ARG GIT_COMMIT
-ARG GIT_BRANCH
-
-ENV GIT_COMMIT=${GIT_COMMIT} \
-    GIT_BRANCH=${GIT_BRANCH}
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
