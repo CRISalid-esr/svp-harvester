@@ -1,6 +1,9 @@
 from enum import Enum
 from urllib.parse import urlencode
 
+from app.config import get_app_settings
+from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+
 
 class OpenAlexQueryBuilder:
     """
@@ -48,6 +51,16 @@ class OpenAlexQueryBuilder:
         """
 
         params = self._query_param()
+
+        settings = get_app_settings()
+        api_key = settings.openalex_api_key
+        if not api_key:
+            raise ExternalEndpointFailure(
+                "OpenAlex API key is missing. Please provide env var OPENALEX_API_KEY"
+            )
+
+        params["api_key"] = api_key
+
         return urlencode(params)
 
     def _query_param(self):

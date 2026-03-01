@@ -101,6 +101,8 @@ class AppSettings(BaseSettings):
     scopus_api_key: str = "None"
     scopus_inst_token: str = "None"
 
+    openalex_api_key: str | None = None
+
     idref_sudoc_timeout: int = 10
     idref_science_plus_timeout: int = 10
     idref_concepts_timeout: int = 10
