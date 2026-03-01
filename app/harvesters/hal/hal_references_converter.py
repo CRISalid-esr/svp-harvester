@@ -72,7 +72,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "linkExtId_s",
         "europeanProjectCallId_s",
         # irThesaurusId_s is not a functional identifier, it's shared by all references coming
-        # from the same institutional repository in HAL, so it cannot be used to identify a reference
+        # from the same institutional repository in HAL,
+        # so it cannot be used to identify a reference
         "irThesaurusId_s",
     }
 
