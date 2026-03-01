@@ -1,3 +1,4 @@
+import logging
 from unittest import mock
 
 import pytest
@@ -82,3 +83,53 @@ async def test_fetch_with_empty_response(
         await resolver.fetch(test_url)
 
     assert f"Empty response from {test_url} : None" in str(excinfo.value)
+
+
+@pytest.fixture(name="resolver_http_client_mock_with_persee_wrong_dates")
+def fixture_resolver_http_client_mock_with_persee_bst(
+    persee_rdf_xml_person_with_wrong_dates,
+):
+    with mock.patch.object(ResolverHTTPClient, "get") as mock_get:
+        mock_get.return_value = persee_rdf_xml_person_with_wrong_dates
+        yield mock_get
+
+
+import pytest
+
+
+async def test_fetch_should_not_emit_invalid_isoformat_errors(
+    resolver_http_client_mock_with_persee_wrong_dates,  # pylint: disable=unused-argument
+    caplog,
+    capsys,
+):
+    """
+    GIVEN a RdfResolver instance and a Persee RDF XML with invalid date formats containing BST markers
+    WHEN the fetch method is called
+    THEN it should not emit 'Invalid isoformat string' conversion errors in the logs or stderr
+
+    Explanation:
+        If the RDF contains a date like <dcterms:date>2024-09-07BST21:13:02</dcterms:date>,
+        rdflib may attempt to convert it to a datetime object and fail,
+        emitting an error message like 'Invalid isoformat string' in the logs or stderr.
+        After patching the _clean_response_text method to normalize such date formats,
+        these errors should no longer occur.
+    """
+    resolver = RdfResolver()
+
+    # Capture rdflib logs (they often use the standard logging module)
+    caplog.set_level(logging.WARNING)
+
+    graph = await resolver.fetch("https://data.persee.fr/authority/385736.rdf")
+    assert isinstance(graph, Graph)
+
+    # Some rdflib versions log the conversion failure...
+    logged = "\n".join(r.getMessage() for r in caplog.records)
+
+    # ...others may dump the traceback to stderr.
+    captured = capsys.readouterr()
+    stderr = captured.err or ""
+
+    combined = logged + "\n" + stderr
+
+    assert "Invalid isoformat string" not in combined, combined
+    assert "Failed to convert Literal lexical form to value" not in combined, combined

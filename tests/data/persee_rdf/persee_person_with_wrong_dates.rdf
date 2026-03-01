@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+	xmlns:marcrel="http://id.loc.gov/vocabulary/relators/"
+	xmlns:skos="http://www.w3.org/2004/02/skos/core#" >
+  <rdf:Description rdf:about="http://data.persee.fr/authority/385736#Person">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+    <rdfs:label>Étienne Jollet</rdfs:label>
+    <owl:sameAs rdf:resource="http://data.bnf.fr/ark:/12148/cb12447694g#foaf:Person" />
+    <owl:sameAs rdf:resource="http://www.idref.fr/033628297/id" />
+    <owl:sameAs rdf:resource="http://www.isni.org/0000000116138926" />
+    <owl:sameAs rdf:resource="http://viaf.org/viaf/29627589" />
+    <foaf:name>Étienne Jollet</foaf:name>
+    <foaf:familyName>Jollet</foaf:familyName>
+    <foaf:givenName>Étienne</foaf:givenName>
+    <foaf:page rdf:resource="https://www.persee.fr/authority/385736" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/authority/385736">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept" />
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2024-09-07BST21:13:02</dcterms:modified>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-09-23BST20:18:53</dcterms:modified>
+    <rdfs:label xml:lang="fr">Jollet, Étienne</rdfs:label>
+    <dcterms:license>Etalab v2.0 (https://www.etalab.gouv.fr/licence-ouverte-open-licence)</dcterms:license>
+    <dcterms:creator rdf:resource="http://data.persee.fr/UMS_Persee/" />
+    <skos:prefLabel xml:lang="fr">Jollet, Étienne</skos:prefLabel>
+    <foaf:focus rdf:resource="http://data.persee.fr/authority/385736#Person" />
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.persee.fr/doc/dhs_0070-6760_1996_num_28_1_2138_t1_0546_0000_3#Web">
+    <dcterms:creator rdf:resource="http://data.persee.fr/authority/385736#Person" />
+    <marcrel:aut rdf:resource="http://data.persee.fr/authority/385736#Person" />
+  </rdf:Description>
+</rdf:RDF>
