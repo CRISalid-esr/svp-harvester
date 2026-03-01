@@ -1,8 +1,9 @@
 import pathlib
+
 import pytest
 from rdflib import Graph
-from app.harvesters.idref.idref_harvester import IdrefHarvester
 
+from app.harvesters.idref.idref_harvester import IdrefHarvester
 from app.harvesters.rdf_harvester_raw_result import RdfHarvesterRawResult
 
 
@@ -84,6 +85,13 @@ def fixture_persee_rdf_xml_for_hash_2(_base_path) -> Graph:
 def fixture_persee_rdf_graph_for_person(_base_path) -> Graph:
     """Rdf graph from persee Person rdf file"""
     return _persee_rdf_graph_from_file(_base_path, "persee_person")
+
+
+@pytest.fixture(name="persee_rdf_xml_person_with_wrong_dates")
+def fixture_persee_rdf_xml_person_with_wrong_dates(_base_path) -> str:
+    """Rdf xml from persee Person rdf file with wrong dates containing BST markers"""
+    file_path = "data/persee_rdf/persee_person_with_wrong_dates.rdf"
+    return _rdf_xml_file_content(_base_path, file_path)
 
 
 @pytest.fixture(name="persee_rdf_result_for_journal")

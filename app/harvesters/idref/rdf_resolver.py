@@ -29,14 +29,14 @@ class RdfResolver:
         """
         response_text = await self.http_client.get(document_uri)
         if response_text:
-            cleaned_response_text = self._clean_response_text(response_text)
+            clean_response_text = self._clean_response_text(response_text)
 
             try:
-                graph = Graph().parse(data=cleaned_response_text, format=output_format)
+                graph = Graph().parse(data=clean_response_text, format=output_format)
                 return graph
             except (ParserError, SAXParseException) as error:
                 raise UnexpectedFormatException(
-                    f"Error while parsing the RDF from {document_uri} : {cleaned_response_text}"
+                    f"Error while parsing the RDF from {document_uri} : {clean_response_text}"
                 ) from error
         raise UnexpectedFormatException(
             f"Empty response from {document_uri} : {response_text}"
@@ -44,21 +44,25 @@ class RdfResolver:
 
     def _clean_response_text(self, response_text: str) -> str:
         """
-        Clean the response text by removing empty date fields.
+        Clean the response text by removing empty date fields or fixing invalid date formats
 
         :param response_text: The raw XML response text
-        :return: Cleaned XML response text
+        :return: Clean XML response text
         """
         # List of regular expressions to match different empty date field patterns
         empty_patterns = [
-            re.compile(r"<dc:date[^>]*></dc:date>"),  # Empty <dc:date> tags
-            re.compile(r"<dcterms:date[^>]*?/>"),  # Self-closing <dcterms:date> tags
-            # Add more patterns if needed
+            re.compile(r"<dc:date[^>]*></dc:date>"),
+            re.compile(r"<dcterms:date[^>]*?/>"),
         ]
-
-        # Remove empty fields based on patterns
         for pattern in empty_patterns:
-            # Replace all matches of the pattern with an empty string
             response_text = pattern.sub("", response_text)
+
+        # Fix invalid Persée datetimes like 2024-09-07BST21:13:02
+        # -> 2024-09-07T21:13:02+01:00
+        response_text = re.sub(
+            r"(>)(\d{4}-\d{2}-\d{2})BST(\d{2}:\d{2}:\d{2})(<)",
+            r"\1\2T\3+01:00\4",
+            response_text,
+        )
 
         return response_text
