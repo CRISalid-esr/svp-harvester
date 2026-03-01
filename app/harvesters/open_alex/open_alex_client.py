@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import AsyncGenerator
 
 from app.harvesters.exceptions.external_endpoint_failure import (
     ExternalEndpointFailure,
@@ -18,15 +18,16 @@ class OpenAlexClient:
     PER_PAGE = 25
 
     @handle_external_endpoint_failure("openalex")
-    async def fetch(self, url: str) -> Generator[dict, None, None]:
+    async def fetch(self, url: str) -> AsyncGenerator[dict, None]:
         """
         Fetch the results from the OpenAlex API
 
         :param url: the query string to send to the OpenAlex API
-        :return: A generator of results
+        :return: An async generator of results
         """
         page_number = 1
         session = await AioHttpClientManager.get_session()
+
         while True:
             paginated_query = f"{url}&page={page_number}&per_page={self.PER_PAGE}"
             async with session.get(f"{self.OPEN_ALEX_URL}?{paginated_query}") as resp:

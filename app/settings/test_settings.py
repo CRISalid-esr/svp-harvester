@@ -56,3 +56,5 @@ class TestAppSettings(AppSettings):
     third_api_caching_enabled: bool = False
 
     institution_name: str = "XYZ University • test"
+
+    openalex_api_key: str = "test_openalex_api_key"
