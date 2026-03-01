@@ -70,6 +70,7 @@ def test_build_query_for_person_with_orcid(open_alex_query_builder):
     result_dict = parse_qs(result)
 
     expected_result = {
+        "api_key": ["test_openalex_api_key"],
         "filter": [f"author.orcid:{test_orcid}"],
     }
 
