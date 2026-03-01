@@ -54,7 +54,6 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "inspireId_s": ReferenceIdentifier.IdentifierType.INSPIRE.value,
         "irdId_s": ReferenceIdentifier.IdentifierType.IRD.value,
         "irsteaId_s": ReferenceIdentifier.IdentifierType.IRSTEA.value,
-        "irThesaurusId_s": ReferenceIdentifier.IdentifierType.IRTHESAURUS.value,
         "meditagriId_s": ReferenceIdentifier.IdentifierType.MEDITAGRI.value,
         "nntId_s": ReferenceIdentifier.IdentifierType.NNT.value,
         "okinaId_s": ReferenceIdentifier.IdentifierType.OKINA.value,
@@ -67,6 +66,14 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "sciencespoId_s": ReferenceIdentifier.IdentifierType.SCIENCESPO.value,
         "swhidId_s": ReferenceIdentifier.IdentifierType.SWHID.value,
         "wosId_s": ReferenceIdentifier.IdentifierType.WOS.value,
+    }
+
+    IDENTIFIER_TYPES_TO_IGNORE = {
+        "linkExtId_s",
+        "europeanProjectCallId_s",
+        # irThesaurusId_s is not a functional identifier, it's shared by all references coming
+        # from the same institutional repository in HAL, so it cannot be used to identify a reference
+        "irThesaurusId_s",
     }
 
     @AbstractReferencesConverter.validate_reference
@@ -299,7 +306,7 @@ class HalReferencesConverter(AbstractReferencesConverter):
 
     def _identifiers(self, raw_data):
         for field in self._keys_by_pattern(pattern=r".*Id_s", data=raw_data):
-            if field in ("linkExtId_s", "europeanProjectCallId_s"):
+            if field in self.IDENTIFIER_TYPES_TO_IGNORE:
                 continue
 
             field_data = raw_data[field]

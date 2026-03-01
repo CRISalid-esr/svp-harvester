@@ -27,7 +27,6 @@ class ReferenceIdentifier(Base):
         INSPIRE = "inspire"
         IRD = "ird"
         IRSTEA = "irstea"
-        IRTHESAURUS = "irthesaurus"
         MEDITAGRI = "meditagri"
         NNT = "nnt"
         OKINA = "okina"
