@@ -12,7 +12,7 @@ class ConceptDAO(AbstractDAO):
     Data access object for concepts
     """
 
-    async def get_concept_by_label_and_language(
+    async def get_concept_without_uri_by_label_and_language(
         self, label: str, language: str
     ) -> Concept | None:
         """
@@ -25,7 +25,9 @@ class ConceptDAO(AbstractDAO):
         query = (
             select(Concept)
             .join(Label)
-            .where(Label.value == label, Label.language == language)
+            .where(
+                Concept.uri.is_(None), Label.value == label, Label.language == language
+            )
             .options(raiseload("*"))
         )
         return await self.db_session.scalar(query)

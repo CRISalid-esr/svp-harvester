@@ -165,6 +165,17 @@ def fixture_hal_api_docs_with_date_invalid_format(_base_path) -> dict:
     return _hal_api_json_data_from_file(_base_path, "docs_with_date_invalid_format")
 
 
+@pytest.fixture(name="hal_api_docs_with_keyword_collision_controlled_concept")
+def fixture_hal_api_docs_with_keyword_collision_controlled_concept(_base_path) -> dict:
+    """
+    Generate a HAL API response with a raw keyword that collides by label
+    with a controlled concept coming from another harvester.
+    """
+    return _hal_api_json_data_from_file(
+        _base_path, "docs_with_keyword_collision_controlled_concept"
+    )
+
+
 def _hal_api_json_data_from_file(base_path, file_name) -> dict:
     file_path = f"data/hal_api/{file_name}.json"
     return _json_data_from_file(base_path, file_path)
