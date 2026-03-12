@@ -45,7 +45,7 @@ isodate = "^0.7.2"
 optional = true
 
 [tool.poetry.group.development.dependencies]
-black = "^26.1.0"
+black = "^26.3.1"
 pytest = "^7.4.0"
 coverage = "^7.2.7"
 sphinx = ">=8,<9"
