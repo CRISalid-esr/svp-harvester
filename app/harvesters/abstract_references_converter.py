@@ -325,14 +325,20 @@ class AbstractReferencesConverter(ABC):
     async def _get_or_create_concept_by_label(
         self, concept_informations: ConceptInformations, new_attempt: bool = False
     ):
+        assert (
+            concept_informations.uri is None
+        ), "_get_or_create_concept_by_label should only be used for concepts without URI"
+
         async with async_session() as session:
             async with session.begin_nested():
-                concept = await ConceptDAO(session).get_concept_by_label_and_language(
+                concept = await ConceptDAO(
+                    session
+                ).get_concept_without_uri_by_label_and_language(
                     label=concept_informations.label,
                     language=concept_informations.language,
                 )
                 if concept is None:
-                    concept = Concept(uri=concept_informations.uri)
+                    concept = Concept(uri=None)
                     concept.labels.append(
                         Label(
                             value=concept_informations.label,

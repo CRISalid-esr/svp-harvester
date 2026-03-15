@@ -1,0 +1,53 @@
+{
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "9990001",
+        "halId_s": "halshs-09990001",
+        "uri_s": "https://hal.science/halshs-09990001",
+        "doiId_s": "doi/test-keyword-collision",
+        "en_title_s": [
+          "A HAL record with a raw keyword colliding with an OpenAlex controlled concept"
+        ],
+        "en_subTitle_s": [
+          "test subtitle"
+        ],
+        "en_keyword_s": [
+          "Test concept"
+        ],
+        "en_abstract_s": [
+          "This HAL test document contains a raw keyword only."
+        ],
+        "authIdForm_i": [
+          17861
+        ],
+        "authQuality_s": [
+          "aut"
+        ],
+        "authFirstName_s": [
+          "Aline"
+        ],
+        "authLastName_s": [
+          "Durand"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Aline Durand_FacetSep_17861-10227_FacetSep_Aline-Durand"
+        ],
+        "authIdHasStructure_fs": [
+          "17861-10227_FacetSep_Aline Durand_JoinSep_140228_FacetSep_Anthropologie et Histoire des Mondes Antiques"
+        ],
+        "labStructId_i": [
+          140228
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2016-01-01T00:00:00Z",
+        "publicationDate_s": "2016",
+        "producedDate_tdate": "2016-01-01T00:00:00Z",
+        "submitType_s": "notice"
+      }
+    ]
+  }
+}
