@@ -28,7 +28,7 @@ isbnlib = "^3.10.14"
 semver = "^3.0.2"
 apscheduler = "^3.10.4"
 lxml = "^5.3.0"
-aiohttp = "^3.12.13"
+aiohttp = "^3.13.4"
 aiosparql = {git = "https://github.com/CRISalid-esr/aiosparql.git", rev = "48829527026fda605c4416ea08773af44202aa9f"}
 uvloop = "^0.21.0"
 redis = "^6.2.0"
