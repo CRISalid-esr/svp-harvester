@@ -34,6 +34,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
     """
 
     VERSION: Version | None = None
+    IDENTIFIERS_BY_ENTITIES: dict = {}
 
     def __init__(self, converter: AbstractReferencesConverter):
         self.converter = converter
@@ -87,8 +88,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
 
     @property
     def supported_identifier_types(self) -> list[str]:
-        if not hasattr(self, "IDENTIFIERS_BY_ENTITIES"):
-            return []
+        """Return identifier types supported by this harvester, derived from IDENTIFIERS_BY_ENTITIES."""
         return [
             identifier_key
             for entries in self.IDENTIFIERS_BY_ENTITIES.values()
