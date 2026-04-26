@@ -21,16 +21,16 @@ class ScanrHarvester(AbstractHarvester):
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
             (
-                QueryBuilder.QueryParameters.AUTH_IDREF,
                 ContributorIdentifier.IdentifierType.IDREF.value,
+                QueryBuilder.QueryParameters.AUTH_IDREF,
             ),
             (
-                QueryBuilder.QueryParameters.AUTH_ORCID,
                 ContributorIdentifier.IdentifierType.ORCID.value,
+                QueryBuilder.QueryParameters.AUTH_ORCID,
             ),
             (
-                QueryBuilder.QueryParameters.AUTH_ID_HAL_S,
                 ContributorIdentifier.IdentifierType.IDHAL_S.value,
+                QueryBuilder.QueryParameters.AUTH_ID_HAL_S,
             ),
         ]
     }
@@ -53,7 +53,7 @@ class ScanrHarvester(AbstractHarvester):
         # List convenient query parameters for this entity class
         # and choose the first one for which value is provided
 
-        for scanr_query_parameter, identifier_key in query_parameters:
+        for identifier_key, scanr_query_parameter in query_parameters:
             assert (
                 identifier_key in self.supported_identifier_types
             ), "Unable to run Scanr harvester for a person without idref, orcid or idhals"

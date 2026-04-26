@@ -20,9 +20,9 @@ class HalHarvester(AbstractHarvester):
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "idhali"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "idhals"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID, "orcid"),
+            (ContributorIdentifier.IdentifierType.IDHAL_I.value, HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I),
+            (ContributorIdentifier.IdentifierType.IDHAL_S.value, HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S),
+            (ContributorIdentifier.IdentifierType.ORCID.value, HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID),
         ]
     }
 
@@ -44,7 +44,7 @@ class HalHarvester(AbstractHarvester):
         # List convenient query parameters for this entity class
         # and choose the first one for which value is provided
 
-        for hal_query_parameter, identifier_key in query_parameters:
+        for identifier_key, hal_query_parameter in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_value is not None:
                 return hal_query_parameter, identifier_value
