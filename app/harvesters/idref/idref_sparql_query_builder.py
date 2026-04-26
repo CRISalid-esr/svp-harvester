@@ -139,6 +139,14 @@ class IdrefSparqlQueryBuilder:
         PUBLICATION = "publication"
         CONCEPT = "concept"
 
+    class QueryParameters(Enum):
+        """
+        Identifier types accepted for person queries
+        """
+
+        IDREF_ID = "idref_id"
+        ORCID = "orcid"
+
     class Marcrel(Namespace):
         """
         MARC relator codes
@@ -171,6 +179,20 @@ class IdrefSparqlQueryBuilder:
         """
         self.orcid = orcid
         return self
+
+    def set_query(
+        self,
+        identifier_type: "IdrefSparqlQueryBuilder.QueryParameters",
+        identifier_value: str,
+    ):
+        """
+        Set the query identifier, dispatching to the appropriate setter
+        """
+        if identifier_type == self.QueryParameters.IDREF_ID:
+            return self.set_idref_id(identifier_value)
+        if identifier_type == self.QueryParameters.ORCID:
+            return self.set_orcid(identifier_value)
+        raise ValueError(f"Unknown identifier type {identifier_type}")
 
     def set_subject_type(self, subject_type: SubjectType):
         """

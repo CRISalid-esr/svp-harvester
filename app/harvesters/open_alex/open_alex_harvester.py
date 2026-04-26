@@ -17,7 +17,12 @@ class OpenAlexHarvester(AbstractHarvester):
     FORMATTER_NAME = "openalex"
 
     IDENTIFIERS_BY_ENTITIES = {
-        "Person": [(ContributorIdentifier.IdentifierType.ORCID.value, OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID)]
+        "Person": [
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID,
+            )
+        ]
     }
 
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}

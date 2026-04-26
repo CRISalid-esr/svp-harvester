@@ -20,9 +20,18 @@ class HalHarvester(AbstractHarvester):
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
-            (ContributorIdentifier.IdentifierType.IDHAL_I.value, HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I),
-            (ContributorIdentifier.IdentifierType.IDHAL_S.value, HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S),
-            (ContributorIdentifier.IdentifierType.ORCID.value, HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID),
+            (
+                ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I,
+            ),
+            (
+                ContributorIdentifier.IdentifierType.IDHAL_S.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S,
+            ),
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID,
+            ),
         ]
     }
 
