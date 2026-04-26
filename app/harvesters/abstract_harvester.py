@@ -88,7 +88,8 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
 
     @property
     def supported_identifier_types(self) -> list[str]:
-        """Return identifier types supported by this harvester, derived from IDENTIFIERS_BY_ENTITIES."""
+        """Return identifier types supported by this harvester,
+        derived from IDENTIFIERS_BY_ENTITIES."""
         return [
             identifier_key
             for entries in self.IDENTIFIERS_BY_ENTITIES.values()
@@ -173,13 +174,13 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
                         or (new_ref_is_enhanced and self.fetch_enhancements)
                     ):
                         await self.converter.convert(raw_data=raw_data, new_ref=new_ref)
-                    reference_event_id_and_type: Optional[
-                        Tuple[int, str]
-                    ] = await self._handle_converted_result(
-                        new_ref=new_ref,
-                        old_ref=old_ref,
-                        comparaison_hash=comparaison_hash,
-                        references_recorder=references_recorder,
+                    reference_event_id_and_type: Optional[Tuple[int, str]] = (
+                        await self._handle_converted_result(
+                            new_ref=new_ref,
+                            old_ref=old_ref,
+                            comparaison_hash=comparaison_hash,
+                            references_recorder=references_recorder,
+                        )
                     )
                     if reference_event_id_and_type is not None:
                         await self._put_in_queue(
