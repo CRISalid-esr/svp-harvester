@@ -35,12 +35,6 @@ class ScanrHarvester(AbstractHarvester):
         ]
     }
 
-    supported_identifier_types = [
-        ContributorIdentifier.IdentifierType.IDREF.value,
-        ContributorIdentifier.IdentifierType.ORCID.value,
-        ContributorIdentifier.IdentifierType.IDHAL_S.value,
-    ]
-
     VERSION: Version = VersionInfo.parse("2.0.6")
 
     async def _get_scanr_query_parameters(self, entity_class: str):

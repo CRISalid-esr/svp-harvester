@@ -65,11 +65,6 @@ class IdrefHarvester(AbstractHarvester):
         ]
     }
 
-    supported_identifier_types = [
-        ContributorIdentifier.IdentifierType.IDREF.value,
-        ContributorIdentifier.IdentifierType.ORCID.value,
-    ]
-
     VERSION: Version = VersionInfo.parse("2.0.5")
 
     class Formatters(Enum):

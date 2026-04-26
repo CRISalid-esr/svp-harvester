@@ -33,8 +33,6 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
     Abstract mother class for harvesters
     """
 
-    supported_identifier_types: list[str] = []
-
     VERSION: Version | None = None
 
     def __init__(self, converter: AbstractReferencesConverter):
@@ -86,6 +84,16 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         :return: None
         """
         self.fetch_enhancements = fetch_enhancements
+
+    @property
+    def supported_identifier_types(self) -> list[str]:
+        if not hasattr(self, "IDENTIFIERS_BY_ENTITIES"):
+            return []
+        return [
+            identifier_key
+            for entries in self.IDENTIFIERS_BY_ENTITIES.values()
+            for identifier_key, _ in entries
+        ]
 
     def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
         """

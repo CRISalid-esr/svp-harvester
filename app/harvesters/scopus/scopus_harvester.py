@@ -27,8 +27,6 @@ class ScopusHarvester(AbstractHarvester):
 
     SUBJECT_BY_ENTITIES = {"Person": ScopusQueryBuilder.SubjectType.PERSON}
 
-    supported_identifier_types = [ContributorIdentifier.IdentifierType.SCOPUS.value]
-
     VERSION: Version = VersionInfo.parse("2.1.0")
 
     async def _get_scopus_query_parameters(self, entity_class: str):

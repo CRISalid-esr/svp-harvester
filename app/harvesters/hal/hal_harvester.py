@@ -35,12 +35,6 @@ class HalHarvester(AbstractHarvester):
         ]
     }
 
-    supported_identifier_types = [
-        ContributorIdentifier.IdentifierType.IDHAL_I.value,
-        ContributorIdentifier.IdentifierType.IDHAL_S.value,
-        ContributorIdentifier.IdentifierType.ORCID.value,
-    ]
-
     VERSION: Version = VersionInfo.parse("2.1.1")
 
     async def _get_hal_query_parameters(self, entity_class: str):
