@@ -114,7 +114,14 @@ CREATE USER your_user_name WITH PASSWORD 'your_secret';
 GRANT ALL PRIVILEGES ON DATABASE your_db_name to your_user_name;
 ```
 
-Repeat for test database.
+For the test database :
+
+```sql
+DROP DATABASE IF EXISTS svp_harvester_test;
+CREATE DATABASE svp_harvester_test;
+CREATE USER svp_harvester_test WITH PASSWORD 'svp_harvester_test';
+GRANT ALL PRIVILEGES ON DATABASE svp_harvester_test to svp_harvester_test;
+```
 
 Update .env and .test.env with credentials
 
@@ -151,6 +158,8 @@ poetry install
 ### Tests
 
 The project uses [pytest](https://docs.pytest.org/en/stable/) for testing.
+
+Tests require a running PostgreSQL instance (local or Docker) with the test database and credentials configured in `.test.env` (see [Database creation](#database-creation) above).
 
 From project root :
 
