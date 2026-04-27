@@ -17,12 +17,16 @@ class OpenAlexHarvester(AbstractHarvester):
     FORMATTER_NAME = "openalex"
 
     IDENTIFIERS_BY_ENTITIES = {
-        "Person": [(OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID, "orcid")]
+        "Person": [
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID,
+            )
+        ]
     }
 
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}
 
-    supported_identifier_types = [ContributorIdentifier.IdentifierType.ORCID.value]
     VERSION: Version = VersionInfo.parse("2.1.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
@@ -34,7 +38,7 @@ class OpenAlexHarvester(AbstractHarvester):
 
         query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
 
-        for open_alex_query_parameter, identifier_key in query_parameters:
+        for identifier_key, open_alex_query_parameter in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_value is not None:
                 return open_alex_query_parameter, identifier_value

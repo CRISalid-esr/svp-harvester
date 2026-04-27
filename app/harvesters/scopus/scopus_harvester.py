@@ -19,15 +19,13 @@ class ScopusHarvester(AbstractHarvester):
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
             (
-                ScopusQueryBuilder.QueryParameters.SCOPUS_EID,
                 ContributorIdentifier.IdentifierType.SCOPUS.value,
+                ScopusQueryBuilder.QueryParameters.SCOPUS_EID,
             )
         ]
     }
 
     SUBJECT_BY_ENTITIES = {"Person": ScopusQueryBuilder.SubjectType.PERSON}
-
-    supported_identifier_types = [ContributorIdentifier.IdentifierType.SCOPUS.value]
 
     VERSION: Version = VersionInfo.parse("2.1.0")
 
@@ -40,7 +38,7 @@ class ScopusHarvester(AbstractHarvester):
 
         query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
 
-        for scopus_query_parameter, identifier_key in query_parameters:
+        for identifier_key, scopus_query_parameter in query_parameters:
             identifier_value = entity.get_identifier(identifier_key)
             if identifier_value is not None:
                 return scopus_query_parameter, identifier_value
