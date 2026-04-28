@@ -30,6 +30,8 @@ async def test_publish_harvesting_status(
     expected_sent_message_payload = {
         "harvester": "idref",
         "state": "running",
+        "identifier_used_type": None,
+        "identifier_used_value": None,
         "error": [],
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
@@ -106,6 +108,10 @@ async def test_publish_created_reference(
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
             "name": "John Doe",
+        },
+        "harvesting": {
+            "identifier_used_type": None,
+            "identifier_used_value": None,
         },
     }
 

@@ -8,6 +8,12 @@ from app.db.models.harvesting import Harvesting
 from app.db.models.retrieval import Retrieval as DbRetrieval
 
 
+async def _fetch_harvesting_by_id(session: AsyncSession, harvesting_id: int) -> Harvesting:
+    """Fetch a harvesting directly via SELECT to bypass identity map."""
+    stmt = select(Harvesting).where(Harvesting.id == harvesting_id)
+    return (await session.execute(stmt)).unique().scalar_one()
+
+
 @pytest.mark.asyncio
 async def test_create_harvesting(
     async_session: AsyncSession, retrieval_db_model_for_person_with_idref
@@ -32,6 +38,30 @@ async def test_create_harvesting(
     )
     harvesting_from_db = (await async_session.execute(stmt)).unique().scalar_one()
     assert harvesting_from_db.harvester == "idref"
+
+
+@pytest.mark.asyncio
+async def test_update_harvesting_identifier(
+    async_session: AsyncSession, retrieval_db_model_for_person_with_idref
+):
+    """
+    Test that update_harvesting_identifier persists identifier type and value.
+    :param async_session: async session fixture
+    :param retrieval_db_model_for_person_with_idref: retrieval fixture
+    :return: None
+    """
+    dao = HarvestingDAO(async_session)
+    harvesting = await dao.create_harvesting(
+        retrieval_db_model_for_person_with_idref,
+        "hal",
+        state=Harvesting.State.RUNNING,
+    )
+    await async_session.commit()
+    await dao.update_harvesting_identifier(harvesting.id, "idhali", "john-doe")
+    await async_session.commit()
+    harvesting_from_db = await _fetch_harvesting_by_id(async_session, harvesting.id)
+    assert harvesting_from_db.identifier_used_type == "idhali"
+    assert harvesting_from_db.identifier_used_value == "john-doe"
 
 
 @pytest.mark.asyncio

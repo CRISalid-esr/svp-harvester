@@ -40,6 +40,9 @@ class Harvesting(Base):
         nullable=False, index=True, default=State.IDLE.value
     )
 
+    identifier_used_type: Mapped[str | None] = mapped_column(nullable=True)
+    identifier_used_value: Mapped[str | None] = mapped_column(nullable=True)
+
     reference_events: Mapped[
         List["app.db.models.reference_event.ReferenceEvent"]
     ] = relationship(

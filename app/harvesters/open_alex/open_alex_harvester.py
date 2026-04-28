@@ -31,19 +31,18 @@ class OpenAlexHarvester(AbstractHarvester):
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """
-        Set the query parameters for an entity
+        Return the OpenAlex query parameters using the pre-selected entity identifier.
         """
-
-        entity = await self._get_entity()
-
-        query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
-
-        for identifier_key, open_alex_query_parameter in query_parameters:
-            identifier_value = entity.get_identifier(identifier_key)
-            if identifier_value is not None:
+        assert self.entity_identifier_used is not None, (
+            "entity_identifier_used must be set before calling _get_open_alex_query_parameters"
+        )
+        identifier_key, identifier_value = self.entity_identifier_used
+        for entry_key, open_alex_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
+            entity_class, []
+        ):
+            if entry_key == identifier_key:
                 return open_alex_query_parameter, identifier_value
-
-        assert False, "Unable to run open alex harvester for a person without ORCID"
+        assert False, f"Unable to map '{identifier_key}' to OpenAlex query parameter"
 
     async def fetch_results(self) -> AsyncGenerator[JsonHarvesterRawResult, None]:
         """

@@ -43,6 +43,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         self.harvesting: Optional[Harvesting] = None
         self.entity_id: Optional[int] = None
         self.entity: Optional[DbEntity] = None
+        self.entity_identifier_used: Optional[tuple[str, str]] = None
         self.event_types: list[ReferenceEvent.Type] = []
         self.fetch_enhancements: bool = True
 
@@ -54,13 +55,15 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
         """
         self.result_queue = result_queue
 
-    def set_entity_id(self, entity_id: int):
+    async def set_entity_id(self, entity_id: int) -> None:
         """
-        Set the entity for which to harvest references
+        Set the entity for which to harvest references, then select and persist
+        the identifier that will be used for this harvesting.
         :param entity_id: The entity for which to harvest references, person or organisation
         :return: None
         """
         self.entity_id = entity_id
+        await self._select_entity_identifier_used()
 
     def set_harvesting_id(self, harvesting_id: int):
         """
@@ -96,14 +99,38 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
             for identifier_key, _ in entries
         ]
 
-    def is_relevant(self, entity: Type[DbEntity]) -> bool:  # pragma: no cover
+    def is_relevant(self, entity: Type[DbEntity] = None) -> bool:
         """
-        Return True if the entity contains the required information for the harvester to do his job
+        Return True if an identifier was selected for this harvester.
+        Requires set_entity_id() to have been awaited first.
         """
-        return any(
-            entity.get_identifier(identifier_type=identifier_type) is not None
-            for identifier_type in self.supported_identifier_types
-        )
+        return self.entity_identifier_used is not None
+
+    async def _select_entity_identifier_used(self) -> None:
+        """
+        Find the first matching identifier from IDENTIFIERS_BY_ENTITIES for the entity's class,
+        store it as entity_identifier_used, and persist it to the DB harvesting record.
+        If no matching identifier is found, entity_identifier_used remains None.
+        """
+        if not self.IDENTIFIERS_BY_ENTITIES:
+            return
+        entity = await self._get_entity()
+        identifier_entries = self.IDENTIFIERS_BY_ENTITIES.get(entity.__class__.__name__)
+        if not identifier_entries:
+            return
+        for identifier_key, _ in identifier_entries:
+            identifier_value = entity.get_identifier(identifier_key)
+            if identifier_value is not None:
+                self.entity_identifier_used = (identifier_key, identifier_value)
+                break
+        if self.entity_identifier_used is not None and self.harvesting_id is not None:
+            async with async_session() as session:
+                async with session.begin():
+                    await HarvestingDAO(session).update_harvesting_identifier(
+                        self.harvesting_id,
+                        self.entity_identifier_used[0],
+                        self.entity_identifier_used[1],
+                    )
 
     @abstractmethod
     async def fetch_results(

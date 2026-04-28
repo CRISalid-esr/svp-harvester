@@ -62,36 +62,117 @@ def fixture_hal_harvester() -> HalHarvester:
     return HalHarvester(converter=converter)
 
 
-def test_hal_harvester_relevant_for_person_with_idhal_i(
+@pytest.mark.asyncio
+async def test_hal_harvester_relevant_for_person_with_idhal_i(
     person_with_name_and_id_hal_i_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
-    """Test that the harvester will run if submitted with an IDHAL."""
-    assert hal_harvester.is_relevant(person_with_name_and_id_hal_i_db_model) is True
+    """Test that the harvester is relevant after set_entity_id selects an idhali identifier."""
+    with mock.patch.object(
+        HalHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_id_hal_i_db_model
+        )
+    ):
+        await hal_harvester.set_entity_id(1)
+    assert hal_harvester.is_relevant() is True
+    assert hal_harvester.entity_identifier_used == (
+        ContributorIdentifier.IdentifierType.IDHAL_I.value,
+        "123456789",
+    )
 
 
-def test_hal_harvester_relevant_for_person_with_idhal_s(
+@pytest.mark.asyncio
+async def test_hal_harvester_relevant_for_person_with_idhal_s(
     person_with_name_and_id_hal_s_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
-    """Test that the harvester will run if submitted with an IDHAL."""
-    assert hal_harvester.is_relevant(person_with_name_and_id_hal_s_db_model) is True
+    """Test that the harvester is relevant after set_entity_id selects an idhals identifier."""
+    with mock.patch.object(
+        HalHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_id_hal_s_db_model
+        )
+    ):
+        await hal_harvester.set_entity_id(1)
+    assert hal_harvester.is_relevant() is True
+    assert hal_harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.IDHAL_S.value
+    )
 
 
-def test_hal_harvester_relevant_for_person_with_orcid(
+@pytest.mark.asyncio
+async def test_hal_harvester_relevant_for_person_with_orcid(
     person_with_name_and_orcid_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
-    """Test that the harvester will run if submitted with an ORCID."""
-    assert hal_harvester.is_relevant(person_with_name_and_orcid_db_model) is True
+    """Test that the harvester is relevant after set_entity_id selects an orcid identifier."""
+    with mock.patch.object(
+        HalHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_orcid_db_model
+        )
+    ):
+        await hal_harvester.set_entity_id(1)
+    assert hal_harvester.is_relevant() is True
+    assert hal_harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.ORCID.value
+    )
 
 
-def test_hal_harvester_not_relevant_for_person_with_idref_only(
+@pytest.mark.asyncio
+async def test_hal_harvester_not_relevant_for_person_with_idref_only(
     person_with_name_and_idref_db_model: DbPerson,
     hal_harvester: HalHarvester,
 ):
-    """Test that the harvester will not run if submitted with only an IDREF."""
-    assert hal_harvester.is_relevant(person_with_name_and_idref_db_model) is False
+    """Test that the harvester is not relevant when entity has only an idref identifier."""
+    with mock.patch.object(
+        HalHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_idref_db_model
+        )
+    ):
+        await hal_harvester.set_entity_id(1)
+    assert hal_harvester.is_relevant() is False
+    assert hal_harvester.entity_identifier_used is None
+
+
+@pytest.mark.asyncio
+async def test_hal_harvester_persists_identifier_used(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i,
+    async_session: AsyncSession,
+):
+    """Test that set_entity_id persists the selected identifier to the DB harvesting record."""
+    async_session.add(hal_harvesting_db_model_id_hal_i)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    assert hal_harvester.entity_identifier_used == (
+        ContributorIdentifier.IdentifierType.IDHAL_I.value,
+        "123456789",
+    )
+    stmt = select(Harvesting).where(
+        Harvesting.id == hal_harvesting_db_model_id_hal_i.id
+    )
+    harvesting_from_db = (await async_session.execute(stmt)).unique().scalar_one()
+    assert (
+        harvesting_from_db.identifier_used_type
+        == ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
+    assert harvesting_from_db.identifier_used_value == "123456789"
+
+
+@pytest.mark.asyncio
+async def test_hal_harvester_sets_identifier_used_to_hal_i_when_both_present(
+    hal_harvester: HalHarvester,
+    hal_harvesting_db_model_id_hal_i_s,
+    async_session: AsyncSession,
+):
+    """Test that idhali takes priority over idhals when both are present."""
+    async_session.add(hal_harvesting_db_model_id_hal_i_s)
+    await async_session.commit()
+    hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i_s.id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i_s.retrieval.entity_id)
+    assert hal_harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.IDHAL_I.value
+    )
 
 
 @pytest.mark.integration
@@ -107,7 +188,7 @@ async def test_hal_harvester_finds_doc(
     async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     reference_recorder_register_mock.assert_called_once()
@@ -135,7 +216,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_s(
     async_session.add(hal_harvesting_db_model_id_hal_s)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_s.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_s.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_s.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     args, _ = hal_api_client_mock.call_args
@@ -171,7 +252,7 @@ async def test_hal_harvester_calls_hal_api_with_id_hal_i_s(
     async_session.add(hal_harvesting_db_model_id_hal_i_s)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i_s.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i_s.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i_s.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     args, _ = hal_api_client_mock.call_args
@@ -198,7 +279,7 @@ async def test_hal_harvester_registers_docs_in_db(
     async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     stmt = (
@@ -239,7 +320,7 @@ async def test_hal_harvester_registers_one_kw_for_two_occurences(
     async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock_same_kw_twice.assert_called_once()
     stmt = (
@@ -291,7 +372,7 @@ async def test_hal_harvester_registers_abstract(
     async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     stmt = (
         select(Reference)
@@ -319,7 +400,7 @@ async def test_hal_harvester_register_document_type_in_db(
     async_session.add(hal_harvesting_db_model_id_hal_i)
     await async_session.commit()
     hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-    hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
+    await hal_harvester.set_entity_id(hal_harvesting_db_model_id_hal_i.retrieval.entity_id)
     await hal_harvester.run()
     hal_api_client_mock.assert_called_once()
     stmt = select(DocumentType.uri)
@@ -353,7 +434,7 @@ async def test_harvester_version_number_increased(
         async_session.add(hal_harvesting_db_model_id_hal_i)
         await async_session.commit()
         hal_harvester.set_harvesting_id(hal_harvesting_db_model_id_hal_i.id)
-        hal_harvester.set_entity_id(
+        await hal_harvester.set_entity_id(
             hal_harvesting_db_model_id_hal_i.retrieval.entity_id
         )
         await hal_harvester.run()
