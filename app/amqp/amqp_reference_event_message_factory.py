@@ -30,6 +30,7 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
             ).get_detailed_reference_event_by_id(self.content.get("id"))
             self.reference_event_type = reference_event.type
             entity: DbEntity = reference_event.harvesting.retrieval.entity
+            harvesting = reference_event.harvesting
             reference_event_representation: ReferenceEventModel = (
                 ReferenceEventModel.model_validate(reference_event)
             )
@@ -54,4 +55,9 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
                 "entity": EntityModel.model_validate(entity).model_dump(
                     exclude={"id": True}
                 )
+            } | {
+                "harvesting": {
+                    "identifier_used_type": harvesting.identifier_used_type,
+                    "identifier_used_value": harvesting.identifier_used_value,
+                }
             }

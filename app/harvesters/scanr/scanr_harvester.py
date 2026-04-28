@@ -39,32 +39,21 @@ class ScanrHarvester(AbstractHarvester):
 
     async def _get_scanr_query_parameters(self, entity_class: str):
         """
-        Set the query parameters for an entity
+        Compute the ScanR person id using the pre-selected entity identifier.
+        Returns a scanr_id string, or None if not found.
         """
-        entity = await self._get_entity()
-
-        query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
-        # List convenient query parameters for this entity class
-        # and choose the first one for which value is provided
-
-        for identifier_key, scanr_query_parameter in query_parameters:
-            assert (
-                identifier_key in self.supported_identifier_types
-            ), "Unable to run Scanr harvester for a person without idref, orcid or idhals"
-
-            identifier_value = entity.get_identifier(identifier_key)
-            if identifier_key == "idref" and identifier_value is not None:
-                # create a scanr id from idref
-                scanr_id = identifier_key + str(identifier_value)
-                return scanr_id
-            if identifier_value is not None:
-                # Search for scanr id from other identifiers on Scanr API Person index
-                scanr_id = await self._get_entity_scanr_id(
-                    scanr_query_parameter, identifier_value
-                )
-                if scanr_id:
-                    return scanr_id
-
+        assert self.entity_identifier_used is not None, (
+            "entity_identifier_used must be set before calling _get_scanr_query_parameters"
+        )
+        identifier_key, identifier_value = self.entity_identifier_used
+        for entry_key, scanr_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
+            entity_class, []
+        ):
+            if entry_key != identifier_key:
+                continue
+            if identifier_key == "idref":
+                return identifier_key + str(identifier_value)
+            return await self._get_entity_scanr_id(scanr_query_parameter, identifier_value)
         return None
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:

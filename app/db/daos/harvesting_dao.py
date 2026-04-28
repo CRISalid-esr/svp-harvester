@@ -77,6 +77,30 @@ class HarvestingDAO(AbstractDAO):
         )
         await self.db_session.execute(stmt)
 
+    async def update_harvesting_identifier(
+        self,
+        harvesting_id: int,
+        identifier_type: str,
+        identifier_value: str,
+    ) -> None:
+        """
+        Persist the entity identifier that was selected for use in this harvesting.
+
+        :param harvesting_id: id of the harvesting
+        :param identifier_type: the identifier type key (e.g. "idhali")
+        :param identifier_value: the identifier value
+        :return: None
+        """
+        stmt = (
+            update(DbHarvesting)
+            .where(DbHarvesting.id == harvesting_id)
+            .values(
+                identifier_used_type=identifier_type,
+                identifier_used_value=identifier_value,
+            )
+        )
+        await self.db_session.execute(stmt)
+
     def harvesting_event_count_subquery(self, event_types, nullify):
         """
         Get a subquery for the count of events for each harvesting grouped by event type
