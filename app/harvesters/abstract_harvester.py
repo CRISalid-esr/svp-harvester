@@ -3,7 +3,7 @@ import gc
 import traceback
 from abc import ABC, abstractmethod
 from asyncio import Queue
-from typing import Optional, AsyncGenerator, Type, List, Tuple
+from typing import Optional, AsyncGenerator, List, Tuple
 
 from asyncpg import PostgresConnectionError
 from loguru import logger
@@ -99,7 +99,7 @@ class AbstractHarvester(ABC):  # pylint: disable=too-many-instance-attributes
             for identifier_key, _ in entries
         ]
 
-    def is_relevant(self, entity: Type[DbEntity] = None) -> bool:
+    def is_relevant(self) -> bool:
         """
         Return True if an identifier was selected for this harvester.
         Requires set_entity_id() to have been awaited first.
