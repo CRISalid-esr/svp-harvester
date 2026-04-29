@@ -27,15 +27,15 @@ class ScopusHarvester(AbstractHarvester):
 
     SUBJECT_BY_ENTITIES = {"Person": ScopusQueryBuilder.SubjectType.PERSON}
 
-    VERSION: Version = VersionInfo.parse("2.1.0")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     async def _get_scopus_query_parameters(self, entity_class: str):
         """
         Return the Scopus query parameters using the pre-selected entity identifier.
         """
-        assert self.entity_identifier_used is not None, (
-            "entity_identifier_used must be set before calling _get_scopus_query_parameters"
-        )
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_scopus_query_parameters"
         identifier_key, identifier_value = self.entity_identifier_used
         for entry_key, scopus_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
             entity_class, []

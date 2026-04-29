@@ -35,16 +35,16 @@ class ScanrHarvester(AbstractHarvester):
         ]
     }
 
-    VERSION: Version = VersionInfo.parse("2.0.6")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     async def _get_scanr_query_parameters(self, entity_class: str):
         """
         Compute the ScanR person id using the pre-selected entity identifier.
         Returns a scanr_id string, or None if not found.
         """
-        assert self.entity_identifier_used is not None, (
-            "entity_identifier_used must be set before calling _get_scanr_query_parameters"
-        )
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_scanr_query_parameters"
         identifier_key, identifier_value = self.entity_identifier_used
         for entry_key, scanr_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
             entity_class, []
@@ -53,7 +53,9 @@ class ScanrHarvester(AbstractHarvester):
                 continue
             if identifier_key == "idref":
                 return identifier_key + str(identifier_value)
-            return await self._get_entity_scanr_id(scanr_query_parameter, identifier_value)
+            return await self._get_entity_scanr_id(
+                scanr_query_parameter, identifier_value
+            )
         return None
 
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:

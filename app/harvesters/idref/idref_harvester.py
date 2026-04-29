@@ -65,7 +65,7 @@ class IdrefHarvester(AbstractHarvester):
         ]
     }
 
-    VERSION: Version = VersionInfo.parse("2.0.5")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     class Formatters(Enum):
         """
@@ -82,9 +82,9 @@ class IdrefHarvester(AbstractHarvester):
         """
         Return the Idref SPARQL query parameters using the pre-selected entity identifier.
         """
-        assert self.entity_identifier_used is not None, (
-            "entity_identifier_used must be set before calling _get_idref_query_parameters"
-        )
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_idref_query_parameters"
         identifier_key, identifier_value = self.entity_identifier_used
         for entry_key, idref_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
             entity_class, []
@@ -98,8 +98,10 @@ class IdrefHarvester(AbstractHarvester):
         settings = get_app_settings()
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
-            idref_query_parameter, identifier_value = await self._get_idref_query_parameters(
-                await self._get_entity_class_name()
+            idref_query_parameter, identifier_value = (
+                await self._get_idref_query_parameters(
+                    await self._get_entity_class_name()
+                )
             )
             builder.set_subject_type(QueryBuilder.SubjectType.PERSON)
             builder.set_query(idref_query_parameter, identifier_value)

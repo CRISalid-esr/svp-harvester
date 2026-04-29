@@ -35,15 +35,15 @@ class HalHarvester(AbstractHarvester):
         ]
     }
 
-    VERSION: Version = VersionInfo.parse("2.1.1")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
         Return the HAL query parameters using the pre-selected entity identifier.
         """
-        assert self.entity_identifier_used is not None, (
-            "entity_identifier_used must be set before calling _get_hal_query_parameters"
-        )
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_hal_query_parameters"
         identifier_key, identifier_value = self.entity_identifier_used
         for entry_key, hal_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
             entity_class, []
