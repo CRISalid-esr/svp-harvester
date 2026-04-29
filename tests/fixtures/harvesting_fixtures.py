@@ -125,6 +125,25 @@ async def fixture_hal_harvesting_db_model_id_hal_i_s(
     )
 
 
+@pytest_asyncio.fixture(name="harvesting_db_model_for_person_with_idref_and_identifier_used")
+async def fixture_harvesting_db_model_for_person_with_idref_and_identifier_used(
+    async_session, retrieval_db_model_for_person_with_idref
+) -> DbHarvesting:
+    """
+    Generate a harvesting with identifier_used_type and identifier_used_value set.
+
+    :param async_session: async db session
+    :param retrieval_db_model_for_person_with_idref: retrieval in DB model format
+    :return: harvesting in DB model format with identifier_used fields set
+    """
+    harvesting = await HarvestingDAO(async_session).create_harvesting(
+        retrieval_db_model_for_person_with_idref, "idref", DbHarvesting.State.RUNNING
+    )
+    harvesting.identifier_used_type = "idref"
+    harvesting.identifier_used_value = "123456789"
+    return harvesting
+
+
 @pytest_asyncio.fixture(name="scopus_harvesting_db_model_scopus_eid")
 async def fixture_scopus_harvesting_db_model_scopus_eid(
     async_session, retrieval_db_model_for_person_with_scopus_eid

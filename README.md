@@ -207,14 +207,20 @@ npm run build
 
 From project root :
 
+With the web UI (admin interface) :
+
 ```bash
 APP_ENV=DEV uvicorn app.main:app --reload
 ```
-
 or
+```bash
+APP_ENV=DEV python3 -m app.main
+```
+
+or, without the web UI:
 
 ```bash
-APP_ENV=DEV python3 app/main.py 
+APP_ENV=DEV python3 -m app.amqplisten
 ```
 
 ---
