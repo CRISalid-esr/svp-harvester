@@ -45,7 +45,7 @@ isodate = "^0.7.2"
 optional = true
 
 [tool.poetry.group.development.dependencies]
-pytest = "^7.4.0"
+pytest = ">=7.4,<10.0"
 coverage = "^7.2.7"
 sphinx = ">=8,<9"
 sphinxcontrib-confluencebuilder = "^2.8.0"
