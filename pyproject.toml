@@ -47,9 +47,9 @@ optional = true
 [tool.poetry.group.development.dependencies]
 pytest = "^7.4.0"
 coverage = "^7.2.7"
-sphinx = ">=8,<9"
-sphinxcontrib-confluencebuilder = "^2.8.0"
-sphinx-rtd-theme = "^3.0.0"
+sphinx = "^9"
+sphinxcontrib-confluencebuilder = "^3.1.0"
+sphinx-rtd-theme = "^3.1.0"
 pytest-cov = "^4.1.0"
 pydot = "^2.0.0"
 graphviz = "^0.20.1"
