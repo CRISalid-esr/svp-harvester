@@ -36,6 +36,7 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
             )
             return {
                 "reference_event": reference_event_representation.model_dump(
+                    by_alias=True,
                     exclude={
                         "id": True,
                         "reference": {
