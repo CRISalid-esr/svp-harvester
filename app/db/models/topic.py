@@ -6,6 +6,8 @@ from app.db.session import Base
 
 
 class Topic(Base):
+    """Model for persistence of OpenAlex topics."""
+
     __tablename__ = "topics"
 
     id: Mapped[int] = mapped_column(primary_key=True)

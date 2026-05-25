@@ -89,6 +89,7 @@ async def test_publish_created_reference(
                         "alt_labels": [],
                     }
                 ],
+                "domains": [],
                 "document_type": [],
                 "contributions": [],
                 "issue": None,
@@ -204,6 +205,7 @@ async def test_publish_created_reference_with_identifier_used(
                         "alt_labels": [],
                     }
                 ],
+                "domains": [],
                 "document_type": [],
                 "contributions": [],
                 "issue": None,

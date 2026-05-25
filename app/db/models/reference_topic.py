@@ -5,6 +5,8 @@ from app.db.session import Base
 
 
 class ReferenceTopic(Base):
+    """Association object linking a Reference to a Topic with a relevance score."""
+
     __tablename__ = "reference_topics"
 
     reference_id: Mapped[int] = mapped_column(
