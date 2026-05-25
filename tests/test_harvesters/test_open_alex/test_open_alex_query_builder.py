@@ -39,7 +39,7 @@ def test_build_query_without_subject_type(open_alex_query_builder):
     :return:
     """
 
-    test_orcid = "0000-0002-1825-0097"
+    test_orcid = "0000000218250097"
 
     open_alex_query_builder.set_query(
         open_alex_query_builder.QueryParameters.AUTH_ORCID, test_orcid
@@ -52,17 +52,18 @@ def test_build_query_without_subject_type(open_alex_query_builder):
 def test_build_query_for_person_with_orcid(open_alex_query_builder):
     """
     GIVEN a OpenAlexQueryBuilder instance
-    WHEN the build function is called with the identifier type set to AUTH_ORCID
-    THEN the query contains a filter with the orcid parameter
+    WHEN the build function is called with a bare-digits ORCID
+    THEN the query filter contains the hyphenated ORCID form
 
     :param open_alex_query_builder:
     :return:
     """
 
-    test_orcid = "0000-0002-1825-0097"
+    test_orcid_bare = "0000000218250097"
+    test_orcid_hyphenated = "0000-0002-1825-0097"
 
     open_alex_query_builder.set_query(
-        open_alex_query_builder.QueryParameters.AUTH_ORCID, test_orcid
+        open_alex_query_builder.QueryParameters.AUTH_ORCID, test_orcid_bare
     )
     open_alex_query_builder.set_subject_type(open_alex_query_builder.SubjectType.PERSON)
 
@@ -71,7 +72,7 @@ def test_build_query_for_person_with_orcid(open_alex_query_builder):
 
     expected_result = {
         "api_key": ["test_openalex_api_key"],
-        "filter": [f"author.orcid:{test_orcid}"],
+        "filter": [f"author.orcid:{test_orcid_hyphenated}"],
     }
 
     assert result_dict == expected_result

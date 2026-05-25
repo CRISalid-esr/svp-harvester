@@ -113,6 +113,17 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
     assert test_reference.created == expected_created_date
+    assert len(test_reference.topics) == 2
+    topic_source_ids = {rt.topic.source_id for rt in test_reference.topics}
+    assert "T10153" in topic_source_ids
+    assert "T11475" in topic_source_ids
+    topic_by_source_id = {rt.topic.source_id: rt for rt in test_reference.topics}
+    assert (
+        topic_by_source_id["T10153"].topic.display_name
+        == "Education, sociology, and vocational training"
+    )
+    assert topic_by_source_id["T10153"].topic.uri == "https://openalex.org/T10153"
+    assert topic_by_source_id["T10153"].score == pytest.approx(0.9588000178337097)
     assert len(test_reference.manifestations) == 3
     assert (
         test_reference.manifestations[0].page
@@ -158,6 +169,79 @@ async def test_convert(open_alex_api_work: dict):
                     for identifier in contributor.identifiers
                 ]
             )
+
+
+@pytest.mark.asyncio
+async def test_convert_updates_topics_on_second_harvest(open_alex_api_work: dict):
+    """
+    Given a reference already converted once with topics T10153 and T11475,
+    When a second harvest arrives with T10153 display_name changed, T11475 removed,
+    and T99999 added,
+    Then the second reference has only T10153 (updated) and T99999,
+    and T10153's display_name is updated in the database.
+    """
+    converter = OpenAlexReferencesConverter(name="openalex")
+
+    # First harvest
+    first_result = JsonHarvesterRawResult(
+        source_identifier=open_alex_api_work["id"],
+        payload=open_alex_api_work,
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
+    )
+    first_ref = converter.build(raw_data=first_result, harvester_version=VersionInfo.parse("0.0.0"))
+    await converter.convert(raw_data=first_result, new_ref=first_ref)
+    assert {rt.topic.source_id for rt in first_ref.topics} == {"T10153", "T11475"}
+
+    # Modify payload: update T10153 display_name, remove T11475, add T99999
+    updated_payload = dict(open_alex_api_work)
+    updated_payload["topics"] = [
+        {
+            "id": "https://openalex.org/T10153",
+            "display_name": "Updated display name for T10153",
+            "score": 0.9100,
+            "domain": {"display_name": "Social Sciences", "id": "https://openalex.org/domains/2"},
+            "field": {"display_name": "Social Sciences", "id": "https://openalex.org/fields/33"},
+            "subfield": {"display_name": "Sociology and Political Science", "id": "https://openalex.org/subfields/3312"},
+        },
+        {
+            "id": "https://openalex.org/T99999",
+            "display_name": "A brand new topic",
+            "score": 0.7500,
+            "domain": {"display_name": "Social Sciences", "id": "https://openalex.org/domains/2"},
+            "field": {"display_name": "Social Sciences", "id": "https://openalex.org/fields/33"},
+            "subfield": {"display_name": "Sociology and Political Science", "id": "https://openalex.org/subfields/3312"},
+        },
+    ]
+
+    # Second harvest — fresh reference object
+    second_result = JsonHarvesterRawResult(
+        source_identifier=updated_payload["id"],
+        payload=updated_payload,
+        formatter_name=OpenAlexHarvester.FORMATTER_NAME,
+    )
+    second_ref = converter.build(raw_data=second_result, harvester_version=VersionInfo.parse("0.0.0"))
+    await converter.convert(raw_data=second_result, new_ref=second_ref)
+
+    # T11475 must be absent from the new reference
+    topic_source_ids = {rt.topic.source_id for rt in second_ref.topics}
+    assert topic_source_ids == {"T10153", "T99999"}
+
+    topic_by_source_id = {rt.topic.source_id: rt for rt in second_ref.topics}
+
+    # T10153 display_name must be updated
+    assert topic_by_source_id["T10153"].topic.display_name == "Updated display name for T10153"
+    assert topic_by_source_id["T10153"].score == pytest.approx(0.9100)
+
+    # T99999 must have been created
+    assert topic_by_source_id["T99999"].topic.uri == "https://openalex.org/T99999"
+    assert topic_by_source_id["T99999"].topic.display_name == "A brand new topic"
+    assert topic_by_source_id["T99999"].score == pytest.approx(0.7500)
+
+    # Verify T10153 display_name is updated in the database
+    async with async_session() as session:
+        from app.db.daos.topic_dao import TopicDAO
+        topic_in_db = await TopicDAO(session).get_topic_by_source_id("T10153")
+        assert topic_in_db.display_name == "Updated display name for T10153"
 
 
 @pytest.mark.asyncio

@@ -27,7 +27,7 @@ class OpenAlexHarvester(AbstractHarvester):
 
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}
 
-    VERSION: Version = VersionInfo.parse("2.2.0")
+    VERSION: Version = VersionInfo.parse("2.3.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """

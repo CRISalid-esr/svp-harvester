@@ -30,6 +30,8 @@ from app.db.models.book import Book  # pylint: disable=unused-import
 from app.db.models.contributor_identifier import (  # pylint: disable=unused-import
     ContributorIdentifier,
 )
+from app.db.models.reference_topic import ReferenceTopic  # pylint: disable=unused-import
+from app.db.models.topic import Topic  # pylint: disable=unused-import
 
 
 class Reference(Base, VersionedRecord):
@@ -117,6 +119,15 @@ class Reference(Base, VersionedRecord):
         back_populates="reference",
         cascade="all, delete",
         lazy="raise",
+    )
+
+    topics: Mapped[
+        List["app.db.models.reference_topic.ReferenceTopic"]
+    ] = relationship(
+        "app.db.models.reference_topic.ReferenceTopic",
+        back_populates="reference",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
 
     issue_id: Mapped[int] = mapped_column(
