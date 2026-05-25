@@ -113,6 +113,17 @@ async def test_convert(open_alex_api_work: dict):
     assert test_reference.raw_issued == expected_raw_issued_date
     assert test_reference.issued == expected_issued_date
     assert test_reference.created == expected_created_date
+    assert len(test_reference.topics) == 2
+    topic_source_ids = {rt.topic.source_id for rt in test_reference.topics}
+    assert "T10153" in topic_source_ids
+    assert "T11475" in topic_source_ids
+    topic_by_source_id = {rt.topic.source_id: rt for rt in test_reference.topics}
+    assert (
+        topic_by_source_id["T10153"].topic.display_name
+        == "Education, sociology, and vocational training"
+    )
+    assert topic_by_source_id["T10153"].topic.uri == "https://openalex.org/T10153"
+    assert topic_by_source_id["T10153"].score == pytest.approx(0.9588000178337097)
     assert len(test_reference.manifestations) == 3
     assert (
         test_reference.manifestations[0].page

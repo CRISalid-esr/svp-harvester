@@ -13,6 +13,7 @@ from app.models.reference_identifier import ReferenceIdentifier
 from app.models.reference_manifestation import ReferenceManifestation
 from app.models.subtitles import Subtitle
 from app.models.titles import Title
+from app.models.topics import Topic
 
 
 class Reference(BaseModel):
@@ -36,6 +37,7 @@ class Reference(BaseModel):
     subtitles: List[Subtitle] = []
     abstracts: List[Abstract] = []
     subjects: List[Concept] = []
+    topics: List[Topic] = []
     document_type: List[DocumentType] = []
     contributions: List[Contribution] = []
     issue: Issue | None = None
