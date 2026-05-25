@@ -45,27 +45,27 @@ Fields discarded: `domain`, `field`, `subfield`.
 | `uri`          | String  | Full URI, e.g. `https://openalex.org/T10153` |
 | `display_name` | String  |                                       |
 
-### SQLAlchemy — `SourceRecord` ↔ `Topic` association table
+### SQLAlchemy — `Reference` ↔ `Topic` association table (`reference_topics`)
 
-Stores the per-record relevance score:
+Stores the per-reference relevance score:
 
-| Column            | Type    | Notes                        |
-|-------------------|---------|------------------------------|
-| `source_record_id`| FK      |                              |
-| `topic_id`        | FK      |                              |
-| `score`           | Float   | Score as returned by OpenAlex|
+| Column          | Type    | Notes                        |
+|-----------------|---------|------------------------------|
+| `reference_id`  | FK      |                              |
+| `topic_id`      | FK      |                              |
+| `score`         | Float   | Score as returned by OpenAlex|
 
 ### Pydantic — `Topic` entity
 
 ```python
 class Topic(BaseModel):
-    source_id: str       # e.g. "T10153"
-    uri: str             # e.g. "https://openalex.org/T10153"
-    display_name: str
+    source_id: str   # e.g. "T10153"
+    uri: str         # e.g. "https://openalex.org/T10153"
+    label: str       # maps from display_name in the ORM
     score: float
 ```
 
-`score` lives on the `Topic` Pydantic entity (it is relationship-scoped in SQL but source-record-scoped in the domain model).
+`score` lives on the `Topic` Pydantic entity (it is relationship-scoped in SQL but reference-scoped in the domain model). `label` is the wire name for `display_name`.
 
 ---
 
@@ -74,18 +74,18 @@ class Topic(BaseModel):
 - Topics are extracted from the `topics` array of each OpenAlex work response by `OpenAlexReferencesConverter`.
 - Topics are looked up by `source_id`. **Missing topics are created on the fly** using the data received in the payload. No remote look-up against the OpenAlex topics endpoint is performed.
 - If the `display_name` of an existing topic has changed, it is updated in the `topics` table.
-- When a fresh version of an OpenAlex record is received, **all topics and scores for that source record are replaced** with the new values.
-- If a topic is no longer referenced by any source record, it remains in the `topics` table (no cascade delete).
-- Source records from harvesters other than OpenAlex carry an **empty topic list** for now.
+- When a fresh version of an OpenAlex record is received, **all topics and scores for that reference are replaced** with the new values.
+- If a topic is no longer referenced by any reference, it remains in the `topics` table (no cascade delete).
+- References from harvesters other than OpenAlex carry an **empty `domains` array** for now.
 
 ---
 
 ## AMQP serialisation
 
-Topics are included in the result message as an array of objects:
+Topics are included in the result message under the key `domains`:
 
 ```json
-"topics": [
+"domains": [
   {
     "source_id": "T10153",
     "uri": "https://openalex.org/T10153",
@@ -95,7 +95,7 @@ Topics are included in the result message as an array of objects:
 ]
 ```
 
-Field name in the message: `label` (maps to `display_name` internally).
+The internal Pydantic field is named `topics`; `domains` is applied as a `serialization_alias` and emitted via `model_dump(by_alias=True)` in the AMQP factory.
 
 ---
 
@@ -104,4 +104,4 @@ Field name in the message: `label` (maps to `display_name` internally).
 - Domain, field, and subfield hierarchy levels are **not stored** (clients hold this mapping statically).
 - No validation of topic identifiers against the OpenAlex topics API.
 - No topic deletion when a topic becomes unreferenced.
-- Other harvesters (HAL, IdRef, Scanr, Scopus) produce empty `topics` lists until further notice.
+- Other harvesters (HAL, IdRef, Scanr, Scopus) produce empty `domains` arrays until further notice.
