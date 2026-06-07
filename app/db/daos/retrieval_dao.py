@@ -16,6 +16,7 @@ from app.db.models.reference import Reference
 from app.db.models.reference_event import ReferenceEvent
 from app.db.models.references_document_type import references_document_type_table
 from app.db.models.retrieval import Retrieval
+from app.models.message_mode import MessageMode
 from app.models.people import Person
 from app.utilities.string_utilities import split_string
 
@@ -27,17 +28,23 @@ class RetrievalDAO(AbstractDAO):
     """
 
     async def create_retrieval(
-        self, entity: Entity, event_types: List[ReferenceEvent.Type] = None
+        self,
+        entity: Entity,
+        event_types: List[ReferenceEvent.Type] = None,
+        mode: MessageMode = MessageMode.BATCH,
     ) -> Retrieval:
         """
         Create a retrieval for an entity we want to fetch references for
 
         :param entity: the entity we want to fetch references for
+        :param event_types: list of event types to fetch
+        :param mode: routing mode, "interactive" or "batch"
         :return: the created retrieval
         """
         retrieval = Retrieval()
         retrieval.entity = entity
         retrieval.event_types = event_types or []
+        retrieval.mode = mode
         self.db_session.add(retrieval)
         return retrieval
 

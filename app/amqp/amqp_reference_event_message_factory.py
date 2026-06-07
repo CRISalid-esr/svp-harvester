@@ -17,11 +17,9 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
         self.reference_event_type = None
 
     def _build_routing_key(self) -> str:
-        if not self.reference_event_type:
-            return self.settings.amqp_reference_event_routing_key.replace("*", "event")
-        return self.settings.amqp_reference_event_routing_key.replace(
-            "*", self.reference_event_type
-        )
+        action = self.reference_event_type or "event"
+        base = self.settings.amqp_reference_event_routing_key.replace("*", action)
+        return f"{base}.{self.mode}"
 
     async def _build_payload(self) -> dict[str, Any]:
         async with async_session() as session:
@@ -29,6 +27,7 @@ class AMQPReferenceEventMessageFactory(AbstractAMQPMessageFactory):
                 session
             ).get_detailed_reference_event_by_id(self.content.get("id"))
             self.reference_event_type = reference_event.type
+            self.mode = reference_event.harvesting.retrieval.mode
             entity: DbEntity = reference_event.harvesting.retrieval.entity
             harvesting = reference_event.harvesting
             reference_event_representation: ReferenceEventModel = (

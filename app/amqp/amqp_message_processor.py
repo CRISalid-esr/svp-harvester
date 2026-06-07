@@ -10,6 +10,7 @@ from loguru import logger
 from pydantic import ValidationError
 
 from app.harvesters.exceptions.invalid_entity_error import InvalidEntityError
+from app.models.message_mode import MessageMode
 from app.models.people import Person
 from app.services.retrieval.retrieval_service import RetrievalService
 from app.settings.app_settings import AppSettings
@@ -41,12 +42,12 @@ class AMQPMessageProcessor:
 
         while True:
             requeue = False
-            message = await self.task_queue.get()
+            message, mode = await self.task_queue.get()
             start_time = datetime.now()
             async with message.process(ignore_processed=True):
                 payload = message.body
                 try:
-                    await self._process_message(payload)
+                    await self._process_message(payload, mode)
                     await message.ack()
                     logger.debug(
                         f"Message {message.message_id}  processed by {worker_id} in "
@@ -135,7 +136,7 @@ class AMQPMessageProcessor:
             )
         return payload
 
-    async def _process_message(self, payload: str):
+    async def _process_message(self, payload: str, mode: MessageMode = MessageMode.BATCH):
         json_payload = json.loads(payload)
         reply_expected = json_payload.get("reply", False)
 
@@ -150,6 +151,7 @@ class AMQPMessageProcessor:
                         "message": f"Entity validation error,"
                         f" retrieval aborted: {validation_error}",
                         "parameters": json_payload,
+                        "mode": mode,
                     }
                 )
                 await asyncio.sleep(0)  # force context switch
@@ -164,6 +166,7 @@ class AMQPMessageProcessor:
                         "error": True,
                         "message": "No identifiers provided, retrieval aborted",
                         "parameters": json_payload,
+                        "mode": mode,
                     }
                 )
                 await asyncio.sleep(0)  # force context switch
@@ -173,6 +176,7 @@ class AMQPMessageProcessor:
                 nullify=json_payload.get("nullify", False),
                 harvesters=json_payload.get("harvesters", []),
                 events=json_payload.get("events", []),
+                mode=mode,
             )
             # Resister a new retrieval in DB
             retrieval = await service.register(entity=person)

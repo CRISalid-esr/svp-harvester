@@ -12,7 +12,7 @@ class AMQPHarvestingMessageFactory(AbstractAMQPMessageFactory):
     """Factory for building AMQP messages related to harvesting states."""
 
     def _build_routing_key(self) -> str:
-        return self.settings.amqp_harvesting_event_routing_key
+        return f"{self.settings.amqp_harvesting_event_routing_key}.{self.mode}"
 
     async def _build_payload(self) -> dict[str, Any]:
         assert "id" in self.content, "Harvesting id is required"
@@ -26,6 +26,7 @@ class AMQPHarvestingMessageFactory(AbstractAMQPMessageFactory):
             entity_representation: EntityModel = EntityModel.model_validate(
                 harvesting.retrieval.entity
             )
+            self.mode = harvesting.retrieval.mode
         return harvesting_representation.model_dump(
             exclude={"id": True, "reference_events": True}
         ) | {"entity": entity_representation.model_dump(exclude={"id": True})}
