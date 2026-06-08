@@ -155,6 +155,13 @@ The project uses [poetry](https://python-poetry.org/) for dependency management.
 poetry install
 ```
 
+To update the exported requirements files after changing dependencies:
+
+```bash
+poetry export --without-hashes --format=requirements.txt > requirements.txt
+poetry export --without-hashes --format=requirements.txt --with development > requirements-dev.txt
+```
+
 ### Tests
 
 The project uses [pytest](https://docs.pytest.org/en/stable/) for testing.

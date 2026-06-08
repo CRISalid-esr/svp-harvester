@@ -4,6 +4,7 @@ from app.amqp.abstract_amqp_message_factory import AbstractAMQPMessageFactory
 from app.db.daos.retrieval_dao import RetrievalDAO
 from app.db.models.retrieval import Retrieval as DbRetrieval
 from app.db.session import async_session
+from app.models.message_mode import MessageMode
 from app.models.retrieval import Retrieval as RetrievalModel
 
 
@@ -12,8 +13,9 @@ class AMQPRetrievalMessageFactory(AbstractAMQPMessageFactory):
 
     def _build_routing_key(self) -> str:
         if "error" in self.content:
-            return "event.references.retrieval.error"
-        return self.settings.amqp_retrieval_event_routing_key
+            mode = MessageMode(self.content.get("mode", MessageMode.BATCH))
+            return f"event.references.retrieval.error.{mode}"
+        return f"{self.settings.amqp_retrieval_event_routing_key}.{self.mode}"
 
     async def _build_payload(self) -> dict[str, Any]:
         if "error" in self.content:
@@ -30,4 +32,5 @@ class AMQPRetrievalMessageFactory(AbstractAMQPMessageFactory):
             retrieval_representation: RetrievalModel = RetrievalModel.model_validate(
                 retrieval
             )
+            self.mode = retrieval.mode
         return retrieval_representation.model_dump(exclude={"id": True})

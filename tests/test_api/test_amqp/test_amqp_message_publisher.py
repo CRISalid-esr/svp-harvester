@@ -38,7 +38,7 @@ async def test_publish_harvesting_status(
             "name": "John Doe",
         },
     }
-    expected_sent_message_routing_key = "event.references.harvesting.state"
+    expected_sent_message_routing_key = "event.references.harvesting.state.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -116,7 +116,7 @@ async def test_publish_created_reference(
         },
     }
 
-    expected_sent_message_routing_key = "event.references.reference.created"
+    expected_sent_message_routing_key = "event.references.reference.created.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -155,7 +155,7 @@ async def test_publish_harvesting_status_with_identifier_used(
             "name": "John Doe",
         },
     }
-    expected_sent_message_routing_key = "event.references.harvesting.state"
+    expected_sent_message_routing_key = "event.references.harvesting.state.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -231,7 +231,7 @@ async def test_publish_created_reference_with_identifier_used(
             "identifier_used_value": "123456789",
         },
     }
-    expected_sent_message_routing_key = "event.references.reference.created"
+    expected_sent_message_routing_key = "event.references.reference.created.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -278,7 +278,7 @@ async def test_publish_retrieval_error(
         "parameters": received_message_payload["parameters"],
         "message": "Entity validation error, retrieval aborted",
     }
-    expected_sent_message_routing_key = "event.references.retrieval.error"
+    expected_sent_message_routing_key = "event.references.retrieval.error.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),

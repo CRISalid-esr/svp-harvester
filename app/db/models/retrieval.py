@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import Column, DateTime, ForeignKey, String
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+from app.models.message_mode import MessageMode
 
 
 class Retrieval(Base):
@@ -30,6 +31,12 @@ class Retrieval(Base):
 
     event_types: Mapped[ARRAY[str]] = mapped_column(
         "event_types", ARRAY(String), nullable=False
+    )
+
+    mode: Mapped[MessageMode] = mapped_column(
+        Enum(MessageMode, native_enum=False, create_constraint=False),
+        nullable=False,
+        server_default=MessageMode.BATCH,
     )
 
     timestamp: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
