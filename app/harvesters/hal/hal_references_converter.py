@@ -68,6 +68,12 @@ class HalReferencesConverter(AbstractReferencesConverter):
         "wosId_s": ReferenceIdentifier.IdentifierType.WOS.value,
     }
 
+    # Contributor source_identifier namespaces. HAL author-form ids and numeric
+    # idHals are independent numeric namespaces: both must be prefixed so that
+    # a form id can never collide with an idHal (issue #910).
+    IDHAL_PREFIX = "idhal:"
+    FORM_PREFIX = "form:"
+
     IDENTIFIER_TYPES_TO_IGNORE = {
         "linkExtId_s",
         "europeanProjectCallId_s",
@@ -414,18 +420,24 @@ class HalReferencesConverter(AbstractReferencesConverter):
                     f"Unexpected format for contributor {contributor}"
                 )
             name, ids, _ = contributor.split("_FacetSep_")
-            form_id, id_hal = ids.split("-")
+            try:
+                form_id, id_hal = ids.split("-")
+            except ValueError as error:
+                raise UnexpectedFormatException(
+                    f"Unexpected contributor ids format '{ids}' "
+                    f"for halId_s: {raw_data['halId_s']}"
+                ) from error
             contribution_informations.append(
                 AbstractReferencesConverter.ContributionInformations(
                     role=HalRolesConverter.convert(quality),
-                    identifier=id_hal if id_hal != "0" else form_id,
+                    identifier=self._contributor_identifier(form_id, id_hal),
                     name=name,
                     first_name=first_name,
                     last_name=last_name,
                     rank=rank,
-                    ext_identifiers=tei_decoder.get_identifiers(id_hal)
-                    if tei_decoder
-                    else [],
+                    ext_identifiers=(
+                        tei_decoder.get_identifiers(id_hal) if tei_decoder else []
+                    ),
                 )
             )
         async for contribution in self._contributions(
@@ -433,6 +445,15 @@ class HalReferencesConverter(AbstractReferencesConverter):
             source=self._get_source(),
         ):
             new_ref.contributions.append(contribution)
+
+    def _contributor_identifier(self, form_id: str, id_hal: str) -> str:
+        """
+        Build the namespaced contributor source identifier from the
+        "formId-idHal" pair found in HAL facet fields.
+        """
+        if id_hal != "0":
+            return self.IDHAL_PREFIX + id_hal
+        return self.FORM_PREFIX + form_id
 
     def _organizations_from_contributor(
         self, raw_data, id_contributor
@@ -443,8 +464,8 @@ class HalReferencesConverter(AbstractReferencesConverter):
         for auth_org in raw_data.get("authIdHasPrimaryStructure_fs", []):
             auth, org = auth_org.split("_JoinSep_")
             ids, _ = auth.split("_FacetSep_")
-            _, id_hal = ids.split("-")
-            if id_hal != id_contributor:
+            form_id, id_hal = ids.split("-")
+            if self._contributor_identifier(form_id, id_hal) != id_contributor:
                 continue
 
             org_id, org_name = org.split("_FacetSep_")

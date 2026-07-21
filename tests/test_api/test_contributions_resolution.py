@@ -72,7 +72,7 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_1_v1_contributions, 0)[
                 "contributor"
             ]["source_identifier"]
-            == "169647"
+            == "idhal:169647"
         )
         assert (
             _extract_contribution_by_rank(reference_1_v1_contributions, 0)[
@@ -94,7 +94,7 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_2_v1_contributions, 0)[
                 "contributor"
             ]["source_identifier"]
-            == "169647"
+            == "idhal:169647"
         )
         assert (
             _extract_contribution_by_rank(reference_2_v1_contributions, 0)[
@@ -106,7 +106,7 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_2_v1_contributions, 1)[
                 "contributor"
             ]["source_identifier"]
-            == "222222"
+            == "idhal:222222"
         )
         assert (
             _extract_contribution_by_rank(reference_2_v1_contributions, 1)[
@@ -322,13 +322,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_4_v1_contributions, 1)[
                 "contributor"
             ]["source_identifier"]
-            == "222222"
+            == "idhal:222222"
         )
         assert (
             _extract_contribution_by_rank(reference_4_v2_contributions, 1)[
                 "contributor"
             ]["source_identifier"]
-            == "333333"
+            == "idhal:333333"
         )
         reference_5_v2_id = _extract_reference_id_by_source_identifier(
             events, "5-has-a-contributor-with-name-only-will-change-his-name"
@@ -358,13 +358,13 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
             _extract_contribution_by_rank(reference_5_v1_contributions, 0)[
                 "contributor"
             ]["source_identifier"]
-            == "153764"
+            == "form:153764"
         )
         assert (
             _extract_contribution_by_rank(reference_5_v2_contributions, 0)[
                 "contributor"
             ]["source_identifier"]
-            == "999999"
+            == "form:999999"
         )
 
 
