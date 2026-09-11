@@ -30,13 +30,15 @@ async def test_publish_harvesting_status(
     expected_sent_message_payload = {
         "harvester": "idref",
         "state": "running",
+        "identifier_used_type": None,
+        "identifier_used_value": None,
         "error": [],
         "entity": {
             "identifiers": [{"type": "idref", "value": "123456789"}],
             "name": "John Doe",
         },
     }
-    expected_sent_message_routing_key = "event.references.harvesting.state"
+    expected_sent_message_routing_key = "event.references.harvesting.state.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -87,6 +89,7 @@ async def test_publish_created_reference(
                         "alt_labels": [],
                     }
                 ],
+                "domains": [],
                 "document_type": [],
                 "contributions": [],
                 "issue": None,
@@ -107,9 +110,128 @@ async def test_publish_created_reference(
             "identifiers": [{"type": "idref", "value": "123456789"}],
             "name": "John Doe",
         },
+        "harvesting": {
+            "identifier_used_type": None,
+            "identifier_used_value": None,
+        },
     }
 
-    expected_sent_message_routing_key = "event.references.reference.created"
+    expected_sent_message_routing_key = "event.references.reference.created.batch"
+    await amqp_message_publisher.publish(received_message_payload)
+    mocked_message.assert_called_once_with(
+        orjson.dumps(expected_sent_message_payload),
+        delivery_mode=DeliveryMode.PERSISTENT,
+    )
+    mocked_exchange.publish.assert_called_once_with(
+        message=mocked_message.return_value,
+        routing_key=expected_sent_message_routing_key,
+    )
+
+
+@pytest.mark.asyncio
+async def test_publish_harvesting_status_with_identifier_used(
+    async_session: AsyncSession,
+    mocked_message: Mock,
+    mocked_exchange: Exchange,
+    harvesting_db_model_for_person_with_idref_and_identifier_used,
+):
+    """Test that identifier_used fields appear in the harvesting status message when set."""
+    async_session.add(harvesting_db_model_for_person_with_idref_and_identifier_used)
+    await async_session.commit()
+
+    amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
+    received_message_payload = {
+        "type": "Harvesting",
+        "id": harvesting_db_model_for_person_with_idref_and_identifier_used.id,
+    }
+    expected_sent_message_payload = {
+        "harvester": "idref",
+        "state": "running",
+        "identifier_used_type": "idref",
+        "identifier_used_value": "123456789",
+        "error": [],
+        "entity": {
+            "identifiers": [{"type": "idref", "value": "123456789"}],
+            "name": "John Doe",
+        },
+    }
+    expected_sent_message_routing_key = "event.references.harvesting.state.batch"
+    await amqp_message_publisher.publish(received_message_payload)
+    mocked_message.assert_called_once_with(
+        orjson.dumps(expected_sent_message_payload),
+        delivery_mode=DeliveryMode.PERSISTENT,
+    )
+    mocked_exchange.publish.assert_called_once_with(
+        message=mocked_message.return_value,
+        routing_key=expected_sent_message_routing_key,
+    )
+
+
+@pytest.mark.asyncio
+async def test_publish_created_reference_with_identifier_used(
+    test_app,  # pylint: disable=unused-argument
+    async_session: AsyncSession,
+    mocked_message: Mock,
+    mocked_exchange: Exchange,
+    reference_event_db_model_with_identifier_used,
+):
+    """Test that identifier_used fields appear in the reference event message when set."""
+    async_session.add(reference_event_db_model_with_identifier_used)
+    await async_session.commit()
+
+    amqp_message_publisher = AMQPMessagePublisher(mocked_exchange)
+    received_message_payload = {
+        "type": "ReferenceEvent",
+        "id": reference_event_db_model_with_identifier_used.id,
+        "state": "created",
+    }
+    expected_sent_message_payload = {
+        "reference_event": {
+            "type": "created",
+            "reference": {
+                "source_identifier": "123456789",
+                "harvester": "hal",
+                "harvester_version": "0.0.0",
+                "identifiers": [],
+                "manifestations": [],
+                "titles": [{"value": "title", "language": "fr"}],
+                "subtitles": [{"value": "subtitle", "language": "fr"}],
+                "abstracts": [],
+                "subjects": [
+                    {
+                        "uri": "http://uri",
+                        "dereferenced": False,
+                        "pref_labels": [{"value": "label", "language": "fr"}],
+                        "alt_labels": [],
+                    }
+                ],
+                "domains": [],
+                "document_type": [],
+                "contributions": [],
+                "issue": None,
+                "page": None,
+                "book": None,
+                "raw_issued": "2017",
+                "issued": "2017-01-01T00:00:00",
+                "created": "2018-02-02T10:00:00",
+                "custom_metadata": {
+                    "hal_collection_codes": ["UGFP", "UGA", "UMR5434"],
+                    "hal_submit_type": "notice",
+                },
+                "version": 0,
+            },
+            "enhanced": False,
+        },
+        "entity": {
+            "identifiers": [{"type": "idref", "value": "123456789"}],
+            "name": "John Doe",
+        },
+        "harvesting": {
+            "identifier_used_type": "idref",
+            "identifier_used_value": "123456789",
+        },
+    }
+    expected_sent_message_routing_key = "event.references.reference.created.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),
@@ -156,7 +278,7 @@ async def test_publish_retrieval_error(
         "parameters": received_message_payload["parameters"],
         "message": "Entity validation error, retrieval aborted",
     }
-    expected_sent_message_routing_key = "event.references.retrieval.error"
+    expected_sent_message_routing_key = "event.references.retrieval.error.batch"
     await amqp_message_publisher.publish(received_message_payload)
     mocked_message.assert_called_once_with(
         orjson.dumps(expected_sent_message_payload),

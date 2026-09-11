@@ -72,7 +72,7 @@ async def test_fetch_references_contributions_history(  # pylint: disable=too-ma
         # one of the contributors has the source identifier '183355'
         # and its name may be 'Laïla Nehmé' or 'Laila Nehmé'
         assert any(
-            c["contributor"]["source_identifier"] == "183355"
+            c["contributor"]["source_identifier"] == "idhal:183355"
             and c["contributor"]["name"] in ["Laïla Nehmé", "Laila Nehmé"]
             for c in reference_contributions
         )

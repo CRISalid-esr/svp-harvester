@@ -19,6 +19,7 @@ from app.db.session import async_session
 from app.harvesters.abstract_harvester import AbstractHarvester
 from app.harvesters.abstract_harvester_factory import AbstractHarvesterFactory
 from app.models.entities import Entity as PydanticEntity
+from app.models.message_mode import MessageMode
 from app.models.reference_events import ReferenceEvent
 from app.services.entities.entity_resolution_service import EntityResolutionService
 
@@ -43,6 +44,7 @@ class RetrievalService:
             List[ReferenceEvent.Type], Depends(event_types_or_default)
         ] = None,
         fetch_enhancements: Annotated[bool, Body()] = True,
+        mode: MessageMode = MessageMode.BATCH,
     ):
         """Init RetrievalService class"""
         self.background_tasks = background_tasks
@@ -54,6 +56,7 @@ class RetrievalService:
         self.nullify = nullify
         self.events = events
         self.fetch_enhancements = fetch_enhancements
+        self.mode = mode
 
     async def register(
         self,
@@ -78,7 +81,7 @@ class RetrievalService:
             async with session.begin():
                 # this will add the new entity to the db if it does not exist
                 self.retrieval = await RetrievalDAO(session).create_retrieval(
-                    self.entity, event_types=self.events or []
+                    self.entity, event_types=self.events or [], mode=self.mode
                 )
         return self.retrieval
 
@@ -135,12 +138,12 @@ class RetrievalService:
                     )
             if result_queue is not None:
                 harvester.set_result_queue(result_queue)
-            harvester.set_entity_id(self.retrieval.entity_id)
             harvester.set_event_types(self.retrieval.event_types)
             harvester.set_fetch_enhancements(self.fetch_enhancements)
             harvester.set_harvesting_id(harvesting.id)
+            await harvester.set_entity_id(self.retrieval.entity_id)
             action = (
-                harvester.run if harvester.is_relevant(self.entity) else harvester.skip
+                harvester.run if harvester.is_relevant() else harvester.skip
             )
             task = asyncio.create_task(
                 action(),

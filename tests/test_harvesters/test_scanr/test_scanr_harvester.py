@@ -4,6 +4,8 @@ import pytest
 from elasticsearch import AsyncElasticsearch
 from fastapi.testclient import TestClient
 
+from app.db.models.contributor_identifier import ContributorIdentifier
+from app.db.models.person import Person as DbPerson
 from app.harvesters.scanr.scanr_harvester import ScanrHarvester
 from app.harvesters.scanr.scanr_references_converter import ScanrReferencesConverter
 from app.models.people import Person
@@ -11,32 +13,74 @@ from app.models.people import Person
 REFERENCES_RETRIEVAL_API_PATH = "/api/v1/references/retrieval"
 
 
-def test_scanr_harvester_relevant_with_idref(person_with_name_and_idref: Person):
-    """Test that the harvester will run if submitted with an IDREF."""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
-    assert harvester.is_relevant(person_with_name_and_idref) is True
-
-
-def test_scanr_harvester_relevant_with_orcid(person_with_name_and_orcid: Person):
-    """Test that the harvester will not run if not submitted with an IDREF"""
-    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
-    assert harvester.is_relevant(person_with_name_and_orcid) is True
-
-
-def test_scanr_harvester_not_relevant_with_halid_s(
-    person_with_name_and_id_hal_s: Person,
+@pytest.mark.asyncio
+async def test_scanr_harvester_relevant_with_idref(
+    person_with_name_and_idref_db_model: DbPerson,
 ):
-    """Test that the harvester will not run if not submitted with an IDREF"""
+    """Test that the harvester is relevant after set_entity_id selects an idref identifier."""
     harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
-    assert harvester.is_relevant(person_with_name_and_id_hal_s) is True
+    with mock.patch.object(
+        ScanrHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_idref_db_model
+        )
+    ):
+        await harvester.set_entity_id(1)
+    assert harvester.is_relevant() is True
+    assert harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.IDREF.value
+    )
 
 
-def test_scanr_harvester_not_relevant_with_person_without_identifiers(
-    person_without_identifiers: Person,
+@pytest.mark.asyncio
+async def test_scanr_harvester_relevant_with_orcid(
+    person_with_name_and_orcid_db_model: DbPerson,
 ):
-    """Test that the harvester will not run if not submitted with an IDREF"""
+    """Test that the harvester is relevant after set_entity_id selects an orcid identifier."""
     harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
-    assert harvester.is_relevant(person_without_identifiers) is False
+    with mock.patch.object(
+        ScanrHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_orcid_db_model
+        )
+    ):
+        await harvester.set_entity_id(1)
+    assert harvester.is_relevant() is True
+    assert harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.ORCID.value
+    )
+
+
+@pytest.mark.asyncio
+async def test_scanr_harvester_relevant_with_halid_s(
+    person_with_name_and_id_hal_s_db_model: DbPerson,
+):
+    """Test that the harvester is relevant when entity has an idhals identifier."""
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
+    with mock.patch.object(
+        ScanrHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_id_hal_s_db_model
+        )
+    ):
+        await harvester.set_entity_id(1)
+    assert harvester.is_relevant() is True
+    assert harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.IDHAL_S.value
+    )
+
+
+@pytest.mark.asyncio
+async def test_scanr_harvester_not_relevant_with_person_without_identifiers(
+    person_with_name_and_id_hal_i_db_model: DbPerson,
+):
+    """Test that the harvester is not relevant when entity has no supported identifier."""
+    harvester = ScanrHarvester(converter=ScanrReferencesConverter(name="scanr"))
+    with mock.patch.object(
+        ScanrHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_id_hal_i_db_model
+        )
+    ):
+        await harvester.set_entity_id(1)
+    assert harvester.is_relevant() is False
+    assert harvester.entity_identifier_used is None
 
 
 @pytest.mark.asyncio

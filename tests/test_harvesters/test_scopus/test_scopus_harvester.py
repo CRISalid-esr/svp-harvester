@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import aiohttp
 import pytest
 
+from app.db.models.contributor_identifier import ContributorIdentifier
 from app.db.models.person import Person
 from app.harvesters.scopus.scopus_harvester import ScopusHarvester
 from app.harvesters.scopus.scopus_references_converter import ScopusReferencesConverter
@@ -28,20 +29,36 @@ def fixture_scopus_harvester() -> ScopusHarvester:
     return ScopusHarvester(converter=converter)
 
 
-def test_scopus_relevant_for_person_with_scopus_eid(
+@pytest.mark.asyncio
+async def test_scopus_relevant_for_person_with_scopus_eid(
     person_with_name_and_scopus_eid_db_model, scopus_harvester
 ):
-    """Test that the harvester will run if submitted with an EID"""
-    assert (
-        scopus_harvester.is_relevant(person_with_name_and_scopus_eid_db_model) is True
+    """Test that the harvester is relevant after set_entity_id selects a scopus identifier."""
+    with mock.patch.object(
+        ScopusHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_scopus_eid_db_model
+        )
+    ):
+        await scopus_harvester.set_entity_id(1)
+    assert scopus_harvester.is_relevant() is True
+    assert scopus_harvester.entity_identifier_used[0] == (
+        ContributorIdentifier.IdentifierType.SCOPUS.value
     )
 
 
-def test_scopus_not_relevant_for_person(
-    person_with_name_and_id_hal_i, scopus_harvester
+@pytest.mark.asyncio
+async def test_scopus_not_relevant_for_person(
+    person_with_name_and_id_hal_i_db_model, scopus_harvester
 ):
-    """Test that the harvester will not run if sumbitted without an EID"""
-    assert scopus_harvester.is_relevant(person_with_name_and_id_hal_i) is False
+    """Test that the harvester is not relevant when entity has no scopus identifier."""
+    with mock.patch.object(
+        ScopusHarvester, "_get_entity", new=mock.AsyncMock(
+            return_value=person_with_name_and_id_hal_i_db_model
+        )
+    ):
+        await scopus_harvester.set_entity_id(1)
+    assert scopus_harvester.is_relevant() is False
+    assert scopus_harvester.entity_identifier_used is None
 
 
 @pytest.mark.integration
@@ -57,7 +74,7 @@ async def test_scopus_harvester_find_doc(
     async_session.add(scopus_harvesting_db_model_scopus_eid)
     await async_session.commit()
     scopus_harvester.set_harvesting_id(scopus_harvesting_db_model_scopus_eid.id)
-    scopus_harvester.set_entity_id(
+    await scopus_harvester.set_entity_id(
         scopus_harvesting_db_model_scopus_eid.retrieval.entity_id
     )
     await scopus_harvester.run()

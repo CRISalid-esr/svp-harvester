@@ -52,12 +52,20 @@ class IdrefHarvester(AbstractHarvester):
     MAX_SUDOC_PARALLELISM = 3
     SUDOC_ENABLED = True
 
-    supported_identifier_types = [
-        ContributorIdentifier.IdentifierType.IDREF.value,
-        ContributorIdentifier.IdentifierType.ORCID.value,
-    ]
+    IDENTIFIERS_BY_ENTITIES = {
+        "Person": [
+            (
+                ContributorIdentifier.IdentifierType.IDREF.value,
+                QueryBuilder.QueryParameters.IDREF_ID,
+            ),
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                QueryBuilder.QueryParameters.ORCID,
+            ),
+        ]
+    }
 
-    VERSION: Version = VersionInfo.parse("2.0.5")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     class Formatters(Enum):
         """
@@ -70,24 +78,33 @@ class IdrefHarvester(AbstractHarvester):
         OPEN_EDITION = "openedition"
         PERSEE_RDF = "persee"
 
+    async def _get_idref_query_parameters(self, entity_class: str):
+        """
+        Return the Idref SPARQL query parameters using the pre-selected entity identifier.
+        """
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_idref_query_parameters"
+        identifier_key, identifier_value = self.entity_identifier_used
+        for entry_key, idref_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
+            entity_class, []
+        ):
+            if entry_key == identifier_key:
+                return idref_query_parameter, identifier_value
+        assert False, f"Unable to map '{identifier_key}' to Idref query parameter"
+
     async def fetch_results(self) -> AsyncGenerator[RawResult, None]:
         # pylint: disable=too-many-branches, too-many-statements
         settings = get_app_settings()
         builder = QueryBuilder()
         if (await self._get_entity_class_name()) == "Person":
-            idref: str = (await self._get_entity()).get_identifier("idref")
-            orcid: str = (await self._get_entity()).get_identifier("orcid")
-            assert (
-                idref is not None or orcid is not None
-            ), "Idref or Orcid identifier required when harvesting publications from data.idref.fr"
-            if idref is not None:
-                builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_idref_id(
-                    idref
+            idref_query_parameter, identifier_value = (
+                await self._get_idref_query_parameters(
+                    await self._get_entity_class_name()
                 )
-            if orcid is not None:
-                builder.set_subject_type(QueryBuilder.SubjectType.PERSON).set_orcid(
-                    orcid
-                )
+            )
+            builder.set_subject_type(QueryBuilder.SubjectType.PERSON)
+            builder.set_query(idref_query_parameter, identifier_value)
         pending_queries = set()
         num_sudoc_waiting_queries = 0
 

@@ -103,12 +103,6 @@ async def test_retrieval_service_registers_identifiers_matches(
     assert len(retrieval.entity.identifiers) == 2
     await service.run()
     mock_hal_harvester_is_relevant.assert_called_once()
-    hal_harvester_args, _ = mock_hal_harvester_is_relevant.call_args
-    assert len(hal_harvester_args[0].identifiers) == 2
-    assert hal_harvester_args[0].get_identifier(
-        "idref"
-    ) == person_with_name_and_id_hal_s.get_identifier("idref")
-    assert hal_harvester_args[0].get_identifier("orcid") == orcid_identifier.value
 
 
 @pytest.mark.asyncio

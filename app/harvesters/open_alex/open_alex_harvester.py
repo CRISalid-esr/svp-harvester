@@ -17,29 +17,32 @@ class OpenAlexHarvester(AbstractHarvester):
     FORMATTER_NAME = "openalex"
 
     IDENTIFIERS_BY_ENTITIES = {
-        "Person": [(OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID, "orcid")]
+        "Person": [
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                OpenAlexQueryBuilder.QueryParameters.AUTH_ORCID,
+            )
+        ]
     }
 
     SUBJECT_BY_ENTITIES = {"Person": OpenAlexQueryBuilder.SubjectType.PERSON}
 
-    supported_identifier_types = [ContributorIdentifier.IdentifierType.ORCID.value]
-    VERSION: Version = VersionInfo.parse("2.1.0")
+    VERSION: Version = VersionInfo.parse("2.3.0")
 
     async def _get_open_alex_query_parameters(self, entity_class: str):
         """
-        Set the query parameters for an entity
+        Return the OpenAlex query parameters using the pre-selected entity identifier.
         """
-
-        entity = await self._get_entity()
-
-        query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
-
-        for open_alex_query_parameter, identifier_key in query_parameters:
-            identifier_value = entity.get_identifier(identifier_key)
-            if identifier_value is not None:
+        assert (
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_open_alex_query_parameters"
+        identifier_key, identifier_value = self.entity_identifier_used
+        for entry_key, open_alex_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
+            entity_class, []
+        ):
+            if entry_key == identifier_key:
                 return open_alex_query_parameter, identifier_value
-
-        assert False, "Unable to run open alex harvester for a person without ORCID"
+        assert False, f"Unable to map '{identifier_key}' to OpenAlex query parameter"
 
     async def fetch_results(self) -> AsyncGenerator[JsonHarvesterRawResult, None]:
         """

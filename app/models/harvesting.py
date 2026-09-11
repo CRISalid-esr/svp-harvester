@@ -15,6 +15,8 @@ class Harvesting(BaseModel):
 
     harvester: str
     state: str
+    identifier_used_type: str | None = None
+    identifier_used_value: str | None = None
 
     reference_events: List[ReferenceEvent] = []
     error: List[HarvestingError] | None

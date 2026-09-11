@@ -92,7 +92,7 @@ async def test_idref_harvester_takes_sudoc_doc_from_cache(
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)
-    harvester.set_entity_id(
+    await harvester.set_entity_id(
         harvesting_db_model_for_person_with_idref.retrieval.entity_id
     )
     await harvester.run()
@@ -140,7 +140,7 @@ async def test_idref_harvester_puts_sudoc_reponse_in_cache(
     async_session.add(harvesting_db_model_for_person_with_idref)
     await async_session.commit()
     harvester.set_harvesting_id(harvesting_db_model_for_person_with_idref.id)
-    harvester.set_entity_id(
+    await harvester.set_entity_id(
         harvesting_db_model_for_person_with_idref.retrieval.entity_id
     )
     await harvester.run()

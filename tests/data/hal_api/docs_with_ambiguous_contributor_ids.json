@@ -1,0 +1,48 @@
+{
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "4444444",
+        "halId_s": "halshs-04444444",
+        "uri_s": "https://hal.science/hal-04444444",
+        "citationRef_s": "<i>Test Journal</i>, 2020",
+        "citationFull_s": "Alice Idhal, Bob Form. Ambiguous numeric identifiers. <i>Test Journal</i>, 2020",
+        "en_title_s": [
+          "Ambiguous numeric identifiers"
+        ],
+        "authIdForm_i": [
+          111,
+          12345
+        ],
+        "authQuality_s": [
+          "aut",
+          "aut"
+        ],
+        "authFirstName_s": [
+          "Alice",
+          "Bob"
+        ],
+        "authLastName_s": [
+          "Idhal",
+          "Form"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Alice Idhal_FacetSep_111-12345_FacetSep_alice-idhal",
+          "Bob Form_FacetSep_12345-0_FacetSep_"
+        ],
+        "authIdHasPrimaryStructure_fs": [
+          "111-12345_FacetSep_Alice Idhal_JoinSep_140228_FacetSep_Org Alpha",
+          "12345-0_FacetSep_Bob Form_JoinSep_7550_FacetSep_Org Beta"
+        ],
+        "docType_s": "ART",
+        "publicationDate_tdate": "2020-01-01T00:00:00Z",
+        "publicationDate_s": "2020",
+        "producedDate_tdate": "2020-01-01T00:00:00Z",
+        "submitType_s": "notice"
+      }
+    ]
+  }
+}

@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 
 from app.config import get_app_settings
 from app.harvesters.exceptions.external_endpoint_failure import ExternalEndpointFailure
+from app.utilities.orcid_utilities import normalize_orcid
 
 
 class OpenAlexQueryBuilder:
@@ -72,9 +73,12 @@ class OpenAlexQueryBuilder:
         raise NotImplementedError()
 
     def _person_queries(self):
-        return {
-            "filter": f"author.{self.identifier_type.value}:{self.identifier_value}"
-        }
+        value = (
+            normalize_orcid(self.identifier_value)
+            if self.identifier_type == self.QueryParameters.AUTH_ORCID
+            else self.identifier_value
+        )
+        return {"filter": f"author.{self.identifier_type.value}:{value}"}
 
     def set_subject_type(self, subject_type: SubjectType):
         """

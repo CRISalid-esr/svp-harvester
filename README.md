@@ -114,7 +114,14 @@ CREATE USER your_user_name WITH PASSWORD 'your_secret';
 GRANT ALL PRIVILEGES ON DATABASE your_db_name to your_user_name;
 ```
 
-Repeat for test database.
+For the test database :
+
+```sql
+DROP DATABASE IF EXISTS svp_harvester_test;
+CREATE DATABASE svp_harvester_test;
+CREATE USER svp_harvester_test WITH PASSWORD 'svp_harvester_test';
+GRANT ALL PRIVILEGES ON DATABASE svp_harvester_test to svp_harvester_test;
+```
 
 Update .env and .test.env with credentials
 
@@ -148,9 +155,18 @@ The project uses [poetry](https://python-poetry.org/) for dependency management.
 poetry install
 ```
 
+To update the exported requirements files after changing dependencies:
+
+```bash
+poetry export --without-hashes --format=requirements.txt > requirements.txt
+poetry export --without-hashes --format=requirements.txt --with development > requirements-dev.txt
+```
+
 ### Tests
 
 The project uses [pytest](https://docs.pytest.org/en/stable/) for testing.
+
+Tests require a running PostgreSQL instance (local or Docker) with the test database and credentials configured in `.test.env` (see [Database creation](#database-creation) above).
 
 From project root :
 
@@ -198,14 +214,20 @@ npm run build
 
 From project root :
 
+With the web UI (admin interface) :
+
 ```bash
 APP_ENV=DEV uvicorn app.main:app --reload
 ```
-
 or
+```bash
+APP_ENV=DEV python3 -m app.main
+```
+
+or, without the web UI:
 
 ```bash
-APP_ENV=DEV python3 app/main.py 
+APP_ENV=DEV python3 -m app.amqplisten
 ```
 
 ---

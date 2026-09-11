@@ -3,6 +3,9 @@ from typing import AsyncGenerator, Set
 from loguru import logger
 from semver import Version
 
+from sqlalchemy.exc import IntegrityError
+
+from app.db.daos.topic_dao import TopicDAO
 from app.db.models.abstract import Abstract
 from app.db.models.concept import Concept
 from app.db.models.contribution import Contribution
@@ -12,7 +15,10 @@ from app.db.models.journal import Journal
 from app.db.models.reference import Reference
 from app.db.models.reference_identifier import ReferenceIdentifier
 from app.db.models.reference_manifestation import ReferenceManifestation
+from app.db.models.reference_topic import ReferenceTopic
 from app.db.models.title import Title
+from app.db.models.topic import Topic
+from app.db.session import async_session
 from app.harvesters.abstract_references_converter import AbstractReferencesConverter
 from app.harvesters.exceptions.unexpected_format_exception import (
     UnexpectedFormatException,
@@ -102,6 +108,9 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             reference=new_ref,
             rules=[IdentifierInferenceService.Rule.HAL_ID_FROM_HAL_URL],
         )
+
+        async for reference_topic in self._topics(json_payload):
+            new_ref.topics.append(reference_topic)
 
         await self._add_organization(json_payload, new_ref)
 
@@ -296,6 +305,35 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
                 )
         return organizations
 
+    async def _topics(
+        self, json_payload
+    ) -> AsyncGenerator[ReferenceTopic, None]:
+        for topic_data in self._value_from_key(json_payload, "topics", []):
+            topic = await self._get_or_create_topic(topic_data)
+            yield ReferenceTopic(topic=topic, score=topic_data.get("score", 0.0))
+
+    async def _get_or_create_topic(self, topic_data: dict) -> Topic:
+        uri = topic_data.get("id", "")
+        source_id = uri.split("/")[-1]
+        display_name = topic_data.get("display_name", "")
+
+        async with async_session() as session:
+            topic = await TopicDAO(session).get_topic_by_source_id(source_id)
+            if topic is None:
+                topic = Topic(source_id=source_id, uri=uri, display_name=display_name)
+                session.add(topic)
+                try:
+                    await session.commit()
+                    await session.refresh(topic)
+                except IntegrityError:
+                    await session.rollback()
+                    topic = await TopicDAO(session).get_topic_by_source_id(source_id)
+            elif topic.display_name != display_name:
+                topic.display_name = display_name
+                await session.commit()
+                await session.refresh(topic)
+            return topic
+
     async def _concepts(self, json_payload, language) -> AsyncGenerator[Concept, None]:
         concept_cache = {}
 
@@ -345,6 +383,7 @@ class OpenAlexReferencesConverter(AbstractReferencesConverter):
             HashKey("title"),
             HashKey("type"),
             HashKey("concepts"),
+            HashKey("topics"),
             HashKey("authorships", sorted=False),
             HashKey("created_date"),
             HashKey("publication_date"),

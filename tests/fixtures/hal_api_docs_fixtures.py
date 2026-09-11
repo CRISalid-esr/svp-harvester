@@ -176,6 +176,18 @@ def fixture_hal_api_docs_with_keyword_collision_controlled_concept(_base_path) -
     )
 
 
+@pytest.fixture(name="hal_api_docs_with_ambiguous_contributor_ids")
+def fixture_hal_api_docs_with_ambiguous_contributor_ids(_base_path) -> dict:
+    """
+    Generate a HAL API response where a contributor with a numeric idHal
+    and a contributor without idHal (form id fallback) share the same
+    numeric value in their respective namespaces.
+    """
+    return _hal_api_json_data_from_file(
+        _base_path, "docs_with_ambiguous_contributor_ids"
+    )
+
+
 def _hal_api_json_data_from_file(base_path, file_name) -> dict:
     file_path = f"data/hal_api/{file_name}.json"
     return _json_data_from_file(base_path, file_path)

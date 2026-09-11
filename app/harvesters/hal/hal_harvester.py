@@ -20,38 +20,37 @@ class HalHarvester(AbstractHarvester):
 
     IDENTIFIERS_BY_ENTITIES = {
         "Person": [
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I, "idhali"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S, "idhals"),
-            (HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID, "orcid"),
+            (
+                ContributorIdentifier.IdentifierType.IDHAL_I.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_I,
+            ),
+            (
+                ContributorIdentifier.IdentifierType.IDHAL_S.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ID_HAL_S,
+            ),
+            (
+                ContributorIdentifier.IdentifierType.ORCID.value,
+                HalApiQueryBuilder.QueryParameters.AUTH_ORCID_ID_EXT_ID,
+            ),
         ]
     }
 
-    supported_identifier_types = [
-        ContributorIdentifier.IdentifierType.IDHAL_I.value,
-        ContributorIdentifier.IdentifierType.IDHAL_S.value,
-        ContributorIdentifier.IdentifierType.ORCID.value,
-    ]
-
-    VERSION: Version = VersionInfo.parse("2.1.1")
+    VERSION: Version = VersionInfo.parse("2.2.0")
 
     async def _get_hal_query_parameters(self, entity_class: str):
         """
-        Set the query parameters for an entity
+        Return the HAL query parameters using the pre-selected entity identifier.
         """
-        entity = await self._get_entity()
-
-        query_parameters = self.IDENTIFIERS_BY_ENTITIES.get(entity_class)
-        # List convenient query parameters for this entity class
-        # and choose the first one for which value is provided
-
-        for hal_query_parameter, identifier_key in query_parameters:
-            identifier_value = entity.get_identifier(identifier_key)
-            if identifier_value is not None:
-                return hal_query_parameter, identifier_value
-
         assert (
-            False
-        ), "Unable to run hal harvester for a person without idhali, idhals or orcid"
+            self.entity_identifier_used is not None
+        ), "entity_identifier_used must be set before calling _get_hal_query_parameters"
+        identifier_key, identifier_value = self.entity_identifier_used
+        for entry_key, hal_query_parameter in self.IDENTIFIERS_BY_ENTITIES.get(
+            entity_class, []
+        ):
+            if entry_key == identifier_key:
+                return hal_query_parameter, identifier_value
+        assert False, f"Unable to map '{identifier_key}' to HAL query parameter"
 
     async def fetch_results(self) -> AsyncGenerator[JsonRawResult, None]:
         """

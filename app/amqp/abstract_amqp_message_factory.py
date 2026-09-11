@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from app.config import get_app_settings
+from app.models.message_mode import MessageMode
 
 
 class AbstractAMQPMessageFactory(ABC):
@@ -8,6 +9,7 @@ class AbstractAMQPMessageFactory(ABC):
     def __init__(self, content):
         self.content = content
         self.settings = get_app_settings()
+        self.mode: MessageMode = MessageMode.BATCH
 
     async def build_message(self) -> tuple[str, str]:
         """Build the message routing key and payload."""
